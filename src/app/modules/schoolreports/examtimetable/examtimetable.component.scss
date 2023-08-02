@@ -1,0 +1,19 @@
+mat-form-field,button{
+    margin-right: 15px;;
+}
+mat-cell:first-of-type{
+    //padding-left: 0px;
+    border-left: 1px solid lightgray;
+}
+mat-cell{
+    border-right: 1px solid lightgray;
+    //border-bottom: 1px solid lightgray;
+    padding: 10px;
+    align-self: stretch;
+}
+.element-row{
+    min-height: 29px;   
+   }
+.backgroundcolorgray{
+background-color: lightgray;
+}

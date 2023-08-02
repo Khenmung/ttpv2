@@ -1,0 +1,19 @@
+mat-form-field{
+    width: 98%;
+    margin-right: 15px;
+}
+.mat-column-Active,.mat-column-Action{
+    flex:1 0 100px;
+}
+.mat-column-EmployeeActivityId{
+    flex:1 0 70px;
+}
+.mat-column-AchievementDate,.mat-column-CategoryId,.mat-column-SubCategoryId,.mat-column-SessionId,.mat-column-ActivityNameId{
+    flex:1 0 120px;
+}
+.mat-column-Employee,.mat-column-Secured{
+    flex:1 0 150px;
+}
+.mat-column-Achievement{
+    flex:1 0 200px;
+}

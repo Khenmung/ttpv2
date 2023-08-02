@@ -1,0 +1,81 @@
+<div style="margin:15px 15px 15px 0px"><b>Trial Balance</b></div>
+
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+
+<form [formGroup]="searchForm">
+    <mat-form-field appearance="outline" [style.width.px]="150">
+        <mat-label>From</mat-label>
+        <input formControlName="searchFromDate" [min]="MinDate" matInput [matDatepicker]="FromDate" autocomplete="off">
+        <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
+        <mat-datepicker #FromDate></mat-datepicker>
+    </mat-form-field>
+     <mat-form-field appearance="outline" [style.width.px]="150">
+        <mat-label>To</mat-label>
+        <input formControlName="searchToDate" matInput [matDatepicker]="ToDate" autocomplete="off">
+        <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>
+        <mat-datepicker #ToDate></mat-datepicker>
+    </mat-form-field>
+    <!-- <mat-form-field appearance="outline" [style.width.px]="350" style="margin-right:15px;">
+        <mat-label>Account</mat-label>
+        <input type="text" matInput formControlName="searchGeneralLedgerId" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                {{option.GeneralLedgerName}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field> -->
+    <button [disabled]="loading" mat-raised-button color="accent" (click)="GetAccountingVoucher()">
+        <mat-icon>search</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+        </mat-icon>
+    </button>
+</form>
+
+<mat-table #table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="AccountName">
+        <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef mat-sort-header>Account
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.AccountName}}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef><b>Total</b>
+        </mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="Dr">
+        <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef mat-sort-header>Dr.
+        </mat-header-cell>
+        <mat-cell style="display: flex;justify-content: center;" *matCellDef="let element">
+            {{element.Dr}}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef style="display: flex;justify-content: center;">
+            {{TotalDebit}}
+        </mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="Cr">
+        <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef mat-sort-header>Cr.
+        </mat-header-cell>
+        <mat-cell style="display: flex;justify-content: center;" *matCellDef="let element">
+            {{element.Cr}}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef style="display: flex;justify-content: center;">
+            {{TotalCredit}}
+        </mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="Balance">
+        <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef mat-sort-header>Balance
+        </mat-header-cell>
+        <mat-cell style="display: flex;justify-content: center;" *matCellDef="let element">
+            {{element.Balance}}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef style="display: flex;justify-content: center;">
+            {{TotalBalance}}
+        </mat-footer-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+    <mat-footer-row class="sticky-footer" *matFooterRowDef="displayedColumns">
+    </mat-footer-row>
+</mat-table>
+<mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50]"></mat-paginator>

@@ -1,0 +1,123 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Answer Options</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
+<div style="width: 100%;">
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" style="width:300px">
+            <mat-label>parent</mat-label>
+            <input type="text" matInput formControlName="searchParent" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="ClearData()">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.Title}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <button mat-raised-button color="accent" matTooltip="search" (click)="SearchAnswerOptions()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+        <!-- <button mat-raised-button *ngIf="AnswerOptionsId==0" matTooltip="add parent" color="accent"
+                (click)="AddParent()">
+                <mat-icon>add</mat-icon>
+            </button> -->
+    </form>
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="ClassEvaluationAnswerOptionsId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Id
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ClassEvaluationAnswerOptionsId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Title">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Title
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input [maxlength]="100" autocomplete="Off" matInput (blur)="onBlur(element)"
+                        [value]="element.Title" [(ngModel)]="element.Title">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ParentId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Parent
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-label>parent</mat-label>
+                    <mat-select [value]="element.ParentId" [(ngModel)]="element.ParentId">
+                        <mat-option *ngFor="let option of EvaluationOptionAutoComplete"
+                            [value]="option.ClassEvaluationAnswerOptionsId">
+                            {{option.Title}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Description">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Description
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input [maxlength]="256" autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.Description"
+                        [(ngModel)]="element.Description">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Point">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Points
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input type="number" autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.Point"
+                        [(ngModel)]="element.Point">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Correct">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;">Correct Answer
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateCorrect(element,$event)"
+                    [checked]="element.Correct==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;">Active
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                    mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"
+            style="display: flex;justify-content: baseline;">
+        </mat-row>
+    </mat-table>
+
+</div>
+<!-- </div> -->

@@ -1,0 +1,26 @@
+// .mat-form-field{
+//     //width: 99%;
+//     margin-right: 15px;
+// }
+.mat-column-Action,.mat-column-DefaultType,.mat-column-Confidential{
+    justify-content: center;
+    flex:0 0 100px;
+}
+.mat-column-FeeTypeId,.mat-column-Active{
+    flex:0 0 50px;
+}
+.mat-column-FeeTypeName,.mat-column-Description
+{
+    flex:0 0 200px;
+}
+.mat-column-Formula{
+    flex:0 0 400px;
+}
+
+mat-cell:first-of-type{
+    padding-left: 0px;
+}
+.mat-table{
+    min-width: 700px;
+    max-width: 1000px;
+}

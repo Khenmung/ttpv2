@@ -1,0 +1,30 @@
+mat-cell,mat-header-cell{
+    align-self: stretch;    
+    padding-left:10px;
+    border-right: 1px solid lightgray;
+}
+mat-form-field{
+    width:98%;
+}
+mat-form-field,button{
+    margin-right:15px;
+}
+button{
+    margin-right:15px;
+}
+mat-cell:first-of-type {
+    padding-left: 0px;
+}
+.mat-column-Formula{
+    flex: 1 0 400px;
+}
+.mat-column-SubjectName{
+    flex: 1 0 120px;
+}
+.mat-column-Active,.mat-column-Action{
+    justify-content: center;
+    flex: 1 0 70px;
+}
+.mat-column-ExamMarkConfigId{
+    flex: 1 0 70px;
+}

@@ -1,0 +1,22 @@
+// .container{
+//     //position: absolute;
+//    // margin-top: 100px;
+// }
+mat-form-field{
+    margin-right:15px;
+}
+button{
+    margin-right:15px;
+}
+.mat-column-SubjectTypeId,
+.mat-column-SelectHowMany{
+    flex:1 1 80px;
+}
+.mat-column-Active{
+    justify-content: center;
+    flex:1 1 100px;
+}
+.mat-column-Action,
+.mat-column-SubjectTypeName{
+    flex:1 1 150px;
+}

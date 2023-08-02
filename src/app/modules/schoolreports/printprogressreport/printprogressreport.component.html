@@ -1,0 +1,214 @@
+<mat-card>
+    <mat-card-title><strong>Print Progress Report</strong></mat-card-title>
+    <mat-card-subtitle>
+    </mat-card-subtitle>
+    <mat-card-content>
+        <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+        <form [formGroup]="searchForm">
+            <!-- <mat-form-field appearance="outline">
+                <mat-label>Exam</mat-label>
+                <mat-select formControlName="searchExamId" (selectionChange)="FilterClass()">
+                    <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                        {{item.ExamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> -->
+            <mat-form-field appearance="outline">
+                <mat-label>Class</mat-label>
+                <mat-select formControlName="searchClassId" (selectionChange)="BindSemesterSection()">
+                    <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                        {{item.ClassName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory=='college'">
+                <mat-label>Semester</mat-label>
+                <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
+                    <mat-option [value]="Defaultvalue">select</mat-option>
+                    <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Section</mat-label>
+                <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+                    <mat-option value="0">select</mat-option>
+                    <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetProgressReport()">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+            <!-- <div style="display:flex;justify-content:center;width:100%;margin:5px"> -->
+                <button *ngIf="NonGradedMarkResults.length>0 || GradedMarksResults.length>0" [disabled]="loading"
+                    matTooltip="print" printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button
+                    color="accent">
+                    <mat-icon>print</mat-icon>
+                </button>
+                <!-- <button [disabled]="loading || Permission=='read'" matTooltip="print"
+                        *ngIf="NonGradedMarkResults.length>0 || GradedMarksResults.length>0"
+                        (click)="print()" mat-raised-button color="accent">
+                        <mat-icon>print</mat-icon>
+                    </button> -->
+            <!-- </div> -->
+        </form>
+        <div id="printSection">
+            <div *ngFor="let data of NonGradedDataSourceArray;let indx=index;"
+                style="page-break-before: always; margin-right:0px;margin-left:0px;width: 100%;box-sizing: border-box;padding: 15px; border: 1px solid lightgray; display: flex; justify-content: center;flex-direction: column;">
+                 <!-- <div style="display: flex;justify-content: center;width:100%;flex-direction: column;">
+                    <div *ngFor="let item of CommonHeader" [innerHTML]="item.Description|encodeHTML"
+                        style="display: flex;justify-content: center;">
+                    </div>
+                </div> -->
+                <div style="display:flex;justify-content: center;">
+                    <div style="margin-right: 15px;" *ngIf="logourl.length>0" [innerHTML]="logourl"></div>
+                    <div style="display: flex;justify-content: center;flex-direction: column;">
+                        <div *ngFor="let item of CommonHeader" [innerHTML]="item.Description|encodeHTML"
+                            style="display: flex;justify-content: center;">
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;font-size:xx-large;justify-content: center;width:100%;margin:30px"><span>Progress Report</span></div>
+                <div style="margin:20px 0px 10px 20px;width:500px;border-bottom: 1px solid lightgray; font-weight: bold;font-style: italic;">Student's Profile</div>
+                <!-- <div *ngFor="let item of StudentName"
+                    style="margin-left: 20px;display: flex;justify-content: center;flex-direction: column;">
+                    <div style="display:flex">
+                        <div style="width:300px"><b>Name</b> :</div>
+                        <div>{{item.Name}}</div>
+                    </div>
+                    <div style="display:flex">
+                        <div style="width:300px"><b>Class </b>:</div>
+                        <div> {{item.Class}}, <b>Section</b> : {{item.Section}}, <b>Roll No.</b> :
+                            {{item.RollNo}}
+                        </div>
+                    </div>
+                </div> -->
+                <div style="margin-left: 20px;">
+                    <div style="display:flex;">
+                        <div style="width:300px"><b>Name</b></div>
+                        <div>:&nbsp;{{CurrentStudent[indx].Name}}</div>
+                    </div>
+                    <div style="display:flex;">
+                        <div style="width:300px"><b>Father/Guardian</b></div>
+                        <div>:&nbsp;{{CurrentStudent[indx].FatherName}}</div>
+                    </div>
+                    <div style="display:flex;">
+                        <div style="width:300px"><b>Date Of Birth</b>
+                        </div>
+                        <div>:&nbsp;{{CurrentStudent[indx].DOB|date:'dd/MM/yyyy'}}</div>
+                    </div>
+                    <div style="display:flex;">
+                        <div style="width:300px"><b>House</b>
+                        </div>
+                        <div>:&nbsp;{{CurrentStudent[indx].House}}</div>
+                    </div>
+                    <div style="display:flex;">
+                        <div style="width:300px"><b>Address</b>
+                        </div>
+                        <div>:&nbsp;{{CurrentStudent[indx].PresentAddress}}</div>
+                    </div>
+                </div>
+                <div style="margin-top:15px;margin-bottom:0px">
+                    <mat-table [dataSource]="getDataSource(data)" matSort
+                        *ngIf="NonGradedDisplayColumns.length>1">
+                        <ng-container *ngFor="let disCol of NonGradedDisplayColumns; let colIndex = index"
+                            matColumnDef="{{disCol}}">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header><span
+                                    *ngIf="disCol!='Subject'">{{disCol}}</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                {{element[disCol]}}
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="NonGradedDisplayColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: NonGradedDisplayColumns;" class="element-row"></mat-row>
+                    </mat-table>
+                </div>
+                <div style="margin-top:15px;margin-bottom:0px" *ngIf="GradedDisplayColumns.length>1">
+                    <div style="margin-left:20px;font-weight:bold">Graded Subjects</div>
+                    <mat-table #table [dataSource]="getDataSource(GradedDataSourceArray[indx])" matSort>
+                        <ng-container *ngFor="let disCol of GradedDisplayColumns; let colIndex = index"
+                            matColumnDef="{{disCol}}">
+                            <!-- <mat-header-cell *matHeaderCellDef style="height:0px">
+                                <span *ngIf="disCol!='Subject'">{{disCol}}</span>
+                            </mat-header-cell> -->
+                            <mat-cell *matCellDef="let element">
+                                <span style="font-weight:bold"
+                                    *ngIf="element[disCol]==OverAllGrade">{{element[disCol]}}</span>
+                                <span *ngIf="element[disCol]!=OverAllGrade">{{element[disCol]}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <!-- <mat-header-row *matHeaderRowDef="GradedDisplayColumns"></mat-header-row> -->
+                        <mat-row *matRowDef="let row; columns: GradedDisplayColumns;" class="element-row"></mat-row>
+                    </mat-table>
+                </div>
+                <div style="margin-top:15px;margin-bottom:0px">
+                    <mat-table #table [dataSource]="getDataSource(ExamResultArray[indx])" matSort *ngIf="DisplayColumns.length>1">
+                        <ng-container *ngFor="let disCol of DisplayColumns; let colIndex = index"
+                            matColumnDef="{{disCol}}">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:none"><span
+                                    *ngIf="disCol!='FirstCol'">{{disCol}}</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                {{element[disCol]}}
+                            </mat-cell>
+                        </ng-container>
+                        <!-- <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row> -->
+                        <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
+                    </mat-table>
+                </div>
+                <!-- <div style="margin-top:15px;margin-bottom:15px;">
+                    <mat-table #table [dataSource]="dataSourceEvaluation" matSort
+                        *ngIf="EvaluationDisplayedColumns.length>1">
+                        <ng-container *ngFor="let disCol of EvaluationDisplayedColumns; let colIndex = index"
+                            matColumnDef="{{disCol}}">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span style="padding-left: 15px;"
+                                    *ngIf="disCol!='FirstCol' && disCol!='Description'">{{disCol}}</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element" style="border-right:1px solid lightgray">
+                                <span
+                                    style="width:100%;display:flex; flex-direction:column;justify-content: flex-start;">
+                                    <span *ngIf="disCol =='Description' && 
+                            element.QuestionnaireType =='Evaluation Master'"
+                                        style="font-weight: bold; width: 100%;padding: 15px 15px 10px 0px;color:#A4de02">
+                                        {{element[disCol]}}</span>
+                                    <span *ngIf="disCol =='Description'
+                                && element.QuestionnaireType=='Heading'"
+                                        style="font-weight: bold; width: 100%;padding: 15px 15px 10px 0px;color:#1E5631">
+                                        {{element[disCol]}}</span>
+                                    <span *ngIf="disCol =='Description' && element.QuestionnaireType=='Sub Heading'"
+                                        style="font-weight: bold; width: 100%;padding: 15px 15px 10px 0px;color:#76ba1b">
+                                        {{element[disCol]}}</span>
+                                    <span *ngIf="element.QuestionnaireType=='Questionnaire' && disCol =='Description'"
+                                        style="width: 100%;padding: 15px 15px 10px 0px;">
+                                        <mat-icon class="icon">star_outline</mat-icon> {{element[disCol]}}
+                                    </span>
+                                    <span [innerHTML]="element[disCol]|encodeHTML"
+                                        style="align-self:stretch; width: 100%;padding: 15px;" *ngIf="element['QuestionnaireType']!='Evaluation Master' 
+                                   && disCol!='Description' 
+                                   && disCol!='QuestionnaireType' 
+                                   && disCol!='EvaluationMasterId'
+                                   && disCol!='EvaluationName'
+                                   && element[disCol]!=undefined 
+                                   && element[disCol].length>0">
+                                    </span>
+                                </span>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="EvaluationDisplayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: EvaluationDisplayedColumns;" class="element-row">
+                        </mat-row>
+                    </mat-table>
+                </div> -->
+            </div>
+        </div>
+        
+    </mat-card-content>
+</mat-card>

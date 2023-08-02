@@ -1,0 +1,18 @@
+<mat-sidenav-container style="margin-top:20px ;" class="flex-container" autosize="true">
+    <mat-sidenav style="padding: 17px;" mode="side" opened (click)="toggleSidebar()">
+        <div mat-menu-item *ngFor="let i of sideMenu" [routerLink]="[i.link]" 
+            routerLinkActive="active-list-item" class="with-icon padded"
+            (click)="$event.stopPropagation()">
+            <mat-icon [matTooltip]="i.label">{{ i.faIcon}}</mat-icon>&nbsp;
+            <span [hidden]="collapse">{{i.label}}</span>
+        </div>
+    </mat-sidenav>
+    <mat-sidenav-content class="maincontent">
+        
+        <router-outlet></router-outlet>
+    
+    </mat-sidenav-content>
+</mat-sidenav-container>
+<!-- <div>
+    <img height="400px" width="250px" src="../../../../assets/images/headerimg.svg">
+</div> -->

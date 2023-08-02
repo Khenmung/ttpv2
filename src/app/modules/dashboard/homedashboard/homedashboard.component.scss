@@ -1,0 +1,19 @@
+:host{
+    display: grid;
+    place-items: center;
+    min-height: 92vh;
+    width: 100%;
+    background-color:white;    
+}
+
+mat-form-field,button{
+    margin-right: 15px;
+}
+.mat-card{
+    position: relative;
+    height: max-content;
+    //margin-top:100px; 
+    margin-left: 15px;
+    margin-right: 15px;
+    width: 98%;
+}

@@ -1,0 +1,118 @@
+<!-- <mat-card>
+    <mat-card-title style="padding: 20px;">Manage Files/Folders</mat-card-title>
+    <mat-card-content> -->
+<div style="padding: 20px;font-weight: bold;">Folder</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<form [formGroup]="searchForm">
+    <div class="example-header" fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-form-field appearance="outline" [style.width.px]="350">
+            <mat-label>search folder</mat-label>
+            <input type="text" matInput formControlName="UpdatedFileFolderName" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredAlbum | async" [value]="option">
+                    {{option.UpdatedFileFolderName}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+
+        <!-- <mat-form-field fxFlex="30" appearance="outline">
+            <mat-label>Enter folder name</mat-label>
+            <input matInput formControlName="UpdatedFileFolderName" autocomplete="off">
+        </mat-form-field> -->
+        <button [disabled]="loading" mat-raised-button color="accent" (click)="getFiles(null,'search')">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+        <div fxFlex>&nbsp;</div>
+    </div>
+</form>
+<div>
+    <div fxLayout="row">
+        <span *ngIf="error.length>0"> {{error}}</span>
+        <!-- <span *ngIf="Albums.length>0">{{folderDisplayHierachy|slice:11}}</span> -->
+    </div>
+    <mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="PageId" hidden="true">
+            <mat-header-cell *matHeaderCellDef hidden="true"> No. </mat-header-cell>
+            <mat-cell *matCellDef="let element" hidden="true">
+                <mat-icon *ngIf="element.FileOrFolder==0">file_present</mat-icon>
+                <mat-icon *ngIf="element.FileOrFolder==1">folder_open</mat-icon>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="UpdatedFileFolderName">
+            <mat-header-cell *matHeaderCellDef> Folder/File </mat-header-cell>
+            <mat-cell mat-cell *matCellDef="let element">
+                <div style="display:flex;flex-direction:column">
+                    <!-- <mat-form-field appearance="outline">
+                        <input matInput (blur)='updateAlbum($event)' [(ngModel)]="element.UpdatedFileFolderName"
+                            [value]="element.UpdatedFileFolderName" autocomplete="Off">
+                    </mat-form-field> -->
+                    <div style="margin-top:10px">{{element.UpdatedFileFolderName}}</div>
+                    <div *ngIf="element.FileOrFolder==0"
+                        style="width:auto;border:1px solid lightgray; padding:0px;margin-top: 0px;margin-bottom: 10px;">
+                        <img [src]="element.imgURL" style="width:50%; height:90px;" *ngIf="element.imgURL.length>0">
+                    </div>
+                </div>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="UploadDate">
+            <mat-header-cell *matHeaderCellDef> Upload Date </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.UploadDate|date:'dd/MM/yyyy'}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Copy">
+            <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button [disabled]="loading" [cdkCopyToClipboard]="element.FilePath" (click)="message()" mat-icon-button
+                    matTooltip="copy link">
+                    <mat-icon>content_copy</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="View">
+            <mat-header-cell *matHeaderCellDef> <button [disabled]="loading" mat-button matTooltip="1 level up"
+                    (click)="getFiles(null,'up')">
+                    <mat-icon>undo</mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button [disabled]="loading" mat-mini-fab color="accent" matTooltip="delete" #button
+                    (click)="softDelete(element)">
+                    <mat-icon aria-label="delete">delete</mat-icon>
+                </button>&nbsp;
+                <button [disabled]="loading" [id]="element.FileId" mat-mini-fab color="accent"
+                    [name]="element.UpdatedFileFolderName" matTooltip="view" #view (click)="getFiles(element,'open')">
+                    <mat-icon aria-label="photo">pageview</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        </mat-row>
+    </mat-table>
+
+    <!-- <div class="item" fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let album of Albums;">
+                <div>
+                    <mat-icon *ngIf="album.FileOrFolder==0">file_present</mat-icon>
+                    <mat-icon *ngIf="album.FileOrFolder==1">folder_open</mat-icon>
+                </div>
+                <div fxFlex="26">
+
+                </div>
+                <div fxFlex="10">{{album.UploadDate|date:'dd/MM/yyyy'}}</div>
+                <div fxFlex="5" *ngIf="album.FilePath.length>0">
+                    <button [disabled]="loading" [cdkCopyToClipboard]="album.FilePath" (click)="message()" mat-icon-button
+                        matTooltip="copy link">
+                        <mat-icon>content_copy</mat-icon>
+                    </button>
+                </div>
+                <div fxFlex>
+
+                </div>
+            </div> -->
+
+    <!-- </div>
+            <div style="font-size:xx-large;">...</div> -->
+
+</div>

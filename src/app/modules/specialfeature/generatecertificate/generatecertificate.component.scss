@@ -1,0 +1,206 @@
+:host{
+	width:100%;
+}
+mat-form-field,
+button {
+	margin-right: 15px;
+}
+
+mat-table {
+	width  : 100%;
+	padding: 0px;
+	margin : 0px;
+}
+.container{
+	position: relative;
+	display: flex;
+	justify-content: center;
+	margin:0px;
+	padding: 0px;
+}
+.container img{
+	width:100%;
+	//height:5.5in;
+	//z-index: -1;
+}
+// .header {
+// 	width    : 100%;
+// 	font-size: 30px;
+// 	color    : blue
+// }
+
+// .container {
+// 	width          : 100%;
+// 	display        : flex;
+// 	justify-content: space-between;
+// 	text-align     : center;
+// 	position: relative;
+// 	text-align: center;
+// 	width: 100%;
+// 	margin: 0px;
+// 	padding: 0px;
+// }
+
+// .cerBody{
+// 	position: absolute;
+// 	margin-top: 220px;
+// 	margin-left:310px;
+// 	z-index: 100;
+// }
+// @media print{
+// .cerBody{
+// 	position: absolute;
+// 	margin-top: 150px;
+// 	margin-left:310px;
+// 	z-index: 100;
+// }}
+ 
+// span {
+// 	width: 100%;
+// }
+
+// .blank {
+// 	display        : flex;
+// 	justify-content: center;
+// 	font-weight    : bold;
+// 	flex           : 1 1 300px;
+// 	border-bottom  : 1px solid lightgray;
+// 	margin-bottom  : 15px
+// }
+
+// .headpad {
+// 	padding  : 30px 0px 15px 0px;
+// 	font-size: 30pt
+// }
+
+// .txtalign {
+// 	text-align: center
+// }
+
+// .width100 {
+// 	width     : 100%;
+// 	margin    : 0px;
+// 	text-align: center
+// }
+
+// .red {
+// 	color      : red;
+// 	font-weight: bold
+// }
+
+// .cerhead {
+// 	font-size: 30px;
+// 	padding  : 50px 0px 50px 0px;
+// }
+
+// .CertificateFont {
+// 	font-family: "Ewert", cursive;
+// }
+
+// .contentwrapper {
+// 	display       : flex;
+// 	flex-direction: column;
+// 	margin-top    : 80px;
+// 	margin-bottom : 120px;
+// 	width         : 100%;
+// }
+
+// .footerwrapper {
+// 	justify-content: space-between;
+// 	width          : 100%;
+// 	margin-top     : 150px;
+// 	//margin-bottom: 150px;
+// }
+
+// .element-row {
+// 	width              : 100%;
+// 	border-bottom-style: none;
+// 	min-height         : 0px;
+// 	//padding-left : 100px;
+// 	//padding-right: 100px;
+// }
+
+// body {
+// 	font-family          : Roboto, Helvetica Neue;
+// 	margin               : 60px;
+// 	display              : grid;
+// 	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+// 	grid-gap             : 60px;
+// }
+
+// .border {
+// 	font-size  : 1.6rem;
+// 	display    : grid;
+// 	place-items: center;
+// 	min-height : 200px;
+// 	border     : 8px solid;
+// 	padding    : 1rem;
+// }
+
+// .full {
+// 	border-image: linear-gradient(45deg, turquoise, greenyellow) 1;
+// }
+
+// .sides {
+// 	border-image: linear-gradient(to left, turquoise, greenyellow) 1 0;
+// }
+
+// .sides-2 {
+// 	border-image: linear-gradient(to bottom, turquoise, greenyellow) 0 1;
+// }
+
+// .linear-repeating {
+// 	border-width: 10px;
+// 	border-image: repeating-linear-gradient(45deg, turquoise, pink 4%) 1;
+// }
+
+// .radial-repeating {
+// 	border-width: 20px;
+// 	border-image: repeating-radial-gradient(circle at 10px,
+// 			turquoise,
+// 			pink 2px,
+// 			greenyellow 4px,
+// 			pink 2px) 1;
+// }
+
+// /* border radius example is drawn from this pen: https://codepen.io/shshaw/pen/MqMZGR
+// I've added a few comments on why we're using certain properties
+// */
+
+// .full-withradius {
+// 	position  : relative;
+// 	background: #fff;
+
+// 	/*The background extends to the outside edge of the padding. No background is drawn beneath the border.*/
+// 	background-clip: padding-box;
+
+// 	border       : solid 8px transparent;
+// 	border-radius: 0.8rem;
+
+// 	&:before {
+// 		content      : "";
+// 		position     : absolute;
+// 		top          : 0;
+// 		right        : 0;
+// 		bottom       : 0;
+// 		left         : 0;
+// 		z-index      : -1;
+// 		margin       : -8px;
+// 		/* same as border width */
+// 		border-radius: inherit;
+// 		/* inherit container box's radius */
+// 		background   : linear-gradient(to left, turquoise, greenyellow);
+// 	}
+// }
+
+// mat-optgroup {
+// 	display         : block;
+// 	background-color: lightgray;
+
+// }
+
+// mat-option {
+// 	display         : block;
+// 	background-color: #ffffff;
+
+// }

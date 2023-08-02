@@ -1,0 +1,92 @@
+<mat-spinner *ngIf="PageLoading" diameter="25" style="margin:15px;position:relative;margin-left: 50%;"></mat-spinner>
+
+<div style="font-weight:bold;margin:15px">Question Bank</div>
+
+<form [formGroup]="searchForm">
+    <div style="padding: 15px;display:flex;flex-direction: column;">
+        <div>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>exam</mat-label>
+                <mat-select formControlName="searchExamId" (selectionChange)="cleardata()">
+                    <mat-option *ngFor="let item of Exams" [value]="item.ExamId">{{item.ExamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>class</mat-label>
+                <mat-select formControlName="searchClassId" (selectionChange)="SelectSubject()">
+                    <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>subject</mat-label>
+                <mat-select formControlName="searchSubjectId" (selectionChange)="cleardata()">
+                    <mat-option *ngFor="let item of SelectedClassSubjects" [value]="item.ClassSubjectId">
+                        {{item.SubjectName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>year</mat-label>
+                <mat-select formControlName="searchBatchId" (selectionChange)="cleardata()">
+                    <mat-option *ngFor="let item of Batches" [value]="item.BatchId">
+                        {{item.BatchName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> -->
+
+            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetSyllabusDetail()">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+            <mat-divider></mat-divider>
+
+        </div>
+
+    </div>
+</form>
+<div id="printSection">
+    <div *ngIf="QuestionNExams.length>0" style="display:flex;flex-direction: column;justify-content: center;width:100%;margin-top: 15px;">
+        <div style="display:flex;font-size:20px;justify-content: center;">{{ExamName}}</div>
+        <div style="display:flex;font-size:16px;justify-content: center;">{{ClassName}}</div>
+        <div style="display:flex;font-size:16px;justify-content: center;">{{SubjectName}}</div>
+    </div>
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="Id">
+            <mat-header-cell *matHeaderCellDef>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element"
+                style="display:flex;justify-content:center flex-start;align-self: flex-start;">
+                {{element.Id}}.
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Question">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <div style="margin:15px 15px 15px 0px; display: flex;flex-direction: column;width:100%">
+                    <div [innerHTML]="element.Question|encodeHTML"></div>
+                    <div style="width:98%;padding:5px;margin-top: 5px;margin-bottom: 5px;">
+                        <img [src]="element.Diagram" height="150px" *ngIf="element.Diagram.length>0">
+                    </div>
+                </div>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;let indx=index" class="element-row"
+            style="display: flex;justify-content: baseline;" [ngClass]="{'highlight': selectedRowIndex ==indx}"
+            (click)="highlight(indx)">
+        </mat-row>
+    </mat-table>
+</div>
+<div style="display:flex;justify-content:center">
+    <button *ngIf="QuestionNExams.length>0" [disabled]="loading" matTooltip="print" style="margin: 15px;"
+        printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
+        <mat-icon>print</mat-icon>
+    </button>
+</div>
+<mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50]">
+</mat-paginator>

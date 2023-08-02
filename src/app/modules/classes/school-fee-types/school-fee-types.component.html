@@ -1,0 +1,114 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>School Fee Types</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="width:100%;padding: 15px;" fxLayout="column">
+        <form [formGroup]="searchForm">
+            <mat-form-field style="width:250px;margin-right: 15px;" appearance="outline">
+                <mat-label>Fee type</mat-label>
+                <input matInput formControlName="searchFeeTypeName" autocomplete="Off">
+            </mat-form-field>
+            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetFeeTypes()">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </form>
+        <mat-table #table [dataSource]="dataSource">
+            <ng-container matColumnDef="FeeTypeId">
+                <mat-header-cell *matHeaderCellDef>Id
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.FeeTypeId}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="FeeTypeName">
+                <mat-header-cell *matHeaderCellDef>Fee type
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <input matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="30"
+                            [value]="element.FeeTypeName" [(ngModel)]="element.FeeTypeName">
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Description">
+                <mat-header-cell *matHeaderCellDef>Description
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <input matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="250"
+                            [value]="element.Description" [(ngModel)]="element.Description">
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Formula">
+                <mat-header-cell *matHeaderCellDef>Amount Formula
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field [style.width.pc]="50" appearance="outline">
+                        <textarea matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="250"
+                            [value]="element.Formula" [(ngModel)]="element.Formula"></textarea>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="DefaultType">
+                <mat-header-cell *matHeaderCellDef>Default Type
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="updateDefaultType(element,$event)"
+                        [checked]="element.DefaultType==1?true:false">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Confidential">
+                <mat-header-cell *matHeaderCellDef>Confidential
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="updateConfidential(element,$event)"
+                        [checked]="element.Confidential">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Active">
+                <mat-header-cell *matHeaderCellDef style="justify-content: center;">Active
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" style="justify-content: center;">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                        [checked]="element.Active==1?true:false">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef style="justify-content: center;">
+                    <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
+                        (click)="AddNew()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" style="justify-content: center;">
+                    <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                        mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                        <mat-icon>save</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" style="display: flex;align-items: baseline;"
+                class="element-row"></mat-row>
+        </mat-table>
+        <mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50]"></mat-paginator>
+        <div style="width:100%;background-color: lightgray;font-size: medium;padding: 10px;margin:15px 15px 15px 0px">
+            Below variables can be
+            applied within square bracket '[]' in the formula.
+        </div>
+        <div>ClassName, FeeName, FeeCategory, FeeSubCategory, Month*, Amount</div>
+        <div>* Month format: Year + month. Eg. 'Month' for the month of Jan 2021 is 202100, for Feb 2021 is 202101 and
+            so on..</div>
+    </div>

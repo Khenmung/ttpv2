@@ -1,0 +1,28 @@
+mat-form-field{
+    margin-right: 15px;
+    width: 98%;
+}
+.mat-column-FeeType,
+.mat-column-FeeTypeRemarks,
+.mat-column-Name,
+.mat-column-RelationshipId,
+.mat-column-ContactNo,
+.mat-column-Remarks
+{
+    flex:1 0 150px;
+}
+
+.mat-column-Action,.mat-column-Active
+{
+    justify-content: center;
+    flex:1 0 80px;
+}
+.mat-column-SiblingName
+{
+    margin-right: 15px;
+    flex: 1 0 250px;
+}
+.mat-column-StudentFamilyNFriendId{
+  //  justify-content: center;
+    flex: 1 0 60px;
+}

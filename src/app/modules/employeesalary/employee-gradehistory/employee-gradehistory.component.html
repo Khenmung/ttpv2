@@ -1,0 +1,159 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Employee Grade history</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <form [formGroup]="searchForm">
+                <mat-form-field [style.width.px]="250">
+                    <mat-label>Employee</mat-label>
+                    <input type="text" matInput formControlName="searchEmployeeName" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{option.Name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>               
+            
+                <button [disabled]="loading" mat-raised-button (click)="GetEmployeeGradeHistory()">
+                     <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                </button>
+            </form>
+
+            <mat-table #table [dataSource]="dataSource">
+                <ng-container matColumnDef="DepartmentId">
+                    <mat-header-cell *matHeaderCellDef>Department
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element ">
+                        <mat-form-field [style.width.px]="160" appearance="outline">
+                            <mat-select [value]="element.DepartmentId" [(ngModel)]="element.DepartmentId">
+                                <mat-option *ngFor="let item of Departments" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>        
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EmpGradeId">
+                    <mat-header-cell *matHeaderCellDef>Grade
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element ">
+                        <mat-form-field [style.width.px]="160" appearance="outline">
+                            <mat-select [value]="element.EmpGradeId" [(ngModel)]="element.EmpGradeId">
+                                <mat-option *ngFor="let item of Grades" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>        
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="WorkAccountId">
+                    <mat-header-cell *matHeaderCellDef>Work Account
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element ">
+                        <mat-form-field [style.width.px]="160" appearance="outline">
+                            <mat-select [value]="element.WorkAccountId" [(ngModel)]="element.WorkAccountId">
+                                <mat-option *ngFor="let item of WorkAccounts" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>        
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="JobTitleId">
+                    <mat-header-cell *matHeaderCellDef>Job Title
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element ">
+                        <mat-form-field [style.width.px]="160" appearance="outline">
+                            <mat-select [value]="element.JobTitleId" [(ngModel)]="element.JobTitleId">
+                                <mat-option *ngFor="let item of JobTitles" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>        
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="DesignationId">
+                    <mat-header-cell *matHeaderCellDef>Designation
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element ">
+                        <mat-form-field [style.width.px]="160" appearance="outline">
+                            <mat-select [value]="element.DesignationId" [(ngModel)]="element.DesignationId">
+                                <mat-option *ngFor="let item of Designations" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>        
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CTC">
+                    <mat-header-cell *matHeaderCellDef>CTC
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element ">
+                        <mat-form-field [style.width.px]="100" appearance="outline" autocomplete="Off">
+                            <input matInput type="number"
+                            [value]="element.CTC"
+                                [(ngModel)]="element.CTC">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>                
+                <ng-container matColumnDef="FromDate">
+                    <mat-header-cell *matHeaderCellDef> From Date </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="130">
+                            <input [(ngModel)]="element.FromDate" [value]="element.FromDate" matInput [matDatepicker]="FromDate" autocomplete="off">
+                            <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
+                            <mat-datepicker #FromDate></mat-datepicker>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ToDate">
+                    <mat-header-cell *matHeaderCellDef> To Date </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="130">
+                            <input [value]="element.ToDate" [(ngModel)]="element.ToDate"
+                             matInput [matDatepicker]="ToDate" autocomplete="off">
+                            <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>
+                            <mat-datepicker #ToDate></mat-datepicker>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="IsCurrent">
+                    <mat-header-cell *matHeaderCellDef> Current </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateIsCurrent(element,$event)"
+                            [checked]="element.IsCurrent==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button *ngIf="EmployeeGradeHistoryList.length>0" [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="addnew()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action" matTooltip="save" 
+mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                             <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+            </mat-table>
+        </div>
+
+    </div>
+</div>

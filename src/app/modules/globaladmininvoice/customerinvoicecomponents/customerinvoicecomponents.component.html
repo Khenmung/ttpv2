@@ -1,0 +1,96 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Customer Invoice Components</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <form [formGroup]="searchForm" fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="space-around center">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Customer</mat-label>
+                        <mat-select formControlName="searchOrgId">
+                            <mat-option *ngFor="let item of Organizations" [value]="item.OrganizationId">
+                                {{item.OrganizationName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Application</mat-label>
+                        <mat-select formControlName="searchApplicationId">
+                            <mat-option *ngFor="let item of Applications" [value]="item.MasterDataId">
+                                {{item.MasterDataName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button [disabled]="loading" matTooltip="search" mat-raised-button
+                        (click)="GetCustomerInvoiceComponent()">
+                         <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                    </button>
+                </div>
+            </form>
+            <mat-table #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="InvoiceComponentName">
+                    <mat-header-cell *matHeaderCellDef>Invoice Component
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.InvoiceComponentName}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Logic">
+                    <mat-header-cell *matHeaderCellDef>Logic
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.Logic}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ApplicationName">
+                    <mat-header-cell *matHeaderCellDef>Application
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.ApplicationName}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Formula">
+                    <mat-header-cell *matHeaderCellDef>Customer specific
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <textarea matInput (blur)="onBlur(element)" [(ngModel)]="element.Formula"
+                                [value]="element.Formula" autocomplete="off" [maxlength]="1000"></textarea>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action" matTooltip="save" 
+mat-raised-button color="accent"
+                            (click)="UpdateOrSave(element)">
+                             <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+            </mat-table>
+        </div>
+    </div>
+</div>

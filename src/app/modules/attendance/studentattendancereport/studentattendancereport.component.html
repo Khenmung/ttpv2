@@ -1,0 +1,106 @@
+<!-- <div> -->
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Attendance Report</strong></div>
+</div>
+<!-- <alert></alert> -->
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<form [formGroup]="searchForm">
+    <mat-form-field style="margin-right:15px" appearance="outline" [style.width.px]="200">
+        <mat-label>Month</mat-label>
+        <mat-select formControlName="searchMonth" (selectionChange)="ClearData()">
+            <mat-option *ngFor="let item of Months" [value]="item.val">
+                {{item.MonthName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field style="margin-right:15px" appearance="outline" [style.width.px]="200">
+        <mat-label>Class</mat-label>
+        <mat-select formControlName="searchClassId" (selectionChange)="bindClassSubject()">
+            <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
+        <mat-label>semester</mat-label>
+        <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
+            <mat-option [value]="Defaultvalue">select</mat-option>
+            <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                {{item.MasterDataName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" [style.width.px]="200">
+        <mat-label>section</mat-label>
+        <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+            <mat-option [value]="Defaultvalue">select</mat-option>
+            <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                {{item.MasterDataName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field> 
+    <mat-form-field appearance="outline" [style.width.px]="150">
+        <mat-label>Subject</mat-label>
+        <mat-select formControlName="searchClassSubjectId" (selectionChange)="GetExistingStudentClassSubjects()">
+            <mat-option value="0">--select--</mat-option>
+            <mat-option *ngFor="let item of FilteredClassSubjects"
+                [value]="item.ClassSubjectId">{{item.ClassSubject}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button [disabled]="loading" mat-raised-button color="accent" (click)="GetStudentAttendance()">
+        <mat-icon>search</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+        </mat-icon>
+    </button>
+</form>
+<div style="margin-right: 15px;" *ngIf="StudentAttendanceList.length>0">
+    <div id="printSection">
+        <mat-table #table [dataSource]="dataSource">
+            <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+                <mat-header-cell *matHeaderCellDef 
+                    [ngStyle]="{'background-color':disCol.includes('Sun') || disCol.includes('Sat')?'#ffffe8':''}"
+                    style="display:flex;justify-content:center;padding:3px">
+                    <!-- <div style="justify-content: flex-start;margin-bottom: 10px;display:flex;flex-direction: column;"> -->
+                    <!-- <div style="display: flex;flex-direction: column;"> -->
+                    {{disCol=='Student'?'':'&nbsp;' + disCol}}
+                    <!-- </div>                     -->
+                    <!-- </div> -->
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" style="padding:3px"
+                    [ngStyle]="{'background-color':disCol.includes('Sun') || disCol.includes('Sat')?'#ffffe8':''}">
+                    <!-- <mat-checkbox style="margin-left:10px;margin-right:15px" matTooltip="{{disCol}}"
+                        *ngIf="disCol !='Student' && disCol !='Ab' && disCol !='Pre'" [disabled]="true" (click)="$event.stopPropagation()"
+                        [checked]="element[disCol]=='1'?true:false">
+                    </mat-checkbox> -->
+                    <!-- {{disCol=='Student' || disCol=='Ab' || disCol =='Pre'?element[disCol]:element[disCol]==true?'P':element[disCol]=='L'?'-'}} -->
+                    {{element[disCol]}}
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+        </mat-table>
+    </div>
+</div>
+
+<mat-paginator [hidden]="StudentAttendanceList.length==0" style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50,100]"></mat-paginator>
+<div style="margin-top:15px;display:flex;justify-content: center;">
+    <button [disabled]="loading || Permission=='read'" *ngIf="StudentAttendanceList.length>0" matTooltip="print"
+        printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
+        <mat-icon>print</mat-icon>
+    </button>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>
+                <div>If a <b>Holiday</b> is set within the selected month, that day is not counted as absent.
+                </div>
+            </li>
+        </ul>
+    </span>
+</div>

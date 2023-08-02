@@ -1,0 +1,39 @@
+mat-form-field{
+    margin-right:15px;
+    width: 99%;
+}
+button{
+    margin-right:15px;
+}
+mat-cell:first-of-type {
+    padding-left: 0px;
+    width: 70px;
+}
+
+.mat-column-RatingId //, .mat-column-CategoryId,.mat-column-SubCategoryId
+{
+    flex:0 0 150px;
+}
+.mat-column-Action1
+{
+    flex:1 0 200px;
+}
+.mat-column-ClassName,
+.mat-column-ExamName,
+.mat-column-EvaluationName,
+.mat-column-ClassGroupName,
+.mat-column-Subject{
+    flex:1 0 150px;
+}
+.mat-column-AutoId{
+    flex:1 1 80px;
+}
+.mat-column-Action,
+.mat-column-Active
+{
+    justify-content: center;
+    flex:1 0 100px;
+}
+.mat-column-Detail,.mat-column-Description,.mat-column-AnswerOptionsId{
+    flex:10 0 400px;
+}

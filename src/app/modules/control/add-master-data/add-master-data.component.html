@@ -1,0 +1,224 @@
+<div style="padding: 15px;font-weight: bold;">Essential Data</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<br>
+<form [formGroup]="searchForm">
+    <mat-form-field appearance="outline" [style.width.px]="350">
+        <mat-label>Master</mat-label>
+        <input type="text" matInput formControlName="ParentId" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="GetSubMasters($event.option.value)"
+            [displayWith]="displayFn">
+            <mat-option *ngFor="let option of filteredMaster | async" [value]="option">
+                {{option.MasterDataName}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field appearance="outline" [style.width.px]="200">
+        <mat-label>Sub Master</mat-label>
+        <mat-select formControlName="SubId" (selectionChange)="ClearData()">
+            <mat-option [value]="0">--sub master--</mat-option>
+            <mat-option *ngFor="let master of SubMasters" [value]="master.MasterDataId">
+                {{master.MasterDataName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button [style.width.px]="80" [disabled]="loading" matTooltip="search" mat-raised-button color="accent"
+        (click)="GetSearchMaster()">
+        <mat-icon>search</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+        </mat-icon>
+    </button>
+</form>
+<div style="overflow: auto;">
+    <mat-divider></mat-divider>
+    <mat-table [dataSource]="datasource" matSort>
+        <ng-container matColumnDef="MasterDataId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.MasterDataId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="MasterDataName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                
+                    <span style="display: flex;flex-direction: column;justify-content: flex-start;">
+                        <span style="justify-content: flex-start;display: flex;">Name</span>
+                        <mat-form-field style="width: 80px;">
+                            <mat-label>Name</mat-label>
+                            <input matInput [formControl]="nameFilter" autocomplete="Off">
+                        </mat-form-field>
+                    </span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input [disabled]="element.MasterDataId>0 && (Parent=='Information Restriction' 
+                                       || Parent=='Class Category'
+                                       || Parent=='Period Type'
+                                       || Parent=='Roll No Generation' 
+                                       || Parent=='User Type'
+                                       || Parent=='Exam Status'
+                                       || Parent=='Fee Payment Type'    
+                                       || Parent=='Subject Category'    
+                                       || Parent=='Questionnaire Type'    
+                                       || Parent=='Attendance Mode'    
+                                       || element.MasterDataName=='Admin'
+                                       || element.MasterDataName=='Teacher'
+                                       || element.MasterDataName=='Student'
+                                       || element.MasterDataName=='Employee'
+                                       || element.MasterDataName=='Employee Upload'
+                                       || element.MasterDataName=='Cash'
+                                       || element.MasterDataName=='Helper'  
+                                       || element.MasterDataName=='Teaching'  
+                                       || element.MasterDataName=='Non Teaching')" matInput
+                        [value]="element.MasterDataName" [(ngModel)]="element.MasterDataName" autocomplete="Off"
+                        placeholder="" (blur)="onBlur(element)" [minlength]="1" [maxlength]="50">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ParentId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Parent</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="onBlur(element)" [(ngModel)]="element.ParentId"
+                        [value]="element.ParentId">
+                        <mat-option [value]="0">select</mat-option>
+                        <mat-option *ngFor="let item of SubMasters" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Logic">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Logic</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <textarea matInput [value]="element.Logic" [(ngModel)]="element.Logic" autocomplete="Off"
+                        (blur)="onBlur(element)" [maxlength]="256"></textarea>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Sequence">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Sequence</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input type="number" matInput (blur)="onBlur(element)" [value]="element.Sequence"
+                        [(ngModel)]="element.Sequence" autocomplete="Off" (keyup)="ReSequence(element)" [max]="100">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Description">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <textarea matInput [value]="element.Description" [(ngModel)]="element.Description"
+                        autocomplete="Off" (blur)="onBlur(element)" [maxlength]="2000"></textarea>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Confidential">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;">Confidential               
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateConfidential(element,$event)"
+                    [checked]="element.Confidential">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;">
+                Active
+                
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;">
+                <button style="margin-right: 15px;"
+                    [disabled]="loading || Permission=='read' || Parent=='Information Restriction'"
+                    matTooltip="new item" mat-raised-button color="accent" (click)="AddData()">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button [disabled]="loading || Permission=='read'" matTooltip="save all" mat-raised-button
+                    color="accent" (click)="SaveAll()">
+                    <mat-icon>all_out</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button [disabled]="loading 
+                || !element.Action 
+                || Permission=='read'
+                || (element.MasterDataId>0 && (Parent=='Period Type'
+                                       || Parent=='Class Category'
+                                       || Parent=='Table Names' 
+                                       || Parent=='Roll No Generation' 
+                                       || Parent=='User Type'
+                                       || Parent=='Exam Status'
+                                       || Parent=='Fee Payment Type'    
+                                       || Parent=='Questionnaire Type'    
+                                       || Parent=='Attendance Mode'    
+                                       || Parent=='Leave Status'    
+                                       || element.MasterDataName=='Grading'
+                                       || element.MasterDataName=='Marking'
+                                       || element.MasterDataName=='Admin'
+                                       || element.MasterDataName=='Teacher'
+                                       || element.MasterDataName=='Student'
+                                       || element.MasterDataName=='Employee'
+                                       || element.MasterDataName=='Employee Upload'
+                                       || element.MasterDataName=='Cash'
+                                       || element.MasterDataName=='Helper'
+                                       || element.MasterDataName=='Teaching'  
+                                       || element.MasterDataName=='Non Teaching'))
+                " style="margin-right:15px;" matTooltip="save" mat-raised-button color="accent"
+                    (click)="SaveRow(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+                <button [disabled]="loading 
+                || !element.Action 
+                || Permission=='read'
+                || (element.MasterDataId>0 && (Parent=='Certificate Type'
+                                       || Parent=='Class Category'
+                                       || Parent=='Table Names'
+                                       || Parent=='Period Type'
+                                       || Parent=='Roll No Generation' 
+                                       || Parent=='User Type'
+                                       || Parent=='Exam Status'
+                                       || Parent=='Fee Payment Type'    
+                                       || Parent=='Questionnaire Type'    
+                                       || Parent=='Attendance Mode'   
+                                       || Parent=='Leave Status'     
+                                       || element.MasterDataName=='Sports Certificate'
+                                       || element.MasterDataName=='Grading'
+                                       || element.MasterDataName=='Marking'
+                                       || element.MasterDataName=='Admin'
+                                       || element.MasterDataName=='Teacher'
+                                       || element.MasterDataName=='Student'
+                                       || element.MasterDataName=='Employee'
+                                       || element.MasterDataName=='Employee Upload'
+                                       || element.MasterDataName=='Cash'
+                                       || element.MasterDataName=='Helper'
+                                       || element.MasterDataName=='Teaching'  
+                                       || element.MasterDataName=='Non Teaching'
+                                       || Permission !='rwd'))" 
+                matTooltip="delete" mat-mini-fab (click)="Delete(element)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: DisplayColumns;" style="display: flex;place-items:baseline;">
+        </mat-row>
+    </mat-table>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,100]"></mat-paginator>
+</div>

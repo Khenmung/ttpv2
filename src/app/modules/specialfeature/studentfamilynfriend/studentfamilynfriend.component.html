@@ -1,0 +1,242 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Student Siblings and Friends</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<form [formGroup]="searchForm">
+    <div style="display:flex;flex-direction:column">
+        <div>
+            <mat-form-field appearance="outline" [style.width.px]="350">
+                <mat-label>For Student</mat-label>
+                <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="ClearData()">
+                    <mat-option *ngFor="let option of filteredStudents | async" [value]="option">
+                        {{option.Name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <div style="margin-right:15px">or</div>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>Father</mat-label>
+                <input type="text" matInput formControlName="FatherName" [matAutocomplete]="autoF">
+                <mat-autocomplete #autoF="matAutocomplete" [displayWith]="displayFnF">
+                    <mat-option *ngFor="let option of filteredFathers | async" [value]="option">
+                        {{option.FatherName}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>Mother</mat-label>
+                <input type="text" matInput formControlName="MotherName" [matAutocomplete]="autoM">
+                <mat-autocomplete #autoM="matAutocomplete" [displayWith]="displayFnM">
+                    <mat-option *ngFor="let option of filteredMothers | async" [value]="option">
+                        {{option.MotherName}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <button [disabled]="loading" style="margin-right: 15px;" matTooltip="search sibling or friend"
+                mat-raised-button color="accent" (click)="GetStudentFamilyNFriends()">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </div>
+        <span style="width:100%;border-bottom:1px solid lightgray;margin-bottom: 10px;"></span>
+    </div>
+    <div style="display:flex;">
+        <mat-form-field appearance="outline" [style.width.px]="250">
+            <mat-label>Same school sibling or friend</mat-label>
+            <input type="text" formControlName="searchSiblings" matInput [matAutocomplete]="auto1">
+            <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayFnS">
+                <mat-option *ngFor="let option of filteredSiblings | async" [value]="option">
+                    {{option.Name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <span style="margin:15px 15px 15px 0px;font-weight: bold;">or</span>
+        <div style="border:1px solid lightgray;padding:15px;width:515px;margin: 5px 10px 10px 0px;">
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>Other sibling or friend</mat-label>
+                <input matInput autocomplete="Off" [maxlength]="50" formControlName="searchOtherSiblingorFriend">
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>Contact No.</mat-label>
+                <input matInput autocomplete="Off" [maxlength]="20" formControlName="searchContactNo">
+            </mat-form-field>
+        </div>
+        <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-label>Relationship</mat-label>
+            <mat-select formControlName="searchRelationshipId">
+                <mat-option *ngFor="let item of FamilyRelationship" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <button [disabled]="loading || Permission=='read'" style="margin-top: 10px;" matTooltip="add new" mat-mini-fab
+            (click)="AddNew()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+</form>
+<div style="overflow: auto;max-width: 1200px;">
+    <mat-table #table [dataSource]="dataSourceSiblings">
+        <ng-container matColumnDef="Name">
+            <mat-header-cell *matHeaderCellDef>Name
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Name}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FatherName">
+            <mat-header-cell *matHeaderCellDef>Father
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.FatherName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="MotherName">
+            <mat-header-cell *matHeaderCellDef>Mother
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.MotherName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ContactNo">
+            <mat-header-cell *matHeaderCellDef>Contact No.
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ContactNo}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FeeType">
+            <mat-header-cell *matHeaderCellDef>Fee Type
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.FeeType}}
+            </mat-cell>
+        </ng-container>
+        <!-- <ng-container matColumnDef="RelationshipId">
+            <mat-header-cell *matHeaderCellDef>Relationship
+            </mat-header-cell>
+            <mat-cell style="display: flex;" *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="onBlur(element)" [value]="element.RelationshipId"
+                        [(ngModel)]="element.RelationshipId">
+                        <mat-option *ngFor="let item of FamilyRelationship" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container> -->
+        <ng-container matColumnDef="Remarks">
+            <mat-header-cell *matHeaderCellDef>Remarks
+            </mat-header-cell>
+            <mat-cell style="display: flex;" *matCellDef="let element">
+                {{element.Remarks}}
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="siblingsColumns"></mat-header-row>
+        <mat-row style="width: 100%;" *matRowDef="let row; columns: siblingsColumns;" class="element-row">
+        </mat-row>
+    </mat-table>
+    <mat-table #table [dataSource]="dataSource" *ngIf="StudentFamilyNFriendList.length>0">
+        <ng-container matColumnDef="StudentFamilyNFriendId">
+            <mat-header-cell *matHeaderCellDef>
+                Id
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.StudentFamilyNFriendId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="SiblingName">
+            <mat-header-cell *matHeaderCellDef>Name
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.SiblingName}}
+                <!-- <mat-form-field appearance="outline" [style.width.px]="200">
+                    <mat-label>Siblings or Friend</mat-label>
+                    <mat-select [(ngModel)]="element.StudentId" [value]="element.StudentId">
+                        <mat-option *ngFor="let item of Students" [value]="item.StudentId">
+                            {{item.Name}}</mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ContactNo">
+            <mat-header-cell *matHeaderCellDef>Contact No.
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ContactNo}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FeeType">
+            <mat-header-cell *matHeaderCellDef>Fee Type
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input type="text" [(ngModel)]="element.FeeType" [disabled]="true" [value]="element.FeeType"
+                        matInput>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FeeTypeRemarks">
+            <mat-header-cell *matHeaderCellDef>Fee Type Remarks
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input type="text" [(ngModel)]="element.FeeTypeRemarks" [disabled]="true"
+                        [value]="element.FeeTypeRemarks" matInput>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="RelationshipId">
+            <mat-header-cell *matHeaderCellDef>Relationship
+            </mat-header-cell>
+            <mat-cell style="display: flex;" *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="onBlur(element)" [value]="element.RelationshipId"
+                        [(ngModel)]="element.RelationshipId">
+                        <mat-option *ngFor="let item of FamilyRelationship" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Remarks">
+            <mat-header-cell *matHeaderCellDef>Remarks
+            </mat-header-cell>
+            <mat-cell style="display: flex;" *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="250"
+                        [value]="element.Remarks" [(ngModel)]="element.Remarks">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef>Active
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                    mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+        </mat-row>
+    </mat-table>
+</div>

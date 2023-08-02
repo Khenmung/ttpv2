@@ -1,0 +1,79 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Exam Time Table</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <form [formGroup]="searchForm">
+                <mat-form-field appearance="outline" [style.width.px]="200">
+                    <mat-label>Exam</mat-label>
+                    <mat-select formControlName="searchExamId">
+                        <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                            {{item.ExamName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <!-- <mat-form-field [style.width.pc]="30">
+                    <mat-label>Exam Slot</mat-label>
+                    <mat-select formControlName="searchSlotId">
+                        <mat-option *ngFor="let item of ExamSlots" [value]="item.SlotId">
+                            {{item.SlotName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+                <mat-form-field appearance="outline" [style.width.px]="400">
+                    <mat-label>Class</mat-label>
+                    <mat-select formControlName="searchClassId" multiple>
+                        <mat-option #allSelected (click)="toggleAllSelection()" [value]="0">All</mat-option>
+                        <mat-option (click)="tosslePerOne()" *ngFor="let item of Classes" [value]="item.ClassId">
+                            {{item.ClassName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <!-- <mat-form-field appearance="outline">
+                    <mat-label>Subject</mat-label>
+                    <mat-select formControlName="searchSubjectId">
+                        <mat-option [value]="0">--subject--</mat-option>
+                        <mat-option *ngFor="let item of Subjects" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>                   -->
+                <button [disabled]="loading" mat-raised-button (click)="GetSlotNClassSubjects()">
+                     <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                </button>
+            </form>
+            <!-- <p>Record will be displayed if it is defined in Subjects in Slot.</p> -->
+            <span id="printSection">               
+                <mat-table #table [dataSource]="dataSource" style="min-width: 600px;">
+                    <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index"
+                        matColumnDef="{{disCol}}">
+                        <mat-header-cell [attr.rowspan]="NoOfColumn" *matHeaderCellDef style="display:flex;justify-content: center;">
+                            <div *ngIf="SlotNClassSubjects.length>0 && colIndex==0" 
+                                style="width:100%;margin:15px; display: flex;flex-direction: column;justify-content: center;">
+                                <div style="justify-content:center; font-size: 20pt;font-weight: bold;">{{SelectedExamName}} Exam Time Table</div>
+                                <div style="justify-content:center;">{{SelectedClasses}}</div>
+                            </div>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" [innerHTML]="element[disCol]">
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'backgroundcolorgray': row.daterow }">
+                    </mat-row>
+                </mat-table>
+            </span>
+            <div style="display: flex;flex-direction: row;justify-content: center;">
+                <button [disabled]="loading" matTooltip="print" style="margin: 15px;" printSectionId="printSection"
+                    [useExistingCss]="true" ngxPrint mat-raised-button>
+                    <mat-icon>print</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

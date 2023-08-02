@@ -1,0 +1,28 @@
+mat-form-field {
+   // margin-right: 15px;
+    width       : 99%;
+  }
+  mat-cell:first-of-type{
+    padding-left: 15px;
+  }
+  button {
+    margin-right: 15px;
+  }
+  
+  .mat-column-Description
+  {
+    flex:1 1 400px;
+  }
+  
+  .mat-column-Confidential,
+  .mat-column-Sequence,
+  .mat-column-Active,
+  .mat-column-Action{
+    flex:1 1 60px;
+  }
+  .mat-column-ParentId{
+    flex:1 1 120px;
+  }
+  .mat-column-Title{
+    flex:1 1 140px;
+  }

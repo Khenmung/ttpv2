@@ -1,0 +1,26 @@
+
+button{
+    margin-right:15px;
+}
+mat-cell:first-of-type {
+    padding-left: 0px;
+}
+.mat-column-ExamSlotId{
+    flex:1 1 70px;
+}
+.mat-column-ExamName,
+.mat-column-ExamDate,
+.mat-column-SlotName,
+.mat-column-StartTime,
+.mat-column-EndTime
+{
+    flex:1 1 150px;
+}
+.mat-column-Sequence,
+.mat-column-Active,
+.mat-column-Action{
+    flex:1 1 100px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

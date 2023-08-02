@@ -1,0 +1,143 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Class Time Table</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
+    <div style="width: 100%;">
+        <form [formGroup]="searchForm" style="margin-bottom:15px">
+            <div>
+                <mat-form-field appearance="outline" [style.width.px]="200">
+                    <mat-label>Class</mat-label>
+                    <mat-select formControlName="searchClassId" (selectionChange)="BindSectionSemester()">
+                        <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                            {{item.ClassName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
+                    <mat-label>semester</mat-label>
+                    <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
+                        <mat-option [value]="Defaultvalue">select</mat-option>
+                        <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" [style.width.px]="200">
+                    <mat-label>section</mat-label>
+                    <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+                        <mat-option [value]="Defaultvalue">select</mat-option>
+                        <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>  
+                <button [disabled]="loading" matTooltip="search" mat-raised-button color="accent"
+                    (click)="GetSchoolTimeTable()">
+                    <mat-icon>search</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </div>
+        </form>
+        
+        <!-- <div>
+            <span style="font-weight: bold;">Day Period Count</span>
+            <mat-table [dataSource]="dataSourcePeriodStatistic" style="margin-bottom: 15px;">
+                <ng-container *ngFor="let disCol of PeriodStatisticDisplay;" matColumnDef="{{disCol}}">
+                    <mat-header-cell *matHeaderCellDef>
+                        <div *ngIf="disCol!='TeacherName'">
+                            <div style="display:flex;justify-content:center">{{disCol}}</div>
+                        </div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div *ngIf="disCol=='TeacherName'"> {{element[disCol]}}
+                        </div>
+                        <div *ngIf="disCol!='TeacherName' && element[disCol]>1"
+                            style="font-weight:bold;color:red;text-align:center;width:100%"> {{element[disCol]}}
+                        </div>
+                        <div *ngIf="disCol!='TeacherName' && (disCol =='Day' || element[disCol]<=1)"
+                            style="text-align:center;width:100%"> {{element[disCol]}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="PeriodStatisticDisplay"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: PeriodStatisticDisplay;" class="element-row"></mat-row>
+            </mat-table>
+        </div> -->
+        <div style="overflow: auto;width: auto;">
+            <div style="font-weight: bold;margin-bottom: 15px;">Time Table
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </div>
+            <div style="font-weight: bold;color:crimson">{{ErrorMessage}}</div>
+            <mat-table #table [dataSource]="dataSource" *ngIf="SchoolTimeTableList.length>0">
+                <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span
+                            style="padding-left: 10px;">{{disCol=='Action'?'':disCol.includes('f_')?(disCol|slice:2):disCol}}</span>
+                        <div *ngIf="SchoolTimeTableList.length>0">
+                            <button *ngIf="disCol=='Action'" [disabled]="loading || Permission=='read'"
+                                matTooltip="save all" mat-mini-fab (click)="SaveAll()">
+                                <mat-icon>all_out</mat-icon>
+                                <mat-icon *ngIf="loading">
+                                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                                </mat-icon>
+                            </button>
+                        </div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element"
+                        [ngStyle]="{'justify-content': disCol == 'Day'?'left' : 'center' }">
+                        <span *ngIf="disCol !='Day' && !disCol.includes('f_') && disCol !='Action'">
+                            <mat-form-field style="width:135px;">
+                                <mat-label>{{disCol}}</mat-label>
+                                <mat-select (selectionChange)="onBlur(element,$event,disCol)"
+                                    [(ngModel)]="element[disCol]" [value]="element[disCol]">
+                                    <mat-option value="0">select</mat-option>
+                                    <mat-option *ngFor="let item of ClassWiseSubjects" [value]="item.TeacherSubjectId">
+                                        {{item.SubjectName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </span>
+                        <button *ngIf="disCol=='Action'"
+                            [disabled]="loading || !element['Action'] || Permission=='read'" matTooltip="save"
+                            mat-mini-fab (click)="SaveRow(element)">
+                            <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                        <span style="margin-right: 15px;">{{ disCol.includes('f_')?(disCol|slice:2):disCol
+                            =='Day'?element[disCol]:''}}</span>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" style="min-height: 40px;"></mat-row>
+            </mat-table>
+        </div>
+        <div style="margin-top: 15px;"><span style="font-weight: bold;">Week Period Count</span>
+            <mat-table [dataSource]="dataSourceDayStatistic" matSort style="margin-bottom: 15px;">
+                <ng-container *ngFor="let disCol of DayStatisticDisplay; let colIndex = index"
+                    matColumnDef="{{disCol}}">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        <div *ngIf="disCol!='FirstCol' && disCol!='TeacherName'">{{disCol}}
+                        </div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div *ngIf="disCol!='TeacherName'" style="text-align:center;width:100%">{{element[disCol]}}
+                        </div>
+                        <div *ngIf="disCol=='TeacherName'">{{element[disCol]}}</div>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="DayStatisticDisplay"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: DayStatisticDisplay;" class="element-row"></mat-row>
+            </mat-table>
+        </div>
+    </div>
+</div>
+<!-- </div> -->

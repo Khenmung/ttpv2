@@ -1,0 +1,58 @@
+<mat-card>
+    <mat-card-title>Edit Application Role Permission</mat-card-title>
+    <mat-card-content>
+        <!-- <alert></alert> -->
+        <mat-spinner *ngIf="loading" style="position:relative;margin-left: 50%;"></mat-spinner>
+        <br>
+        <form [formGroup]="AppRoleForm">
+            <div fxLayout="column" fxLayoutAlign="center center" fxLayout.xs="column">
+                <mat-form-field appearance="outline">
+                    <mat-label>Application</mat-label>
+                    <mat-select formControlName="ApplicationId">
+                        <mat-option value="0">---</mat-option>
+                        <mat-option *ngFor="let p of Applications" [value]="p.ApplicationId">
+                            {{p.ApplicationName}}
+                        </mat-option>
+                    </mat-select>
+                    <span class="text-danger" *ngIf="f.ApplicationId.touched && f.ApplicationId.hasError('required')">Application is
+                        required.</span>
+                </mat-form-field>                
+                <mat-form-field appearance="outline">
+                    <mat-label>Role</mat-label>
+                    <mat-select formControlName="RoleId">
+                        <mat-option value="0">---</mat-option>
+                        <mat-option *ngFor="let p of Roles" [value]="p.MasterDataId">
+                            {{p.MasterDataName}}
+                        </mat-option>
+                    </mat-select>
+                    <span class="text-danger" *ngIf="f.RoleId.touched && f.RoleId.hasError('required')">Role is
+                        required.</span>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Permission</mat-label>
+                    <mat-select formControlName="PermissionId">
+                        <mat-option value="0">---</mat-option>
+                        <mat-option *ngFor="let p of Permissions" [value]="p.val">
+                            {{p.type}}
+                        </mat-option>
+                    </mat-select>
+                    <span class="text-danger" *ngIf="f.PermissionId.touched && f.PermissionId.hasError('required')">Permission is
+                        required.</span>
+                </mat-form-field>
+                <mat-checkbox formControlName="Active" [checked]="f.Active.value==1?true:false">
+                </mat-checkbox>&nbsp; Active
+            </div>
+        </form>
+    </mat-card-content>
+    <mat-card-actions fxLayout="row" fxLayoutAlign="center center">
+        <button [disabled]="loading" mat-raised-button (click)="UpdateOrSave()">
+             <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+        </button>
+        <button [disabled]="loading" mat-raised-button (click)="back()">
+            <mat-icon>cancel</mat-icon>
+        </button>
+    </mat-card-actions>
+</mat-card>

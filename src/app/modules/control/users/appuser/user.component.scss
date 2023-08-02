@@ -1,0 +1,16 @@
+:host{
+    display: flex;
+    align-items: center;
+}
+mat-card{
+    position: absolute;
+    padding-left: 50px;
+    padding-top: 50px;
+    width:80%;
+}
+mat-form-field{
+    margin-right: 50px;
+}
+div{
+    padding: 10px 0px;
+}

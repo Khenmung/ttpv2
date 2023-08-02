@@ -1,0 +1,38 @@
+mat-cell:first-of-type{
+    padding-left: 0px;
+}
+mat-form-field{
+    margin-right:15px;
+    width: 99%;
+}
+button{
+    margin-right:15px;
+}
+.mat-sort-header-container,.mat-sort-header-content {
+    height:100% !important;
+}
+
+mat-header-cell{
+    border-right: 1px solid lightgray;
+    justify-content: center;
+    align-self: stretch;
+    background: var(--background-color);
+    //min-width:40px;
+}
+
+mat-cell{
+    border-right: 1px solid lightgray;
+    justify-content: center;   
+    align-self: stretch;
+    //min-width:40px;
+}
+.mat-column-Student{
+    justify-content: flex-start;
+    flex:1 0 150px;
+}
+.mat-column-Action{
+    padding: 10px;
+    display: flex;
+    //justify-content: space-between;
+    flex:1 1 110px;
+}

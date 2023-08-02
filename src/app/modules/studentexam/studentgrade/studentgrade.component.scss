@@ -1,0 +1,30 @@
+mat-form-field{
+    width: 98%;
+    //margin-right: 15px;
+}
+.mat-column-Points,
+.mat-column-Sequence,
+.mat-column-StudentGradeId
+{
+    flex:1 0 60px;
+}
+.mat-column-SubjectCategoryId,
+.mat-column-GradeStatusId
+{    
+    flex:1 0 100px;
+}
+.mat-column-Active,
+.mat-column-Action
+{
+    justify-content: center;
+    flex:1 0 100px;
+
+}
+.mat-column-ClassGroupId,
+.mat-column-GradeName,
+.mat-column-Formula{
+    flex:1 0 150px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

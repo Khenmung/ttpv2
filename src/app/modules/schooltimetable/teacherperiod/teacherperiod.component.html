@@ -1,0 +1,54 @@
+<div style="overflow-y: hidden;">
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Teacher Period</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
+    <div style="width: 100%;">
+        <form [formGroup]="searchForm" fxLayout="row" fxLayoutAlign="space-between center">
+            <div>
+                <mat-form-field appearance="outline" style="width:250px">
+                    <mat-label>Teacher</mat-label>
+                    <mat-select formControlName="searchEmployeeId" (selectionChange)="ClearData()">
+                        <mat-option value="0">select</mat-option>
+                        <mat-option *ngFor="let option of Teachers" [value]="option.TeacherId">
+                            {{option.TeacherName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                
+                <button [disabled]="loading" matTooltip="search" mat-raised-button color="accent"
+                    (click)="GetSchoolTimeTable()">
+                    <mat-icon>search</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </div>
+        </form>
+        <div id="printSection">
+            <div style="margin:15px;font-weight: 600;" *ngIf="TeacherName!=''">Teacher Time Table for : {{TeacherName}}</div>
+            <mat-table *ngIf="PeriodStatistics.length>0" [dataSource]="dataSourcePeriodStatistic" style="margin-bottom: 15px;">
+                <ng-container *ngFor="let disCol of PeriodStatisticDisplay;" matColumnDef="{{disCol}}">
+                    <mat-header-cell *matHeaderCellDef>
+                        <div *ngIf="disCol!='TeacherName'">
+                            <div style="display:flex;justify-content:center">{{disCol}}</div>
+                        </div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element[disCol]}}
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="PeriodStatisticDisplay"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: PeriodStatisticDisplay;" class="element-row"></mat-row>
+            </mat-table>
+        </div>
+        <div style="display:flex;justify-content: center; margin-top: 15px;" fxLayout="row" *ngIf="PeriodStatistics.length>0">
+            <button [disabled]="loading || PeriodStatistics.length ==0" matTooltip="print"
+                printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
+                <mat-icon>print</mat-icon>
+            </button>            
+        </div>
+    </div>
+</div>

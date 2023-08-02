@@ -1,0 +1,41 @@
+
+<mat-card class="contentbody">
+    <mat-card-title style="padding-bottom: 0px;">{{Title}}</mat-card-title>
+    <mat-card-subtitle style="padding-bottom: 5px;" *ngIf="ParentPage.length>0">
+        <span *ngIf="ParentLink!=null" style="color:lightgray">
+        <a class="clickable" [routerLink]="[ParentLink]">{{ParentPage}}</a> > {{Title}}          
+    </span>
+    <span *ngIf="ParentLink==null" style="padding: 20px;color:lightgrey">
+        <span *ngIf="ParentLink==null">{{ParentPage }}>{{ Title}}</span>
+    </span>
+    </mat-card-subtitle>
+    <mat-card-content>
+        <div class="proto-container">
+            <div class="proto"></div>
+            <div class="proto"></div>
+            <div class="proto"></div>
+         
+        </div>
+        <mat-spinner  *ngIf="loading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+
+        <div class="container">
+            <div style="background-color:  var(--maincolor1);height: 5px;">&nbsp;</div>
+            <img [src]="ImgUrl" style="width:100%;height: auto;object-fit: contain;">
+            <!-- <img src="assets/images/schoolbuilding2018.jfif" alt="Notebook" style="width:100%;"> -->
+            <div class="content">
+                <p [innerHTML]="PageBody|encodeHTML"></p>
+            </div>
+        </div>
+
+        <!-- <div>
+            <div>
+                <p [innerHTML]="PageBody|encodeHTML"></p>
+            </div>
+        </div> -->
+        <!-- <mat-card-actions>
+            <button [disabled]="loading" mat-button (click)="back()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </mat-card-actions> -->
+    </mat-card-content>
+</mat-card>

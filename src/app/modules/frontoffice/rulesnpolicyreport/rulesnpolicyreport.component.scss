@@ -1,0 +1,36 @@
+mat-form-field {
+    margin-right: 15px;
+}
+
+.mat-column-SrNo {
+    flex       : 0 0 80px !important;
+    white-space: unset !important;
+}
+
+.mat-column-Description {
+    flex: 1 0 350px;
+}
+
+.pre {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+    white-space: pre-wrap;
+    /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;
+    /* Mozilla, since 1999 */
+    white-space: -pre-wrap;
+    /* Opera 4-6 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap  : break-word;
+    /* Internet Explorer 5.5+ */
+    font-size  : 14px;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+element-row {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+}

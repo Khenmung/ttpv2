@@ -1,0 +1,20 @@
+mat-form-field{
+    margin-right: 15px;
+}
+mat-cell,mat-header-cell{
+    align-self: stretch;
+    padding: 15px;
+    justify-content: center;
+    border-right: 1px solid lightgray;
+}
+.mat-column-TeacherPeriodId{
+    flex:1 1 60px;
+}
+.mat-column-EmployeeId,
+.mat-column-SchoolClassPeriodId,
+.mat-column-TeacherSubjectId{
+    flex:1 1 120px;
+}
+.mat-column-OffPeriod,.mat-column-Active,.mat-column-Action{
+    flex:1 1 100px;
+}

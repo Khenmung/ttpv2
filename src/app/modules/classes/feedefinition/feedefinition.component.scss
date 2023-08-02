@@ -1,0 +1,16 @@
+mat-form-field{
+
+    width: 99%;
+}
+.mat-column-FeeDefinitionId{
+    flex:0 0 60px;
+}
+.mat-column-Active,.mat-column-Action,.mat-column-AmountEditable{
+    flex:0 0 100px;
+}
+.mat-column-FeeName,.mat-column-FeeCategoryId,.mat-column-FeeSubCategoryId{
+   flex:0 0 150px;
+}
+.mat-column-Description{
+    flex:0 0 250px;
+}

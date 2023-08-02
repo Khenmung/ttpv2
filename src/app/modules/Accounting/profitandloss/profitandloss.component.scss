@@ -1,0 +1,15 @@
+mat-form-field{
+    margin-right: 15px;
+}
+
+mat-cell,mat-header-cell,mat-footer-cell{
+    justify-content: flex-end;
+    padding:5px;
+    border-right: 1px solid lightgray;
+}
+.mat-column-CrBalance,.mat-column-DrBalance,.mat-column-Balance{
+    flex:1 1 120px;
+}
+.mat-column-AccountName,.mat-column-ShortText{
+    flex:1 1 150px;
+}

@@ -1,0 +1,19 @@
+mat-cell:first-of-type,mat-header-cell:first-of-type{
+    padding-left: 0px;
+}
+mat-form-field{
+    margin-right:15px;
+    width: 99%;
+}
+button{
+    margin-right:15px;
+}
+mat-cell,mat-header-cell{
+    justify-content: flex-start;
+}
+.mat-column-SubjectName{
+    flex: 1 0 120px;
+}
+.mat-column-SubjectCount{
+    flex: 1 0 80px;
+}

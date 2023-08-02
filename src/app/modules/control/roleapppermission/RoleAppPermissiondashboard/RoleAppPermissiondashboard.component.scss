@@ -1,0 +1,18 @@
+mat-form-field{
+    margin-right: 15px;
+    width: 98%;
+}
+
+.mat-column-FeatureName,.mat-column-Role,.mat-column-Action,.mat-column-PermissionId{
+    flex:1 1 150px;
+}
+.mat-column-Active,.mat-column-ApplicationFeatureRoleId{
+    justify-content: center;
+    flex:1 1 100px;
+}
+@media only screen and (max-width: 600px) {
+    mat-cell:first-of-type{
+        padding-left: 0px;
+    }
+}
+

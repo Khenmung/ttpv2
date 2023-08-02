@@ -1,0 +1,86 @@
+<mat-card>
+    <mat-card-title style="font-size: 16px;">{{title}}</mat-card-title>
+    <mat-card-content>
+        <!-- <alert></alert> -->
+        <div fxLayout="row wrap" fxLayoutAlign="space-around center" fxLayout.xs="column" fxLayoutGap="50px">
+            <form [formGroup]="AppUsersForm">
+                <ng-template mat-tab-label>
+                    <mat-icon>info</mat-icon>Primary
+                </ng-template>
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input formControlName="UserName" autocomplete="Off" #UserName matInput [maxlength]="50">
+                    <!-- <mat-hint align="end">{{MotherName.value?.length || 0}}/50</mat-hint> -->
+                    <span class="text-danger" *ngIf="f.UserName.touched && f.UserName.hasError('required')">
+                        UserName is required.</span>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input formControlName="EmailAddress" #EmailAddress matInput autocomplete="off">
+                    <span class="text-danger" *ngIf="f.EmailAddress.touched && f.EmailAddress.hasError('required')">
+                        Email is required.</span>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Contact No.</mat-label>
+                    <input formControlName="ContactNo" matInput autocomplete="off">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Address</mat-label>
+                    <input formControlName="Address" #Address matInput autocomplete="off">
+                    <span class="text-danger" *ngIf="f.Address.touched && f.Address.hasError('required')">
+                        Address is required.</span>
+                </mat-form-field>
+                <!-- <mat-form-field appearance="outline">
+                    <mat-label>Valid From</mat-label>
+                    <input formControlName="ValidFrom" matInput [matDatepicker]="ValidFrom" autocomplete="off">
+                    <mat-datepicker-toggle matSuffix [for]="ValidFrom"></mat-datepicker-toggle>
+                    <mat-datepicker #ValidFrom></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Valid To</mat-label>
+                    <input formControlName="ValidTo" matInput [matDatepicker]="ValidTo" autocomplete="off">
+                    <mat-datepicker-toggle matSuffix [for]="ValidTo"></mat-datepicker-toggle>
+                    <mat-datepicker #ValidTo></mat-datepicker>
+                </mat-form-field> -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Department</mat-label>
+                    <mat-select formControlName="DepartmentId">
+                        <mat-option value="0">--select--</mat-option>
+                        <mat-option *ngFor="let item of Departments" [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
+                    </mat-select>              
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Location</mat-label>
+                    <mat-select formControlName="LocationId">
+                        <mat-option value="0">--select--</mat-option>
+                        <mat-option *ngFor="let item of Locations" [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Manager</mat-label>
+                    <mat-select formControlName="ManagerId">
+                        <mat-option value="0">--select--</mat-option>
+                        <mat-option *ngFor="let item of AppUsers" [value]="item.ApplicationUserId">{{item.UserName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Remarks</mat-label>
+                    <input formControlName="Remarks" autocomplete="Off" #Remarks matInput [maxlength]="250">
+                </mat-form-field>
+                <mat-checkbox formControlName="Active">
+                </mat-checkbox>&nbsp; Active
+            </form>
+        </div>
+    </mat-card-content>
+    <mat-card-actions style="padding: 50px;" fxLayout="row" fxLayoutAlign="space-around center">
+        <button [disabled]="loading" mat-raised-button (click)="UpdateOrSave()">
+             <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+        </button>
+        <button [disabled]="loading" mat-raised-button (click)="back()">
+            <mat-icon>cancel</mat-icon>
+        </button>
+    </mat-card-actions>
+</mat-card>

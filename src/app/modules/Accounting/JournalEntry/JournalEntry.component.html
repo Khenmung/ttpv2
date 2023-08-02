@@ -1,0 +1,168 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Journal Entry</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<form [formGroup]="searchForm">
+    <!-- <mat-form-field appearance="outline" [style.width.px]="200">
+        <mat-label>Posting Date</mat-label>
+        <input formControlName="searchPostingDate" matInput [matDatepicker]="searchPostingDate" autocomplete="off">
+        <mat-datepicker-toggle matSuffix [for]="searchPostingDate"></mat-datepicker-toggle>
+        <mat-datepicker #searchPostingDate></mat-datepicker>
+    </mat-form-field> -->
+
+    <!-- <mat-form-field appearance="outline" [style.width.px]="200">
+        <mat-label>Reference</mat-label>
+        <input type="text" matInput formControlName="searchReferenceId" [maxlength]="50" autocomplete="Off">
+    </mat-form-field> -->
+
+    <mat-form-field appearance="outline" [style.width.px]="250">
+        <mat-label>Account</mat-label>
+        <input type="text" matInput formControlName="searchGeneralLedgerId" [matAutocomplete]="auto">
+        <mat-autocomplete (optionSelected)="BindReference()" #auto="matAutocomplete" [displayWith]="displayFn">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                {{option.GeneralLedgerName}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field appearance="outline" [style.width.px]="250">
+        <mat-label>Reference</mat-label>
+        <mat-select formControlName="searchReference">
+            <mat-option *ngFor="let option of FilteredGeneralLedger" [value]="option.Reference">
+                {{option.Reference}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button [disabled]="loading" style="margin-right:15px" mat-raised-button color="accent"
+        (click)="GetAccountingVoucher()">
+        <mat-icon>search</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+        </mat-icon>
+    </button>
+    <button [disabled]="loading || Permission=='read'" matTooltip="new entry" mat-raised-button
+        (click)="addnew(true)" fxFlex="10">
+        <mat-icon>add</mat-icon>
+    </button>
+</form>
+
+<mat-table #table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="DocDate">
+        <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef>Doc Date
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-label>Doc Date</mat-label>
+                <input [(ngModel)]="element.DocDate" [value]="element.DocDate" matInput [matDatepicker]="DocDate"
+                    autocomplete="off">
+                <mat-datepicker-toggle matSuffix [for]="DocDate"></mat-datepicker-toggle>
+                <mat-datepicker #DocDate></mat-datepicker>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="PostingDate">
+        <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef>Posting Date
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline" [style.width.px]="130">
+                <mat-label>Posting Date</mat-label>
+                <input [(ngModel)]="element.PostingDate" [value]="element.PostingDate" matInput
+                    [matDatepicker]="PostingDate" autocomplete="off">
+                <mat-datepicker-toggle matSuffix [for]="PostingDate"></mat-datepicker-toggle>
+                <mat-datepicker #PostingDate></mat-datepicker>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ShortText">
+        <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-label>description</mat-label>
+                <input matInput [maxlength]="256" (blur)="SetReference(element)" autocomplete="Off"
+                    [(ngModel)]="element.ShortText" [value]="element.ShortText">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Reference">
+        <mat-header-cell *matHeaderCellDef> Reference </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-label>Reference</mat-label>
+                <input [disabled]="true" matInput [maxlength]="30" autocomplete="Off"
+                    [(ngModel)]="element.Reference" [value]="element.Reference">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="GeneralLedgerAccountId">
+        <mat-header-cell *matHeaderCellDef> Account</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline" [style.width.px]="150">
+                <mat-label>Account</mat-label>
+                <input type="text" matInput [(ngModel)]="element.GeneralLedgerAccountId"
+                    [value]="element.GeneralLedgerName" [matAutocomplete]="autoRow">
+                <mat-autocomplete #autoRow="matAutocomplete" [displayWith]="displayFn">
+                    <mat-option *ngFor="let option of filterAccount(element.GeneralLedgerName)" [value]="option">
+                        {{option.GeneralLedgerName}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <!-- <mat-form-field appearance="outline">
+                <mat-select [(ngModel)]="element.GeneralLedgerAccountId" [value]="element.GeneralLedgerAccountId">
+                    <mat-option *ngFor="let item of GeneralLedgers" [value]="item.GeneralLedgerId">
+                        {{item.GeneralLedgerName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> -->
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Debit">
+        <mat-header-cell *matHeaderCellDef> Debit</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateDebit(element,$event)"
+                [checked]="element.Debit">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="BaseAmount">
+        <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput autocomplete="Off" type="number" (blur)="onBlur(element)" [max]="1000000"
+                    [(ngModel)]="element.BaseAmount" [value]="element.BaseAmount">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Active">
+        <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                [checked]="element.Active==1?true:false">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef>
+            <button [disabled]="loading || Permission=='read'" matTooltip="new item" mat-raised-button
+                (click)="addnew(false)" fxFlex="10">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+            <button [disabled]="loading || Permission=='read' || !element.Action" matTooltip="save" mat-raised-button
+                color="accent" (click)="UpdateOrSave(element)">
+                <mat-icon>save</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" style="align-items: baseline;"></mat-row>
+</mat-table>
+<div style="display:flex;justify-content:center">
+    <mat-paginator [pageSizeOptions]="[10,20,50]"></mat-paginator>
+</div>

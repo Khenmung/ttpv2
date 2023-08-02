@@ -1,0 +1,147 @@
+<div style="display: flex;flex-direction: column;">
+    <div style="padding:30px 15px 10px 15px;">
+        <div style="font-size: x-large;display: flex; justify-content: center; align-items: center;"><strong>My
+                Plan</strong></div>
+    </div>
+    <span style="width:100%;display: flex;justify-content: center;">
+        <span *ngIf="loading"
+            style="display: flex;justify-content: center;width:550px;padding:15px;border:1px solid lightgray">
+            <span>Please wait while setting your data..</span>
+            <span><mat-spinner diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner></span>
+        </span>
+    </span>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <form [formGroup]="searchForm" fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="space-around center" *ngIf="Org=='TTP'">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Organisation</mat-label>
+                        <mat-select [disabled]="Org !='TTP'" formControlName="searchCustomerId" [(ngModel)]="OrgId" (selectionChange)="ClearData()">
+                            <mat-option *ngFor="let item of Organizations" [value]="item.OrganizationId">
+                                {{item.OrganizationName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button [disabled]="loading" matTooltip="search" class="mat-raised-button"
+                        (click)="GetCustomerPlans()">
+                        <mat-icon>search</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </div>
+            </form>
+
+            <mat-table #table [dataSource]="dataSource" style="max-width: 1400px;">
+                <ng-container matColumnDef="PlanName">
+                    <mat-header-cell *matHeaderCellDef>Plan
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <b>{{element.PlanName}}</b>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="PCPM">
+                    <mat-header-cell *matHeaderCellDef>PSPM
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.PCPM}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Description">
+                    <mat-header-cell *matHeaderCellDef style="justify-content:center">Description
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="padding-top:25px;">
+                        <ul>
+                            <li *ngFor="let item of element.Features">{{item.FeatureName}}</li>
+                        </ul>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MinCount">
+                    <mat-header-cell *matHeaderCellDef>Min Count
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.MinCount}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="MinPrice">
+                    <mat-header-cell *matHeaderCellDef>MinPrice
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.MinPrice}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Currency">
+                    <mat-header-cell *matHeaderCellDef>Currency
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.Currency}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="PersonOrItemCount">
+                    <mat-header-cell *matHeaderCellDef style="justify-content:center">No. Of Students
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input (keyup)="onBlur(element)" type="number" [(ngModel)]="element.PersonOrItemCount"
+                                [value]="element.PersonOrItemCount" matInput autocomplete="off" [max]="100000">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="LoginUserCount">
+                    <mat-header-cell *matHeaderCellDef>Login User Count
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input (blur)="onBlur(element)" type="number" [(ngModel)]="element.LoginUserCount"
+                                [value]="element.LoginUserCount" matInput autocomplete="off" [max]="100000">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Formula">
+                    <mat-header-cell *matHeaderCellDef> Formula </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <textarea (blur)="onBlur(element)" [(ngModel)]="element.Formula" [value]="element.Formula"
+                                matInput autocomplete="off" [maxlength]="1000">
+                            </textarea>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="AmountPerMonth">
+                    <mat-header-cell *matHeaderCellDef style="justify-content:center">Amount Per Month
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="padding:15px; justify-content: end;">
+                        {{element.AmountPerMonth}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef style="justify-content: center;"> Active </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="justify-content: center;">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <button [disabled]="loading || !element.Action || SelectedCustomer=='TTP' || PlanSelected"
+                            matTooltip="select" mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                            <mat-icon>beenhere</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+            </mat-table>
+        </div>
+        <div style="width:100%; display: flex;align-items: center; justify-content: center;padding: 15px 15px 15px 0px">
+            <button [disabled]="loading || !PlanSelected" mat-raised-button color="accent" matTooltip="go to login"
+                (click)="login()">
+                <mat-icon>login</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

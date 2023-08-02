@@ -1,0 +1,45 @@
+:host {
+    width: 100%;
+}
+
+mat-card {
+    margin-left: auto;
+    width      : 100%;
+}
+
+mat-form-field {
+    margin-right: 15px;
+    width       : 99%;
+}
+
+// mat-cell,mat-header-cell:first-of-type{
+//     padding-left: 0px;
+// }
+mat-cell,
+mat-header-cell {
+    padding     : 10px;
+    border-right: 1px solid lightgray;
+    align-self  : stretch;
+}
+
+.mat-column-Approved,
+.mat-column-Action {
+    flex           : 1 0 80px;
+    justify-content: center;
+}
+.mat-column-ClassSubject,
+.mat-column-ClassName{
+    flex: 1 1 80px;
+}
+.mat-column-AttendanceDate{
+    flex: 1 1 90px;
+}
+.mat-column-StudentRollNo{
+    flex: 1 1 140px;
+}
+.mat-column-ApprovedByName,
+.mat-column-PersonalNo,
+.mat-column-Remarks,
+.mat-column-ReportedTo {
+    flex: 1 1 120px;
+}

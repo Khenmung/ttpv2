@@ -1,0 +1,41 @@
+mat-cell,mat-header-cell{
+    padding: 5px;
+    border-right: 1px solid lightgray;
+}
+mat-form-field{
+    margin-right: 15px;
+    width:98%;
+}
+.mat-column-AdmissionNo{
+   
+    flex:1 1 100px;
+}
+
+.mat-column-RollNo,
+.mat-column-SectionId{
+    flex:1 0 60px;
+}
+.mat-column-Active{
+    justify-content: center;
+    flex:1 1 100px;
+}
+.mat-column-GenderName
+{
+    justify-content: center;
+    flex:1 1 80px;
+}
+.mat-column-SemesterId,
+.mat-column-CourseYearId,
+.mat-column-ClassId,
+.mat-column-AdmitTo,
+.mat-column-Remark{
+    //justify-content: center;
+    flex:1 1 100px;
+}
+
+.mat-column-ExamStatus,.mat-column-Action, .mat-column-StudentName,.mat-column-FeeTypeId,.mat-column-Remarks{
+    flex:1 1 150px;
+}
+mat-cell:first-of-type{
+    padding-left: 0px;
+}

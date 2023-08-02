@@ -1,0 +1,130 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Organization</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<form [formGroup]="searchForm">
+    <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="space-around center">
+        <mat-form-field appearance="outline">
+            <mat-select formControlName="searchCustomerId">
+                <mat-option [value]="0">select</mat-option>
+                <mat-option *ngFor="let item of Organizations" [value]="item.OrganizationId">
+                    {{item.OrganizationName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <span *ngIf="LoginUserDetail[0]['org'] =='TTP'">
+            <button [disabled]="loading || Permission=='read'" matTooltip="search" mat-raised-button color="accent"
+                (click)="GetOrganizationDetail()">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </span>
+        <div style="width: 100%;display: flex;justify-content: center;">
+            <div style="display: flex;border: 1px solid lightgray;">
+                <span style="color:red;" *ngIf="message">{{message}}</span>
+                <input #inputfile [hidden]="true" type="file" accept='image/*' (change)="preview(inputfile.files)" />
+                <div style="padding:5px;margin-top: 5px;margin-bottom: 5px;">
+                    <img [src]="imgURL" style="margin-left:5px;" height="100px" *ngIf="imgURL">
+                </div>
+                <div fxLayout="column" fxLayoutAlign="center center" style="margin: 5px;">
+                    <button [disabled]="loading || Permission=='read'" mat-flat-button matTooltip="select logo"
+                        (click)="inputfile.click()">
+                        <mat-icon aria-label="photo">photo</mat-icon>
+                    </button>&nbsp;&nbsp;
+                    <button [disabled]="loading || Permission=='read'" type="submit" (click)="uploadFile()"
+                        matTooltip="upload logo" class="mat-flat-button">
+                        <mat-icon aria-label="file_upload">file_upload</mat-icon>
+                    </button>&nbsp;&nbsp;
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <mat-grid-list cols="2" rowHeight="90px">
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Address</mat-label>
+                <textarea formControlName="Address" (blur)="OnBlur()" autocomplete="Off" #input matInput
+                    [maxlength]="50">
+            </textarea>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Registration No.</mat-label>
+                <textarea formControlName="RegistrationNo" (blur)="OnBlur()" autocomplete="Off" #input matInput
+                    [maxlength]="50">
+            </textarea>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-form-field appearance="outline">
+                <mat-label>Country</mat-label>
+                <mat-select (selectionChange)="PopulateState($event)" formControlName="CountryId">
+                    <mat-option *ngFor="let item of Country" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-form-field appearance="outline">
+                <mat-label>State</mat-label>
+                <mat-select (selectionChange)="PopulateCity($event)" formControlName="StateId">
+                    <mat-option *ngFor="let item of States" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <mat-select formControlName="CityId" (selectionChange)="OnBlur()">
+                    <mat-option *ngFor="let item of City" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Contact</mat-label>
+                <input formControlName="Contact" (blur)="OnBlur()" autocomplete="Off" matInput [maxlength]="50">
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Registered On</mat-label>
+                <input formControlName="CreatedDate" autocomplete="Off" #input matInput>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Valid Till</mat-label>
+                <input formControlName="ValidTo" autocomplete="Off" #input matInput>
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Web site</mat-label>
+                <input formControlName="WebSite" (blur)="OnBlur()" autocomplete="Off" #input matInput [maxlength]="250">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <div style="display: flex;justify-content: center;align-items: baseline; width:100%">
+        <span>
+            <span>
+                <mat-checkbox (change)="deActivate($event)" formControlName="Active">
+                </mat-checkbox>&nbsp; Active &nbsp;&nbsp;
+            </span>
+            <button [disabled]="loading || !Action" matTooltip="save" mat-raised-button color="accent"
+                (click)="UpdateOrSave()">
+                <mat-icon>save</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </span>
+    </div>
+</form>
+

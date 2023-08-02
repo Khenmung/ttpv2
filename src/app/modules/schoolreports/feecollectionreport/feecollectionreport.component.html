@@ -1,0 +1,86 @@
+<div style="padding: 15px;"><strong>Fee Payment Status</strong></div>
+<!-- <alert></alert> -->
+<form [formGroup]="SearchForm">
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="30px">
+
+        <div style="padding: 15px 10px 2px 15px;height: 55px;">
+            <mat-radio-group formControlName="PaidNotPaid">
+                <mat-radio-button class="example-margin" checked="false" value="Paid">Paid</mat-radio-button>&nbsp;
+                <mat-radio-button class="example-margin" checked="true" value="NotPaid">Not Paid</mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <mat-form-field [style.width.px]="250" appearance="outline" style="margin-right: 15px;">
+            <mat-label>Month</mat-label>
+            <mat-select formControlName="searchMonth">
+                <mat-option [value]="0">select</mat-option>
+                <mat-option *ngFor="let item of Months" [value]="item.val">{{item.MonthName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!-- <mat-form-field [style.width.px]="250" appearance="outline">
+            <mat-label>Name-class-section-roll no</mat-label>
+            <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.Name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field> -->
+        <mat-form-field appearance="outline">
+            <mat-label>Class</mat-label>
+            <mat-select formControlName="searchClassId">
+                <mat-option value="0">select</mat-option>
+                <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                    {{item.ClassName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!--<mat-form-field appearance="outline">
+            <mat-label>Section</mat-label>
+            <mat-select formControlName="searchSectionId">
+                <mat-option value="0">--section--</mat-option>
+                <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field> -->
+        <button [disabled]="loading" mat-raised-button color="accent" (click)="GetStudentFeePaymentReport()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </div>
+</form>
+<div>
+    <div id="printSection">
+        <mat-table #table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="RollNo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Roll No. </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.RollNo}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Student </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Name}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ClassRollNoSection">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Class </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.ClassRollNoSection}}
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: DisplayColumns;" fxLayoutAlign="space-between center" fxLayout="row">
+            </mat-row>
+        </mat-table>
+    </div>
+    <mat-paginator style="display:flex;justify-content:center" #PaidPaginator [pageSizeOptions]="[10, 25, 100]">
+    </mat-paginator>
+</div>
+<div style="display:flex;justify-content: center;width:100%;margin: 15px">
+    <button [disabled]="loading || ELEMENT_DATA.length ==0" matTooltip="print" color="accent"
+        printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button>
+        <mat-icon>print</mat-icon>
+    </button>
+</div>

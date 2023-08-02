@@ -1,0 +1,18 @@
+mat-drawer {
+    //margin-top      : 70px;
+    width           : 300px;
+    background-color:  #20639b ;
+    height: 100%;
+}
+
+// mat-drawer-content {
+//     margin-top: 70px;
+// }
+
+app-sidebar {
+    min-height: 200vh;
+}
+alert{
+    position: fixed;
+    z-index: 99;
+}

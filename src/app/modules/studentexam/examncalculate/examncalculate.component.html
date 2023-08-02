@@ -1,0 +1,93 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Exam N Calculate</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <div style="padding: 15px;">
+        <div style="flex-direction: row;">
+            <form [formGroup]="searchForm">
+                <mat-form-field appearance="outline" [style.width.px]="200">
+                    <mat-label>Exam</mat-label>
+                    <mat-select formControlName="searchExamId" (selectionChange)="ClearData()">
+                        <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                            {{item.ExamName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button [disabled]="loading" mat-raised-button color="accent" (click)="GetExamNCalculate()">
+                    <mat-icon>search</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </form>
+        </div>
+        <div style="width: 100%;">
+            <mat-table style="overflow: auto;min-width: 60vw;min-height: 60vh;" #table [dataSource]="dataSource">
+                <ng-container matColumnDef="ExamNCalculateId">
+                    <mat-header-cell *matHeaderCellDef>Id
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.ExamNCalculateId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="PropertyName">
+                    <mat-header-cell *matHeaderCellDef>Property
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.PropertyName}}
+                    </mat-cell>
+                </ng-container>              
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>Active &nbsp;
+                        <mat-checkbox  (click)="$event.stopPropagation()" (change)="SelectAll($event)">
+                </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || ExamNCalculateList.length==0" matTooltip="save all" mat-mini-fab
+                        (click)="SaveAll()">
+                        <mat-icon>all_out</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action || Permission=='read' || ExamReleaseResult" matTooltip="save"
+                            mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                            <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+                </mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,100]"></mat-paginator>
+        </div>
+        <!-- <button type="button" class="btn btn-outline-secondary mr-2" placement="top"
+            ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
+            Popover on top
+        </button> -->
+    </div>
+    <div style="margin-top:30px;" data-expand="false" #expandWrap>
+        <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+            <mat-icon>info</mat-icon>
+            Guides..</span>
+        <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+            <ul>
+                <li>This screen is for defining items to dsiplay in exam result.</li>
+            </ul>
+        </span>
+    </div>
+</div>

@@ -1,0 +1,98 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Subjects in slot</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <div style="width:auto;min-width: 1280px; overflow: auto;"> -->
+<form [formGroup]="searchForm">
+    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+        <mat-label>Exam</mat-label>
+        <mat-select formControlName="searchExamId" (selectionChange)="GetSelectedExamSlot()">
+            <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                {{item.ExamName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="width:350px;margin-right: 15px;">
+        <mat-label>Exam Date</mat-label>
+        <mat-select formControlName="searchSlotId" (selectionChange)="emptyresult()">
+            <mat-option *ngFor="let item of SelectedExamSlots" [value]="item.ExamSlotId">
+                {{item.ExamDateDetail}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button [disabled]="loading" mat-raised-button color="accent" (click)="GetSlotNClassSubjects()">
+        <mat-icon>search</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+        </mat-icon>
+    </button>
+</form>
+<mat-divider></mat-divider>
+<div style="display:flex;flex-direction:column;">
+
+    <mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="ClassName">
+            <mat-header-cell *matHeaderCellDef>Class
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ClassName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="SlotClassSubjectId">
+            <mat-header-cell *matHeaderCellDef>Subjects
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <div class="wrapper">
+                    <div class="innerwrapper" *ngFor="let cell of element.Subject;">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="updateActive(element,$event,cell.SubjectName)"
+                            [disabled]="cell.value===2" [matTooltip]="cell.Tooltip"
+                            [checked]="cell.value===1?true:false">{{cell.SubjectName}}
+                        </mat-checkbox>
+                    </div>
+                </div>
+                <!-- <mat-radio-group style="margin: 15px 15px 15px 0px;" [name]="element.ClassName">
+                    <mat-radio-button style="margin-right: 15px;" *ngFor="let cell of element.Subject;"
+                        [name]="element.ClassName" [value]="cell.ClassSubjectId"
+                        (change)="updateActive(element,$event,cell.SubjectName)" [checked]="cell.value===1"
+                        [disabled]="cell.value===2" [matTooltip]="cell.Tooltip">
+                        {{cell.SubjectName}}
+                    </mat-radio-button>
+                </mat-radio-group> -->
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button [disabled]="loading || Permission=='read' || ExamReleased" matTooltip="save all"
+                    *ngIf="ClassWiseSubjectDisplay.length>0" mat-mini-fab (click)="SaveAll()">
+                    <mat-icon>all_out</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button [disabled]="loading || !element.Action || ExamReleased" matTooltip="save" mat-raised-button
+                    color="accent" (click)="Save(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+    </mat-table>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>Items will be displayed if it is defined in class subject menu.</li>
+        </ul>
+    </span>
+</div>

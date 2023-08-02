@@ -1,0 +1,106 @@
+mat-header-cell {
+    display        : grid;
+    justify-content: center;
+}
+// html,body{
+//     font-family: Smooch;
+// }
+.mat-cell,
+.mat-header-cell,
+.mat-footer-cell {
+    border-collapse: collapse;
+    border-right   : 1px solid lightgray;
+    //border-right-color   : lightgray;
+    //border-style   : solid;
+    padding        : 5px;
+    color:black !important;
+    //color: black;
+}
+
+mat-header-row,
+mat-row,
+mat-footer-row {
+    min-height: 30px;
+    border-collapse: collapse;
+    //border    : 1px solid lightgray;
+   
+}
+
+.mat-column-index {
+    justify-content: center;
+    flex           : 1 1 50px;
+}
+
+.mat-column-SlNo {
+    display    : grid;
+    place-items: center;
+    flex       : 1 0 70px;
+}
+
+.mat-column-Amount,
+.mat-column-BaseAmount
+ {
+    display        : flex;
+    justify-content: flex-end;
+    flex           : 1 1 80px;
+}
+.mat-column-Balance{
+    flex           : 1 1 100px;
+}
+.mat-column-ReceiptNo,.mat-column-PaymentType {
+    flex: 1 1 130px;
+}
+
+.mat-column-FeeName {
+    flex: 1 0 180px;
+}
+
+.mat-column-PaymentAmount,
+.mat-column-OfflineReceiptNo,
+.mat-column-TotalAmount {
+    display        : flex;
+    justify-content: center;
+    flex           : 1 0 150px;
+}
+
+.mat-column-ReceiptDate,
+.mat-column-Active,
+.mat-column-Action {
+    display        : flex;
+    justify-content: center;
+    flex           : 1 1 160px;
+}
+
+.divCls:nth-child(9) {
+    //font-family: Arial, Helvetica, sans-serif; 
+    margin: 15px;   
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:large;
+    padding    : 15px 15px 10px 15px;
+}
+
+button {
+    margin-right: 15px;
+}
+
+div {
+    margin-right: 0px !important;
+}
+
+.mat-raised-button {
+    margin-right: 15px;
+}
+
+.mat-row {
+    min-height: 43px !important;
+}
+
+.mat-table {
+    min-width: 350px;
+}
+
+.mat-column-Active:hover {
+    cursor    : pointer;
+    background: #b4b4b433;
+}
+

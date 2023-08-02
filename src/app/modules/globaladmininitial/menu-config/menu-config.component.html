@@ -1,0 +1,149 @@
+<div style="font-weight:bold;margin: 15px;">
+    Features settings
+</div>
+<!-- <alert></alert> -->
+<form [formGroup]="searchForm">
+    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+        <mat-label>Application</mat-label>
+        <mat-select formControlName="searchApplicationId" (selectionChange)="GetTopMenu()">
+            <mat-option *ngFor="let option of Applications" [value]="option.MasterDataId">
+                {{option.Description}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+        <mat-label>Parent Menu</mat-label>
+        <mat-select formControlName="searchTopMenuId" (selectionChange)="EmptyData()">
+            <mat-option value="0">--select parent menu--</mat-option>
+            <mat-option *ngFor="let option of TopMenu" [value]="option.PageId">
+                {{option.label}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button [disabled]="loading" mat-raised-button (click)="GetPages()">
+        <mat-icon>search</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+        </mat-icon>
+    </button>
+</form>
+<mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="PageId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.PageId}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="PageTitle">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Page Title </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput (blur)='onBlur(element)' [(ngModel)]="element.PageTitle" [value]="element.PageTitle"
+                    autocomplete="Off">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ParentId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Parent </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-select (selectionChange)='onBlur(element)' [(ngModel)]="element.ParentId"
+                    [value]="element.ParentId">
+                    <mat-option [value]="0">select</mat-option>
+                    <mat-option *ngFor="let item of TopMenu" [value]="item.PageId">{{item.label}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="link">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> link </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput (blur)='onBlur(element)' [(ngModel)]="element.link" [value]="element.link"
+                    autocomplete="Off">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="label">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> label </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput (blur)='onBlur(element)' [(ngModel)]="element.label" [value]="element.label"
+                    autocomplete="Off">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="faIcon">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> faIcon </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput (blur)='onBlur(element)' [(ngModel)]="element.faIcon" [value]="element.faIcon"
+                    autocomplete="Off">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="DisplayOrder">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Display Order </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput (blur)='onBlur(element)' [(ngModel)]="element.DisplayOrder"
+                    [value]="element.DisplayOrder" autocomplete="Off">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="HasSubmenu">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Has Submenu </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput (blur)='onBlur(element)' [(ngModel)]="element.HasSubmenu" [value]="element.HasSubmenu"
+                    autocomplete="Off">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="IsTemplate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Is Template </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput (blur)='onBlur(element)' [(ngModel)]="element.IsTemplate" [value]="element.IsTemplate"
+                    autocomplete="Off">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="HomePage">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Home Page </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput (blur)='onBlur(element)' [(ngModel)]="element.HomePage" [value]="element.HomePage"
+                    autocomplete="Off">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Active">
+        <mat-header-cell *matHeaderCellDef style="justify-content: center;"> Active </mat-header-cell>
+        <mat-cell *matCellDef="let element" style="justify-content: center;">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                [checked]="element.Active==1?true:false">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef style="justify-content: center;">
+            <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" style="justify-content: center;">
+            <button [disabled]="loading || Permission=='read' || !element.Action" matTooltip="save" mat-raised-button
+                color="accent" (click)="UpdateOrSave(element)">
+                <mat-icon>save</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
+</mat-table>
+<mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,100]"></mat-paginator>

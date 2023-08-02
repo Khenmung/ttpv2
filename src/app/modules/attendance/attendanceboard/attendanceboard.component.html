@@ -1,0 +1,16 @@
+<mat-card>
+    <mat-card-title class="matcardmargin">Attendance</mat-card-title>
+    <mat-card-subtitle></mat-card-subtitle>
+    <mat-card-content class="matcardmargin">        
+            <mat-tab-group [selectedIndex]="selectedIndex" (selectedIndexChange)="tabChange($event)">
+                <mat-tab *ngFor="let component of components;let indx=index">
+                    <ng-template mat-tab-label>
+                        <mat-icon>{{tabNames[indx].faIcon}}</mat-icon> {{tabNames[indx].label}}
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div #container></div>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>        
+    </mat-card-content>
+</mat-card>

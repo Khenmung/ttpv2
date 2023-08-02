@@ -1,0 +1,36 @@
+<mat-card>
+    <mat-card-title>Upload Photo</mat-card-title>
+    <mat-card-content>
+        <!-- <div class="text-right" style="margin-bottom: 5px;">
+            <a mat-raised-button [routerLink]="[ '/uploadphoto']">Image Crop</a></div> -->
+            <!-- <alert></alert> -->
+            <mat-spinner diameter="25" style="position:relative;margin-left: 50%;" *ngIf="Processing"></mat-spinner>
+            <form [formGroup]="dragdropForm">
+            <div>
+                <ngx-dropzone (change)="onSelect($event)">
+                    <ngx-dropzone-label>Drag and drop images here!</ngx-dropzone-label>
+                    <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
+                        <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+                    </ngx-dropzone-preview>
+                </ngx-dropzone>
+            </div>
+            <br>
+            <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                <mat-form-field appearance="outline">
+                    <mat-label>Enter album</mat-label>
+                    <input formControlName="UpdatedFileFolderName" #album matInput [maxlength]="100" autocomplete="off">
+                    <!-- <mat-hint align="end">{{album.value?.length || 0}}/100</mat-hint> -->
+                </mat-form-field>       
+                <span style="margin: 5px;">or</span>         
+                <mat-form-field appearance="outline">
+                    <mat-label>Existing albums</mat-label>
+                    <mat-select formControlName="parentId">
+                      <mat-option *ngFor="let album of Albums" [value]="album.FileId">{{album.UpdatedFileFolderName}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>                
+                <button [disabled]="loading" *ngIf="!Processing" mat-raised-button matTooltip="upload" type="button" (click)="Upload()" fxFlex="5"><mat-icon>file_upload</mat-icon></button>
+                  <div flex>&nbsp;</div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

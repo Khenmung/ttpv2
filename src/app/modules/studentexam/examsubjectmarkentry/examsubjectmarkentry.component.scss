@@ -1,0 +1,16 @@
+mat-cell,mat-header-cell{
+    align-self: stretch;
+    justify-content: center;
+    border-right: 1px solid lightgray;
+}
+
+button{
+    margin-right:15px;
+}
+mat-cell:first-of-type {
+    padding-left: 0px;
+}
+.mat-column-StudentClassSubject{
+    justify-content: flex-start;
+    flex: 1 1 200px;
+}

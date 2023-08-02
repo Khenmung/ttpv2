@@ -1,0 +1,30 @@
+<mat-card>
+  <mat-card-subtitle>{{title}}</mat-card-subtitle>
+  <mat-card-content>
+    <div class="gallery" *ngFor="let image of images">
+      <div class="row container">
+        <div class="column1">
+          <img class="cardImage" [src]="image.PhotoPath" alt="{{image.Description}}">
+          <br>
+          <span>{{image.Description}}</span>
+        </div>
+        <div class="column2">&nbsp;</div>
+      </div>
+      <div class="row container">
+        <div class="column3">
+          <button [disabled]="loading" mat-mini-fab [id]="image.PhotoId" [name]="image.Description" matTooltip="delete" class="iconbutton"
+            color="primary" #button (click)="Update($event,button,image.ImagePath)">
+            <mat-icon aria-label="delete">delete</mat-icon>
+          </button>&nbsp;
+          <button [disabled]="loading" mat-mini-fab [id]="back" [name]="image.Description" matTooltip="back" class="iconbutton"
+            color="primary" #view (click)="back()">
+            <mat-icon aria-label="arrow_back">arrow_back</mat-icon>
+          </button>
+        </div>
+      </div>
+      <br>
+      <mat-divider></mat-divider>
+      <br>
+    </div>
+  </mat-card-content>
+</mat-card>

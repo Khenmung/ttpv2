@@ -1,0 +1,96 @@
+:host {
+    width       : 100%;
+}
+
+mat-card-title {
+    padding: 30px 0px 0px 30px;
+    //color: rgb(201, 200, 200,.9);
+}
+.clickable{
+    margin-left: 30px;
+    //padding: 20px;
+    text-decoration: none;
+    color:lightgrey;
+    
+}
+.clickable:hover{
+    background-color:var(--onHoverColor);
+}
+.contentbody {
+    //border-top-left-radius: 1em;
+    margin-top      : 16px;
+    background-color:var(--mainTitleColor);// var(--maincolor1); //#20639b;
+    color           : #fafafa;
+    padding: 0;
+}
+
+
+.container {
+    position : relative;
+    max-width: 100%;
+    margin   : 0px;
+    padding  : 0px;
+    height   : auto;
+    display: block;
+}
+
+.container img {
+    vertical-align: middle;
+}
+
+.content {
+    position  : relative;
+    bottom    : 0;
+    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.5);
+    color     : #f1f1f1;
+    width     : 100%;
+    height    : 50%;
+    margin-top: -50px;
+    padding   : 70px;
+    //margin-top: -100px;
+}
+
+// @media only screen and (max-width: 600px) {
+//     .content {
+//         margin-top: -50px;
+//     }
+// }
+// @media only screen and (max-width : 1279px) {
+//     .content {
+//         margin-top: -50px;
+//     }
+// }
+// @media only screen and (min-width: 1280px) {
+//     .container .content {
+//         margin-top: -50px;
+//     }
+// }
+mat-card-title:not(:first-child), .mat-card-subtitle:not(:first-child){
+    margin-top: -8px;
+}
+
+.mat-card>:first-child,
+.mat-card-content>:first-child {
+    margin-top: 15px;
+}
+::ng-deep .mat-progress-spinner circle, .mat-spinner circle {   
+    stroke: #bada55;
+}
+
+.proto-container{
+    position: absolute;
+    width: 100%;
+    z-index: 0;
+    top:10%;
+    .proto{
+      width:29%;
+      height:80vh;
+      float: left;
+      margin-left: 30px;
+      
+      //margin-top:50px;
+      border: 1px solid rgba($color:lightgrey, $alpha: .3);
+    }
+  }
+  

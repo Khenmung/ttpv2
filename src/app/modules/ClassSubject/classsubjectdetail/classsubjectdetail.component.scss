@@ -1,0 +1,34 @@
+// .container{
+//     //position: absolute;
+//     margin-top: 100px;
+// }
+mat-form-field{
+    //margin-right:15px;
+    width:98%;
+}
+button{
+    margin-right:15px;
+}
+.mat-column-SubjectName{
+    flex:1 1 120px;
+}
+.mat-column-SubjectTypeId,
+.mat-column-SubjectCategoryId,
+.mat-column-TeacherId{
+    flex:1 1 110px;
+}
+.mat-column-Credits,
+.mat-column-Action
+{
+    flex:1 1 60px;
+}
+.mat-column-Confidential,
+.mat-column-Active
+{
+    justify-content: center;
+    flex:1 1 60px;
+}
+
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

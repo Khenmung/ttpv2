@@ -1,0 +1,198 @@
+<!-- <div class="divCls"><strong>Fee Receipts</strong></div> -->
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<div style="display:flex;flex-direction:column">
+
+    <div style="display: flex;flex-direction: row;align-items: start;">
+        <div style="display: flex;flex-direction: column;padding: 15px 15px 15px 0px;width:40%">
+            <div style="padding: 5px;"><b>Receipts</b></div>
+            <div style="border:1px solid lightgray;">
+                <mat-table [dataSource]="dataReceiptSource" matSort>
+                    <ng-container matColumnDef="TotalAmount">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Amount </mat-header-cell>
+                        <mat-cell style="text-align: right;" *matCellDef="let element">
+                            {{element.TotalAmount}}
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="ReceiptDate">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Receipt Date </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.ReceiptDate|date:'dd/MM/yyyy'}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="PaymentType">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Payment Type </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.PaymentType}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="Active">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+                        <mat-cell *matCellDef="let element"><a style="cursor:pointer; color: blue;"
+                                (click)="viewDetail(element)">
+                                {{element.Active==0?'Canceled':'Active'}}</a></mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="ReceiptNo">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header style="justify-content:center"> Receipt No.
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" style="justify-content:center">
+                            {{element.ReceiptNo}}</mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="ReceiptDisplayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: ReceiptDisplayedColumns;" class="element-row">
+                    </mat-row>
+                </mat-table>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: column; width: 60%;padding: 15px 0px 15px 0px;">
+            <div style="padding: 5px;"><b>Print/Cancel Receipt</b></div>
+            <div style="border:1px solid lightgray;padding: 15px;" class="divCls" id="printSection">
+                <div style="display:flex;flex-direction: column;margin-bottom:30px;">
+                    <div style="width:100%;display:flex;justify-content: center;flex-direction: column;"
+                        *ngFor="let item of ReceiptHeading;let i=index">
+                        <span [ngStyle]="item.Description" [innerHTML]="item.MasterDataName"></span>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content: space-between ;margin-right: 15px;">
+                    <div style="display:flex;flex-direction: column;">
+                        <div style="display:flex">
+                            <div>Receipt No.</div>: {{studentInfoTodisplay.ReceiptNo}}
+                        </div>
+                        <div style="display:flex;justify-content: center;margin-right: 15px;">
+                            <span>
+                                <span>Offline Receipt No.: </span>
+                                {{studentInfoTodisplay.OffLineReceiptNo}}
+                            </span>
+                        </div>
+                    </div>
+                    <div style="display: flex;justify-content: flex-end;">
+                        <b>Date</b>: {{studentInfoTodisplay.ReceiptDate|date:'dd/MM/yyyy'}}
+                    </div>
+                </div>
+                <br>
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <span style="padding: 0px 15px 15px 0px;">
+                        Received with thanks from <b>{{studentInfoTodisplay.StudentName}}.</b>
+                        <!-- PID - <b>{{studentInfoTodisplay.PID}}</b>,
+                        {{studentInfoTodisplay.StudentClassName}}, Sec - <b>{{studentInfoTodisplay.SectionName}}</b>,
+                        Roll no. -<b> {{studentInfoTodisplay.RollNo}}</b>. -->
+                    </span>
+                </div>
+                <div style="border-collapse: collapse;">
+                    <mat-table [dataSource]="dataSource">
+                        <ng-container matColumnDef="index">
+                            <mat-header-cell *matHeaderCellDef> Sr.No. </mat-header-cell>
+                            <mat-cell *matCellDef="let element;let i = index;"> {{i+1}} </mat-cell>
+                            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="MonthName">
+                            <mat-header-cell *matHeaderCellDef> Particulars </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{element.MonthName}} </mat-cell>
+                            <mat-footer-cell *matFooterCellDef>
+                                <b>Total &#x20b9;:</b>
+                            </mat-footer-cell>
+                            <mat-footer-cell>
+                                <b>Payment Type:</b>
+                            </mat-footer-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="BaseAmount">
+                            <mat-header-cell *matHeaderCellDef style="display:flex;justify-content:center"> Fee
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{element.BaseAmount}} </mat-cell>
+                            <mat-footer-cell *matFooterCellDef>
+                            </mat-footer-cell>
+                            <mat-footer-cell>
+                            </mat-footer-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="Amount">
+                            <mat-header-cell *matHeaderCellDef style="display:flex;justify-content:center"> Paid
+                                </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{element.Amount}} </mat-cell>
+                            <mat-footer-cell *matFooterCellDef>
+                                <b>{{TotalAmount}}</b>
+                            </mat-footer-cell>
+                            <mat-footer-cell>
+                                <b>ff</b>
+                            </mat-footer-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="Balance">
+                            <mat-header-cell *matHeaderCellDef>Balance</mat-header-cell>
+                            <mat-cell *matCellDef="let element" style="justify-content:flex-end;">
+                                {{element.Balance}}
+                            </mat-cell>
+                            <mat-footer-cell *matFooterCellDef style="justify-content:flex-end;">
+                                <b>{{Balance}}</b>
+                            </mat-footer-cell>
+                            <mat-footer-cell>
+
+                            </mat-footer-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;let i=index;" class="element-row">
+                        </mat-row>
+                        <mat-footer-row class="sticky-footer" *matFooterRowDef="displayedColumns">
+                        </mat-footer-row>
+                        <!-- <mat-footer-row class="sticky-footer" *matFooterRowDef="displayedColumns">
+                        </mat-footer-row> -->
+                    </mat-table>
+                    <div style="display:flex;margin:15px">
+                        <div>Payment Type:</div>
+                        <div style="margin-left:15px">{{PaymentType}}</div>
+                    </div>
+                    <div style="display: flex;justify-content: flex-end; padding: 15px;margin-right:30px;">
+                       <div style="padding-right: 15px;">Received by:</div><div style="font-weight:bold;"> {{ReceivedBy}}</div>
+                    </div>
+                </div>
+                <div style="margin:15px;justify-content: center;width: 100%;display: flex;">
+                    <div style="font-size:smaller;font-style: italic;">This is a computer-generated document. No
+                        signature is required.</div>
+                </div>
+            </div>
+            <hr>
+            <!-- <div style="margin-left:20px">
+                <mat-form-field style="width: 150px;margin-right: 15px;">
+                    <mat-label>Cash</mat-label>
+                    <input matInput #CashAmount value="0" type="number" autocomplete="Off">
+                </mat-form-field>
+                <mat-form-field style="width: 150px;margin-right: 15px;">
+                    <mat-label>Return</mat-label>
+                    <input matInput [value]="+CashAmount.value -TotalAmount" autocomplete="Off">
+                </mat-form-field>
+            </div> -->
+            <div style="padding: 15px;" fxLayout="row" fxLayoutAlign="center center">
+                <div fxLayout="row" fxLayoutAlign="space-around center"
+                    *ngIf="studentInfoTodisplay.ReceiptNo>0 && BillStatus==1">
+                    <div>
+                        <!-- <button [disabled]="loading || Permission=='read'" matTooltip="cancel receipt"
+                            *ngIf="!CancelReceiptMode" (click)="edit()" mat-raised-button>
+                            <mat-icon>cancel</mat-icon>
+                        </button> -->
+                        <button [disabled]="loading || Permission=='read'" matTooltip="print"
+                            printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button
+                            color="accent">
+                            <mat-icon>print</mat-icon>
+                        </button>
+                    </div>
+                    <!-- <div style="display: flex;flex-direction: column; padding:15px;margin-right:15px;border-collapse:collapse;border: 1px solid lightgray;"
+                        *ngIf="CancelReceiptMode">
+                        <span style="margin-bottom: 15px">Are you sure you want to cancel
+                            this receipt?</span>
+                        <span style="display:flex ;">
+                            <button [disabled]="loading || Permission=='read'" matTooltip="yes"
+                                (click)="CancelReceipt()" mat-raised-button color="accent">
+                                <mat-icon>done</mat-icon>
+                                <mat-icon *ngIf="loading">
+                                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                                </mat-icon>
+                            </button>
+                            <button [disabled]="loading || Permission=='read'" matTooltip="no" (click)="done()"
+                                mat-raised-button>
+                                <mat-icon>cancel</mat-icon>
+                            </button>
+                        </span>
+                    </div> -->
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <span style="border:1px solid lightgray;width:100%"></span>
+</div>

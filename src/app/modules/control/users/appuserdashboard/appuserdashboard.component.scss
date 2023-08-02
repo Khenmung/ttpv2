@@ -1,0 +1,26 @@
+// .Container{
+//  box-shadow: 5px 10px grey;
+// }
+mat-form-field{
+    margin-right: 15px;
+    width: 98%;
+}
+// button{
+//     padding:5px;
+// }  
+ .mat-column-ApplicationUserId{
+   flex:1 1 70px;
+}
+.mat-column-Active,.mat-column-Action{
+    justify-content: center;
+    flex:1 0 110px
+}
+.mat-column-PhoneNumber,.mat-column-ValidFrom,.mat-column-ValidTo,.mat-column-ContactNo{
+    flex:1 1 140px;
+}
+.mat-column-FirstName,.mat-column-EmailAddress{
+    flex:1 1 250px;
+}
+mat-cell:first-of-type{
+    padding-left: 0px;
+}

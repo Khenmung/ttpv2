@@ -1,0 +1,169 @@
+<mat-spinner *ngIf="PageLoading" diameter="25" style="margin:15px;position:relative;margin-left: 50%;"></mat-spinner>
+
+<div style="font-weight:bold;margin:15px">Question Bank</div>
+
+<form [formGroup]="searchForm">
+    <div style="padding: 15px;display:flex;flex-direction: column;">
+        <div>
+            <!-- <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>exam</mat-label>
+                <mat-select formControlName="searchExamId" (selectionChange)="cleardata()">
+                    <mat-option *ngFor="let item of Exams" [value]="item.ExamId">{{item.ExamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> -->
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>class</mat-label>
+                <mat-select formControlName="searchClassId" (selectionChange)="SelectSubject()">
+                    <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
+                <mat-label>semester</mat-label>
+                <mat-select formControlName="searchSemesterId" (selectionChange)="cleardata()">
+                    <mat-option [value]="Defaultvalue">select</mat-option>
+                    <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" [style.width.px]="200">
+                <mat-label>section</mat-label>
+                <mat-select formControlName="searchSectionId" (selectionChange)="cleardata()">
+                    <mat-option [value]="Defaultvalue">select</mat-option>
+                    <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> 
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>subject</mat-label>
+                <mat-select formControlName="searchSubjectId" (selectionChange)="cleardata()">
+                    <mat-option *ngFor="let item of SelectedClassSubjects" [value]="item.SubjectId">
+                        {{item.SubjectName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>content unit</mat-label>
+                <mat-select formControlName="searchContentUnitId" (selectionChange)="SelectContentUnitChanged()">
+                    <mat-option *ngFor="let item of ContentUnit" [value]="item.MasterDataId">{{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>sub content unit</mat-label>
+                <mat-select formControlName="searchSubContentUnitId" (selectionChange)="cleardata()">
+                    <mat-option value="0">select</mat-option>
+                    <mat-option *ngFor="let item of SelectedSubContentUnit" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetSyllabusDetail()">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+            <mat-divider></mat-divider>
+            <div style="margin-top:15px">
+                <mat-form-field appearance="outline" [style.width.px]="200">
+                    <mat-label>no. of random questions required</mat-label>
+                    <input matInput type="number" max="100" autocomplete="Off" formControlName="searchNoOfRandom">
+
+                </mat-form-field>
+                <button [disabled]="loading" mat-raised-button color="accent" (click)="GetRandomNumber()">
+                    <mat-icon>shuffle_on</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </div>
+            <!-- <mat-divider></mat-divider> -->
+        </div>
+        <!-- <div style="margin-top:10px">
+            <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div> -->
+    </div>
+</form>
+
+<mat-table #table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="Id">
+        <mat-header-cell *matHeaderCellDef>Id
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.Id}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Question">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Question
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <div style="margin:15px 15px 15px 0px; display: flex;flex-direction: column;width:100%">
+                <div [innerHtml]="element.Question| encodeHTML"></div>
+                <div style="width:98%;padding:5px;margin-top: 5px;margin-bottom: 5px;">
+                    <img [src]="element.Diagram" height="150px" *ngIf="element.Diagram.length>0">
+                </div>
+            </div>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="DifficultyLevel">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Difficulty Level
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.DifficultyLevel}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ExamId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Exam
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-label>exam</mat-label>
+                <mat-select [(ngModel)]="element.ExamId" [(value)]="element.ExamId" (selectionChange)="onBlur(element)">
+                    <mat-option *ngFor="let item of Exams" [value]="item.ExamId">{{item.ExamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Active">
+        <mat-header-cell *matHeaderCellDef style="justify-content: center;">Active
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" style="justify-content: center;">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateActive(element,$event)"
+                [checked]="element.Active">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef>
+            <button [disabled]="loading || Permission=='read'" matTooltip="save all" mat-mini-fab (click)="SaveAll()">
+                <mat-icon>all_out</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+            <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save" mat-mini-fab
+                (click)="SaveRow(element)">
+                <mat-icon>save</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;let indx=index" class="element-row"
+        style="display: flex;justify-content: baseline;" [ngClass]="{'highlight': selectedRowIndex ==indx}"
+        (click)="highlight(indx)">
+    </mat-row>
+</mat-table>
+<mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50]">
+</mat-paginator>

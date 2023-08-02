@@ -1,0 +1,102 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Student Grade</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <div style="padding: 15px;">
+        <div style="flex-direction: row;">
+            <form [formGroup]="searchForm">
+                <mat-form-field appearance="outline">
+                    <mat-label>Exam</mat-label>
+                    <mat-select formControlName="searchExamId">
+                        <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                            {{item.ExamName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button [disabled]="loading" mat-raised-button color="accent" (click)="GetTotalAttendance()">
+                    <mat-icon>search</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </form>
+        </div>
+        <div style="width: 100%;">
+            <mat-table style="overflow: auto;min-width: 60vw;min-height: 60vh;" #table [dataSource]="dataSource">
+                <ng-container matColumnDef="TotalAttendanceId">
+                    <mat-header-cell *matHeaderCellDef>Id
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.TotalAttendanceId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="TotalNoOfAttendance">
+                    <mat-header-cell *matHeaderCellDef>Total Attendance
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input autocomplete="Off" matInput (blur)="onBlur(element)"
+                                [value]="element.TotalNoOfAttendance" [(ngModel)]="element.TotalNoOfAttendance"
+                                [maxlength]="3">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassName">
+                    <mat-header-cell *matHeaderCellDef>Class
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.ClassName}}
+                        <!-- <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.ClassId"
+                                [(ngModel)]="element.ClassId">
+                                <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassId">
+                                    {{item.GroupName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field> -->
+                    </mat-cell>
+                </ng-container>
+              
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>Active &nbsp;
+                        <mat-checkbox  (click)="$event.stopPropagation()" (change)="SelectAll($event)">
+                </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || TotalAttendanceList.length==0" matTooltip="add new" mat-mini-fab
+                        (click)="SaveAll()">
+                        <mat-icon>all_out</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action || Permission=='read' || ExamReleaseResult" matTooltip="save"
+                            mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                            <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+                </mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,100]"></mat-paginator>
+        </div>
+        <!-- <button type="button" class="btn btn-outline-secondary mr-2" placement="top"
+            ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
+            Popover on top
+        </button> -->
+    </div>
+</div>

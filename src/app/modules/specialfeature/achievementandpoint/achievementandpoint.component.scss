@@ -1,0 +1,21 @@
+mat-form-field {
+    margin-right: 15px;
+    width       : 98%;
+    max-width   : 250px;
+  }
+  mat-cell:first-of-type{
+    padding-left: 15px;
+  }
+  button {
+    margin-right: 15px;
+  }
+  .mat-column-CategoryId{
+    flex:1 1 120px;
+  }
+  .mat-column-Rank,
+  .mat-column-Points,  
+  .mat-column-AchievementAndPointId,
+  .mat-column-Active,
+  .mat-column-Action{
+    flex:1 1 80px;
+  }

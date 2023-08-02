@@ -1,0 +1,127 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Role Feature Permission</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="RoleId" (selectionChange)="enable($event)">
+                <mat-option *ngFor="let role of Roles" [value]="role.MasterDataId">
+                    {{role.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-label>Top Feature</mat-label>
+            <mat-select formControlName="PlanFeatureId" (selectionChange)="enable($event)">
+                <mat-option [value]="0">select</mat-option>
+                <mat-option *ngFor="let feature of TopPageFeatures" [value]="feature.PlanFeatureId">
+                    {{feature.label}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button [disabled]="loading" matTooltip="search" mat-raised-button color="accent"
+            (click)="GetApplicationFeatureRole()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+        <!-- </div> -->
+    </form>
+    <mat-divider></mat-divider>
+    <mat-table [dataSource]="datasource" matSort>
+
+        <ng-container matColumnDef="ApplicationFeatureRoleId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ApplicationFeatureRoleId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Role">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Role </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <!-- <span [innerHTML]="element.FeatureName"></span> -->
+                {{element.Role}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="PlanId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> PlanId </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <!-- <span [innerHTML]="element.FeatureName"></span> -->
+                {{element.PlanId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FeatureName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Feature </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <!-- <span [innerHTML]="element.FeatureName"></span> -->
+                {{element.FeatureName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="PermissionId">
+            <mat-header-cell *matHeaderCellDef> Permission </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field>
+                    <mat-label>permission</mat-label>
+                    <mat-select (selectionChange)="UpdateSaveButton(element)" [value]="element.PermissionId"
+                        [(ngModel)]="element.PermissionId">
+                        <mat-option *ngFor="let item of Permissions" [value]="item.val">{{item.type}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox *ngIf="ApplicationRoleList.length>0" matTooltip="check/uncheck all" mat-mini-fab
+                    (click)="$event.stopPropagation()" (change)="checkall($event)">
+                </mat-checkbox>
+                &nbsp;Active
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button *ngIf="ApplicationRoleList.length>0" [disabled]="Permission=='read' || loading"
+                    matTooltip="save all" mat-mini-fab (click)="UpdateAll()">
+                    <mat-icon *ngIf="!loading">all_out</mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button style="margin-right: 15px;" [disabled]="!element.Action || Permission=='read' || loading"
+                    matTooltip="save" mat-mini-fab (click)="Save(element)">
+                    <mat-icon *ngIf="!loading">save</mat-icon>
+                </button>
+                <!-- <button [disabled]="!element.Action || Permission!='rwd' || loading" matTooltip="delete"
+                mat-mini-fab (click)="Delete(element)">
+                <mat-icon *ngIf="!loading">delete</mat-icon>
+            </button> -->
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: DisplayColumns;">
+        </mat-row>
+    </mat-table>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,100]"></mat-paginator>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides...
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ol><b>Meaning of feature names:</b>
+            <li>Each word starts with caps are for Page.</li>
+            <li>Ending with dd are for Dropdown.</li>
+            <li>Ending with chk are for checkbox.</li>
+            <li>Ending with txt are for Text field.</li>
+        </ol>
+       
+    </span>
+</div>

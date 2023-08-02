@@ -1,0 +1,55 @@
+<mat-card>
+    <mat-card-title>{{title}}</mat-card-title>
+    <mat-card-subtitle>&nbsp;</mat-card-subtitle>
+    <mat-card-content>
+        <form [formGroup]="ContactForm" *ngIf="SuccessMessage.length==0">
+            <div fxLayout="column" style="display:flex;">
+                <mat-form-field appearance="outline" [style.width.px]="300">
+                    <mat-label>Name</mat-label>
+                    <input formControlName="Name" #Name matInput [maxlength]="30" autocomplete="Off" required>
+                    <!-- <mat-hint align="end">{{Name.value?.length || 0}}/30</mat-hint> -->
+                    <span class="text-danger" *ngIf="f.Name.touched && f.Name.hasError('required')">Name
+                        is required.</span>
+                </mat-form-field>
+                <mat-form-field appearance="outline" [style.width.px]="300">
+                    <mat-label>Email</mat-label>
+                    <input formControlName="Email" type="email" #Email matInput [maxlength]="30" autocomplete="Off"
+                        required>
+                    <!-- <mat-hint align="end">{{Email.value?.length || 0}}/30</mat-hint> -->
+                    <span class="text-danger" *ngIf="f.Email.touched && f.Email.hasError('required')">Email
+                        is required.</span>
+                    <span class="text-danger" *ngIf="f.Email.touched && f.Email.hasError('email')">Invalid
+                        Email.</span>
+                </mat-form-field>
+                <mat-form-field appearance="outline" [style.width.px]="300">
+                    <mat-label>Subject</mat-label>
+                    <input formControlName="Subject" #Subject matInput [maxlength]="50" autocomplete="Off" required>
+                    <!-- <mat-hint align="end">{{Subject.value?.length || 0}}/50</mat-hint> -->
+                    <span class="text-danger" *ngIf="f.Subject.touched && f.Subject.hasError('required')">Subject
+                        is required.</span>
+                </mat-form-field>
+                <mat-form-field appearance="outline" fxFlex style="max-width:400px">
+                    <mat-label>Message</mat-label>
+                    <textarea formControlName="MessageBody" #MessageBody [rows]="5" [cols]="30" matInput [maxlength]="250" autocomplete="Off"
+                        cdkTextareaAutosize required></textarea>
+                    <!-- <mat-hint align="end">{{MessageBody.value?.length || 0}}/250</mat-hint> -->
+                    <span class="text-danger"
+                        *ngIf="f.MessageBody.touched && f.MessageBody.hasError('required')">Message
+                        is required.</span>
+                </mat-form-field>
+                <button [disabled]="loading" style="margin-bottom: 20px;" type="button" (click)="onSubmit()" *ngIf="Id==0" [disabled]="ContactForm.invalid"
+                    [style.width.px]="300" class="btn btn-info">Submit</button>
+            
+            <!-- <button [disabled]="loading" style="width:300px" mat-raised-button (click)="back()">
+                <mat-icon>arrow_back</mat-icon>
+            </button> -->
+        </div>
+        </form>
+        <div style="background-color: grey;padding: 20px;color: white;" *ngIf="SuccessMessage.length>0">
+            {{SuccessMessage}}
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+    <button [disabled]="loading" style="margin-left: 10px;" mat-raised-button (click)="back()"><mat-icon>arrow_back</mat-icon></button>
+    </mat-card-actions>
+</mat-card>

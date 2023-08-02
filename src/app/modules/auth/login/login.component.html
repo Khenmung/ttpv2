@@ -1,0 +1,66 @@
+<!-- <div fxLayoutAlign="start start" > -->
+<div style="display:flex;justify-content: center;margin-top: 60px;">
+        <mat-card>
+            <mat-card-title style="margin:0px 0px 0px 15px;">Login</mat-card-title>
+            <mat-card-content>
+                <mat-spinner *ngIf="loading" diameter="25" style="margin:15px;position:relative;margin-left: 50%;">
+                </mat-spinner>
+                <form [formGroup]="loginForm" novalidate style="margin:0px 30px 30px 30px;display: flex;flex-direction: column;">
+                    <mat-form-field style="width:350px">
+                        <mat-label for="username">Email</mat-label>
+                        <input type="text" matInput formControlName="username" required autocomplete="Off" />
+                    </mat-form-field>
+                    <span style="display:flex;width:100%;align-items: baseline;">
+                        <mat-form-field style="width:350px;margin-right: 15px;">
+                            <mat-label for="password">Password</mat-label>
+                            <input [type]="password" matInput formControlName="password" required minlength="6"
+                                autocomplete="Off" />
+                        </mat-form-field>
+                        <span (click)="showhidePassword()">
+                            <mat-icon>{{visibility}}</mat-icon>
+                        </span>
+                    </span>
+                    <div style="margin: 15px 15px 15px 0px;display: flex;flex-direction: row;">
+
+                        <button [disabled]="loading" mat-raised-button color="accent" (click)="onSubmit()"
+                            matTooltip="login">
+                            <mat-icon>login</mat-icon>
+                        </button>
+                        <button [disabled]="loading" (click)="gotohome()" matTooltip="cancel" mat-raised-button>
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </div>
+                    <div style="margin: 15px 15px 15px 0px;">
+                        <a [routerLink]="['/auth/forgot']">Forgot password</a>
+                    </div>
+                    <div style="margin: 15px 15px 15px 0px;">
+                        New Organization Owner? <a [routerLink]="['/auth/signup']">Sign up</a>
+                    </div>
+                    <div *ngIf="f.username.invalid && (f.username.dirty || f.username.touched)"
+                        class="alert alert-danger">
+
+                        <div *ngIf="f.username.errors?.['required']">
+                            Email is required.
+                        </div>
+                        <!-- <div *ngIf="f.username.errors?.['minlength']">
+                        User name must be at least 6 characters long.
+                    </div>                     -->
+                    </div>
+                    <!-- <div *ngIf="f.password.invalid && (f.password.dirty || f.password.touched)" class="alert alert-danger">
+
+                    <div *ngIf="f.password.errors?.['required']">
+                        password is required.
+                    </div>
+                    <div *ngIf="f.password.errors?.['minlength']">
+                        password must be at least 6 characters long.
+                    </div>                    
+                </div> -->
+                </form>
+                <!-- </div> -->
+                <div style="display:flex; margin:30px" class="alert alert-success" *ngIf="isLoggedIn">
+                    Logged in as {{ username }}.
+                </div>
+
+            </mat-card-content>
+        </mat-card>
+    </div>

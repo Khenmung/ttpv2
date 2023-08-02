@@ -1,0 +1,40 @@
+.mat-form-field{
+    width:98%;
+   
+}
+// .mat-column-Active,.mat-column-recess,.mat-column-break{
+//     justify-content: center;
+// }
+mat-cell:first-of-type,mat-header-cell:first-of-type{
+    padding-left: 0px;
+}
+mat-cell,mat-header-cell{
+    border-right: 1px solid lightgray;
+    padding: 10px;
+    //width: 150px;
+    justify-content: center;
+    align-self: stretch;
+}
+// .mat-footer-row,
+// .mat-header-row,
+// .mat-row {
+//     display: inline-flex;
+//     min-width: 100%;
+// }
+// .mat-table {
+//     display: table;
+//     width: 100%;
+
+//     > .mat-header-row, > .mat-row {
+//         display: table-row;
+//         padding: 0;
+//         border: none;
+
+//         > .mat-header-cell, > .mat-cell {
+//             display: table-cell;
+//             height: 48px;
+//             vertical-align: middle;        
+//             border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+//         }
+//     }
+// }

@@ -1,0 +1,43 @@
+:host{
+    width:78%;
+}
+.item{
+    border: 1px thin gray;
+    //border-color:gray;
+}
+mat-card{
+    background-color: lightgray;
+    margin-top: 15px;
+}
+app-edit-input{
+    display: inline-block;
+    vertical-align:baseline;
+    width: 300px;
+    height: 30px;
+    margin: 5px;
+    //padding: 5px;
+}
+
+.Header{
+    display: inline-block;
+    width: 300px;
+    margin-left: 15px;
+}
+mat-checkbox{
+    margin-right: 15px;
+}
+button{
+    margin: 5px;
+    outline:none;
+}
+mat-form-field{
+    width:100%;
+    margin-right: 15px;
+}
+
+.mat-column-UpdatedFileFolderName{
+    flex:1 1 250px;
+}
+// div{
+//     margin:15px;
+// }

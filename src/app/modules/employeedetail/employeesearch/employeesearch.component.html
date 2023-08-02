@@ -1,0 +1,103 @@
+<mat-card>
+    <mat-card-title>Employee</mat-card-title>
+    <mat-card-subtitle>&nbsp;</mat-card-subtitle>
+    <mat-card-content>
+        <!-- <alert></alert> -->
+        <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+        <form [formGroup]="EmployeeSearchForm" fxLayout="row wrap" fxLayoutAlign="center center">
+            
+            <mat-form-field appearance="outline" [style.width.px]="250">
+                <mat-label>employee code</mat-label>
+                <input type="text" matInput formControlName="searchEmployeeCode" [matAutocomplete]="autoF">
+                <mat-autocomplete #autoF="matAutocomplete" [displayWith]="displayFnC">
+                    <mat-option *ngFor="let option of filteredEmployeeCode | async" [value]="option">
+                        {{option.EmployeeCode}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="350">
+                <mat-label>employee</mat-label>
+                <input type="text" matInput formControlName="searchemployeeName" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                    <mat-option *ngFor="let option of filteredEmployees | async" [value]="option">
+                        {{option.Name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetEmployee()">
+                 <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+            </button>
+            <button [disabled]="loading || Permission=='read'" mat-raised-button color="accent" (click)="addNew()">
+                <mat-icon>fiber_new</mat-icon>
+            </button>
+        </form>
+        <br>
+        <mat-table #table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="EmployeeCode">
+                <mat-header-cell *matHeaderCellDef>Employee Code</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.EmployeeCode}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Name}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Grade">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Grade </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Grade}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Department">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Department </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Department}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Designation">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Designation </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Designation}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Manager">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Manager</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Manager}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Active">
+                <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+                <mat-cell style="justify-content: center;" *matCellDef="let element">
+                    {{element.Active==1?'Yes':'No'}}
+           
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button [disabled]="loading" matTooltip="Details" mat-mini-fab (click)="view(element)">
+                        <mat-icon>pageview</mat-icon>
+                    </button>
+                    &nbsp;
+                    <!-- <button [disabled]="loading" matTooltip="Fees" mat-mini-fab (click)="feepayment(element)">
+                        <mat-icon>payments</mat-icon>
+                    </button> -->
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+        </mat-table>
+        <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,50]"></mat-paginator>
+    </mat-card-content>
+    <!-- <mat-card-actions fxLayoutAlign="center center">
+        <button [disabled]="loading" (click)="exportArray()" matTooltip="export to excel" mat-raised-button>
+            <mat-icon>download</mat-icon>
+        </button>
+    </mat-card-actions> -->
+</mat-card>

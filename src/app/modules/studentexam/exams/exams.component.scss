@@ -1,0 +1,43 @@
+:host{
+    width:100%;
+}
+mat-form-field{
+    //margin-right: 15px;
+    width:98%;
+}
+button {
+    margin-right: 15px;
+}
+
+mat-cell:first-of-type,mat-header-cell:first-of-type {
+    padding-left: 0px;
+}
+.mat-column-ReleaseDate{
+    justify-content: center;
+    flex:1 0 135px;
+}
+.mat-column-MarkFormula,
+.mat-column-ExamName,
+.mat-column-ClassGroupId
+{
+    flex:1 0 135px;
+}
+//.mat-column-Sequence,
+.mat-column-StartDate,
+.mat-column-EndDate,
+.mat-column-AttendanceStartDate{
+    flex:1 0 140px;
+}
+.mat-column-Action,
+.mat-column-Active,
+.mat-column-ReleaseResult {
+    justify-content: center;
+    flex:1 0 80px;
+}
+.mat-column-ExamId{
+    flex:1 0 70px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }
+ 

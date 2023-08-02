@@ -1,0 +1,31 @@
+:host{
+    height:100%;
+    width: 100%;
+    //margin-top: 0px;
+}
+// ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+//     background-color: white;
+//     color:black;
+//     //border-color: white;
+//     //outline: white;
+//     border-radius: 5px;
+//   }
+mat-card{
+  //  margin-left: 10px;
+    margin-top: 15px;
+    //background-color: lightgray;// #20639b;
+    //color:white;
+    //border-top-left-radius: 1em;
+}
+.container{
+    padding-left: 10px;
+}
+.row{
+    position: relative;
+    display: flex;
+    margin: 10px;
+}
+.mat-card>:first-child,
+.mat-card-content>:first-child {
+    margin-top: 15px;
+}

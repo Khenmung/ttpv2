@@ -1,0 +1,114 @@
+<div style="padding: 15px;"><strong>Attendance Percent</strong></div>
+<!-- <alert></alert> -->
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<form [formGroup]="searchForm">
+    <div>
+        <mat-form-field appearance="outline">
+            <mat-label>Class</mat-label>
+            <mat-select formControlName="searchClassId" (selectionChange)="bindClassSubject()">
+                <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
+            <mat-label>semester</mat-label>
+            <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
+                <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" [style.width.px]="200">
+            <mat-label>Section</mat-label>
+            <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+                <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">{{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Subject</mat-label>
+            <mat-select formControlName="searchClassSubjectId" (selectionChange)="ClearData()">
+                <mat-option value="0">--select--</mat-option>
+                <mat-option *ngFor="let item of FilteredClassSubjects" [value]="item.ClassSubjectId">
+                    {{item.ClassSubject}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="outline">
+            <mat-label>from</mat-label>
+            <input formControlName="searchFromDate" matInput [matDatepicker]="FromDate" (dateChange)="ClearData()" autocomplete="off">
+            <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
+            <mat-datepicker #FromDate></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>to</mat-label>
+            <input formControlName="searchToDate" matInput (dateChange)="ClearData()" [matDatepicker]="ToDate" autocomplete="off">
+            <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>
+            <mat-datepicker #ToDate></mat-datepicker>
+        </mat-form-field>
+        <button [disabled]="loading" (click)="GetStudentAttendance()" mat-raised-button color="accent">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </div>
+</form>
+<div id="printSection">
+    <mat-table #table [dataSource]="dataSource" matSort style="max-width: 650px;">
+        <ng-container matColumnDef="ClassName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Class
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ClassName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="StudentRollNo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Student-Rollno
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.StudentRollNo}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ClassSubject">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Subject
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ClassSubject}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Percent">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Percent
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Percent}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="PresentCount">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Present
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.PresentCount}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="AbsentCount">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Absent
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.AbsentCount}}
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+    </mat-table>
+</div>
+<mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50,75]"></mat-paginator>
+<div style="display:flex;justify-content: center;">
+    <button [disabled]="loading || Permission=='read'" *ngIf="distinctStudent.length>0" matTooltip="print"
+        printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
+        <mat-icon>print</mat-icon>
+    </button>
+</div>

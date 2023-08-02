@@ -1,0 +1,18 @@
+// mat-form-field{
+//     width:98%;
+//     margin-right: 15px;;
+// }
+.mat-column-GroupOrNature,
+.mat-column-DebitType,
+.mat-column-Active,
+.mat-column-Action{
+    justify-content:center;
+    flex:1 0 100px;
+}
+.mat-column-AccountName,.mat-column-ParentId
+{    
+    flex:1 0 150px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

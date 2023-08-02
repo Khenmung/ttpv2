@@ -1,0 +1,69 @@
+.item {
+    border        : 1px thin gray;
+    //border-color:gray;
+}
+
+.highlight {
+    background-color: lightgray;
+}
+
+.boxes {
+    border-collapse : collapse;
+    border          : 1px solid lightgrey;
+    background-color: lightgray;
+    padding         : 15px;
+    margin          : 15px 15px 15px 0px;
+}
+
+.Header {
+    height     : 40px;
+    margin-left: 15px;
+}
+table {
+    border-collapse: collapse;
+}
+
+div {
+    margin-right: 5px;
+}
+
+// mat-checkbox {
+//     margin-right: 15px;
+// }
+
+button {
+    //   margin : 5px;
+    outline: none;
+}
+// mat-cell:first-of-type{
+//     padding-left: 0px;
+// }
+mat-form-field {
+    margin-right: 5px;
+    width: 98%;
+}
+// .mat-table{
+//     min-width:960px;
+// }
+.mat-column-ParentId,.mat-column-MasterDataName{
+    flex:1 0 150px;
+}
+.mat-column-Description,.mat-column-Logic {
+    flex:1 0 220px;
+}
+.mat-column-Active,.mat-column-Confidential{
+    
+    justify-content: center;
+    flex:1 0 100px;
+}
+.mat-column-Action{
+    justify-content: center;
+    flex:1 0 120px;
+}
+.mat-column-Sequence,.mat-column-MasterDataId {
+    flex:1 0 70px;
+}
+
+// mat-cell:first-of-type{
+//     padding-left: 0px;
+// }

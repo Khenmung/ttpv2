@@ -1,0 +1,79 @@
+<div style="padding: 15px;font-weight: bold;">Batches</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<mat-table #table [dataSource]="dataSource">
+    <ng-container matColumnDef="BatchId">
+        <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef>Batch Id
+        </mat-header-cell>
+        <mat-cell style="display: flex;justify-content: center;" *matCellDef="let element">
+            {{element.BatchId}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="BatchName">
+        <mat-header-cell *matHeaderCellDef> Batch </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-label>batch</mat-label>
+                <input matInput [value]="element.BatchName" [(ngModel)]="element.BatchName" [maxlength]="50">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="CurrentBatch">
+        <mat-header-cell *matHeaderCellDef> Current Batch </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="updateCurrentBatch(element,$event)"
+                [checked]="element.CurrentBatch==1?true:false">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="StartDate">
+        <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-label>Start</mat-label>
+                <input [(ngModel)]="element.StartDate" (dateChange)="onBlur(element)" [value]="element.StartDate"
+                    matInput [matDatepicker]="StartDate" autocomplete="off">
+                <mat-datepicker-toggle matSuffix [for]="StartDate"></mat-datepicker-toggle>
+                <mat-datepicker #StartDate></mat-datepicker>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="EndDate">
+        <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-label>End</mat-label>
+                <input [(ngModel)]="element.EndDate" (dateChange)="onBlur(element)" [value]="element.EndDate" matInput
+                    [matDatepicker]="EndDate" autocomplete="off">
+                <mat-datepicker-toggle matSuffix [for]="EndDate"></mat-datepicker-toggle>
+                <mat-datepicker #EndDate></mat-datepicker>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Active">
+        <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-checkbox (click)="$event.stopPropagation()" [disabled]="Permission=='read'" (change)="updateActive(element,$event)"
+                [checked]="element.Active==1?true:false">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef>
+            <button [disabled]="loading || Permission=='read'" matTooltip="add" mat-mini-fab (click)="addnew()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+            <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="view/edit" mat-mini-fab
+                (click)="UpdateOrSave(element)">
+                 <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+</mat-table>

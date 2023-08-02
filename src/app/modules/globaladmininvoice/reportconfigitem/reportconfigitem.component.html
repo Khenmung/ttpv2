@@ -1,0 +1,125 @@
+<!-- <div> -->
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Report Config Item</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
+<div style="width: 100%;">
+    <form [formGroup]="searchForm" fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="space-around center">
+            <mat-form-field appearance="outline" [style.width.pc]="25" style="margin-right:15px;">
+                <mat-label>Application</mat-label>
+                <mat-select formControlName="searchApplicationId" (selectionChange)="GetAppReportNames()">
+                    <mat-option *ngFor="let option of Applications" [value]="option.applicationId">
+                        {{option.applicationName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Report</mat-label>
+                <mat-select formControlName="searchReportName">
+                    <mat-option value="0">--select report name--</mat-option>
+                    <mat-option *ngFor="let item of AppReportNames" [value]="item.ReportConfigItemId">
+                        {{item.ReportName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <button [disabled]="loading" matTooltip="search" mat-raised-button (click)="GetReportConfigItem()">
+                 <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+            </button>
+        </div>
+    </form>
+    if report name dropdown is not selected, you are defining add/edit report name. Otherwise report columns.
+    <mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="ReportName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput [value]="element.ReportName" [(ngModel)]="element.ReportName" autocomplete="Off"
+                        placeholder="" (blur)="onBlur(element)" [minlength]="1" [maxlength]="50">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="DisplayName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Display Name </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput [value]="element.DisplayName" [(ngModel)]="element.DisplayName" autocomplete="Off"
+                        placeholder="" (blur)="onBlur(element)" [minlength]="1" [maxlength]="50">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <!-- <ng-container matColumnDef="Formula">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Formula </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field [style.width.px]="150" appearance="outline">
+                            <textarea matInput [value]="element.Formula" [(ngModel)]="element.Formula"
+                                autocomplete="Off" (blur)="onBlur(element)" [maxlength]="256"></textarea>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container> -->
+
+        <ng-container matColumnDef="TableNames">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Table Name </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput [value]="element.TableNames" 
+                    [(ngModel)]="element.TableNames" 
+                    autocomplete="Off"
+                    (blur)="onBlur(element)" 
+                    [maxlength]="450">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ColumnSequence">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Sequence </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input type="number" matInput [value]="element.ColumnSequence" [(ngModel)]="element.ColumnSequence"
+                        autocomplete="Off" (blur)="ReSequence(element)" [max]="100">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button style="margin-right: 15px;" [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="addnew()">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button [disabled]="loading || Permission=='read'" matTooltip="save all" mat-mini-fab (click)="SaveAll()">
+                    <mat-icon>all_out</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button [disabled]="loading || Permission=='read' || !element.Action" matTooltip="save" 
+mat-raised-button color="accent"
+                    (click)="Save(element)">
+                     <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
+    </mat-table>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,100]"></mat-paginator>
+</div>
+<!-- </div> -->
+<!-- </div> -->

@@ -1,0 +1,21 @@
+mat-form-field{
+    margin-right:15px;
+    width:98%;
+}
+// mat-cell{
+//     width: 98%;
+// }
+.mat-column-Id,
+.mat-column-QuestionBankId{
+    justify-content: flex-start;
+    flex:1 1 60px;
+}
+.mat-column-Question{
+    flex:1 1 100%;
+}
+.mat-column-DifficultyLevel,
+.mat-column-ExamId,
+.mat-column-Active,
+.mat-column-Action{
+    flex:1 0 150px;
+}

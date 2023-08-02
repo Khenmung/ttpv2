@@ -1,0 +1,77 @@
+<div style="width: 100%;">
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Class Group</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+           
+            <mat-table #table [dataSource]="dataSource">
+                <ng-container matColumnDef="ClassGroupId">
+                    <mat-header-cell *matHeaderCellDef>Sr. No.
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.ClassGroupId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="GroupName">
+                    <mat-header-cell *matHeaderCellDef>Group Name
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input matInput (blur)="onBlur(element)" [maxlength]="50" [value]="element.GroupName"
+                                [(ngModel)]="element.GroupName">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassGroupTypeId">
+                    <mat-header-cell *matHeaderCellDef>Group Type
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.ClassGroupTypeId"
+                                [(ngModel)]="element.ClassGroupTypeId">
+                                <mat-option *ngFor="let item of ClassGroupType" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>Active
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || Permission=='read' || Permission=='deny'"
+                            matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <button style="margin-right:15px" [disabled]="loading || !element.Action || Permission=='read' || Permission=='deny'"
+                            matTooltip="save" mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                            <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                        <button [disabled]="loading 
+                                || !element.Action 
+                                || Permission !='rwd'" matTooltip="delete" mat-mini-fab (click)="delete(element)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Group Point</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<div style="width: 100%;">
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" [style.width.px]="300">
+            <mat-label>Session</mat-label>
+            <mat-select formControlName="searchSessionId" (selectionChange)="ClearData()">
+                <mat-option value="0">select</mat-option>
+                <mat-option *ngFor="let list of ActivitySessions" [value]="list.MasterDataId">
+                    {{list.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button [disabled]="loading" style="margin-right:15px" matTooltip="search" mat-raised-button color="accent"
+            (click)="GetSportsResult()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+    <div>
+        <mat-table #table [dataSource]="dataSource">
+
+            <ng-container matColumnDef="GroupName">
+                <mat-header-cell *matHeaderCellDef>Group
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.GroupName}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Category">
+                <mat-header-cell *matHeaderCellDef>Category
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Category}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="SubCategory">
+                <mat-header-cell *matHeaderCellDef>Sub Category
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.SubCategory}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Points">
+                <mat-header-cell *matHeaderCellDef>Points
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Points}}
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;let indx=index" class="element-row"
+                style="align-items: center;"></mat-row>
+        </mat-table>
+        <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50]">
+        </mat-paginator>
+    </div>
+</div>

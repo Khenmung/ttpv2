@@ -1,0 +1,118 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Custom Feature Permission</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="searchRoleId" (selectionChange)="enable($event)">
+                <mat-option *ngFor="let role of Roles" [value]="role.MasterDataId">
+                    {{role.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-label>Feature Type</mat-label>
+                <mat-select formControlName="searchTableName" (selectionChange)="enable($event)">
+                <mat-option value="0">select</mat-option>
+                <mat-option *ngFor="let item of TableNames" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>feature</mat-label>
+            <input type="text" matInput formControlName="searchFeatureName" [matAutocomplete]="autoF">
+            <mat-autocomplete #autoF="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredFeatures | async" [value]="option">
+                    {{option.CustomFeatureName}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+       
+        <button [disabled]="loading" style="margin-right:15px" matTooltip="search" mat-raised-button color="accent"
+            (click)="GetCustomerFeatures()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+        <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
+                (click)="AddNew()">
+                <mat-icon>add</mat-icon>
+            </button>
+    </form>
+    <mat-divider></mat-divider>
+    <mat-table [dataSource]="datasource" matSort>
+
+        <ng-container matColumnDef="CustomFeatureRolePermissionId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.CustomFeatureRolePermissionId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FeatureName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>  
+                <span style="display: flex;flex-direction: column;justify-content: start;">
+                    <span style="justify-content: start;display: flex;">Feature</span>
+                    <mat-form-field style="width: 150px;">
+                        <mat-label>search</mat-label>
+                        <input matInput [formControl]="nameFilter" autocomplete="Off">
+                    </mat-form-field>
+                </span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              {{element.FeatureName}}  
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="PermissionId">
+            <mat-header-cell *matHeaderCellDef> Permission </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-label>permission</mat-label>
+                    <mat-select (selectionChange)="UpdateSaveButton(element)" [value]="element.PermissionId"
+                        [(ngModel)]="element.PermissionId">
+                        <mat-option *ngFor="let item of Permissions" [value]="item.val">{{item.type}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox *ngIf="CustomerFeaturePermissionList.length>0" matTooltip="check/uncheck all" mat-mini-fab
+                    (click)="$event.stopPropagation()" (change)="checkall($event)">
+                </mat-checkbox>
+                &nbsp;Active
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button *ngIf="CustomerFeaturePermissionList.length>0" [disabled]="Permission=='read' || loading"
+                    matTooltip="save all" mat-mini-fab (click)="UpdateAll()">
+                    <mat-icon *ngIf="!loading">all_out</mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button style="margin-right: 15px;" [disabled]="!element.Action || Permission=='read' || loading"
+                    matTooltip="save" mat-mini-fab (click)="Save(element)">
+                    <mat-icon *ngIf="!loading">save</mat-icon>
+                </button>
+                <!-- <button [disabled]="!element.Action || Permission!='rwd' || loading" matTooltip="delete"
+                mat-mini-fab (click)="Delete(element)">
+                <mat-icon *ngIf="!loading">delete</mat-icon>
+            </button> -->
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: DisplayColumns;">
+        </mat-row>
+    </mat-table>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,100]"></mat-paginator>
+</div>

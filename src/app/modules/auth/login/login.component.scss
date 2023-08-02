@@ -1,0 +1,93 @@
+:host {
+    //display         : grid;
+    //place-items     : center;
+    min-height      : 91vh;
+    background-color: white;
+    width           : 100%;
+    align-items: flex-start;
+    //margin-top: 50px;
+}
+mat-icon{
+    margin-right: 5px;
+}
+
+.container1 {
+    position: relative;
+    text-align: center;
+    color: white;
+  }
+
+.container {
+    display          : flex;
+    //justify-content: center;
+    //margin-top: 150px;
+}
+
+button {
+    margin-right: 15px;
+}
+
+.column {
+    margin-right: 15px;
+}
+
+.width100 {
+    width: 100%;
+}
+
+.width80 {
+    width: 40%;
+}
+
+@media only screen and (max-width: 768px) {
+    .mat-card {
+        width: 100%;
+    }
+
+    .description {
+        position: absolute;
+        display: none !important;
+    }
+
+    .loginbox {
+        margin-top: 0px;
+        width     : 100%;
+    }
+    .overallcontainer {
+        display        : flex;
+        justify-content: space-evenly;
+        width          : 100%;
+        flex-wrap      : wrap;
+        margin-top     : 0px
+    }
+    
+}
+
+@media only screen and (min-width: 769px) {
+    .mat-card {
+        justify-content: center;
+        position       : relative;
+        height         : max-content;
+        margin-top:100px; 
+        //margin: 60px;
+        //width          : 500px;
+    }
+
+    .description {
+        width    : 60%;
+        font-size: 14px;
+        margin   : 30px
+    }
+
+    .loginbox {
+        margin: 60px;
+        //width:450px;
+    }
+    .overallcontainer {
+        display        : flex;
+        justify-content: space-evenly;
+        width          : 100%;
+        flex-wrap      : wrap;
+        margin-top     : 60px
+    }
+}

@@ -1,0 +1,24 @@
+<mat-card>
+    <mat-card-title><span class="title">{{PageTitle}}</span>
+    </mat-card-title>
+    <mat-card-subtitle></mat-card-subtitle>
+    <mat-card-content>
+        <!-- <mat-divider></mat-divider> -->
+        <div class="contentbox">
+            <div fxLayout="row" fxLayoutAlign="start start" *ngFor="let element of AllData">
+                <img src="../../../assets/images/icons8-vote.svg" style="margin-top:8px;"/>
+                <a class="subtitle" style="text-decoration:none;color:rgb(201, 200, 200)" (click)="view(element)">
+                    <div>{{element.Title|titlecase}}
+                        <br><span style="color:rgb(201, 200, 200,.9);font-size: small;">
+                            {{element.UpdateDate|date:'dd/MM/yyyy'}}</span>
+                    </div>
+                </a>
+                <!-- <mat-divider></mat-divider> -->
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+        <mat-paginator *ngIf="AllData.length>0" style="color:rgb(201, 200, 200);background-color:var(--maincolor1);" [pageSizeOptions]="[10, 25, 100]">
+        </mat-paginator>
+
+    </mat-card-content>
+</mat-card>

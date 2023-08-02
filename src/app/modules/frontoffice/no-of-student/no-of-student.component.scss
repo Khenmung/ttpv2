@@ -1,0 +1,17 @@
+mat-form-field{
+    margin-right: 15px;
+}
+mat-cell,mat-header-cell{
+    justify-content: center;
+    border-right: 1px solid lightgray;
+}
+mat-header-row,mat-row{
+    min-height: 34px;
+}
+.mat-row:nth-child(even){
+    background-color: lightgoldenrodyellow;
+}
+        
+.mat-row:nth-child(odd){
+    background-color: white;
+}

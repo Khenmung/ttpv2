@@ -1,0 +1,38 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Ewert&display=swap');
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import url("https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.3.0/paper.css");
+@import '~@angular/material/theming';
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+
+* {
+	transition: none !important;
+}
+
+mat-form-field,
+button {
+	margin-right: 15px;
+}
+
+mat-table {
+	width  : 100%;
+	padding: 0px;
+	margin : 0px;
+}
+
+@media print {
+	.container {
+		position: relative;
+		margin  : 0px;
+		padding : 0px;
+	}
+
+	.container img {
+		position: absolute;
+		max-width: 100%;
+		height   : auto;
+		z-index  : -1;
+	}
+}

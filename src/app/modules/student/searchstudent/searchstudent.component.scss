@@ -1,0 +1,76 @@
+ :host{
+    width:100%;
+    //height:max-content;
+    margin: 0;
+    padding: 0;
+}
+.mat-card{
+    position: relative;
+    width: 99%;
+}
+
+mat-form-field{
+    margin-right: 20px;
+    padding: 5px;
+}
+button{
+    margin-right: 20px;
+    outline: none;
+}
+mat-header-cell{
+    display: grid;
+    justify-content: center;
+}
+.mat-cell,.mat-header-cell{
+    border-collapse: collapse;
+    border-width: 0px 1px 0px 0px;
+    border-color: lightgray;
+    border-style: solid;
+    padding: 5px;    
+    align-self: stretch;
+}
+.mat-column-ClassName{
+    flex : none;
+    width: 100px;
+    display:grid;
+    text-align: center;
+    
+}
+.mat-column-PID,.mat-column-Active{
+    justify-content: center;
+    flex:1 0 60px;
+}
+.mat-column-Name{
+    flex:1 0 160px;
+}
+.mat-column-FatherName,.mat-column-MotherName,
+.mat-column-Remarks
+{
+    flex: 1 0 120px;
+}
+.mat-column-Action,.mat-column-ClassName,
+.mat-column-FeeType,
+.mat-column-ReasonForLeaving{
+    justify-content: center;
+    flex: 1 0 120px;
+}
+table{
+    min-width: 300px;
+}
+.mat-row:hover {
+    background-color:lightgray;
+  }
+  .highlight{
+    background: #42A948; /* green */
+  }
+  mat-optgroup {
+	display         : block;
+	background-color: lightgray;
+   
+  }
+  
+  mat-option {
+	display         : block;
+	background-color: #ffffff;
+   
+  }

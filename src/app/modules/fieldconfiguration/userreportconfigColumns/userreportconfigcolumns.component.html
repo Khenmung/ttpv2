@@ -1,0 +1,108 @@
+<div style="max-height: inherit;">
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Module Column</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <div style="padding: 15px" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <form [formGroup]="searchForm" fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="space-around center">
+                    <mat-form-field appearance="outline" [style.width.px]="200">
+                        <mat-label>Available Module</mat-label>
+                        <mat-select formControlName="searchAvailableReportName" (selectionChange)="GetMyReportNames()">
+                            <mat-option *ngFor="let item of AvailableReportNames" [value]="item.ReportConfigItemId">
+                                {{item.ReportName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" [style.width.px]="200">
+                        <mat-label>My Module Name</mat-label>
+                        <mat-select formControlName="searchReportName" (selectionChange)="EnableButton()">
+                            <mat-option *ngFor="let item of AppReportNames" [value]="item.ReportConfigItemId">
+                                {{item.ReportName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button [disabled]="loading || !boolEnableButton" matTooltip="search" mat-raised-button
+                        color="accent" (click)="GetReportConfigItem()">
+                        <mat-icon>search</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </div>
+            </form>
+            <mat-table [dataSource]="dataSource" matSort>
+                
+                <ng-container matColumnDef="ReportConfigItemId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.ReportConfigItemId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ReportName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Column Name </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.ReportName}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="DisplayName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Display Name </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input matInput [value]="element.DisplayName" [(ngModel)]="element.DisplayName"
+                                autocomplete="Off" placeholder="" (blur)="onBlur(element)" [minlength]="1"
+                                [maxlength]="50">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ColumnSequence">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Sequence </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input type="number" matInput [value]="element.ColumnSequence"
+                                [(ngModel)]="element.ColumnSequence" autocomplete="Off" (blur)="ReSequence(element)"
+                                [max]="100">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        <mat-checkbox matTooltip="select all" style="margin-right: 15px;"
+                            (click)="$event.stopPropagation()" (change)="SelectAll($event)">
+                        </mat-checkbox>
+                        Mandatory
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || ReportConfigItemList.length==0" matTooltip="add new" mat-mini-fab
+                            (click)="SaveAll()">
+                            <mat-icon>all_out</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || Permission=='read' || !element.Action" matTooltip="save"
+                            mat-mini-fab (click)="Save(element)">
+                            <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,50,100]"></mat-paginator>
+        </div>
+    </div>
+</div>

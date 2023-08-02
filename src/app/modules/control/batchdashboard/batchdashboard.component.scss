@@ -1,0 +1,19 @@
+// .mat-column-CurrentBatch,.mat-column-Active{
+//     display: flex;
+//     justify-content:center;
+// }
+mat-form-field{
+    margin-right: 15px;
+    width: 98%;
+}
+.mat-column-BatchId{
+    flex: 0 0 70px;
+}
+.mat-column-Active,.mat-column-Action,.mat-column-CurrentBatch{
+    display: flex;
+    justify-content: center;
+    flex: 1 1 100px;
+}
+.mat-column-BatchName,.mat-column-StartDate,.mat-column-EndDate{
+    flex: 1 1 120px;
+}

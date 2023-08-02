@@ -1,0 +1,184 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Subject Mark Components</strong></div>
+    </div>
+    <!-- <alert></alert> -->
+    <form [formGroup]="searchForm">
+        <div>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>Exam</mat-label>
+                <mat-select formControlName="searchExamId" (selectionChange)="DisableSave()">
+                    <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                        {{item.ExamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>Class/Course</mat-label>
+                <mat-select formControlName="searchClassId" (selectionChange)="SelectClassSubject()">
+                    <mat-option *ngFor="let p of FilteredClasses" [value]="p.ClassId">
+                        {{p.ClassName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200" *ngIf="SelectedClassCategory=='college'">
+                <mat-label>semester</mat-label>
+                <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
+                    <mat-option [value]="Defaultvalue">select</mat-option>
+                    <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200" *ngIf="SelectedClassCategory=='high school'">
+                <mat-label>section</mat-label>
+                <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+                    <mat-option [value]="Defaultvalue">select</mat-option>
+                    <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>            
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>Subject</mat-label>
+                <mat-select formControlName="searchSubjectId" #SubjectId (selectionChange)="ClearData()">
+                    <mat-option value="0">All</mat-option>
+                    <mat-option *ngFor="let p of SelectedClassSubjects" [value]="p.ClassSubjectId">
+                        {{p.SubjectName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetClassSubjectComponent(0)">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </div>
+        <mat-divider></mat-divider>
+        <div style="margin-top:15px">           
+            <mat-form-field appearance="outline" [style.width.px]="250">
+                <mat-label>Copy from other exam</mat-label>
+                <mat-select formControlName="searchCopyExamId">
+                    <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                        {{item.ExamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button [disabled]="loading" matTooltip="copy from previous batch" mat-raised-button
+                (click)="CopyFromOtherExam()">
+                <mat-icon>copy_all</mat-icon>
+            </button>
+        </div>
+    </form>
+    <div style="font-weight: bold;font-style: italic;">{{datafromotherexam}}</div>
+    <mat-table #table [dataSource]="dataSource" matSort>        
+        <ng-container matColumnDef="ClassSubjectMarkComponentId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ClassSubjectMarkComponentId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ClassSubject">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Subject </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ClassSubject}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="SubjectComponent">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Subject Component </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.SubjectComponent}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FullMark">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Full Mark </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field>
+                    <input #fullMark="ngModel" matInput style="text-align: right;" (blur)="onBlur(element)"
+                        type="number" max="1000" [value]="element.FullMark" [(ngModel)]="element.FullMark" />
+                    <mat-error *ngIf="fullMark?.invalid">
+                        <div *ngIf="fullMark.errors.max">Max is 1000</div>
+                    </mat-error>
+                </mat-form-field>
+
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="PassMark">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Component Pass Mark </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field>
+                    <input (blur)="onBlur(element)" style="text-align: right;" #PassMark="ngModel" matInput
+                        type="number" [max]="1000" [value]="element.PassMark" [(ngModel)]="element.PassMark" />
+                    <mat-error *ngIf="PassMark?.invalid">
+                        <div *ngIf="PassMark.errors.max">Max is 1000</div>
+                    </mat-error>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="OverallPassMark">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Subject Pass Mark </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field>
+                    <input (blur)="onBlur(element)" style="text-align: right;" #OverallPassMark="ngModel"
+                        autocomplete="Off" matInput type="number" [max]="1000" [value]="element.OverallPassMark"
+                        [(ngModel)]="element.OverallPassMark" />
+                    <mat-error *ngIf="OverallPassMark?.invalid">
+                        <div *ngIf="OverallPassMark.errors.max">Max is 1000</div>
+                    </mat-error>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox matTooltip="select all" (click)="$event.stopPropagation()" (change)="SelectAll($event)">
+                </mat-checkbox>&nbsp; Active
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button [disabled]="loading || Permission=='read' || DisableSaveButton" *ngIf="ELEMENT_DATA.length>0"
+                    matTooltip="save all" mat-mini-fab (click)="SaveAll()">
+                    <mat-icon>all_out</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button [disabled]="loading || !element.Action || Permission == 'read' || DisableSaveButton"
+                    matTooltip="save" mat-mini-fab (click)="Save(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator style="display:flex;justify-content:center" [pageSizeOptions]="[10,20,25,50]"></mat-paginator>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>
+                <div>If examination has been released, subject component cannot be updated. If a subject component's
+                    Pass Mark is > 0, it means student has to pass on that component.</div>
+            </li>
+            <li>If all components' Pass Mark is equal to zero,
+                passing criteria is based on <b>Subject Pass Mark</b>.</li>
+        </ul>
+    </span>
+</div>
+<!-- </div> -->

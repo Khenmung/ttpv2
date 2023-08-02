@@ -1,0 +1,20 @@
+// .container{
+//     //position: absolute;
+//     margin-top: 100px;
+// }
+// mat-form-field{
+//     margin-right:15px;
+//     width: 99%;
+// }
+button{
+    margin-right:15px;
+}
+.mat-column-Action{
+    flex:1 0 120px;
+ }
+.mat-column-Section,.mat-column-Active{
+    flex:1 0 100px;
+ }
+ .mat-column-HelperId,.mat-column-TeacherId{
+     flex:1 0 250px;
+ }

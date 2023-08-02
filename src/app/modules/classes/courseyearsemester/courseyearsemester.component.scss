@@ -1,0 +1,18 @@
+mat-form-field{
+    width:98%;
+    margin-right: 15px;
+}
+
+.mat-column-ClassGroupId,
+.mat-column-ClassId{
+    flex:1 0 120px;
+}
+.mat-column-ClassGroupMappingId
+{
+    flex:1 0 80px;
+}
+.mat-column-Active,
+.mat-column-Action{
+    justify-content: center;
+    flex:1 0 100px;
+}

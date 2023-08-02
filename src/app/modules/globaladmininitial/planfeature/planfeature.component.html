@@ -1,0 +1,93 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Plan Feature</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<form [formGroup]="searchForm">
+    <mat-form-field appearance="outline" [style.width.px]="200" style="margin-right:15px;">
+        <mat-label>Plan</mat-label>
+        <mat-select #searchPlanId formControlName="searchPlanId">
+            <mat-option [value]="0">select</mat-option>
+            <mat-option *ngFor="let feature of Plans" [value]="feature.PlanId">
+                {{feature.Title}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" [style.width.px]="200" style="margin-right:15px;">
+        <mat-label>application</mat-label>
+        <mat-select formControlName="searchApplicationId" (selectionChange)="GetTopFeature()">
+            <mat-option [value]="0">select</mat-option>
+            <mat-option *ngFor="let app of Applications" [value]="app.MasterDataId">
+                {{app.Description}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" [style.width.px]="200" style="margin-right:15px;">
+        <mat-label>Top feature</mat-label>
+        <mat-select formControlName="searchTopfeatureId">
+            <mat-option [value]="0">select</mat-option>
+            <mat-option *ngFor="let feature of Topfeatures" [value]="feature.PageId">
+                {{feature.PageTitle}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button [disabled]="loading" matTooltip="search" mat-raised-button color="accent" (click)="GetPlanFeature()">
+        <mat-icon>search</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+        </mat-icon>
+    </button>
+</form>
+<mat-table #table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="PlanFeatureId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Id
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.PlanFeatureId}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="FeatureName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Feature
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.FeatureName}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Active">
+        <mat-header-cell style="justify-content: center;" *matHeaderCellDef>
+            <mat-checkbox *ngIf="PlanFeatureList.length>0" matTooltip="check/uncheck all" mat-mini-fab
+                (click)="$event.stopPropagation()" (change)="checkall($event)">
+            </mat-checkbox>
+            &nbsp;Active
+        </mat-header-cell>
+        <mat-cell style="justify-content: center;" *matCellDef="let element">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                [checked]="element.Active==1?true:false">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef style="justify-content: center;">
+            <button [disabled]="loading || PlanFeatureList.length==0" matTooltip="add new" mat-mini-fab
+                (click)="SaveAll()">
+                <mat-icon>all_out</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" style="justify-content: center;">
+            <button [disabled]="loading || !element.Action" matTooltip="save" mat-raised-button color="accent"
+                (click)="SaveRow(element)">
+                <mat-icon>save</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+    </mat-row>
+</mat-table>
+<mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50]"></mat-paginator>

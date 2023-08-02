@@ -1,0 +1,88 @@
+<!-- <mat-card>
+    <mat-card-title>Define Page</mat-card-title>
+    <mat-card-subtitle></mat-card-subtitle>
+    <mat-card-content fxLayout="column"> -->
+<div style="margin:30px;font-size:24px;">Editor</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<form [formGroup]="PageDetailForm">
+    <div class="row">
+        <div class="column">
+            <mat-form-field appearance="outline" fxFlex [style.width.px]="350">
+                <mat-label>Enter Title</mat-label>
+                <input formControlName="PageTitle" autocomplete="Off" #input matInput [maxlength]="50">
+                <span class="text-danger" *ngIf="f.PageTitle.touched && f.PageTitle.hasError('required')">Title
+                    is required.</span>
+            </mat-form-field>
+        </div>
+        <div class="column">
+            <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Select parent</mat-label>
+                <mat-select formControlName="ParentId">
+                    <mat-option value="0">---</mat-option>
+                    <mat-option *ngFor="let p of PageGroups" [value]="p.PageId">{{p.PageTitle}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-checkbox formControlName="HasSubmenu" fxFlex>
+            </mat-checkbox>&nbsp; Has Submenu &nbsp;&nbsp;
+        </div>
+        <div>
+            <button [disabled]="loading" mat-raised-button matTooltip="save as draft"
+                style="justify-items:center" type="button" (click)="onSaveAsDraft()"
+                [disabled]="PageDetailForm.invalid">
+                <mat-icon aria-label="drafts">drafts</mat-icon>
+            </button>
+        </div>
+        <div class="column">
+            <button [disabled]="loading" mat-raised-button matTooltip="publish" type="button"
+                (click)="onSubmit()" [disabled]="PageDetailForm.invalid">
+                <mat-icon aria-label="publish">publish</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div>
+        <div style="border: 1px solid gray;margin-top:10px;padding: 20px;" *ngIf="Id>0">
+            <span>Photo</span>&nbsp;
+            <div class="photo">
+                <span style="color:red;" *ngIf="message">{{message}}</span>
+                <input #inputfile [hidden]="true" type="file" accept='image/*' (change)="preview(inputfile.files)" />
+                <img [src]="imgURL" height="200" *ngIf="imgURL">
+
+            </div>
+            <div class="buttons" fxLayout="row" fxLayoutAlign="start center">
+                <!-- <button [disabled]="loading" *ngIf="!Edit" mat-raised-button matTooltip="update photo" color="primary"
+                            (click)="edit()">
+                            <mat-icon>edit</mat-icon>
+                        </button> -->
+                <button [disabled]="loading" *ngIf="imgURL.length>0" mat-raised-button [disabled]="processing"
+                    matTooltip="delete photo" color="primary" (click)="delete()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <button [disabled]="loading" mat-raised-button matTooltip="select file" color="primary"
+                    (click)="inputfile.click()">
+                    <mat-icon aria-label="photo">photo</mat-icon>
+                </button>&nbsp;&nbsp;
+                <button [disabled]="loading" type="submit" *ngIf="imageCount>0" [disabled]="processing"
+                    (click)="uploadFile()" matTooltip="upload file" mat-raised-button>
+                    <mat-icon aria-label="file_upload">file_upload</mat-icon>
+                </button>&nbsp;&nbsp;
+
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <!-- <ckeditor formControlName="PageBody" [config]="ckeConfig" debounce="500">
+        </ckeditor> -->
+    </div>
+    <br>
+    <div class="row">
+        <button [disabled]="loading" type="button" (click)="dashboard()" mat-raised-button>
+            <mat-icon aria-label="arrow_back">arrow_back</mat-icon>
+        </button>
+    </div>
+</form>
+<!-- </mat-card-content>
+</mat-card> -->

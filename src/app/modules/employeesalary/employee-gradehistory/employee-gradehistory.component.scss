@@ -1,0 +1,43 @@
+mat-form-field,
+button {
+    margin-right: 15px;
+}
+
+.mat-column-WorkAccountId,
+.mat-column-JobTitleId,
+.mat-column-DesignationId,
+.mat-column-DepartmentId,
+.mat-column-EmpGradeId {
+    flex           : 0 0 160px;
+    //border-radius: 0;
+}
+
+.mat-column-FromDate,
+.mat-column-ToDate {
+    flex           : 0 0 120px;
+    //border-radius: 0 !important;
+}
+
+.mat-column-CTC {
+    flex: 0 0 100px;
+
+}
+
+.mat-column-Gratuity,
+.mat-column-Active,.mat-column-Action {
+    flex           : 1 0 80px;
+    justify-content: center;
+    //border-radius: 0;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-end {
+    border-radius: 0px !important;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-start {
+    border-radius: 0px !important;
+}
+
+input {
+    text-align: right;
+}

@@ -1,0 +1,110 @@
+<!-- <div> -->
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Events</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+
+        <div style="width: 100%;">
+            <mat-table style="overflow: auto;min-width: 60vw;min-height: 60vh;" #table [dataSource]="dataSource">
+                <ng-container matColumnDef="HolidayId">
+                    <mat-header-cell *matHeaderCellDef>Id
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.HolidayId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Title">
+                    <mat-header-cell *matHeaderCellDef>Holiday
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.Title"
+                                [(ngModel)]="element.Title" [maxlength]="100">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Description">
+                    <mat-header-cell *matHeaderCellDef>Description
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <textarea matInput (blur)="onBlur(element)" [value]="element.Description"
+                                [(ngModel)]="element.Description" [maxlength]="256"></textarea>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="StartDate">
+                    <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input [value]="element.StartDate" [(ngModel)]="element.StartDate" matInput
+                                [matDatepicker]="StartDate" autocomplete="off">
+                            <mat-datepicker-toggle matSuffix [for]="StartDate"></mat-datepicker-toggle>
+                            <mat-datepicker #StartDate></mat-datepicker>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EndDate">
+                    <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input [value]="element.EndDate" [(ngModel)]="element.EndDate" matInput
+                                [matDatepicker]="EndDate" autocomplete="off">
+                            <mat-datepicker-toggle matSuffix [for]="EndDate"></mat-datepicker-toggle>
+                            <mat-datepicker #EndDate></mat-datepicker>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="HolidayTypeId">
+                    <mat-header-cell *matHeaderCellDef>Holiday Type
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select 
+                                [value]="element.HolidayTypeId"
+                                [(ngModel)]="element.HolidayTypeId">
+                                <mat-option *ngFor="let item of HolidayTypes" [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>Active
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
+                            (click)="AddNew()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                            mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                             <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+                </mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,100]"></mat-paginator>
+        </div>
+        <!-- <button type="button" class="btn btn-outline-secondary mr-2" placement="top"
+            ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
+            Popover on top
+        </button> -->
+    </div>
+<!-- </div> -->

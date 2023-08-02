@@ -1,0 +1,22 @@
+mat-form-field{
+    margin-right:15px;
+    width:98%;
+}
+mat-cell{
+    width: 98%;
+}
+.mat-column-SyllabusId{
+    flex:1 1 50px;
+}
+.mat-column-Lesson{
+    flex:1 1 500px;
+}
+.mat-column-ContentUnitId,
+.mat-column-SubContentUnitId{
+    flex:1 1 120px;
+}
+
+.mat-column-Active,
+.mat-column-Action{
+    flex:1 1 80px;
+}

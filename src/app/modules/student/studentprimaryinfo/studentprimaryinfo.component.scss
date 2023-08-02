@@ -1,0 +1,60 @@
+::ng-deep .mat-tab-body-content {
+    width   : 99% !important;
+    overflow: hidden !important;
+}
+button{
+    margin-right: 15px;
+}
+mat-form-field {
+    margin-right: 15px;
+    width       : 98%;
+    max-width   : 300px;
+}
+
+mat-radio-button {
+    margin-right: 10px;
+}
+
+.radio {
+    color          : rgb(122, 121, 121);
+    //width:20%;
+    border-collapse: collapse;
+    border-radius  : 5px;
+    padding-top    : 15px;
+    padding-left   : 15px;
+    //padding: 5px;
+    //height: 60px;
+    border         : solid #eee;
+    border-width   : 1px 1px;
+    display        : grid;
+    place-items    : center;
+    margin-bottom  : 10px;
+   // width: 100%;
+
+}
+
+.innerspan {
+    padding: 10px;
+}
+
+.content {
+    padding   : 15px;
+    min-height: 350px;
+
+}
+
+.demo-tab-group {
+    border: 1px solid #e8e8e8;
+}
+
+.demo-tab-content {
+    padding: 16px;
+}
+
+.mat-form-field-wrapper {
+    padding-bottom: 0px !important;
+}
+.mat-grid-tile-content{
+    display: flex;
+    justify-content: flex-start !important;
+}

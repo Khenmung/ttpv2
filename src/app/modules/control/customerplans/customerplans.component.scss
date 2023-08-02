@@ -1,0 +1,36 @@
+:host{
+    display: flex;
+    justify-content: flex-start;
+    min-height: 92vh;
+    background-color: white;
+}
+.mat-form-field{
+    margin-right: 15px;
+    width:98%;
+}
+.mat-column-Action{
+    justify-content: center;
+    flex: 1 0 80px;
+}
+.mat-column-Active,
+.mat-column-LoginUserCount,
+.mat-column-PersonOrItemCount,
+.mat-column-Action,
+.mat-column-MinCount,
+.mat-column-MinPrice,
+.mat-column-PCPM,
+.mat-column-AmountPerMonth,
+.mat-column-PlanName
+{
+
+    flex:1 0 80px;
+}
+.mat-column-Formula,
+.mat-column-Description{
+    flex: 1 0 200px;
+}
+mat-cell,mat-cell-header{
+    border-right: 1px solid lightgray;
+    padding: 10px;
+    align-self: stretch;
+}

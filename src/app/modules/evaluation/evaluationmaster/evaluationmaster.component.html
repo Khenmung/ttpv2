@@ -1,0 +1,190 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Evaluation Type</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" style="width:350px;margin-right: 15px;">
+            <mat-label>Evaluation</mat-label>
+            <mat-select formControlName="searchEvaluationMasterId" (selectionChange)="ClearData()">
+                <mat-option *ngFor="let item of EvaluationMasterForDropdown"
+                    [value]="item.EvaluationMasterId">{{item.EvaluationName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width:150px;margin-right: 15px;">
+            <mat-label>class group</mat-label>
+            <mat-select formControlName="searchClassGroupId" (selectionChange)="ClearData()">
+                <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassGroupId">{{item.GroupName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button [disabled]="loading" matTooltip="save" mat-raised-button color="accent" (click)="GetEvaluationMaster()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+
+    <mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="EvaluationMasterId">
+            <mat-header-cell *matHeaderCellDef>Id
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.EvaluationMasterId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="EvaluationName">
+            <mat-header-cell *matHeaderCellDef>Evaluation type
+            </mat-header-cell>
+            <mat-cell style="display: flex;" *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.EvaluationName"
+                        [(ngModel)]="element.EvaluationName" [maxlength]="50">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Description">
+            <mat-header-cell *matHeaderCellDef>Description
+            </mat-header-cell>
+            <mat-cell style="display: flex;" *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput (blur)="onBlur(element)" autocomplete="Off" [value]="element.Description"
+                        [(ngModel)]="element.Description" [maxlength]="256">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Duration">
+            <mat-header-cell *matHeaderCellDef> Duration (in minutes) </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input type="number" autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.Duration"
+                        [(ngModel)]="element.Duration" [maxlength]="8">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="StartTime">
+            <mat-header-cell *matHeaderCellDef> Start Date and Time </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input [value]="element.StartTime" matInput [(ngModel)]="element.StartTime"
+                        [ngxMatDatetimePicker]="StartTime" autocomplete="off">
+                    <mat-datepicker-toggle matSuffix [for]="$any(StartTime)"></mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker #StartTime [showSpinners]="true" [showSeconds]="false" [stepHour]="1"
+                        [stepMinute]="1" [stepSecond]="1" [touchUi]="false" [enableMeridian]="true">
+                    </ngx-mat-datetime-picker>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="ClassGroupId">
+            <mat-header-cell *matHeaderCellDef> Class Group </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="onBlur(element)" [value]="element.ClassGroupId"
+                        [(ngModel)]="element.ClassGroupId">
+                        <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassGroupId">{{item.GroupName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="DisplayResult">
+            <mat-header-cell *matHeaderCellDef> Display Result </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateDisplayResult(element,$event)"
+                    [checked]="element.DisplayResult">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="AppendAnswer">
+            <mat-header-cell *matHeaderCellDef> Updatable </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateUpdatable(element,$event)"
+                    [checked]="element.AppendAnswer">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ProvideCertificate">
+            <mat-header-cell *matHeaderCellDef style="display:flex; justify-content: center;"> Provide Certificate
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateProvideCertificate(element,$event)"
+                    [checked]="element.ProvideCertificate">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Confidential">
+            <mat-header-cell *matHeaderCellDef style="display:flex; justify-content: center;"> Confidential
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateConfidential(element,$event)"
+                    [checked]="element.Confidential">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FullMark">
+            <mat-header-cell *matHeaderCellDef>Full Mark
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input type="number" autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.FullMark"
+                        [(ngModel)]="element.FullMark" [maxlength]="3">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="PassMark">
+            <mat-header-cell *matHeaderCellDef>Pass Mark
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input type="number" autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.PassMark"
+                        [(ngModel)]="element.PassMark" [maxlength]="3">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef>Active
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                <button style="margin-right: 15px;" [disabled]="loading || !element.Action || Permission=='read'"
+                    matTooltip="save" mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+                <button [disabled]="loading 
+                                || !element.Action 
+                                || Permission !='rwd'" matTooltip="delete" mat-mini-fab (click)="delete(element)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+        </mat-row>
+    </mat-table>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,100]"></mat-paginator>
+</div>
+<!-- <button type="button" class="btn btn-outline-secondary mr-2" placement="top"
+            ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
+            Popover on top
+        </button> -->
+<!-- </div> -->
+<!-- </div> -->

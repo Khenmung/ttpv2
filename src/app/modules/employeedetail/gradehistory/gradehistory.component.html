@@ -1,0 +1,203 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Employeement History</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
+        <!-- <div style="width: 100%;"> -->
+            <mat-table style="min-height: 40vh;width: 1760px;" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="EmployeeGradeHistoryId">
+                    <mat-header-cell *matHeaderCellDef>Id
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.EmployeeGradeHistoryId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || Permission=='read'|| EmployeeId==0" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="justify-content: center;">
+                        <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save" 
+mat-raised-button color="accent"
+                            (click)="UpdateOrSave(element)">
+                             <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>Active
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="IsCurrent">
+                    <mat-header-cell *matHeaderCellDef>Current
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateIsCurrent(element,$event)"
+                            [checked]="element.IsCurrent==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>                
+                <ng-container matColumnDef="EmpGradeId">
+                    <mat-header-cell *matHeaderCellDef>Grade
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150" >
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.EmpGradeId"
+                                [(ngModel)]="element.EmpGradeId">
+                                <mat-option *ngFor="let item of Grades" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="DesignationId">
+                    <mat-header-cell *matHeaderCellDef>Designation
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.DesignationId"
+                                [(ngModel)]="element.DesignationId">
+                                <mat-option *ngFor="let item of Designations" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="JobTitleId">
+                    <mat-header-cell *matHeaderCellDef>Job Title
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.JobTitleId"
+                                [(ngModel)]="element.JobTitleId">
+                                <mat-option *ngFor="let item of JobTitles" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="DepartmentId">
+                    <mat-header-cell *matHeaderCellDef>Department
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.DepartmentId"
+                                [(ngModel)]="element.DepartmentId">
+                                <mat-option *ngFor="let item of Departments" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="DesignationId">
+                    <mat-header-cell *matHeaderCellDef>Designation
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <input matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="100"
+                                [value]="element.DesignationId" [(ngModel)]="element.DesignationId">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="WorkAccountId">
+                    <mat-header-cell *matHeaderCellDef>Work Account
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.WorkAccountId"
+                                [(ngModel)]="element.WorkAccountId">
+                                <mat-option *ngFor="let item of WorkAccounts" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ManagerName">
+                    <mat-header-cell *matHeaderCellDef>Manager
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <input type="text" 
+                            matInput [value]="element.ManagerName" 
+                            [(ngModel)]="element.ManagerName" 
+                            [matAutocomplete]="ManagerAutoComplete">
+                            <mat-autocomplete (optionSelected)="UpdateManagerId(element)" #ManagerAutoComplete="matAutocomplete">
+                                <mat-option *ngFor="let option of filterEmployee(element.ManagerName)" [value]="option.Name">
+                                    {{option.Name}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                        
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ReportingToName">
+                    <mat-header-cell *matHeaderCellDef>Reporting To
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <input type="text" (blur)="UpdateReportingToId(element)" 
+                            matInput [value]="element.ReportingToName" 
+                            [(ngModel)]="element.ReportingToName" 
+                            [matAutocomplete]="ManagerAutoComplete">
+                            <mat-autocomplete #ManagerAutoComplete="matAutocomplete">
+                                <mat-option *ngFor="let option of filterEmployee(element.ReportingToName)" [value]="option.Name">
+                                    {{option.Name}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                        
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FromDate">
+                    <mat-header-cell *matHeaderCellDef> From </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <input [(ngModel)]="element.FromDate" [value]="element.FromDate" matInput [matDatepicker]="FromDate" autocomplete="off">
+                            <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
+                            <mat-datepicker #FromDate></mat-datepicker>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ToDate">
+                    <mat-header-cell *matHeaderCellDef> To </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <input [value]="element.ToDate" [(ngModel)]="element.ToDate" 
+                            matInput [matDatepicker]="ToDate" autocomplete="off">
+                            <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>
+                            <mat-datepicker #ToDate></mat-datepicker>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Remarks">
+                    <mat-header-cell *matHeaderCellDef>Remarks
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <input matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="256"
+                                [value]="element.Remarks" [(ngModel)]="element.Remarks" autocomplete="Off">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" style="align-items: baseline;">
+                </mat-row>
+            </mat-table>
+        </div>
+
+    <!-- </div>
+</div> -->

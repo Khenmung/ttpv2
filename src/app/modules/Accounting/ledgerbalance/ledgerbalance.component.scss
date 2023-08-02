@@ -1,0 +1,26 @@
+mat-form-field {
+    width       : 98%;
+    margin-right: 15px;
+}
+mat-cell,mat-header-cell{
+    border-right: 1px solid lightgray;
+    padding: 10px;
+}
+.mat-column-AccountNatureId,
+.mat-column-AccountGroupId,
+.mat-column-GeneralLedgerName,
+.mat-column-ContactNo,
+.mat-column-ContactName,
+.mat-column-Email,
+.mat-column-Address,
+.mat-column-AccountSubGroupId {
+    flex: 1 0 150px;
+}
+
+.mat-column-GeneralLedgerId {
+    flex: 1 0 70px;
+}
+.mat-column-Active,
+.mat-column-Action{
+    flex: 1 0 100px;
+}

@@ -1,0 +1,63 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Verify Result Status</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <form [formGroup]="searchForm">
+                <mat-form-field appearance="outline" [style.width.px]="200">
+                    <mat-label>Exam</mat-label>
+                    <mat-select formControlName="searchExamId">
+                        <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                            {{item.ExamName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <!-- <mat-form-field appearance="outline" [style.width.px]="200">
+                    <mat-label>Class</mat-label>
+                    <mat-select formControlName="searchClassId">
+                        <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                            {{item.ClassName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+                <button [disabled]="loading" mat-raised-button color="accent" (click)="GetExamStudentResults()">
+                    <mat-icon>search</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </form>
+            <mat-table #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="ExamName">
+                    <mat-header-cell *matHeaderCellDef>Exam Name
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.ExamName}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassName">
+                    <mat-header-cell *matHeaderCellDef> Class </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.ClassName}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef> Verified </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox [disabled]="true" (click)="$event.stopPropagation()"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,100]"></mat-paginator>
+        </div>
+    </div>
+</div>

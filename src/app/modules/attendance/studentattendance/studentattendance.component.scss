@@ -1,0 +1,29 @@
+mat-card{
+    //margin-top: 100px;
+    margin-left: auto;
+    width: 100%;
+}
+mat-form-field,button{
+    margin-right: 15px;
+    
+}
+mat-cell:first-of-type{
+    padding-left: 0px;
+}
+.mat-column-AttendanceStatusId{
+    justify-content: center;
+    flex:1 0 120px;
+}
+.mat-column-Action{
+    justify-content: center;
+    //flex:1 1 100px;
+    min-width: 100px;
+}
+.mat-column-StudentRollNo{
+    flex:1 0 180px;
+    
+}
+.mat-column-Remarks{
+    justify-content: center;
+    flex:1 0 150px;
+}

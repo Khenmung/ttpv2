@@ -1,0 +1,21 @@
+{
+    "api/*": {
+        "target":"https://ettest.ttpsolutions.in", 
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel":"debug"
+    },
+    "odata/": {
+        "target":"https://ettest.ttpsolutions.in", 
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel":"debug"
+    },
+    "Token": {
+        "target":"https://ettest.ttpsolutions.in", 
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel":"debug"
+    }
+   
+}

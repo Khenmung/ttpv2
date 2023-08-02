@@ -1,0 +1,162 @@
+<!-- <div> -->
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Salary Slip</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <div style="margin-left: 15px;">
+        <form [formGroup]="searchForm">
+            <mat-form-field style="margin-right: 15px;width:200px" appearance="outline">
+                <mat-label>Employee</mat-label>
+                <input type="text" matInput formControlName="searchEmployee" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                        {{option.Name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field style="margin-right: 15px;width:150px" appearance="outline">
+                <mat-label>Month</mat-label>
+                <mat-select formControlName='searchMonth'>
+                    <!-- <mat-option [value]="0">select</mat-option> -->
+                    <mat-option *ngFor="let item of Months" [value]="item.val">{{item.MonthName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="margin-right: 15px;width:150px">
+                <mat-label>Department</mat-label>
+                <mat-select formControlName="searchDepartment">
+                    <mat-option [value]="0">select</mat-option>
+                    <mat-option *ngFor="let item of Departments"
+                        [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- <mat-form-field [style.width.px]="50">
+                    <mat-label>Year</mat-label>
+                    <input type="number" matInput formControlName="searchYear" min="2020" max="2050" autocomplete="Off">
+                </mat-form-field> -->
+            <button [disabled]="loading" style="margin-right: 15px;" mat-raised-button color="accent"
+                (click)="GetEmployeeSalaryComponents('read')">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+            <!-- <button [disabled]="loading" mat-raised-button color="accents" (click)="GetEmployeeSalaryComponents('update')">
+            <mat-icon>all_out</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button> -->
+        </form>
+        <div id="printSection" style="display:flex;flex-direction:column;margin-top: 50px;margin-bottom: 50px;">
+            <div style="display:flex;justify-content: center;" *ngIf="EarnedSalary.length>0">
+                <div style="margin-right: 15px;" *ngIf="logourl.length>0" [innerHTML]="logourl"></div>
+                <div style="display: flex;justify-content: center;flex-direction: column;">
+                    <div *ngFor="let item of SalarySlipHeader" [innerHTML]="item.Description|encodeHTML"
+                        style="display: flex;justify-content: center;">
+                    </div>
+                </div>
+            </div>
+            <hr style="width: 100%" />
+            <div style="display:flex;justify-content: center; font-weight: bold">
+                <div>Salary Slip for {{ Employee.MonthYear }} </div>
+            </div>
+            <div style="column-count: 2;margin: 20px;">
+                <div style="display:flex;">
+                    <div style="width:100px">Name</div>
+                    <div>:&nbsp;{{Employee.Name}}</div>
+                </div>
+                <div style="display:flex;">
+                    <div style="width:100px">Designation</div>
+                    <div>:&nbsp;{{Employee.Designation}}</div>
+                </div>
+                <div style="display:flex;">
+                    <div style="width:100px">Grade</div>
+                    <div>:&nbsp;{{Employee.Grade}}</div>
+                </div>
+                <div style="display:flex;">
+                    <div style="width:100px">Department</div>
+                    <div>:&nbsp;{{Employee.Department}}</div>
+                </div>
+                <div style="display:flex;">
+                    <div style="width:100px">PF Account</div>
+                    <div>:&nbsp;{{Employee.PFAccountNo}}</div>
+                </div>
+                <div style="display:flex;">
+                    <div style="width:100px">Bank Account</div>
+                    <div>:&nbsp;{{Employee.BankAccountNo}}</div>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:rows;width:650px">
+                <mat-table #table [dataSource]="EarnedDataSource" style="width: 650px">
+                    <ng-container matColumnDef="SlNo">
+                        <mat-header-cell *matHeaderCellDef>Sl.No.
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            {{element.SlNo}}
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef>
+                        </mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="SalaryComponent">
+                        <mat-header-cell *matHeaderCellDef>Components
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element ">
+                            {{element.SalaryComponent}}
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef style="justify-content: flex-end;">
+                            <b>Total Earned</b>
+                        </mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="Amount">
+                        <mat-header-cell *matHeaderCellDef style="justify-content: flex-end;"> Amount
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element"
+                            style="justify-content: flex-end;border-right: 1px solid lightgray;">
+                            {{element.Amount}}
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef
+                            style="justify-content: flex-end;border-right: 1px solid lightgray;">
+                            {{EarnedTotal}}
+                        </mat-footer-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns" class="element-row"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+                    <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+                </mat-table>
+                <mat-table #table [dataSource]="DeductionDataSource" style="width: 700px">
+                    <ng-container matColumnDef="SalaryComponent">
+                        <mat-header-cell *matHeaderCellDef>Components
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            {{element.SalaryComponent}}
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef style="justify-content: flex-end;">
+                            <b>Total Deduction</b>
+                        </mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="Amount">
+                        <mat-header-cell *matHeaderCellDef style="justify-content: flex-end;"> Amount
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element"
+                            style="justify-content: flex-end; border-right: 1px solid lightgray;">
+                            {{element.Amount}}
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef
+                            style="justify-content: flex-end;border-right: 1px solid lightgray;">
+                            {{DeductionTotal}},&nbsp;&nbsp;<b>Net Income</b>: {{NetIncome}}
+                        </mat-footer-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="DeductionDisplayedColumns" class="element-row"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: DeductionDisplayedColumns;" class="element-row"></mat-row>
+                    <mat-footer-row *matFooterRowDef="DeductionDisplayedColumns"></mat-footer-row>
+                </mat-table>
+            </div>
+        </div>
+        <div style="display: flex;flex-direction: row;justify-content: center;">
+            <button [disabled]="loading" matTooltip="print" style="margin: 15px;" printSectionId="printSection"
+                [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
+                <mat-icon>print</mat-icon>
+            </button>
+        </div>
+    </div>
+<!-- </div> -->

@@ -1,0 +1,25 @@
+mat-form-field,button{
+    margin-right: 15px;
+}
+// mat-cell:first-of-type{
+//     padding-left: 0px;
+// }
+.mat-column-Student{
+    flex:1 0 140px
+}
+.mat-column-Division,
+.mat-column-Grade,
+.mat-column-Percent,
+.mat-column-TotalMarks{
+    flex:1 1 100px
+}
+.mat-column-Section,
+.mat-column-RollNo{
+    flex:1 1 80px
+}
+.mat-column-Rank{
+    flex:1 1 60px
+}
+.element-row{
+ min-height: 29px;   
+}

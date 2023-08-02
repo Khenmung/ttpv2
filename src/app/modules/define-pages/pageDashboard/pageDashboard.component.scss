@@ -1,0 +1,45 @@
+:host{
+  max-width: 78%;
+}
+mat-card{
+  //border-top-left-radius: 1rem;
+  background-color: lightgray;
+  margin-top: 15px;
+}
+mat-table{
+  background-color: rgb(255, 255, 255,.9);
+}
+// table{
+//     width: 100%;
+//    }
+button{
+       margin-right: 15px;
+       border-style: none;
+       outline: none;
+   }   
+  //  .example-container {
+  //   display: flex;
+  //   flex-direction: column;
+  //   min-width: 300px;
+  // }
+  
+  // .example-header {
+  //   min-height: 64px;
+  //   padding: 8px 24px 0;
+  // }
+  
+  .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  .mat-table {
+    overflow: auto;
+    padding: 20px;
+    //background-color:lightblue;
+    //color:white;
+  }
+  th.mat-header-cell, td.mat-cell, td.mat-footer-cell{
+    width: 300px;
+    border-bottom-width: 0px;
+  }

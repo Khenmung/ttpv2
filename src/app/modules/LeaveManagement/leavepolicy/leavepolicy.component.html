@@ -1,0 +1,92 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Leave Policy</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<div style="padding: 15px;" fxLayout="row wrap">
+    <div style="width: 100%;">
+        <!-- <form [formGroup]="searchForm">
+                <mat-form-field [style.width.pc]="25" appearance="outline">
+                    <mat-label>Employee</mat-label>
+                    <input type="text" matInput formControlName="searchEmployee" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{option.Name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-select>
+                        <mat-option *ngFor="let month of DropDownMonths" [value]="month['val']">{{month['MonthName']}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button [disabled]="loading" mat-raised-button (click)="GetLeavePolicy()">
+                     <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                </button>
+            </form> -->
+        <mat-table #table [dataSource]="dataSource">
+            <ng-container matColumnDef="Leave">
+                <mat-header-cell *matHeaderCellDef>Leave
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Leave}}
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="FormulaOrDays">
+                <mat-header-cell *matHeaderCellDef>Formula Or Days
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field [style.width.px]="350">
+                        <textarea matInput (blur)="onBlur(element)" [(ngModel)]="element.FormulaOrDays"
+                            [value]="element.FormulaOrDays"></textarea>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Active">
+                <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                        [checked]="element.Active==1?true:false">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef>
+                    <button [disabled]="loading" matTooltip="add new" mat-mini-fab (click)="addnew()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                    <button [disabled]="loading || !element.Action" matTooltip="save" mat-raised-button color="accent"
+                        (click)="UpdateOrSave(element)">
+                        <mat-icon>save</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+        </mat-table>
+    </div>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>Below employee property can be used in leave policy formula inside "[ ]".</li>
+            <li>
+                Grade, Department, WorkAccount, JobTitle, Designation, Gender, State, Country,
+                Category, EmploymentStatus, EmploymentType, EmploymentTerm, MaritalStatus, NoOfMonths, NoOfYears, Age, PreviousYearCB.
+            </li>
+        </ul>
+    </span>
+</div>

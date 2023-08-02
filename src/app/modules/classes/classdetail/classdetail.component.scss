@@ -1,0 +1,42 @@
+:host{
+    width: 100%;
+}
+mat-cell:first-of-type,mat-header-cell:first-of-type{
+    padding-left: 0px;
+}
+mat-form-field{
+    //margin-right: 15px;
+    width:98%;
+}
+button{
+    margin-right: 15px;
+}
+.mat-column-ClassName,.mat-column-StartDate,
+.mat-column-EndDate{
+    flex: 1 0 150px;
+    padding-left: 0px;
+}
+.mat-column-CategoryId,.mat-column-DurationId,.mat-column-StudyAreaId,.mat-column-StudyModeId{
+    flex: 1 0 125px;
+}
+.mat-column-MaxStudent,.mat-column-MinStudent
+{
+    flex: 1 0 100px;
+}
+.mat-column-ClassId{
+    flex: 1 0 40px;
+}
+.mat-column-Sequence,.mat-column-Active,.mat-column-Action,.mat-column-Confidential{
+    justify-content: center;
+    flex: 1 0 80px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-end {
+    border-radius: 0px !important;
+  }
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-start {
+    border-radius: 0px !important;
+  }
+  

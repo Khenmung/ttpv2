@@ -1,0 +1,75 @@
+<mat-card>
+    <mat-card-title>Messages</mat-card-title>
+    <mat-card-subtitle></mat-card-subtitle>
+    <mat-card-content fxLayout="column">
+      <div class="example-header">
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($any($event.target).value)" placeholder="Search">
+        </mat-form-field>
+      </div>
+      
+      <div class="example-container mat-elevation-z8">
+  
+        <mat-table [dataSource]="dataSource" matSort>
+          <!-- <ng-container *ngFor="let col of displayedColumns" [matColumnDef]="col">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ col }} </th>
+        <td mat-cell *matCellDef="let element"> {{ element[col] }} </td>
+      </ng-container> -->
+          <!--Position Column -->
+          <ng-container matColumnDef="MessageId" hidden="true">
+            <th mat-header-cell *matHeaderCellDef hidden="true"> No. </th>
+            <td mat-cell *matCellDef="let element" hidden="true"> {{element.MessageId}} </td>
+          </ng-container>
+          <!-- Name Column -->
+          <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.Name}} </td>
+          </ng-container>
+          <ng-container matColumnDef="Email">
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let element"> {{element.Email}} </td>
+          </ng-container>
+          <!-- Weight Column -->
+          <ng-container matColumnDef="Subject">
+            <th mat-header-cell *matHeaderCellDef> Subject </th>
+            <td mat-cell *matCellDef="let element"> {{element.Subject}} </td>
+          </ng-container>
+          <ng-container matColumnDef="MessageBody" >
+            <th mat-header-cell *matHeaderCellDef hidden="true"> Message</th>
+            <td mat-cell *matCellDef="let element" hidden="true"> </td>
+          </ng-container>
+          <ng-container matColumnDef="Active">
+            <th mat-header-cell *matHeaderCellDef>
+              <!-- <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+              </mat-checkbox>-->
+               Read
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="updateActive(element,$event)"
+                            [checked]="selection.isSelected(element)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="Action">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="row">
+                <button [disabled]="loading" mat-raised-button
+                  (click)="view(element.MessageId)"><mat-icon>pageview</mat-icon></button>
+              </div>
+            </td>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;">
+            <!-- <button [disabled]="loading" (click)="edit()">Edit</button>
+          <button [disabled]="loading" (click)="cancelOrDelete()">Cancel</button> -->
+          </mat-row>
+        </mat-table>
+  
+        <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>

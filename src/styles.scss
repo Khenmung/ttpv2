@@ -1,0 +1,314 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Ewert&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Smooch&display=swap');
+@import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
+@import '../node_modules/@angular/material/theming';
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
+/* Importing Bootstrap SCSS file. */
+@import '../node_modules/bootstrap/scss/bootstrap';
+//@import '~quill/dist/quill.snow.css';
+
+@include mat-core();
+$bv-brand: (50: #ffffff,
+    100: #dde6f3,
+    200: #b4c9e4,
+    300: #7fa3d1,
+    400: #6992c9,
+    500: #5282c1,
+    600: #4072b4,
+    700: #38649d,
+    800: #305687,
+    900: #284770,
+    A100: #ffffff,
+    A200: #dde6f3,
+    A400: #6992c9,
+    A700: #38649d,
+    contrast: (50: $black-87-opacity,
+        100: $black-87-opacity,
+        200: $black-87-opacity,
+        300: $black-87-opacity,
+        400: $black-87-opacity,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: $black-87-opacity,
+        A200: $black-87-opacity,
+        A400: $black-87-opacity,
+        A700: white,
+    ));
+
+$my-app-primary: mat-palette($mat-indigo);
+// Accent colour
+$my-app-accent : mat-palette($mat-lime, 500, 100, 100);
+
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent);
+@include angular-material-theme($my-app-theme);
+
+// $my-app-theme: mat-dark-theme($my-app-primary, $my-app-accent);
+// @include angular-material-theme($my-app-theme);
+
+
+:root {
+    --maincolor1    : #1E4A75;
+    --maincolor2    : #00203F;
+    --mainTitleColor: #28629C;
+    --onHoverColor  : blueviolet;
+}
+
+mat-card {
+    margin-left  : 5px;
+    //width:80vw;
+    //min-height : 100vh;
+
+}
+.mat-ink-bar{
+    background-color: lightgreen;
+}
+@media only screen and (max-width: 768px) {
+    mat-card {
+        margin-left : 0px;
+        margin-right: 0px;
+        padding-left: 0px;
+    }
+    mat-form-field{
+        width:100%;
+    }
+    .matcardmargin{
+        margin-left : 0px;
+        margin-right: 20px;
+    }
+
+}
+@media only screen and (min-width: 769px) {
+    mat-card {
+        margin-left : .5%;
+        margin-right: 0px;
+    }
+    mat-form-field{
+        width:200px;
+    }
+    .matcardmargin{
+        margin-left : 0px;
+        margin-right: 20px;
+    }
+    
+}
+
+ 
+.CertificateFont {
+    font-family: 'Ewert', cursive;
+}
+
+.mat-icon {
+    vertical-align: middle;
+}
+
+
+html,
+body {
+    height            : 100%;
+    margin            : 0;
+    font-family       : Roboto, "Helvetica Neue", sans-serif;
+    //background-color: #0F5298;
+}
+
+.full-height {
+    height  : 100%;
+    overflow: hidden;
+}
+
+.blue-snackbar {
+    white-space: pre-wrap;
+    background : #2196F3;
+    color      : white;
+
+    .mat-simple-snackbar-action {
+        color: white !important;
+    }
+}
+
+.red-snackbar {
+    background: #F44336;
+    color     : white;
+    white-space: pre-wrap;
+    .mat-simple-snackbar-action {
+        color: white !important;
+    }
+}
+.green-snackbar {
+    background: #cddc39;
+    color     : black;
+    white-space: pre-wrap;
+    .mat-simple-snackbar-action {
+        color: white !important;
+    }
+}
+
+a .ng-star-inserted:hover {
+    cursor                    : pointer;
+    background-color          : var(--onHoverColor);
+    border-top-right-radius   : 5px;
+    border-bottom-right-radius: 5px;
+    color                     : white;
+    //clip-path       : polygon(0 0, 90% 0, 100% 50%, 90% 100%,0% 100%);
+}
+
+input[type="radio"] {
+    width : 25px;
+    height: 25px;
+}
+
+.confirm-dialog-container .mat-dialog-container {
+    border-radius: .25em .25em .4em .4em;
+    padding      : 0px;
+}
+
+.confirm-dialog-container .content-container {
+    margin : 5px 5px 15px 5px;
+    color  : #8f9cb5;
+    display: flex;
+}
+
+.confirm-dialog-container #close-icon {
+    margin-left: auto;
+    order      : 2;
+    font-weight: bolder;
+}
+
+.confirm-dialog-container #yes-button {
+    height          : 50px;
+    width           : 50%;
+    background-color: #b6bece;
+    color           : black;
+    border-radius   : 0px;
+}
+
+.confirm-dialog-container #no-button {
+    height          : 50px;
+    width           : 50%;
+    background-color: teal;
+    color           : black;
+    border-radius   : 0px;
+}
+
+.confirm-dialog-container span.content-span {
+    padding   : 35px 16px;
+    text-align: center;
+    font-size : 20px;
+}
+
+.logo {
+    margin-top    : 0px;
+    padding-left  : 2rem;
+    padding-bottom: 1rem;
+    position      : absolute;
+    z-index       : 10;
+    width         : 150px;
+}
+
+.mat-form-field-wrapper {
+    padding-bottom: .6em !important;
+}
+
+.mat-form-field-infix {
+    padding-bottom: 1em !important;
+}
+
+.disableDiv {
+    pointer-events: none;
+}
+
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin     : 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+@media print {
+    html, body {
+        
+        //margin: 25mm 25mm 25mm 25mm;
+        padding: 0px;
+        height: 100%;
+        min-width: auto !important;
+        //font-family: Arial, Helvetica, sans-serif;
+        //font-family: 'F25 Bank Printer', Arial, Helvetica, sans-serif;
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+    }
+    .element-row{
+        min-height: 29px;   
+       }
+    // mat-header-cell{
+    //     font-size: 14pt;
+    // }
+    mat-table,mat-cell,div,span{
+        //font-size: 12pt;
+        box-sizing: border-box;
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+        //font-family: 'F25 Bank Printer', Arial, Helvetica, sans-serif;
+        //width:100%;
+    }
+    @page{ size:auto !important}
+      
+}
+.ck-editor__editable_inline {
+    min-height: 500px !important;
+}
+.mat-mdc-card-title{
+    padding: 30px;
+    font-size: xx-large !important;
+    font-weight: bold !important;
+}
+.mat-mdc-tab-header{
+    border-bottom:1px solid lightgray ;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }
+// .mat-mdc-table mat-header-row.mat-mdc-header-row, .mat-mdc-table mat-row.mat-mdc-row, .mat-mdc-table mat-footer-row.mat-mdc-footer-cell{
+//     height: 90px;
+//   }
+// @font-face {
+//     font-family: 'Material Icons';
+//     font-style: normal;
+//     font-weight: 400;
+//     src: url(iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
+//     src: local('Material Icons'),
+//          local('MaterialIcons-Regular'),
+//          url(iconfont/MaterialIcons-Regular.woff2) format('woff2'),
+//          url(iconfont/MaterialIcons-Regular.woff) format('woff'),
+//          url(iconfont/MaterialIcons-Regular.ttf) format('truetype');
+//  }
+// @import '~material-design-icons/iconfont/material-icons.css'
+ .material-icons {
+   font-family: 'Material Icons';
+   font-weight: normal;
+   font-style: normal;
+   font-size: 24px;  /* Preferred icon size */
+   display: inline-block;
+   line-height: 1;
+   text-transform: none;
+   letter-spacing: normal;
+   word-wrap: normal;
+   white-space: nowrap;
+   direction: ltr;
+ 
+   /* Support for all WebKit browsers. */
+   -webkit-font-smoothing: antialiased;
+   /* Support for Safari and Chrome. */
+   text-rendering: optimizeLegibility;
+ 
+   /* Support for Firefox. */
+   -moz-osx-font-smoothing: grayscale;
+ 
+   /* Support for IE. */
+   font-feature-settings: 'liga';
+ }
+

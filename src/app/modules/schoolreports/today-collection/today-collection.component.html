@@ -1,0 +1,166 @@
+<div style="padding:15px">
+    <strong>Date wise collection</strong>
+</div>
+<!-- <alert></alert> -->
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<form [formGroup]="SearchForm">
+    <div style="display:flex;">
+        <mat-form-field appearance="outline">
+            <mat-label>Class</mat-label>
+            <mat-select formControlName="searchClassId">
+                <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                    {{item.ClassName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Name-class-section-roll no</mat-label>
+            <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.Name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>From Date</mat-label>
+            <input formControlName="FromDate" matInput [matDatepicker]="FromDate" autocomplete="off">
+            <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
+            <mat-datepicker #FromDate></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>To Date</mat-label>
+            <input formControlName="ToDate" matInput [matDatepicker]="ToDate" autocomplete="off">
+            <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>
+            <mat-datepicker #ToDate></mat-datepicker>
+        </mat-form-field>
+        <div style="display:flex;align-items: center;">
+            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetStudentFeePaymentDetails()">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </div>
+    </div>
+</form>
+<!-- <div *ngIf="DateWiseCollection.length>0"> -->
+<div id="printSection" style="overflow: auto;">
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="Name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ReceivedBy">
+            <mat-header-cell *matHeaderCellDef> Received By </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.ReceivedBy}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ReceiptDate">
+            <mat-header-cell *matHeaderCellDef> Receipt Date </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.ReceiptDate|date:'dd/MM/yyyy'}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ReceiptNo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Receipt No. </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ReceiptNo}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="PaymentType">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Account </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.PaymentType}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Status}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="TotalAmount">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Amount &#x20b9;</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.TotalAmount}}
+            </mat-cell>
+        </ng-container>
+        <!-- Expanded Content Column - The detail row is made up of this one column -->
+        <ng-container matColumnDef="expandedDetail">
+            <mat-cell *matCellDef="let row" style="display: flex;flex-direction: column;align-items: flex-start;">
+                <div
+                    style="padding:5px;display:flex;flex-direction: row;background-color:lightgray;border-bottom:1px solid lightgray ;">
+                    <div class="mat-header-cell" style="width: 150px;">Fee Name</div>
+                    <div class="mat-header-cell" style="display: flex;justify-content: end; width: 150px;">Amount
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction: row;" *ngFor="let voucher of row.element.AccountingVouchers">
+                    <div style="padding-bottom: 5px;border-bottom: 1px solid lightgray; width: 150px;">
+                        {{voucher.ClassFee==null?'':voucher.ClassFee.FeeDefinition.FeeName}}</div>
+                    <div
+                        style="display:flex;justify-content: end;border-bottom: 1px solid lightgray; padding-bottom: 5px;width: 150px;">
+                        {{voucher.Amount}}</div>
+                </div>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: DisplayColumns;" matRipple class="pagebreak"
+            [class.expanded]="expandedElement == row" (click)="expandedElement = row"></mat-row>
+        <mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow" style="overflow: hidden"
+            [@detailExpand]="(row.element == expandedElement || allRowsExpanded) ? 'expanded' : 'collapsed'">
+
+            <!-- [@detailExpand]="row.element == expandedElement ? 'expanded' : 'collapsed'" style="overflow: hidden"> -->
+        </mat-row>
+    </mat-table>
+
+    <div style="padding-top: 15px;display:flex; flex-direction: row;flex-wrap: wrap;">
+        <div style="margin:10px 15px 20px 10px;padding-bottom: 15px; border: 1px solid lightgray;">
+            <div style="padding: 15px 20px 0px 20px;"><strong>Fee Category</strong></div>
+            <div *ngFor="let item of HeadsWiseCollection"
+                style="padding: 15px 15px 0px 20px; min-width:450px; display: flex;flex-direction: row;justify-content: center;align-items: center;">
+
+                <div style="width:100%;">{{item.FeeCategory}}</div>
+                <div style="width:100%;display: flex;justify-content: end;">&#x20b9; {{item.Amount}}</div>
+            </div>
+        </div>
+        <div style="margin:10px 20px 20px 10px;padding-bottom: 15px; border: 1px solid lightgray;">
+            <div style="padding: 15px 20px 0px 20px;"><strong>Receipt Type</strong></div>
+            <div *ngFor="let item of GroupByPaymentType"
+                style="padding: 15px 15px 0px 20px; min-width:450px; display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                <div style="width:100%;">{{item.PaymentType}}</div>
+                <div style="width:100%;display: flex;justify-content: end;">&#x20b9; {{item.TotalAmount}}</div>
+            </div>
+            <div
+                style="padding: 15px 15px 0px 20px; min-width:450px;display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                <div style="width:100%;">Cancelled</div>
+                <div style="width:100%;display: flex;justify-content: end;">&#x20b9; {{CancelledAmount}}</div>
+            </div>
+            <hr />
+            <div
+                style="padding: 0px 15px 0px 20px; min-width:450px;display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                <div *ngIf="GrandTotalAmount>0" style="width:100%;"><strong>Total Collection</strong></div>
+                <div style="width:100%;display: flex;justify-content: end;">&#x20b9; {{GrandTotalAmount}}</div>
+                <span *ngIf="ErrorMessage.length>0"
+                    style="width:100%;display: flex;justify-content: end;">{{ErrorMessage}}</span>
+            </div>
+        </div>
+    </div>
+    <mat-divider style="width: 100%;"></mat-divider>
+
+
+    <!-- <hr style="color:lightgrey;"> -->
+
+</div>
+<div style="display: flex;flex-direction: row;justify-content: space-between;">
+    <div style="display: flex;flex-direction: row;padding: 15px;">
+        <button style="margin-right: 15px;" mat-raised-button (click)="toggle()">{{allRowsExpanded ? 'Collapse' :
+            'Expand'}}</button>
+        <span fxLayout="row" fxLayoutAlign="center center">
+            <button [disabled]="loading || DateWiseCollection.length ==0" matTooltip="print"
+                printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button>
+                <mat-icon>print</mat-icon>
+            </button>
+        </span>
+    </div>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,100]"></mat-paginator>
+</div>
+<!-- </div> -->

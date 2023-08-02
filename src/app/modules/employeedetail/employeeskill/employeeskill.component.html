@@ -1,0 +1,75 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Employee Skill</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <mat-table #table [dataSource]="dataSource">
+                <ng-container matColumnDef="EmpEmployeeSkillId">
+                    <mat-header-cell *matHeaderCellDef>Id
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.EmpEmployeeSkillId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SkillId">
+                    <mat-header-cell *matHeaderCellDef>Skill
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.SkillId"
+                                [(ngModel)]="element.SkillId">
+                                <mat-option *ngFor="let item of EmployeeSkills" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="ExperienceInMonths">
+                    <mat-header-cell *matHeaderCellDef>Experience (months)
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <input type="number" matInput (blur)="onBlur(element)" autocomplete="Off" [max]="80"
+                                [value]="element.ExperienceInMonths" [(ngModel)]="element.ExperienceInMonths">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>Active
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || Permission=='read' || EmployeeId==0" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save" 
+mat-raised-button color="accent"
+                            (click)="UpdateOrSave(element)">
+                             <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+                </mat-row>
+            </mat-table>
+        </div>
+
+    </div>
+</div>

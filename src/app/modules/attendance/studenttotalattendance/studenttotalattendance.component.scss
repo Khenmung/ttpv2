@@ -1,0 +1,17 @@
+mat-form-field{
+    margin-right: 15px;
+    width:98%;
+}
+.mat-column-ClassName,
+.mat-column-TotalNoOfAttendance
+{
+    flex:1 0 80px;
+}
+.mat-column-Active,.mat-column-Action
+{
+    justify-content: center;
+    flex:1 0 100px;
+}
+.mat-column-TotalAttendanceId{
+    flex: 1 0 60px;
+}

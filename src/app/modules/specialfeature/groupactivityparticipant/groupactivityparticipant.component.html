@@ -1,0 +1,179 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Student Group Activity</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<div style="width: 100%;">
+    <form [formGroup]="searchForm">
+        <div>
+            <mat-form-field appearance="outline" [style.width.px]="300">
+                <mat-label>Group</mat-label>
+                <mat-select formControlName="searchGroupId" (selectionChange)="GroupChanged()">
+                    <mat-option value="0">select</mat-option>
+                    <!-- <mat-optgroup *ngFor="let item of Groups" [label]="item.name" [disabled]="item.disabled"> -->
+                        <mat-option *ngFor="let list of StudentHouses" [value]="list.MasterDataId">
+                            {{list.MasterDataName}}
+                        </mat-option>
+                    <!-- </mat-optgroup> -->
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Activity</mat-label>
+                <mat-select formControlName="searchActivityId" (selectionChange)="SetCategory()">
+                    <mat-option value="0">select</mat-option>
+                    <mat-option *ngFor="let item of ActivityNames" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Category</mat-label>
+                <mat-select formControlName="searchCategoryId" (selectionChange)="CategoryChanged()">
+                    <mat-option *ngFor="let item of ActivityCategory" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Session</mat-label>
+                <mat-select formControlName="searchSessionId" (selectionChange)="SessionChanged()">
+                    <mat-option value="0">select</mat-option>
+                    <mat-option *ngFor="let item of ActivitySessions" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div style="width:100%;display: flex; justify-content: center;">
+            <button [disabled]="loading" style="margin-right:15px" matTooltip="search" mat-raised-button color="accent"
+                (click)="GetSportResult()">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </div>
+    </form>
+    <mat-table #table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="ActivityName">
+            <mat-header-cell *matHeaderCellDef>Activity
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ActivityName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="GroupName">
+            <mat-header-cell *matHeaderCellDef>Group
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.GroupName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Category">
+            <mat-header-cell *matHeaderCellDef>Category
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Category}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="SubCategory">
+            <mat-header-cell *matHeaderCellDef>Sub Category
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.SubCategory}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Session">
+            <mat-header-cell *matHeaderCellDef>Session
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Session}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="view participants"
+                    mat-raised-button color="accent" (click)="GetGroupActivityParticipant(element)">
+                    <mat-icon>pageview</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;let indx=index" class="element-row"
+            style="align-items: center;"></mat-row>
+    </mat-table>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50]"></mat-paginator>
+    <div *ngIf="ShowParticipants">
+        <div style="display:flex;justify-content:flex-end">
+            <form [formGroup]="gap">
+                <mat-form-field appearance="outline" [style.width.px]="350">
+                    <mat-label>Student</mat-label>
+                    <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <mat-option *ngFor="let option of filteredStudents | async" [value]="option">
+                            {{option.Name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <button [disabled]="loading || Permission=='read'" matTooltip="add student" mat-mini-fab
+                    (click)="AddNew()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </form>
+        </div>
+        <mat-table #table [dataSource]="GroupActivityParticipantDataSource">
+            <ng-container matColumnDef="GroupActivityParticipantId">
+                <mat-header-cell *matHeaderCellDef>
+                    Id
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.GroupActivityParticipantId}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Student">
+                <mat-header-cell *matHeaderCellDef>Student
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Student}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Description">
+                <mat-header-cell *matHeaderCellDef>Description
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <input matInput [maxlength]="100" (blur)="onBlur(element)" [value]="element.Description"
+                            [(ngModel)]="element.Description" />
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Active">
+                <mat-header-cell *matHeaderCellDef style="justify-content: center;">Active
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" style="justify-content: center;">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateActive(element,$event)"
+                        [checked]="element.Active">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                    <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                        mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                        <mat-icon>save</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="ParticipantDisplayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: ParticipantDisplayedColumns;let indx=index" class="element-row"
+                style="align-items: center;"></mat-row>
+        </mat-table>
+    </div>
+</div>

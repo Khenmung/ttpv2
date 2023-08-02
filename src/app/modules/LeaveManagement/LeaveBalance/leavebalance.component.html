@@ -1,0 +1,53 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Leave Balance</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<div style="width: 100%;">
+    <form [formGroup]="searchForm">
+        <mat-form-field [style.width.px]="200" appearance="outline">
+            <mat-label>Employee</mat-label>
+            <input type="text" matInput formControlName="searchEmployee" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.Name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>department</mat-label>
+            <mat-select formControlName="searchDepartmentId">
+                <mat-option value="0">select</mat-option>
+                <mat-option *ngFor="let item of Departments"
+                    [value]="item.MasterDataId">{{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button [disabled]="loading" mat-raised-button (click)="RegularizeLeave('read')">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+        <!-- <button style="margin-left: 15px;" [disabled]="RawLeaveBalance.length==0 || loading || PagePermission=='read'" matTooltip="regularize leaves" mat-mini-fab
+            (click)="RegularizeLeave('update')">
+            <mat-icon>all_out</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button> -->
+    </form>
+    <mat-table #table [dataSource]="dataSource">
+
+        <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+            <mat-header-cell *matHeaderCellDef>{{disCol!='Action'?disCol:''}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                        {{element[disCol]}}
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+    </mat-table>
+    <mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50,100]"></mat-paginator>
+</div>

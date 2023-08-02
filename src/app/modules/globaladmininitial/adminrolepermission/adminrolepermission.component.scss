@@ -1,0 +1,15 @@
+mat-form-field{
+    margin-right: 15px;
+    width: 98%;
+}
+.mat-column-FeatureName,.mat-column-PermissionId{
+    flex:0 0 150px;
+}
+.mat-column-Active,.mat-column-Action{
+    justify-content: center;
+    flex:0 0 100px;
+}
+
+.mat-column-ApplicationFeatureRoleId{
+    flex:0 0 100px;
+}

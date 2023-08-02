@@ -1,0 +1,43 @@
+<div style="margin: 15px;font-weight: bold;">Chart Report</div>
+<!-- <alert></alert> -->
+<form [formGroup]="SearchForm">
+  <!-- <div fxLayout="row wrap" fxLayoutAlign="space-between center" fxLayoutGap="15px"> -->
+  <mat-form-field [style.width.px]="250" appearance="outline" style="margin-right: 15px;">
+    <mat-label>Month</mat-label>
+    <mat-select formControlName="searchMonth" (selectionChange)="EnableButton()">
+      <mat-option [value]="0">select</mat-option>
+      <mat-option *ngFor="let item of Months" [value]="item.val">{{item.MonthName}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button [disabled]="loading || ClickedReport" mat-raised-button color="accent" (click)="GetReport()">
+     <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+  </button>
+  <!-- </div> -->
+</form>
+<div id="printSection">
+  <div style="margin:15px 15px 15px 0px;display: flex;flex-direction: row;height: 300px;">
+    <div style="display: flex;flex-direction: column;min-width: 300px;border:1px solid lightgray;margin-right: 15px;">
+      <div style="display: flex;flex-direction: row;margin:25px 15px 0px 15px;justify-content: space-between;">
+        <div style="margin-right: 15px;">Expected Amount for {{SelectedMonth}}:</div>
+        <div> &#x20b9; {{ExpectedAmount}}</div>
+      </div>
+      <div style="display: flex;flex-direction: row;margin:15px;justify-content: space-between;">
+        <div style="margin-right: 15px;">Receipt Amount for {{SelectedMonth}}:</div>
+        <div style="align-items: flex-end;"> &#x20b9; {{ReceiptAmount}}</div>
+      </div>
+    </div>
+    <div style="padding:25px 0px 0px 15px; border: 1px solid lightgray;">
+      <!-- <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+        [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend">
+      </canvas> -->
+    </div>
+  </div>
+  <!-- <span fxLayout="row" fxLayoutAlign="center center">
+  <button [disabled]="loading" matTooltip="print" printSectionId="printSection" [useExistingCss]="true" ngxPrint
+    mat-raised-button>
+    <mat-icon>print</mat-icon>
+  </button>
+</span> -->

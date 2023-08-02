@@ -1,0 +1,53 @@
+:host {
+    width: 100%;
+}
+
+
+button {
+    margin-right: 15px;
+}
+
+//mat-header-cell:first-of-type,
+mat-cell:first-of-type {
+    padding-left: 0px;
+}
+
+mat-header-cell,
+mat-cell {
+    width: 98%;
+}
+
+.mat-column-ClassName {
+    max-width: 150px;
+    flex     : 1 0 100px;
+}
+
+.mat-column-SlotClassSubjectId {
+    max-width: 600px;
+    //flex     : 1 1 500px
+}
+.mat-column-Action {
+    justify-content: center;
+    max-width: 100px;
+    flex: 1 1 100px
+}
+
+
+.wrapper {
+    display      : flex;
+    flex-wrap: wrap;
+    margin-right : 15px;
+    
+
+}
+.innerwrapper{
+    //width:60%;
+    overflow     : work-break;
+    overflow-wrap: break-word;
+    word-wrap    : break-word;
+    word-break: break-all;
+    margin: 15px 15px 15px 0px;
+}
+.element-row{
+    min-height: 120px;
+}

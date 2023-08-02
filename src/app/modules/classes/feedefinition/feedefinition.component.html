@@ -1,0 +1,136 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Fee Definition</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <!-- <form [formGroup]="searchForm">
+                <mat-form-field appearance="outline" [style.width.pc]="25">
+                    <mat-label>Class</mat-label>
+                    <mat-select formControlName="searchClassName">
+                        <mat-option *ngFor="let option of FeeDefinitions" [value]="option.ClassId">
+                            {{option.ClassName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button [disabled]="loading" mat-raised-button (click)="GetClassMasters()">
+                     <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                </button>
+            </form> -->
+            <mat-table #table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="FeeDefinitionId">
+                    <mat-header-cell *matHeaderCellDef>Id
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.FeeDefinitionId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FeeName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Fee Name
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input matInput (blur)="onBlur(element)" autocomplete="Off" [value]="element.FeeName"
+                                [maxlength]="50" [(ngModel)]="element.FeeName">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Description">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Description
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="255"
+                                [value]="element.Description" [(ngModel)]="element.Description">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FeeCategoryId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Category
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="GetSubCategory(element)" [value]="element.FeeCategoryId"
+                                [(ngModel)]="element.FeeCategoryId">
+                                <mat-option *ngFor="let item of FeeCategories" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FeeSubCategoryId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Sub-Category
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.FeeSubCategoryId"
+                                [(ngModel)]="element.FeeSubCategoryId">
+                                <mat-option *ngFor="let item of element.FeeSubCategories" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="AmountEditable">
+                    <mat-header-cell style="justify-content: center;" *matHeaderCellDef>Amount Editable
+                    </mat-header-cell>
+                    <mat-cell style="justify-content: center;" *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateAmountEditable(element,$event)"
+                            [checked]="element.AmountEditable==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell style="justify-content: center;" *matHeaderCellDef>Active
+                    </mat-header-cell>
+                    <mat-cell style="justify-content: center;" *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
+                            (click)="AddNew()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                            mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                            <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row style="width: 100%;display: flex;align-items: baseline;"
+                    *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;"
+                [pageSizeOptions]="[5,10,20,50]"></mat-paginator>
+        </div>
+    </div>
+    <div style="margin-top:30px;" data-expand="false" #expandWrap>
+        <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+            <mat-icon>info</mat-icon>
+            Guides..
+        </span>
+        <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+            <ul>
+                <li>
+                    <div>If a fee is of percentage of total amount, '%' needs to be included in the fee name.
+                    </div>
+                </li>
+            </ul>
+        </span>
+    </div>
+</div>

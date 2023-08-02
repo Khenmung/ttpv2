@@ -1,0 +1,289 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Ledger Account</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<div style="padding: 15px;">
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" style="width:250px;margin-right: 15px;">
+            <mat-label>Account Nature</mat-label>
+            <mat-select formControlName="searchAccountNatureId" (selectionChange)="SearchAccountNatureChanged()">
+                <mat-option *ngFor="let option of TopAccountNatures" [value]="option.AccountNatureId">
+                    {{option.AccountName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width:250px;margin-right: 15px;">
+            <mat-label>Account Group</mat-label>
+            <mat-select formControlName="searchAccountGroupId" (selectionChange)="GetSubGroup()">
+                <mat-option *ngFor="let option of AccountGroups" [value]="option.AccountNatureId">
+                    {{option.AccountName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width:250px;margin-right: 15px;">
+            <mat-label>Account Sub-Group</mat-label>
+            <mat-select formControlName="searchAccountSubGroupId" (selectionChange)="GetSubGroupAccounts()">
+                <mat-option value="0">select</mat-option>
+                <mat-option *ngFor="let option of AccountSubGroups" [value]="option.AccountNatureId">
+                    {{option.AccountName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width:250px;margin-right: 15px;">
+            <mat-label>ledger account</mat-label>
+            <input type="text" matInput formControlName="searchLedgerName" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions" [value]="option">
+                    {{option.GeneralLedgerName}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <button [disabled]="loading" mat-raised-button color="accent" (click)="GetGeneralLedger()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="GeneralLedgerId">
+            <mat-header-cell *matHeaderCellDef>
+                Id
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.GeneralLedgerId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="GeneralLedgerName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Account
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [maxlength]="50" (blur)="onBlur(element)"
+                        [value]="element.GeneralLedgerName" [(ngModel)]="element.GeneralLedgerName">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="IncomeStatementPlus">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;" mat-sort-header>P&L Plus
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select [(ngModel)]="element.IncomeStatementPlus" (selectionChange)="onBlur(element)"
+                        [value]="element.IncomeStatementPlus">
+                        <mat-option *ngFor="let item of PlusOrMinus" [value]="item.Val">{{item.Text}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="IncomeStatementSequence">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>P&L Sequence
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [maxlength]="50" (blur)="onBlur(element)"
+                        [value]="element.IncomeStatementSequence" [(ngModel)]="element.IncomeStatementSequence">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ExpensePlus">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;" mat-sort-header>Expense Plus
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select [(ngModel)]="element.ExpensePlus" (selectionChange)="onBlur(element)"
+                        [value]="element.ExpensePlus">
+                        <mat-option *ngFor="let item of PlusOrMinus" [value]="item.Val">{{item.Text}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>        
+        <ng-container matColumnDef="ExpenseSequence">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Expense Sequence
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [maxlength]="50" (blur)="onBlur(element)"
+                        [value]="element.ExpenseSequence" [(ngModel)]="element.ExpenseSequence">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="AssetPlus">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;" mat-sort-header>Asset Plus
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select [(ngModel)]="element.AssetPlus" (selectionChange)="onBlur(element)"
+                        [value]="element.AssetPlus">
+                        <mat-option *ngFor="let item of PlusOrMinus" [value]="item.Val">{{item.Text}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="AssetSequence">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Asset Sequence
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [max]="255" (blur)="onBlur(element)"
+                        [value]="element.AssetSequence" [(ngModel)]="element.AssetSequence">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="LnEPlus">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;" mat-sort-header>LnE Plus
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select [(ngModel)]="element.LnEPlus" (selectionChange)="onBlur(element)"
+                        [value]="element.LnEPlus">
+                        <mat-option *ngFor="let item of PlusOrMinus" [value]="item.Val">{{item.Text}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="LnESequence">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>LnE Sequence
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [min]="0" [max]="255" (blur)="onBlur(element)"
+                        [value]="element.LnESequence" [(ngModel)]="element.LnESequence">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="TBPlus">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;" mat-sort-header>TB Plus
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select [(ngModel)]="element.TBPlus" (selectionChange)="onBlur(element)"
+                        [value]="element.TBPlus">
+                        <mat-option *ngFor="let item of PlusOrMinus" [value]="item.Val">{{item.Text}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="TBSequence">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>TB Sequence
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [max]="255" (blur)="onBlur(element)"
+                        [value]="element.TBSequence" [(ngModel)]="element.TBSequence">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        
+        <ng-container matColumnDef="AccountNatureId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Account Nature
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="AccountNatureChanged(element)" [(ngModel)]="element.AccountNatureId"
+                        [value]="element.AccountNatureId">
+                        <mat-option *ngFor="let item of TopAccountNatures" [value]="item.AccountNatureId">
+                            {{item.AccountName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="AccountGroupId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Group
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="onBlur(element)" [(ngModel)]="element.AccountGroupId"
+                        [value]="element.AccountGroupId">
+                        <mat-option *ngFor="let item of element.AccountGroups" [value]="item.AccountNatureId">
+                            {{item.AccountName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="AccountSubGroupId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Sub group
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="onBlur(element)" [(ngModel)]="element.AccountSubGroupId"
+                        [value]="element.AccountSubGroupId">
+                        <mat-option *ngFor="let option of element.AccountSubGroups" [value]="option.AccountNatureId">
+                            {{option.AccountName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ContactNo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Contact no.
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [maxlength]="30" (blur)="onBlur(element)"
+                        [value]="element.ContactNo" [(ngModel)]="element.ContactNo">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ContactName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Contact Person
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [maxlength]="30" (blur)="onBlur(element)"
+                        [value]="element.ContactName" [(ngModel)]="element.ContactName">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Email">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Email
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [maxlength]="50" (blur)="onBlur(element)" [value]="element.Email"
+                        [(ngModel)]="element.Email">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Address">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Address
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [maxlength]="255" (blur)="onBlur(element)"
+                        [value]="element.Address" [(ngModel)]="element.Address">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;" mat-sort-header>Active
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" style="justify-content: center;">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                    mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row" style="align-items: start;">
+        </mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5,10,20,50,100]" style="display:flex;justify-content:center"></mat-paginator>
+</div>

@@ -1,0 +1,17 @@
+mat-form-field{
+    margin-right: 15px;
+    width: 99%;
+}
+.mat-column-VariableName,
+.mat-column-VariableDescription,
+.mat-column-VariableFormula
+{
+    flex:1 0 150px;
+}
+.mat-column-Active,.mat-column-Action{
+    justify-content: center;
+    flex: 1 0 80px;
+}
+.mat-column-DisplayOrder{
+    flex: 1 0 80px;
+}

@@ -1,0 +1,37 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Rules or Policies</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <form [formGroup]="searchForm">
+            <span>
+                <mat-form-field appearance="outline" [style.width.px]="300">
+                    <mat-label>Title</mat-label>
+                    <mat-select formControlName="searchId">
+                        <mat-option *ngFor="let item of FileNames" [value]="item.RulesOrPolicyId">
+                            {{item.Title}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button [disabled]="loading" mat-raised-button color="accent"
+                    (click)="GetRulesOrPolicy()">
+                    <mat-icon>search</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+                <button [disabled]="loading" *ngIf="DetailText.length>0" matTooltip="print" style="margin: 15px;" printSectionId="printSection"
+                    [useExistingCss]="true" ngxPrint mat-raised-button>
+                    <mat-icon>print</mat-icon>
+                </button>
+            </span>
+            <mat-divider></mat-divider>
+            <div id="printSection">
+                <div style="margin-bottom: 15px;margin-top: 30px;" [innerHTML]="DetailText |encodeHTML">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

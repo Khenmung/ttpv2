@@ -1,0 +1,40 @@
+<div style="padding: 15px;"><strong>Student Attendance</strong></div>
+<!-- <alert></alert> -->
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<mat-table #table [dataSource]="dataSource" matSort>
+    <!-- <ng-container matColumnDef="StudentRollNo">
+        <mat-header-cell style="display: flex;" *matHeaderCellDef>Student
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.StudentRollNo}}
+        </mat-cell>
+    </ng-container> -->
+    <ng-container matColumnDef="AttendanceDate">
+        <mat-header-cell style="display: flex;" *matHeaderCellDef mat-sort-header>Date
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.AttendanceDate| date:'dd/MM/yyyy'}}
+        </mat-cell>
+    </ng-container>    
+    <ng-container matColumnDef="AttendanceStatus">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Status    
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.AttendanceStatus}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Remarks">
+        <mat-header-cell *matHeaderCellDef> Remarks </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.Remarks}}
+        </mat-cell>
+    </ng-container>   
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+</mat-table>
+<div style="padding-top: 15px;">
+<div *ngFor="let item of AttendanceStatusSum">
+    Total  {{ item.AttendanceStatus}} {{item.Total}}
+</div>
+</div>
+<mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50]"></mat-paginator>

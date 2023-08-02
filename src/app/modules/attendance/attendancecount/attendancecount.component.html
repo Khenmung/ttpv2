@@ -1,0 +1,64 @@
+<div style="padding: 15px;"><strong>Student Attendance Count</strong></div>
+<!-- <alert></alert> -->
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<form [formGroup]="searchForm">
+
+    <!-- <mat-form-field appearance="outline">
+        <mat-label>from</mat-label>
+        <input formControlName="searchFromDate" matInput [matDatepicker]="FromDate" autocomplete="off">
+        <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
+        <mat-datepicker #FromDate></mat-datepicker>
+    </mat-form-field> -->
+    <mat-form-field appearance="outline">
+        <mat-label>Date</mat-label>
+        <input formControlName="searchToDate" matInput [matDatepicker]="ToDate" autocomplete="off" (dateChange)="ClearData()">
+        <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>
+        <mat-datepicker #ToDate></mat-datepicker>
+    </mat-form-field>
+    <!-- <mat-checkbox (click)="$event.stopPropagation()" formControlName="searchSubjectWise">
+    </mat-checkbox> Subject wise &nbsp; -->
+    <!-- <mat-form-field appearance="outline">
+        <mat-label>Subject</mat-label>
+        <mat-select formControlName="searchClassSubjectId">
+            <mat-option value="0">--select--</mat-option>
+            <mat-option *ngFor="let item of FilteredClassSubjects" [value]="item.ClassSubjectId">{{item.ClassSubject}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field> -->
+    <button [disabled]="loading" (click)="GetStudentAttendance()" mat-raised-button color="accent">
+        <mat-icon>search</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+        </mat-icon>
+    </button>
+</form>
+<mat-table #table [dataSource]="dataSource" matSort style="max-width: 450px;">
+    <ng-container matColumnDef="ClassName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Class
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.ClassName}}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef><b>Total</b></mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="Present">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Present
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.Present}}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef>{{TotalPresent}}</mat-footer-cell>
+    </ng-container>
+    <ng-container matColumnDef="Absent">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Absent
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.Absent}}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef>{{TotalAbsent}}</mat-footer-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+    <mat-footer-row *matFooterRowDef="displayedColumns" class="element-row"></mat-footer-row>
+</mat-table>
+<mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50,75]"></mat-paginator>

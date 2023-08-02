@@ -1,0 +1,227 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Student Grade</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <div style="padding: 15px;">
+        <div style="flex-direction: row;">
+            <form [formGroup]="searchForm">
+                <div style="display:flex;flex-direction: column;">
+                    <div>
+                        <mat-form-field appearance="outline" style="width:250px;margin-right: 15px;">
+                            <mat-label>Exam</mat-label>
+                            <mat-select formControlName="searchExamId" (selectionChange)="SelectClassGroup()">
+                                <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                                    {{item.ExamName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+                            <mat-label>Class group</mat-label>
+                            <mat-select formControlName="searchClassGroupId" (selectionChange)="EnableCopyButton()">
+                                <mat-option *ngFor="let item of FilteredClassGroup" [value]="item.ClassGroupId">
+                                    {{item.GroupName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+                            <mat-label>Subject Category</mat-label>
+                            <mat-select formControlName="searchSubjectCategoryId" (selectionChange)="EnableCopyButton()">
+                                <mat-option value="0">select</mat-option>
+                                <mat-option *ngFor="let item of SubjectCategory" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <button style="margin-right:15px" [disabled]="loading" mat-raised-button color="accent"
+                            (click)="GetStudentGrade(0,0)">
+                            <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                        <button *ngIf="EnableCopy" mat-raised-button matTooltip="copy toggle"
+                            (click)="ShowHide()">
+                            <mat-icon>shuffle</mat-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="ShowCopyBlock">
+                        <mat-form-field appearance="outline" style="width:250px;margin-right: 15px;">
+                            <mat-label>Copy from other exam</mat-label>
+                            <mat-select formControlName="searchCopyFromExamId"
+                                (selectionChange)="SelectCopyFromClassGroup()">
+                                <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                                    {{item.ExamName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" style="width:250px;margin-right: 15px;">
+                            <mat-label>Class group</mat-label>
+                            <mat-select formControlName="searchCopyFromClassGroupId">
+                                <mat-option *ngFor="let item of FilteredCopyFromClassGroup" [value]="item.ClassGroupId">
+                                    {{item.GroupName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <button style="margin-right:15px" [disabled]="loading" matTooltip="copy from other exam"
+                            mat-raised-button (click)="CopyFromOtherExam()">
+                            <mat-icon>copy_all</mat-icon>
+                        </button>
+                    </div>
+                    
+                </div>
+            </form>
+        </div>
+        <div style="font-weight: bold;font-style: italic;">{{DatafromotherexamMSG}}</div>
+        <div style="width: 100%;">
+            <mat-table style="overflow: auto;min-width: 60vw;min-height: 60vh;" #table [dataSource]="dataSource">
+                <ng-container matColumnDef="StudentGradeId">
+                    <mat-header-cell *matHeaderCellDef>Id
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.StudentGradeId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="GradeName">
+                    <mat-header-cell *matHeaderCellDef>Grade
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.GradeName"
+                                [(ngModel)]="element.GradeName" [maxlength]="50">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Formula">
+                    <mat-header-cell *matHeaderCellDef>Formula
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <textarea matInput (blur)="onBlur(element)" [value]="element.Formula"
+                                [(ngModel)]="element.Formula" [maxlength]="256"></textarea>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Sequence">
+                    <mat-header-cell *matHeaderCellDef>Sequence
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input autocomplete="Off" matInput type="number" (blur)="onBlur(element)"
+                                [value]="element.Sequence" [(ngModel)]="element.Sequence" [max]="30">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Points">
+                    <mat-header-cell *matHeaderCellDef>Grade Points
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input autocomplete="Off" matInput type="number" (blur)="onBlur(element)"
+                                [value]="element.Points" [(ngModel)]="element.Points" [max]="100">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassGroupId">
+                    <mat-header-cell *matHeaderCellDef>Class Group
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.ClassGroupId"
+                                [(ngModel)]="element.ClassGroupId">
+                                <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassGroupId">
+                                    {{item.GroupName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SubjectCategoryId">
+                    <mat-header-cell *matHeaderCellDef>Subject Category
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.SubjectCategoryId"
+                                [(ngModel)]="element.SubjectCategoryId">
+                                <mat-option *ngFor="let item of SubjectCategory" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="GradeStatusId">
+                    <mat-header-cell *matHeaderCellDef>Grade Status
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.GradeStatusId"
+                                [(ngModel)]="element.GradeStatusId">
+                                <mat-option *ngFor="let item of ExamStatus" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox matTooltip="select all" (click)="$event.stopPropagation()"
+                            (change)="SelectAll($event)">
+                        </mat-checkbox>&nbsp; Active
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button style="margin-right:15px" [disabled]="loading || Permission=='read'"
+                            matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                        <button [disabled]="loading || Permission=='read' || Permission=='read' || ExamReleased==1"
+                            *ngIf="StudentGradeList.length>0" matTooltip="save all" mat-mini-fab (click)="SaveAll()">
+                            <mat-icon>all_out</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action || Permission=='read' || ExamReleased==1"
+                            matTooltip="save" mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                            <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+                </mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,100]">
+            </mat-paginator>
+        </div>
+        <!-- <button type="button" class="btn btn-outline-secondary mr-2" placement="top"
+            ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
+            Popover on top
+        </button> -->
+    </div>
+    <div style="margin-top:30px;" data-expand="false" #expandWrap>
+        <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+            <mat-icon>info</mat-icon>
+            Guides..
+        </span>
+        <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+            <ol>
+                <li><b>Grade Points</b> is for student's everage grade calculation.</li>
+                <li>Sequence is mandatory since it defines the sequence of formula execution.</li>
+                <li>If the selected exam has been released, formula can not be updated for that exam.</li>
+                <li>If a formula is selected when copying formula from other exams, it means it is already exist for the current exam.</li>
+            </ol>
+        </span>
+    </div>
+</div>

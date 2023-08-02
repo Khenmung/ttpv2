@@ -1,0 +1,30 @@
+<!-- <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+<mat-card style="padding: 0px;">
+  <mat-card-title></mat-card-title>
+  <br><br>
+  <mat-card-subtitle style="color:white">{{selectedAlbum}}</mat-card-subtitle>
+  <mat-card-content> -->
+<div style="font-weight: bold;margin:15px 15px 15px 0px">{{selectedAlbum}}</div>
+<!-- <div style="background-color:  var(--maincolor1);height: 5px;">&nbsp;</div> -->
+<div fxLayout="column" fxLayoutAlign="space-around center" style="background-color:#19283f">
+  <ngb-carousel *ngIf="images.length>1">&nbsp;
+    <ng-template ngbSlide *ngFor="let image of images">
+      <!-- <div class="wrapper"> -->
+      <img class="photosize" #img (dblclick)="enlargeImg(img)" [src]="image.PhotoPath" alt="{{image.Description}}">
+      <!-- </div> -->
+      <div class="carousel-caption">
+        <h3 style="color:white">{{image.Description}}</h3>
+      </div>
+    </ng-template>
+  </ngb-carousel>
+  <div class="single" *ngIf="images.length==1">
+    <img class="photosize" [src]="images[0].PhotoPath" alt="{{images[0].Description}}">
+  </div>
+</div>
+<div fxLayout="row" fxLayoutAlign="space-around center">
+  <button [disabled]="loading" mat-button (click)="back()">
+    <mat-icon style="color:white">arrow_back</mat-icon>
+  </button>
+</div>
+<!-- </mat-card-content>
+</mat-card> -->

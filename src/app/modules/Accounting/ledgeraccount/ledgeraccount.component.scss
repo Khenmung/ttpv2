@@ -1,0 +1,40 @@
+:host{
+    width:100%;
+}
+// mat-form-field {
+//     width       : 98%;
+//     margin-right: 15px;
+// }
+
+.mat-column-AccountNatureId,
+.mat-column-AccountGroupId,
+.mat-column-GeneralLedgerName,
+.mat-column-ContactNo,
+.mat-column-ContactName,
+.mat-column-Email,
+.mat-column-Address,
+.mat-column-AccountSubGroupId {
+    flex: 1 0 170px;
+}
+
+.mat-column-GeneralLedgerId {
+    flex: 1 0 70px;
+}
+.mat-column-Active,
+.mat-column-Action,
+.mat-column-IncomeStatementPlus,
+.mat-column-IncomeStatementSequence,
+.mat-column-ExpensePlus,
+.mat-column-ExpenseSequence,
+.mat-column-AssetPlus,
+.mat-column-AssetSequence,
+.mat-column-LnEPlus,
+.mat-column-LnESequence,
+.mat-column-TBPlus,
+.mat-column-TBSequence
+{
+    flex: 1 0 100px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

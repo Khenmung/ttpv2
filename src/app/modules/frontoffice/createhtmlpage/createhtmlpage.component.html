@@ -1,0 +1,74 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Create Page</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <form [formGroup]="searchForm">
+        <div style="display:flex;">
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>category</mat-label>
+                <mat-select formControlName="searchCategoryId" (selectionChange)="FilterTitle()">
+                    <mat-option *ngFor="let item of PageCategory" [value]="item.MasterDataId">
+                        {{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div *ngIf="!AddNewMode">
+                <mat-form-field appearance="outline" [style.width.px]="200">
+                    <mat-label>search</mat-label>
+                    <mat-select formControlName="searchId">
+                        <mat-option *ngFor="let item of FilteredFileNames" [value]="item.RulesOrPolicyId">
+                            {{item.Title}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button style="margin-right:15px;" [disabled]="loading" mat-raised-button color="accent"
+                    (click)="GetRulesOrPolicy()">
+                    <mat-icon>search</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+                <button [disabled]="loading" matTooltip="add new" mat-raised-button color="accent" (click)="AddNew()">
+                    <mat-icon>addnew</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </div>
+            <div *ngIf="AddNewMode">
+                <mat-form-field appearance="outline" style="display:none">
+                    <mat-label>Id</mat-label>
+                    <input matInput formControlName="RulesOrPolicyId">
+                </mat-form-field>
+                <mat-form-field appearance="outline" autocomplete="Off" [style.width.px]="200">
+                    <mat-label>Title</mat-label>
+                    <input matInput formControlName="Title" [maxlength]="30">
+                </mat-form-field>
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div style="margin-bottom: 15px;box-sizing:border-box;">
+            <!-- <ckeditor [editor]="editor" [config]="config" formControlName="Description">
+                </ckeditor> -->
+            <ckeditor formControlName="EditorDescription" [config]="ckeConfig">
+
+            </ckeditor>
+
+        </div>
+        <div style="display:flex;box-sizing:border-box;">
+            <div>
+                <mat-checkbox formControlName="Active">
+                </mat-checkbox>&nbsp; Active
+            </div>
+            <button style="margin-left:15px;" [disabled]="loading" mat-raised-button color="accent"
+                (click)="UpdateOrSave()">
+                <mat-icon>save</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </div>
+    </form>
+</div>
+<!-- </div> -->

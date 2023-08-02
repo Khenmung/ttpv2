@@ -1,0 +1,140 @@
+<!-- <div> -->
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Exam</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+
+<!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
+<div style="width: 100%;overflow: auto;justify-content: center;">
+    <mat-table #table [dataSource]="dataSource">
+        <ng-container matColumnDef="ExamId">
+            <mat-header-cell *matHeaderCellDef>Id
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ExamId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ExamName">
+            <mat-header-cell *matHeaderCellDef>Exam Name
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ExamName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="StartDate">
+            <mat-header-cell *matHeaderCellDef> Start Date </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <!-- <mat-label>Start Date</mat-label> -->
+                    <input [(ngModel)]="element.StartDate" [value]="element.StartDate" (dateChange)="onBlur(element)"
+                        matInput [matDatepicker]="StartDate" autocomplete="off">
+                    <mat-datepicker-toggle matSuffix [for]="StartDate"></mat-datepicker-toggle>
+                    <mat-datepicker #StartDate></mat-datepicker>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="EndDate">
+            <mat-header-cell *matHeaderCellDef> End Date </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <!-- <mat-label>End Date</mat-label> -->
+                    <input [value]="element.EndDate" [(ngModel)]="element.EndDate" matInput [matDatepicker]="EndDate"
+                        (dateChange)="onBlur(element)" autocomplete="off">
+                    <mat-datepicker-toggle matSuffix [for]="EndDate"></mat-datepicker-toggle>
+                    <mat-datepicker #EndDate></mat-datepicker>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="AttendanceStartDate">
+            <mat-header-cell *matHeaderCellDef> Attendance Start Date </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <!-- <mat-label>Attendance Start Date</mat-label> -->
+                    <input [value]="element.AttendanceStartDate"
+                        [(ngModel)]="element.AttendanceStartDate" matInput [matDatepicker]="AttendanceStartDate"
+                        (dateChange)="onBlur(element)" autocomplete="off">
+                    <mat-datepicker-toggle matSuffix [for]="AttendanceStartDate"></mat-datepicker-toggle>
+                    <mat-datepicker #AttendanceStartDate></mat-datepicker>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <!-- <ng-container matColumnDef="ClassGroupId">
+            <mat-header-cell *matHeaderCellDef>Class Group</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-label>Class group</mat-label>
+                    <mat-select [(ngModel)]="element.ClassGroupId" (selectionChange)="onBlur(element)"
+                        [value]="element.ClassGroupId">
+                        <mat-option value="0">select</mat-option>
+                        <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassGroupId">{{item.GroupName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container> -->
+        <ng-container matColumnDef="ReleaseResult">
+            <mat-header-cell *matHeaderCellDef> Release Result </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateRelease(element,$event)"
+                    [checked]="element.ReleaseResult==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ReleaseDate">
+            <mat-header-cell *matHeaderCellDef>Release Date
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ReleaseDate}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="MarkFormula">
+            <mat-header-cell *matHeaderCellDef>Average Of
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <textarea matInput [maxlength]="100" autocomplete="Off" (blur)="onBlur(element)"
+                        [(ngModel)]="element.MarkFormula" [value]="element.MarkFormula"></textarea>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <button [disabled]="loading || Permission=='read' || !element.Action" matTooltip="save"
+                    mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+    </mat-table>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50]"></mat-paginator>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..</span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li><b>Attendance Start Date</b> is used for attendance display in exam result.
+                Total Attendance will be calculated from this date till exam <b>End Date</b>.</li>
+            <li>Unless <b>Release Result</b> is ticked, result will not be available for public view. After result released, 
+                student exam status will be generated and marks can no longer be entered/edited for that examination.</li>
+        </ul>
+    </span>
+</div>

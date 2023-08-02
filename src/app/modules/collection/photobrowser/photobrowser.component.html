@@ -1,0 +1,24 @@
+<div style="font-weight: bold;margin:15px 15px 15px 0px">Photo Gallery</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<mat-form-field appearance="outline">
+  <input matInput (keyup)="applyFilter($any($event.target).value)" placeholder="Search album" autocomplete="off">
+</mat-form-field>
+<mat-divider style="border-top-color:lightslategrey;"></mat-divider>
+<div fxLayout="row wrap" fxLayoutGap="50px" style="padding-top: 20px;">
+
+  <div class="whole" fxLayout="column" *ngFor="let album of Albums" (click)="view(album.FileId)">
+    <div fxLayout="row" fxLayoutAlign="center">
+      <div class="dynamicimgborder" *ngFor="let photo of album.photos;let i=index;">
+        <img [src]="photo.PhotoPath" [ngStyle]="{'width': photo.Width,'max-height': photo.Height}">
+      </div>
+      <!-- <div class="dynamicimgborder" fxLayout="row wrap" fxLayoutAlign="center"
+            *ngFor="let photo of album.photos;let i=index;">
+            <img [src]="photo.PhotoPath" *ngIf="i>1" [ngStyle]="{'width': photo.Width,'max-height': photo.Height}">
+          </div> -->
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <span style="color:white;padding:5px"> {{album.UpdatedFileFolderName|slice:0:30}}</span><span
+        *ngIf="album.UpdatedFileFolderName.length>30">...</span>
+    </div>
+  </div>
+</div>

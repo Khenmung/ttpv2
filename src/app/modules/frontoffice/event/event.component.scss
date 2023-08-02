@@ -1,0 +1,17 @@
+mat-form-field{
+    width: 98%;
+}
+.mat-column-Id,.mat-column-Active,.mat-column-Action{
+    flex:0 0 70px;
+    justify-content: center;
+}
+.mat-column-EventName,.mat-column-Venue,.mat-column-EventStartDate,.mat-column-EventEndDate{
+    flex:0 0 180px;
+}
+.mat-column-Description{
+    flex:0 0 250px;
+}
+table {
+    width: 100%;
+    table-layout: fixed;
+  }

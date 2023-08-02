@@ -1,0 +1,29 @@
+mat-form-field{
+    margin-right:15px;
+    width: 98%;
+}
+button{
+    margin-right:15px;
+}
+mat-cell:first-of-type {
+    padding-left: 0px;
+}
+.mat-column-ClassEvaluationAnswerOptionsId{
+    flex:1 0 60px;
+}
+.mat-column-Description,
+.mat-column-ParentId,
+.mat-column-Title
+{
+    flex:1 0 250px;
+}
+.mat-column-Point
+{
+    flex:1 0 80px;
+}
+.mat-column-Correct,
+.mat-column-Active,
+.mat-column-Action{
+    justify-content: center;
+    flex:1 0 80px;
+}

@@ -1,0 +1,201 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Stduent Profile Report</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <div style="padding: 15px;">
+        <div style="width: 100%;">
+            <form [formGroup]="searchForm">
+                <mat-form-field appearance="outline" [style.width.px]="150">
+                    <mat-label>Evaluation Type</mat-label>
+                    <mat-select formControlName="searchEvaluationTypeId">
+                        <mat-option *ngFor="let item of EvaluationTypes" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field [style.width.px]="250" appearance="outline">
+                    <mat-label>Name-class-section-roll no</mat-label>
+                    <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{option.Name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <mat-form-field appearance="outline" [style.width.px]="200">
+                    <mat-label>Exam/Test</mat-label>
+                    <mat-select formControlName="searchExamId">
+                        <mat-option value="0">select</mat-option>
+                        <mat-option *ngFor="let item of Exams" [value]="item.ExamId">{{item.ExamName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button [disabled]="loading" mat-raised-button color="accent" (click)="GetStudentEvaluation()">
+                     <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                </button>
+            </form>
+            <div id="printsection">
+                <div style="width:100%; display: flex;flex-direction: column;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <mat-table #table [dataSource]="dataSource">
+                    <ng-container matColumnDef="Id">
+                        <mat-header-cell *matHeaderCellDef>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            {{element.Id}}
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="Description">
+                        <mat-header-cell *matHeaderCellDef>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element"
+                            style="display:flex; flex-direction: column;justify-content: start;">
+                            <span style="width: 100%;padding: 15px 15px 10px 0px;"> {{element.Description}}</span>
+                            <span
+                                style="width: 100%;margin:0px 15px 15px 15px; padding: 10px;border: 1px solid lightgray;"
+                                *ngIf="element.ClassEvaluationOptions.length==0">
+                                {{element.Detail}}
+                            </span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="RatingId">
+                        <mat-header-cell *matHeaderCellDef>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <span *ngIf="element.MultipleAnswer==1">
+                                <mat-checkbox [disabled]="true"
+                                    *ngFor="let item of element.ClassEvaluationOptions;let i=index"
+                                    (click)="$event.stopPropagation()" name="options_{{i}}"
+                                    [value]="item.AnswerOptionsId" [checked]="item.checked"
+                                    [(ngModel)]="item.AnswerOptionsId">
+                                </mat-checkbox>
+                            </span>
+                            <span *ngIf="element.MultipleAnswer==0">
+                                <mat-radio-group [disabled]="true" [(ngModel)]="element.RatingId">
+                                    <mat-radio-button style="margin-right: 15px;"
+                                        *ngFor="let item of element.ClassEvaluationOptions;let i=index"
+                                        [value]="item.AnswerOptionsId">
+                                        {{item.Title}}
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                            </span>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;let indx=index" class="element-row">
+                    </mat-row>
+                </mat-table>
+                <div style="display: flex;flex-direction: row;justify-content: center;">
+                    <button [disabled]="loading" matTooltip="print" style="margin: 15px;" printSectionId="printsection"
+                        [useExistingCss]="true" ngxPrint mat-raised-button>
+                        <mat-icon>print</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Stduent Profile Report</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <div style="padding: 15px 15px 15px 0px;">
+        <div style="width: 100%;">
+            <form [formGroup]="searchForm">
+                <mat-form-field [style.width.px]="250" appearance="outline">
+                    <mat-label>Name-class-section-roll no</mat-label>
+                    <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                            {{option.Name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <button [disabled]="loading" mat-raised-button (click)="GetStudentEvaluation()">
+                     <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                </button>
+            </form>
+           
+            <mat-table #table [dataSource]="dataSource" id="printSection">
+
+                <ng-container matColumnDef="CategoryName">
+                    <mat-header-cell *matHeaderCellDef>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span style="font-size:large;">{{element.CategoryName}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="expandedDetail">
+                    <mat-cell *matCellDef="let row"
+                        style="display: flex;flex-direction: column;justify-content: space-around; padding-bottom: 15px;">
+                        <span style="display: flex;flex-direction: row;justify-content: space-around;width: 100%;">
+                            <span
+                                style="display: flex;flex-direction: column;justify-content: end; min-width: 600px;width: 100%;">
+                                &nbsp;
+                            </span>
+                            <span *ngIf="row.element.Profile[0].Ratings.length>0"
+                                style="border-bottom:1px solid lightgray; display:flex;flex-direction: row; justify-content: space-around;align-items: center;min-width: 400px;">
+                                <span
+                                    style="font-size:smaller; padding:5px;border-radius: 5px; align-items: center; height:70px;display:flex;writing-mode:vertical-rl;transform: rotateY(0deg) rotate(-35deg);"
+                                    *ngFor="let rate of row.element.Profile[0].Ratings">
+                                    {{rate.MasterDataName}}
+                                </span>
+                            </span>
+                        </span>
+
+                        <div style="display:flex;flex-direction: row;justify-content: space-around;align-items: flex-end;width: 100%;"
+                            *ngFor="let item of row.element.Profile;let indx=index">
+                            <div [ngClass]="item.RatingId>0?'normalwidth':'minwidth'">
+                                <div style="min-width: 600px">{{item.Description}}</div>
+                                <div *ngIf="item.RatingId==0"
+                                    style="padding: 15px;margin: 15px 15px 15px 0px; width: 100%;border: 1px solid lightgray;">
+                                    {{item.Detail}}
+                                </div>
+                            </div>
+                            <div
+                                style="display: flex;flex-direction: column; display:flex;justify-content: end;width: 400px;">
+
+                                <span *ngIf="item.RatingId>0">
+                                    <mat-radio-group [disabled]="true" name="ratings"
+                                        style="display:flex;justify-content: center;">
+                                        <mat-radio-button *ngFor="let rate of item.Ratings"
+                                            style="padding:10px 5px 0px 40px;width:100px; border:1px solid lightgray"
+                                            [checked]="rate.MasterDataId==item.RatingId?true:false"
+                                            [value]="rate.MasterDataId">
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                </span>
+                            </div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" matRipple
+                    style="border-bottom-color:white !important;" [class.expanded]="expandedElement == row"
+                    (click)="expandedElement = row"></mat-row>
+                <mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
+                    style="overflow: hidden" [@detailExpand]="'expanded'">
+                </mat-row>
+            </mat-table>
+            <button [disabled]="loading || StudentEvaluationList.length ==0" matTooltip="print"
+                printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button>
+                <mat-icon>print</mat-icon>
+            </button>
+        </div>
+
+    </div>
+</div> -->

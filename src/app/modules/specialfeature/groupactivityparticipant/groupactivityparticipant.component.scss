@@ -1,0 +1,51 @@
+mat-form-field {
+  margin-right: 15px;
+  width       : 98%;
+  max-width   : 250px;
+}
+
+mat-cell:first-of-type {
+  padding-left: 15px;
+}
+
+button {
+  margin-right: 15px;
+}
+
+.mat-column-SportResultId {
+  flex: 1 0 40px;
+}
+
+.mat-column-Secured,
+.mat-column-Active,
+.mat-column-Action {
+  flex: 1 0 100px;
+}
+
+.mat-column-Description,
+.mat-column-Student,
+.mat-column-Achievement {
+  flex: 1 0 200px;
+}
+
+.mat-column-SportsNameId,
+.mat-column-CategoryId,
+.mat-column-SubCategoryId,
+.mat-column-AchievementDate,
+.mat-column-Session,
+.mat-column-SessionId
+ {
+  flex: 1 0 110px;
+}
+
+mat-optgroup {
+  display         : block;
+  background-color: lightgray;
+ 
+}
+
+mat-option {
+  display         : block;
+  background-color: #ffffff;
+ 
+}

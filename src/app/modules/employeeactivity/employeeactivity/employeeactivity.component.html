@@ -1,0 +1,180 @@
+<!-- <div> -->
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Activity</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<!-- <div style="padding: 15px;"> -->
+<div style="width: 100%;">
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" [style.width.px]="180">
+            <mat-label>activity</mat-label>
+            <mat-select formControlName="searchActivity">
+                <mat-option *ngFor="let item of EmployeeActivity" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="180">
+            <mat-label>category</mat-label>
+            <mat-select formControlName="searchCategoryId">
+                <mat-option *ngFor="let item of EmployeeActivityCategories" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="180">
+            <mat-label>session</mat-label>
+            <mat-select formControlName="searchSession">
+                <mat-option *ngFor="let item of EmployeeActivitySession" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field [style.width.px]="250" appearance="outline">
+            <mat-label>employee</mat-label>
+            <input type="text" matInput formControlName="searchEmployeeName" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.Name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <button [disabled]="loading" mat-raised-button (click)="GetEmployeeActivity()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+        <button style="margin-left:15px" [disabled]="loading || Permission=='read'" matTooltip="add new activity"
+            mat-mini-fab (click)="AddNew()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </form>
+    <mat-table #table [dataSource]="dataSource">
+        <ng-container matColumnDef="EmployeeActivityId">
+            <mat-header-cell *matHeaderCellDef>Id
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.EmployeeActivityId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Employee">
+            <mat-header-cell *matHeaderCellDef>Employee
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Employee}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Secured">
+            <mat-header-cell *matHeaderCellDef>Secured
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput [maxlength]="20" (blur)="onBlur(element)" [value]="element.Secured"
+                        [(ngModel)]="element.Secured">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Achievement">
+            <mat-header-cell *matHeaderCellDef>Description
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput [maxlength]="256" (blur)="onBlur(element)" [value]="element.Achievement"
+                        [(ngModel)]="element.Achievement">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ActivityNameId">
+            <mat-header-cell *matHeaderCellDef>Activity
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select [(ngModel)]="element.ActivityNameId" [value]="element.ActivityNameId">
+                        <mat-option *ngFor="let item of EmployeeActivity" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="CategoryId">
+            <mat-header-cell *matHeaderCellDef>Category
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="CategoryChanged(element)" [(ngModel)]="element.CategoryId"
+                        [value]="element.CategoryId">
+                        <mat-option *ngFor="let item of EmployeeActivityCategories" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="SubCategoryId">
+            <mat-header-cell *matHeaderCellDef>Sub Category
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="onBlur(element)" [(ngModel)]="element.SubCategoryId"
+                        [value]="element.SubCategoryId">
+                        <mat-option [value]="0">--sub category--</mat-option>
+                        <mat-option *ngFor="let item of element.ActivitySubCategory"
+                            [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="SessionId">
+            <mat-header-cell *matHeaderCellDef>Session
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="onBlur(element)" [(ngModel)]="element.SessionId"
+                        [value]="element.SessionId">
+                        <mat-option [value]="0">select</mat-option>
+                        <mat-option *ngFor="let item of EmployeeActivitySession" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="AchievementDate">
+            <mat-header-cell *matHeaderCellDef>Date
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input [value]="element.AchievementDate" (dateChange)="onBlur(element)"
+                        [(ngModel)]="element.AchievementDate" matInput [matDatepicker]="AchievementDate"
+                        autocomplete="off">
+                    <mat-datepicker-toggle matSuffix [for]="AchievementDate"></mat-datepicker-toggle>
+                    <mat-datepicker #AchievementDate></mat-datepicker>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;">Active
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" style="justify-content: center;">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                    mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"
+            style="align-items: start;"></mat-row>
+    </mat-table>
+</div>
+
+<!-- </div> -->

@@ -1,0 +1,19 @@
+mat-form-field{
+    margin-right: 15px;
+    width:98%;
+}
+.mat-column-ClassSubjectId,
+.mat-column-EmployeeId,
+.mat-column-ClsName{
+   // justify-content: center;
+    flex:1 0 120px;
+}
+.mat-column-Active,.mat-column-Action{
+    justify-content: center;
+    flex:1 0 100px;
+}
+.mat-column-TeacherSubjectId
+{
+    justify-content: center;
+    flex: 1 1 50px;
+}

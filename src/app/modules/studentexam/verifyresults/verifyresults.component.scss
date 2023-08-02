@@ -1,0 +1,57 @@
+
+mat-cell:first-of-type{
+    padding-left: 0px;
+}
+.elementrow {
+    height: 29px;
+    page-break-inside: avoid;
+}
+mat-header-cell{
+    border-right: 1px solid lightgray;
+    min-width: 40px;
+    padding: 5px;
+    display: flex;
+    justify-content: flex-end;
+    align-items:center;
+    align-self: stretch;
+}
+mat-cell{
+    border-right: 1px solid lightgray;
+    min-width: 40px;
+    padding: 5px;
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    //align-self: stretch;
+}
+.mat-column-Student{
+    justify-content: flex-start;
+    min-width: 180px;
+    
+}
+// .mat-cell {
+//     padding: 0px;
+// }
+.mat-column-Division{
+    justify-content:center;
+    min-width: 110px;
+}
+.mat-column-Total-Percent,.mat-column-Total-Marks{
+    justify-content:center;
+    min-width: 50px;
+}
+// .element-row{
+//     align-items: baseline;
+// }
+// mat-cell:nth-child(1),
+// mat-header-cell:nth-child(1) {
+//     flex: 0 0 10%;
+// }
+
+// .mat-footer-row,
+// .mat-header-row,
+// .mat-row {
+//     display: inline-flex;
+//     min-width: 100%;
+// }

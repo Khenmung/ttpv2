@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+:host {
+  border-radius: 1em;
+  //padding: 15px;
+  width        : 100%;
+}
+
+mat-card {
+  background-color:var(--maincolor1);
+  //border-color: gainsboro;
+  //border-radius   : 1em;
+  margin-top      : 15px;
+  //padding-top: 20px;
+}
+
+.mat-card-subtitle {
+  margin-bottom: 4px;
+}
+
+.mat-badge-content {
+  width      : 30px;
+  height     : 30px;
+  line-height: 30px;
+}
+
+table {
+  width: 100%;
+}
+
+button {
+  margin-right: 15px;
+}
+
+.subtitle {
+  padding: 3px;
+}
+.mat-card-title{
+  margin-bottom: 2px;
+}
+div.ng-star-inserted{
+  height: 60px;
+}
+.title {
+  border-top-left-radius   : 5px;
+  border-top-right-radius   : 5px;
+  padding         : 5px;
+  background-color: rgb(255, 255, 255, 20%);
+  margin-top      : 15px;
+  font-size       : medium;
+  display         : grid;
+  place-items     : center;
+  color           :orange;
+}
+
+.contentbox {
+  border         : thin solid rgb(255, 255, 255, 20%);
+  border-collapse: collapse;
+  padding        : 10px;
+}
+
+th.mat-header-cell,
+td.mat-cell,
+td.mat-footer-cell {
+  width              : 300px;
+  border-bottom-width: 0px;
+}
+.news img{
+  display: inline-block;
+}  
+div .ng-star-inserted:hover {
+  padding: 5px;
+  cursor          : pointer;
+  background-color: var(--onHoverColor);
+  color: white;
+  //clip-path: polygon(-5% 50%,5% 0%, 100% 0%, 100% 100%, 5% 100%);
+}
+//   &:before{
+//     content:'';
+//     //position: relative;
+//     display: inline-block;   
+//     //color:lightgreen;
+//     height:16px;
+//     width: 16px;
+//     //left: 2em;
+//     //display: block;
+//     //border-radius: 50%;
+//     background-image: url('../../../assets/images/icons8-vote-16.png');
+//     background-size: contain;
+//     margin-right: 1em;
+//     font-family: "Material Icons"; 
+//   }
+// }
+a:hover {
+  cursor: pointer;
+}
+
+.container {
+  display: flex;
+}

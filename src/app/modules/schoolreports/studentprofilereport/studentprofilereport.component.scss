@@ -1,0 +1,32 @@
+mat-form-field{
+    margin-right: 15px;
+}
+mat-cell:first-of-type{
+    border-left: 1px solid lightgray;
+}
+.minwidth{
+    display: flex;flex-direction: column;justify-content:space-between;min-width: 100%;
+}
+.normalwidth{
+    display: flex;flex-direction: column;justify-content:space-between;width: 100%;
+}
+.element-row{
+    min-height: 29px;   
+}
+.mat-column-RatingId //, .mat-column-CategoryId,.mat-column-SubCategoryId
+{
+    flex:0 0 150px;
+}
+.mat-column-Id
+{
+    flex:0 0 60px;
+}
+.mat-column-Detail,.mat-column-Description{
+    flex:1 1 350px;
+}
+mat-cell{
+    border-right: 1px solid lightgray;
+    //border-bottom: 1px solid lightgray;
+    padding: 10px;
+    align-self: stretch;
+}

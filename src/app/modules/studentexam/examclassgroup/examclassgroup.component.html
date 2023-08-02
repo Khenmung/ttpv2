@@ -1,0 +1,118 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Exam n Class Group</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <div style="padding: 15px;">
+        <div style="flex-direction: row;">
+            <form [formGroup]="searchForm">
+                <mat-form-field appearance="outline" style="width:250px">
+                    <mat-label>Exam</mat-label>
+                    <mat-select formControlName="searchExamId" (selectionChange)="ClearData()">
+                        <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                            {{item.ExamName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button [disabled]="loading" mat-raised-button color="accent" (click)="GetExamClassGroupMap()">
+                    <mat-icon>search</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+                <mat-divider></mat-divider>
+                <!-- <div style="margin-top:15px">
+                    <mat-form-field appearance="outline" [style.width.px]="250">
+                        <mat-label>Copy from other exam</mat-label>
+                        <mat-select formControlName="searchCopyExamId">
+                            <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                                {{item.ExamName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button [disabled]="loading" matTooltip="copy from other exam" mat-raised-button
+                        (click)="CopyFromOtherExam()">
+                        <mat-icon>copy_all</mat-icon>
+                    </button>
+                </div> -->
+            </form>
+        </div>
+        <div style="font-weight: bold;font-style: italic;">{{DatafromotherexamMSG}}</div>
+        <div style="width: 100%;">
+            <mat-table style="overflow: auto;min-width: 60vw;min-height: 60vh;" #table [dataSource]="dataSource">
+                <ng-container matColumnDef="ExamClassGroupMapId">
+                    <mat-header-cell *matHeaderCellDef>Id
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.ExamClassGroupMapId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="GroupName">
+                    <mat-header-cell *matHeaderCellDef>Class Group
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                       {{element.GroupName}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox matTooltip="select all" (click)="$event.stopPropagation()"
+                            (change)="SelectAll($event)">
+                        </mat-checkbox>&nbsp; Active
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <!-- <button style="margin-right:15px" [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
+                            (click)="AddNew()">
+                            <mat-icon>add</mat-icon>
+                        </button> -->
+                        <button [disabled]="loading || Permission=='read' || Permission=='read' || ExamReleased==1" *ngIf="ExamClassGroupMapList.length>0"
+                            matTooltip="save all" mat-mini-fab (click)="SaveAll()">
+                            <mat-icon>all_out</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action || Permission=='read' || ExamReleased==1" matTooltip="save"
+                            mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                            <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+                </mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,100]">
+            </mat-paginator>
+        </div>
+        <!-- <button type="button" class="btn btn-outline-secondary mr-2" placement="top"
+            ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
+            Popover on top
+        </button> -->
+    </div>
+    <div style="margin-top:30px;" data-expand="false" #expandWrap>
+        <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+            <mat-icon>info</mat-icon>
+            Guides..
+        </span>
+        <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+            <ol>
+                <li><b>Grade Points</b> is for student's everage grade calculation.</li>
+                <li>Sequence is mandatory since it defines the sequence of formula execution.</li>
+                <li>If the selected exam has been released, formula can not be updated for that exam.</li>
+            </ol>
+        </span>
+    </div>
+</div>

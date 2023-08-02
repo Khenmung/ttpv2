@@ -1,0 +1,41 @@
+.mat-form-field {
+    width: 98%;
+    margin-right: 15px;
+}
+
+.mat-column-EmployeeGradeHistoryId {
+    flex           : 0 0 60px;
+    justify-content: center;
+}
+.mat-column-IsCurrent,
+.mat-column-Active,
+.mat-column-Action {
+    justify-content: center;
+    flex           : 0 0 100px;
+}
+
+.mat-column-EmpGradeId,
+.mat-column-DesignationId,
+.mat-column-JobTitleId,
+.mat-column-DepartmentId,
+.mat-column-DesignationId,
+.mat-column-WorkAccountId,
+.mat-column-ManagerName,
+.mat-column-ReportingToName,
+.mat-column-Remarks,
+.mat-column-FromDate,
+.mat-column-ToDate {
+    flex: 0 0 150px;
+}
+
+mat-cell:first-of-type {
+    padding-left: 0px;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-end {
+    border-radius: 0px !important;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-start {
+    border-radius: 0px !important;
+}

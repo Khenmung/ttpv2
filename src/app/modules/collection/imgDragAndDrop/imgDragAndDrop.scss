@@ -1,0 +1,27 @@
+:host{
+    width: 78%;
+}
+mat-form-field{
+    margin-right: 5px;
+}
+input:hover{
+    cursor: inherit;
+}
+.mat-icon {
+    vertical-align: middle;
+ }
+ button{
+     height: 40px;
+     //width: 80px;
+     margin-top: 5px;
+ }
+ mat-card{
+   // width: 100%;
+    //background-color:lightgray;
+    margin-top: 15px;
+    
+}
+
+.mat-form-field-infix {
+    padding-bottom: 1em !important;
+}

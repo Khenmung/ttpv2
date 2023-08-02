@@ -1,0 +1,128 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Events</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <mat-table style="overflow: auto;min-width: 60vw;min-height: 60vh;" #table [dataSource]="dataSource">
+                <ng-container matColumnDef="EventId">
+                    <mat-header-cell *matHeaderCellDef>Id
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.EventId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EventName">
+                    <mat-header-cell *matHeaderCellDef>Event
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.EventName"
+                                [(ngModel)]="element.EventName" [maxlength]="100">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Description">
+                    <mat-header-cell *matHeaderCellDef>Description
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <textarea matInput (blur)="onBlur(element)" [value]="element.Description"
+                                [(ngModel)]="element.Description" [maxlength]="1000"></textarea>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EventStartDate">
+                    <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Start</mat-label>
+                            <input [value]="element.EventStartDate" matInput 
+                            [(ngModel)]="element.EventStartDate"
+                            [matDatepicker]="EventStartDate" (dateChange)="onBlur(element)"
+                             autocomplete="off">                            
+                            <mat-datepicker-toggle matSuffix [for]="EventStartDate"></mat-datepicker-toggle>
+                            <mat-datepicker #EventStartDate></mat-datepicker>
+                        </mat-form-field>
+                        <!-- <mat-form-field appearance="outline">
+                            <input [value]="element.EventStartDate" matInput [(ngModel)]="element.EventStartDate"
+                                [ngxMatDatetimePicker]="EventStartDate" autocomplete="off">
+                            <mat-datepicker-toggle matSuffix [for]="$any(EventStartDate)"></mat-datepicker-toggle>
+                            <ngx-mat-datetime-picker #EventStartDate [showSpinners]="true" [showSeconds]="false"
+                                [stepHour]="1" [stepMinute]="1" [stepSecond]="1" [touchUi]="false"
+                                [enableMeridian]="true">
+                            </ngx-mat-datetime-picker>
+                        </mat-form-field> -->
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EventEndDate">
+                    <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-label>End</mat-label>
+                            <input [value]="element.EventEndDate" matInput [(ngModel)]="element.EventEndDate"
+                            [matDatepicker]="EventEndDate" (dateChange)="onBlur(element)" autocomplete="off">                            
+                            <mat-datepicker-toggle matSuffix [for]="EventEndDate"></mat-datepicker-toggle>
+                            <mat-datepicker #EventEndDate></mat-datepicker>
+                        </mat-form-field>
+                        <!-- <mat-form-field appearance="outline">
+                            <input [value]="element.EventEndDate" [(ngModel)]="element.EventEndDate" matInput
+                                [ngxMatDatetimePicker]="EventEndDate" autocomplete="off">
+                            <mat-datepicker-toggle matSuffix [for]="$any(EventEndDate)"></mat-datepicker-toggle>
+                            <ngx-mat-datetime-picker #EventEndDate [showSpinners]="true" [showSeconds]="false"
+                                [stepHour]="1" [stepMinute]="1" [stepSecond]="1" [touchUi]="false"
+                                [enableMeridian]="true">
+                            </ngx-mat-datetime-picker>
+                        </mat-form-field> -->
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Venue">
+                    <mat-header-cell *matHeaderCellDef>Venue
+                    </mat-header-cell>
+                    <mat-cell style="display: flex;" *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <input autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.Venue"
+                                [(ngModel)]="element.Venue" [maxlength]="256">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>Active
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
+                            (click)="AddNew()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                            mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                             <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
+                </mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,100]"></mat-paginator>
+        </div>
+        <!-- <button type="button" class="btn btn-outline-secondary mr-2" placement="top"
+            ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
+            Popover on top
+        </button> -->
+    </div>
+</div>

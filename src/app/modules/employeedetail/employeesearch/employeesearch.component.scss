@@ -1,0 +1,12 @@
+:host{
+    width: 100%;
+}
+mat-form-field,button{
+    margin-right: 15px;
+}
+.mat-column-Action,.mat-column-Active,.mat-column-EmployeeCode{
+    flex:0 0 100px;
+}
+.mat-column-Name,.mat-column-Department,.mat-column-Designation,.mat-column-Grade,.mat-column-Manager{
+    flex: 0 0 170px;
+}

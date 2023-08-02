@@ -1,0 +1,18 @@
+mat-form-field{
+    width: 95%;
+}
+.mat-column-OrganizationPaymentId
+{
+    flex:0 0 70px;
+}
+.mat-column-PlanName,.mat-column-PaymentMode
+{
+    flex: 0 0 150px;
+}
+.mat-column-PaymentDate,
+.mat-column-AmountPerMonth,
+.mat-column-PaidMonths,
+.mat-column-Amount
+{
+    flex:1 1 100px;
+}

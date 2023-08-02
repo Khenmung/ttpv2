@@ -1,0 +1,114 @@
+<div style="margin:15px 15px 15px 0px"><b>Balance Sheet</b></div>
+
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+
+<form [formGroup]="searchForm">
+    <mat-form-field appearance="outline" [style.width.px]="150">
+        <mat-label>From</mat-label>
+        <input formControlName="searchFromDate" [min]="MinDate" matInput [matDatepicker]="FromDate" autocomplete="off">
+        <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
+        <mat-datepicker #FromDate></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="outline" [style.width.px]="150">
+        <mat-label>To</mat-label>
+        <input formControlName="searchToDate" matInput [matDatepicker]="ToDate" autocomplete="off">
+        <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>
+        <mat-datepicker #ToDate></mat-datepicker>
+    </mat-form-field>
+    <!-- <mat-form-field appearance="outline" [style.width.px]="350" style="margin-right:15px;">
+        <mat-label>Account</mat-label>
+        <input type="text" matInput formControlName="searchGeneralLedgerId" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                {{option.GeneralLedgerName}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field> -->
+    <button [disabled]="loading" mat-raised-button color="accent" (click)="GetAccountingVoucher()">
+        <mat-icon>search</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+        </mat-icon>
+    </button>
+</form>
+<div style="display:flex;width:100%;flex-direction: column;">
+   
+    <div style="display:flex;width:100%">
+        <div style="display:flex;flex-direction: column;width:100%;">
+            <!-- <div style="margin:15px;font-weight: bold;">Income</div> -->
+            <mat-table [dataSource]="AssetDataSource" matSort>
+                <ng-container matColumnDef="AccountName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Account
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.AccountName}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef>
+                       <b>Total</b>
+                    </mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="Balance">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.Balance}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef>
+                        {{TotalAsset}}
+                    </mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="Asset">
+                    <mat-header-cell *matHeaderCellDef [attr.colspan]="2" 
+                    style="display:flex;justify-content: flex-start;font-weight: bold;">Asset
+                    </mat-header-cell>
+                </ng-container>
+                <mat-header-row style="min-height: 35px;" *matHeaderRowDef="['Asset']"></mat-header-row>
+                <mat-header-row style="min-height: 35px;" *matHeaderRowDef="BalanceSheetColumns"></mat-header-row>
+                <mat-row style="min-height: 35px;" *matRowDef="let row; columns: BalanceSheetColumns;" class="element-row"></mat-row>
+                <mat-footer-row style="min-height: 35px;" class="sticky-footer" *matFooterRowDef="BalanceSheetColumns">
+                </mat-footer-row>
+            </mat-table>
+        </div>
+        <div style="display:flex;flex-direction: column;width:100%;">
+            <!-- <div style="margin:15px;font-weight: bold;">Expense</div> -->
+            <mat-table [dataSource]="LiabilityDataSource" matSort>
+                <ng-container matColumnDef="AccountName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Account
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.AccountName}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef>
+                        <b>Total</b>
+                    </mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="Balance">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.Balance}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef>
+                        {{TotalLiability}}
+                    </mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="Liability">
+                    <mat-header-cell *matHeaderCellDef [attr.colspan]="2"
+                     style="display:flex;justify-content: flex-start;font-weight: bold;">Liability
+                    </mat-header-cell>
+                </ng-container>
+                <mat-header-row style="min-height: 35px;" *matHeaderRowDef="['Liability']"></mat-header-row>
+                <mat-header-row style="min-height: 35px;" *matHeaderRowDef="BalanceSheetColumns"></mat-header-row>
+                <mat-row style="min-height: 35px;" *matRowDef="let row; columns: BalanceSheetColumns;" class="element-row"></mat-row>
+                <mat-footer-row style="min-height: 35px;" class="sticky-footer" *matFooterRowDef="BalanceSheetColumns">
+                </mat-footer-row>
+            </mat-table>
+        </div>
+    </div>
+    <div style="display:flex;margin: 15px;">
+        <div style="font-weight: bold;margin-right: 15px;">Net Income:</div>
+        <div>{{NetIncome}}</div>
+    </div>
+</div>
+
+<!-- <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50]"></mat-paginator> -->

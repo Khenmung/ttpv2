@@ -1,0 +1,142 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Employee Salary Components</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<div style="margin-left: 15px;">
+    <form [formGroup]="searchForm">
+        <mat-form-field [style.width.px]="200" appearance="outline">
+            <mat-label>Employee</mat-label>
+            <input type="text" matInput formControlName="searchEmployee" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.Name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field [style.width.px]="110" appearance="outline">
+            <mat-label>Month</mat-label>
+            <mat-select formControlName='searchMonth'>
+                <!-- <mat-option [value]="0">select</mat-option> -->
+                <mat-option *ngFor="let item of Months" [value]="item.val">{{item.MonthName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="searchDepartment">
+                <mat-option [value]="0">select</mat-option>
+                <mat-option *ngFor="let item of Departments" [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
+           </mat-select>
+        </mat-form-field>
+        <!-- <mat-form-field [style.width.px]="50">
+                    <mat-label>Year</mat-label>
+                    <input type="number" matInput formControlName="searchYear" min="2020" max="2050" autocomplete="Off">
+                </mat-form-field> -->
+        <button [disabled]="loading" style="margin-right:50px;" mat-raised-button color="accent" matTooltip="view salary" (click)="GetEmployeeSalaryComponents('read')">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+        <button [disabled]="loading" mat-raised-button color="accent" matTooltip="generate salary" (click)="GetEmployeeSalaryComponents('update')">
+            <mat-icon>all_out</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+
+    <mat-table #table [dataSource]="dataSource">
+        <ng-container matColumnDef="Grade">
+            <mat-header-cell *matHeaderCellDef>Grade
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Grade}}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
+        </ng-container>
+        <ng-container matColumnDef="SalaryComponent">
+            <mat-header-cell *matHeaderCellDef>Salary Components
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                {{element.SalaryComponent}}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
+        </ng-container>
+        <ng-container matColumnDef="FormulaOrAmount">
+            <mat-header-cell *matHeaderCellDef>Formula/Amount
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                {{element.FormulaOrAmount}}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
+        </ng-container>
+        <ng-container matColumnDef="ActualFormulaOrAmount">
+            <mat-header-cell *matHeaderCellDef> Formula/Amount for Employee
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                <mat-form-field [style.width.px]="200">
+                    <textarea rows="1" matInput [attr.name]='element.ActualFormulaOrAmount'
+                        (blur)="onBlur(element,$event)" [value]="element.ActualFormulaOrAmount"
+                        [(ngModel)]="element.ActualFormulaOrAmount"></textarea>
+                </mat-form-field>
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+                <b>Total</b>
+            </mat-footer-cell>
+        </ng-container>
+        <ng-container matColumnDef="Amount">
+            <mat-header-cell *matHeaderCellDef> Amount
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                {{element.Amount}}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+                {{TotalAmount}}
+            </mat-footer-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <!-- <button [disabled]="loading" matTooltip="add new" mat-mini-fab (click)="addnew()">
+                            <mat-icon>add</mat-icon>
+                        </button> -->
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                    mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+        <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+    </mat-table>
+
+    <br>
+    <br>
+    <div style="background-color: lightgray;line-height: 30px;padding: 10px;margin-bottom: 5px;">Below variable name
+        can be
+        used for
+        calculation.</div>
+    <div style="column-count: 4;margin-left: 15px;">
+        <div *ngFor="let item of EmployeeVariables;let i =index">
+            <div>{{ item}}</div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+.logo1 {
+    padding    : 0px 5px;
+    font-size  : 26px;
+    line-height: 18px;
+}
+
+.width81 {
+    //position        : fixed;
+    z-index         : 10;
+    color           : white;
+    background-color: #0F5298; // #20639b; //#4f8ec2;//
+    box-shadow      : -5px 5px 5px lightgreen;
+    top             : 0px;
+    //max-width: 81%;
+    //border-radius: 0em 1em 0em 0em;
+}
+
+.width100 {
+    //position           : fixed;
+    z-index            : 10;
+    //color              : white;
+    //background-color: #006EDB;
+    //background         : url('../../../../assets/images/headerimg.svg');
+    //background:  linear-gradient(150deg, var(--maincolor2) 10%, #198CFF 70%, #006EDB 15%);
+    //background-size    : cover;
+    //background-repeat: no-repeat;
+    //background-size: cover;
+    //background-color: #2c5f2d;
+    background-color: whitesmoke;
+    //background   :linear-gradient(to bottom, #2c5f2d, #ffffff);//#2c5f2d;//#009974;//var(--maincolor1); //#0F5298; //#4f8ec2;//
+    //box-shadow         : 3px 3px 3px var(--maincolor2);
+    top                : 0px;
+    //height:300px;
+    max-width          : 100%;
+}
+button{
+    margin-right: 15px;
+}
+// @media only screen and (max-width: 600px) {
+//     mat-card{
+//         margin-left:0px;
+//         margin-right: 0px;
+//     }
+
+//   }
+.mat-toolbar {
+    position: relative;
+  }
+.transparent {
+    color                    : transparent;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #a7a6a6;
+    font-size                : 20px;
+
+}
+
+.rightside:hover {
+    background-color  : purple; // rgb(218, 143, 125);//rgb(197, 101, 76); //rgb(128, 60, 94);//navy;
+    cursor            : pointer;
+    //padding         : 5px;
+    //color           : white;
+    //opacity: 1.5;
+    //clip-path       : polygon(0 30%, 99% 1%, 100% 90%, 0% 100%);
+}
+
+button {
+    border : none;
+    outline: none;
+}
+
+@media only screen and (max-width: 600px) {
+    .mat-toolbar-row {
+        height : 75px !important;
+        padding: 0px;
+    }
+
+    img {
+        margin-top  : 10px;
+        margin-right: 10px;
+    }
+}
+
+@media only screen and (min-width: 601px) {
+    .mat-toolbar-row {
+        height: 75px !important;
+    }
+
+    img {
+        margin-right: 10px;
+    }
+}
+
+sub {
+    vertical-align: sub;
+    font-size     : smaller;
+}
+  

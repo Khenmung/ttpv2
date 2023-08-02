@@ -1,0 +1,21 @@
+.cardImage{
+    width: 100vh;
+    height: 70vh;
+    object-fit:cover;
+    border-radius: 1rem;
+    
+}
+.container{
+    display: flex;
+    justify-content: center;
+}
+button{
+    margin-top: 1rem;
+}
+.column1{
+    justify-content: center;
+    flex:3;
+}
+.column2{
+    flex:1;
+}

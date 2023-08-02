@@ -1,0 +1,14 @@
+mat-form-field{
+    width:98%;
+    margin-right: 15px;
+}
+.mat-column-CustomerPlanFeatureId,
+.mat-column-Active,
+.mat-column-Action
+{
+    flex:1 1 100px;
+}
+.mat-column-FeatureName,
+.mat-column-PlanId{
+    flex:1 1 200px;
+}

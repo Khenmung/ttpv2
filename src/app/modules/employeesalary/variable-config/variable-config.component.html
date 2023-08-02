@@ -1,0 +1,119 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Variable Configuration</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<div style="width: 100%;">
+    <form [formGroup]="searchForm">
+        <mat-form-field [style.width.pc]="20" appearance="outline">
+            <mat-label>Variable</mat-label>
+            <input type="text" matInput formControlName="searchVariableName" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.VariableName}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <!-- <mat-form-field [style.width.px]="120" appearance="outline">
+                    <mat-label>Type</mat-label>
+                    <mat-select formControlName="searchTypeId">
+                        <mat-option *ngFor="let item of ConfigTypes" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+        <button [disabled]="loading" mat-raised-button color="accent" (click)="GetVariableConfigs()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="VariableName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Name
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                <mat-form-field appearance="outline">
+                    <input matInput [maxlength]="15" [value]="element.VariableName" [(ngModel)]="element.VariableName">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="VariableDescription">
+            <mat-header-cell *matHeaderCellDef>Description
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                <mat-form-field appearance="outline">
+                    <input matInput [maxlength]="100" (blur)="onBlur(element,'VariableDescription')"
+                        [value]="element.VariableDescription" autocomplete="Off"
+                        [(ngModel)]="element.VariableDescription">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="VariableFormula">
+            <mat-header-cell *matHeaderCellDef>Formula
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                <mat-form-field appearance="outline">
+                    <textarea matInput cols="40" [maxlength]="256" autocomplete="Off" (blur)="onBlur(element,$event)"
+                        [value]="element.VariableFormula" [(ngModel)]="element.VariableFormula"></textarea>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <!-- <ng-container matColumnDef="VariableAmount">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Amount
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element ">
+                        {{element.VariableAmount}}
+                    </mat-cell>
+                </ng-container> -->
+        <!-- <ng-container matColumnDef="VariableTypeId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Variable Type
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element ">
+                        <mat-form-field>
+                            <mat-select [(ngModel)]="element.VariableTypeId" [value]="element.VariableTypeId">
+                                <mat-option *ngFor="let item of ConfigTypes" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container> -->
+        <ng-container matColumnDef="DisplayOrder">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Display Order
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput autocomplete="Off" [value]="element.DisplayOrder"
+                        [(ngModel)]="element.DisplayOrder">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="addnew()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                <button [disabled]="loading || !element.Action" matTooltip="save" mat-raised-button color="accent"
+                    (click)="UpdateOrSave(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+    </mat-table>
+    <mat-paginator #varPaginator [pageSizeOptions]="[10, 25, 100]">
+    </mat-paginator>
+</div>

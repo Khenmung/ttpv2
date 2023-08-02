@@ -1,0 +1,238 @@
+<mat-card>
+    <mat-card-title>Invoice n Receipt</mat-card-title>
+    <mat-card-subtitle
+        style="margin: 0px 20px 20px 20px;display: flex;flex-direction: row;justify-content: space-between; background-color: lightgray;padding: 15px;">
+        <!-- <span style="display: flex;justify-content: space-between;flex-direction: column;">
+            <span style="display: flex;flex-direction: row;">
+                <span style="width: 200px;"><strong>Student</strong>:</span><span> {{StudentName}}</span>
+            </span>
+            <span style="display: flex;flex-direction: row;">
+                <span style="width: 200px;"><strong>Fee Type</strong>:
+                </span><span>{{studentInfoTodisplay.StudentFeeType}}</span>
+            </span>
+        </span> -->
+        <!-- <span>
+            <button (click)="back()" matTooltip="dashboard" style="margin-right:15px" mat-raised-button>
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <button (click)="detail()" style="margin-right: 15px;" matTooltip="detail" mat-raised-button>
+                <mat-icon>pageview</mat-icon>
+            </button>
+            <button (click)="admission()" matTooltip="admission" mat-raised-button>
+                <mat-icon>book_online</mat-icon>
+            </button>
+        </span> -->
+    </mat-card-subtitle>
+    <mat-card-content style="margin: 0px 20px 20px 20px;">
+        <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+        <mat-tab-group [selectedIndex]="selectedIndex" (selectedIndexChange)="tabChanged($event)">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon>payments</mat-icon>&nbsp;Payments
+                </ng-template>
+                <div style="display:flex;width: 100%;">
+                    <div
+                        style="min-width:400px; margin-top:15px;display: flex;flex-direction: column;border: 1px solid lightgray;">
+                        <div id="printSection" style="width: 100%;">
+                            <mat-table #table [dataSource]="dataSource">
+                                <ng-container matColumnDef="SlNo1">
+                                    <mat-header-cell *matHeaderCellDef> Sr.No. </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.SlNo1}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="MonthName">
+                                    <mat-header-cell *matHeaderCellDef style="justify-content: center;"> Month
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        {{element.MonthName}}
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="BaseAmount1">
+                                    <mat-header-cell *matHeaderCellDef style="justify-content: center;"> Fee
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        {{element.BaseAmount1}}
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="TotalCredit">
+                                    <mat-header-cell *matHeaderCellDef> Paid </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        {{element.TotalCredit}}
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="TotalDebit">
+                                    <mat-header-cell *matHeaderCellDef style="display: flex;justify-content: center;">
+                                        <span style="padding-left:15px;"> Payable Amount </span>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        {{element.TotalDebit}}
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="Balance1">
+                                    <mat-header-cell *matHeaderCellDef> Balance </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        {{element.Balance1}}
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="Action">
+                                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        <mat-checkbox [disabled]="loading || (element.TotalDebit!=0 && element.Balance1==0) || Permission=='read'"
+                                            mat-mini-fab (change)="SelectRow(element,$event)"
+                                            [checked]="(element.TotalDebit!=0 && element.Balance1==0)">
+                                        </mat-checkbox>
+                                    </mat-cell>
+                                </ng-container>
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;let i=index" matRipple
+                                    class="element-row" [class.expanded]="expandedElement == row"></mat-row>
+                            </mat-table>
+                        </div>
+                        <div style="margin: 15px;display: flex;justify-content: center;">
+                            <button [disabled]="loading" matTooltip="print" printSectionId="printSection"
+                                [useExistingCss]="true" ngxPrint mat-raised-button>
+                                <mat-icon>print</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- <div style="background-color: lightgray;width:1px">&nbsp;asdf</div> -->
+                    <div style="width:100%; margin: 15px 0px 0px 15px;border: 1px solid lightgray;">
+                        <mat-table [dataSource]="billdataSource">
+                            <ng-container matColumnDef="SlNo">
+                                <mat-header-cell *matHeaderCellDef> Sr.No. </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.SlNo}} </mat-cell>
+                                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="FeeName">
+                                <mat-header-cell *matHeaderCellDef> Particulars
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <span style="margin-right: 10px;">{{element.FeeName}}</span>
+                                    <div *ngIf="element.AmountEditable==1" style="margin-right: 10px;">
+                                        <mat-form-field style="width: 170px;">
+                                            <input matInput [(ngModel)]="element.ShortText" [value]="element.ShortText"
+                                                autocomplete="Off" [maxlength]="30">
+                                        </mat-form-field>
+                                    </div>
+                                </mat-cell>
+                                <mat-footer-cell *matFooterCellDef>
+                                    <b>Total</b>
+                                </mat-footer-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="Balance">
+                                <mat-header-cell *matHeaderCellDef style="display:flex;justify-content:center">
+                                    <span>Balance</span>
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let element" style="padding-right:15px;">
+                                    {{element.Balance}}
+                                </mat-cell>
+                                <mat-footer-cell *matFooterCellDef
+                                    style="display:flex;justify-content:flex-end;padding-right: 15px;">
+                                    {{Balance}}
+                                </mat-footer-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="BaseAmount">
+                                <mat-header-cell *matHeaderCellDef> Fee
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    {{element.BaseAmount}}
+                                </mat-cell>
+                                <mat-footer-cell *matFooterCellDef style="display:flex;justify-content:center">
+                                </mat-footer-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="Amount">
+                                <mat-header-cell *matHeaderCellDef style="justify-content: center;"> Payable Amount
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let element" style="justify-content: end;">
+                                    <mat-form-field>
+                                        <input style="text-align: right" (keyup)="onBlur(element)"
+                                            [disabled]="element.AmountEditable==0 || element.FeeName=='Discount'" matInput max="100000"
+                                            [(ngModel)]="element.Amount" [value]="element.Amount" [maxlength]="5"
+                                            autocomplete="Off">
+                                    </mat-form-field>
+                                </mat-cell>
+                                <mat-footer-cell *matFooterCellDef
+                                    style="display:flex;justify-content:flex-end;padding-right: 15px;">
+                                    {{ TotalAmount}}
+                                </mat-footer-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="Action">
+                                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <button matTooltip="remove item" [disabled]="loading || element.BaseAmount>0 || Permission=='read'" mat-mini-fab (click)="remove(element)">
+                                        <mat-icon>cancel</mat-icon>
+                                    </button>
+                                </mat-cell>
+                                <mat-footer-cell *matFooterCellDef>
+
+                                </mat-footer-cell>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="billDisplayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: billDisplayedColumns;" class="element-row">
+                            </mat-row>
+                            <mat-footer-row class="sticky-footer" *matFooterRowDef="billDisplayedColumns">
+                            </mat-footer-row>
+                        </mat-table>
+                        
+                        <!-- <div fxLayout="row" fxLayoutAlign="space-between center" style="padding: 25px;">
+                            <span>
+                                <mat-form-field style="width: 150px;margin-right: 15px;">
+                                    <mat-label>Offline receipt no.</mat-label>
+                                    <input matInput [maxlength]="20" [(ngModel)]="OffLineReceiptNo"
+                                        [value]="OffLineReceiptNo" autocomplete="Off">
+                                </mat-form-field>                               
+                                <mat-form-field style="width: 150px;">
+                                    <mat-label>Payment Type</mat-label>
+                                    <mat-select [(ngModel)]="PaymentTypeId" [value]="PaymentTypeId"
+                                        (selectionChange)="setPaymentType()">
+                                        <mat-option *ngFor="let item of PaymentTypes" [value]="item.MasterDataId">
+                                            {{item.MasterDataName}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </span>
+                            <span>
+                                <form [formGroup]="paymentform">
+                                    <span *ngIf="PaymentName =='ATS'">
+                                        <mat-form-field appearance="outline" [style.width.px]="350"
+                                            style="margin-right: 15px;">
+                                            <mat-label>employee</mat-label>
+                                            <input type="text" matInput formControlName="GeneralLedgerAccountId"
+                                                [matAutocomplete]="auto">
+                                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                                <mat-option *ngFor="let option of filteredLedgerAccounts | async"
+                                                    [value]="option">
+                                                    {{option.GeneralLedgerName}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </span>
+                                </form>
+                                <button [disabled]="loading || TotalAmount==0 || Permission=='read'" matTooltip="pay"
+                                    mat-mini-fab (click)="billpayment()">
+                                    <mat-icon>payments</mat-icon>
+                                    <mat-icon *ngIf="loading">
+                                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                                    </mat-icon>
+                                </button>
+                            </span>
+                        </div> -->
+                        
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon>receipt</mat-icon>Receipt
+                </ng-template>
+                <app-receipt [OffLineReceiptNo]="OffLineReceiptNo" [StudentClassFees]="StudentClassFees"
+                    [StudentClass]="studentInfoTodisplay" [BillDetail]="MonthlyDueDetail"></app-receipt>
+            </mat-tab>
+        </mat-tab-group>
+        <!-- </div> -->
+        <!-- </div> -->
+        <div style="margin: 15px;justify-content: center;display:flex">
+            <button [disabled]="loading" (click)="back()" mat-raised-button>
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+        </div>
+    </mat-card-content>
+</mat-card>

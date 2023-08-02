@@ -1,0 +1,35 @@
+mat-form-field {
+  //margin-right: 15px;
+  //width       : 98%;
+  max-width   : 250px;
+}
+mat-cell:first-of-type{
+  padding-left: 0px;
+}
+button {
+  margin-right: 15px;
+}
+// .mat-grid-title-content{
+//   padding-left: 0px;
+//   margin-left: 0px;
+// }
+::ng-deep .mat-figure {
+  justify-content: left !important;
+}
+.mat-column-StudentClassId,
+.mat-column-IsCurrent,.mat-column-Active,.mat-column-Action{
+  flex:1 0 80px;
+}
+.mat-column-RollNo,.mat-column-SectionId{
+  flex:1 0 100px;
+}
+.mat-column-ClassId,.mat-column-SemesterId,
+.mat-column-FeeTypeId,.mat-column-Remarks{
+  flex:1 0 150px;
+}
+.mat-column-AdmissionDate{
+  flex:1 0 175px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+  padding: 0px 15px 0px 0px;
+}

@@ -1,0 +1,43 @@
+// :host{
+//   width:78%;
+// }
+// .main {
+//     display: flex;
+// }
+
+// .child {
+//   flex: 1;  
+// }
+
+// a:hover {
+//   cursor: pointer;
+// }
+// app-edit-input{
+//   padding: 1px;
+// }
+// mat-card{
+//   margin-left: 5px;
+//   background-color:lightgray;
+//   margin-top: 15px;
+// }
+// mat-form-field,button{
+//   margin-right: 15px;
+// }
+mat-form-field{
+    width: 99%;
+}
+.mat-column-faIcon,.mat-column-ParentId{
+  flex:0 0 130px;
+}
+.mat-column-PageTitle,.mat-column-label,.mat-column-link{
+  flex:0 0 200px;
+}
+.mat-column-Active,.mat-column-Action{
+  flex:0 0 100px;
+}
+.mat-column-PageId,.mat-column-DisplayOrder,.mat-column-HasSubmenu,.mat-column-IsTemplate,.mat-column-HomePage{
+  flex:0 0 50px;
+}
+mat-cell:first-of-type{
+  padding-left: 0px;
+}

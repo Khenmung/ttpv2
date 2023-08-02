@@ -1,0 +1,57 @@
+<div style="font-weight: bold;padding: 15px 15px 15px 15px;"><strong>Employee Document</strong></div>
+<!-- <alert></alert> -->
+<div class="divCls" fxLayout="row wrap" fxLayoutGap="100px">
+    <form [formGroup]="uploadForm" fxLayout="row" fxLayoutAlign="space-between center">
+        <input #uploadfile type="file" (change)="uploadchange(uploadfile.files)" />
+        <div style="padding: 15px 15px 0px 15px;">
+            <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Document type</mat-label>
+                <mat-select formControlName="DocTypeId">
+                    <mat-option *ngFor="let p of DocumentTypes" [value]="p.MasterDataId">
+                        {{p.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+                <span class="text-danger" *ngIf='f.DocTypeId.touched && f.DocTypeId.hasError("required")'>Document type
+                    is required.</span>
+            </mat-form-field>
+        </div>
+        <span fxLayout="row" fxLayoutAlign="space-between center">
+            <button [disabled]="loading || Permission=='read' || EmployeeId==0" type="submit" (click)="uploadFile()" matTooltip="upload file" mat-raised-button>
+                <mat-icon aria-label="file_upload">file_upload</mat-icon>
+            </button>&nbsp;&nbsp;
+        </span>
+    </form>
+</div>
+<div fxLayout="row" fxLayoutAlign="space-between center" class="mat-elevation-z8">
+    <mat-table [dataSource]="documentUploadSource" fxFlex>
+        <ng-container matColumnDef="UpdatedFileFolderName">
+            <mat-header-cell *matHeaderCellDef> Document Name </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.UpdatedFileFolderName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="DocType">
+            <mat-header-cell *matHeaderCellDef> Document Type </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.DocType}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="UploadDate">
+            <mat-header-cell *matHeaderCellDef> Upload Date </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.UploadDate|date:'dd/MM/yyyy'}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+            <mat-cell (click)="pageview(element.path)" *matCellDef="let element">
+                <button [disabled]="loading" mat-mini-fab>
+                    <mat-icon>pageview</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="UploadDisplayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: UploadDisplayedColumns;" fxLayoutAlign="space-between center"
+            fxLayout="row"></mat-row>
+    </mat-table>
+</div>

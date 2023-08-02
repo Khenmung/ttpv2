@@ -1,0 +1,16 @@
+mat-form-field{
+    width:99%;    
+}
+.mat-column-HolidayId,.mat-column-Active,.mat-column-Action{
+    justify-content: center;
+    flex:1 0 70px;
+}
+.mat-column-StartDate,.mat-column-EndDate{
+    flex:1 0 120px;
+}
+.mat-column-Title,.mat-column-HolidayTypeId{
+    flex:1 0 130px;
+}
+.mat-column-Description{
+    flex:1 0 180px;
+}

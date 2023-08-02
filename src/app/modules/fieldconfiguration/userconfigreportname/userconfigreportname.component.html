@@ -1,0 +1,63 @@
+<div style="max-height: inherit;">
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Re-define Module Name</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" [style.width.px]="300">
+            <mat-label>Available Module</mat-label>
+            <mat-select formControlName="searchAvailableReportName" (selectionChange)="EnableButton()">
+                <mat-option *ngFor="let item of AvailableReportNames" [value]="item.ReportConfigItemId">
+                    {{item.ReportName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button [disabled]="loading || !boolEnableButton" matTooltip="search" mat-raised-button color="accent"
+            (click)="GetReportConfigItem()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+    <mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="ReportName">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <input matInput [value]="element.ReportName" [(ngModel)]="element.ReportName" autocomplete="Off"
+                        placeholder="" (blur)="onBlur(element)" [minlength]="1" [maxlength]="50">
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+                <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="addnew()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                <button [disabled]="loading || Permission=='read' || !element.Action" matTooltip="save"
+                    mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
+    </mat-table>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,100]"></mat-paginator>
+</div>

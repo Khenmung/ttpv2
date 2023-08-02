@@ -1,0 +1,22 @@
+{
+    "/token": {
+        "target":"http://localhost:8070", 
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel":"debug"
+    },
+    "/api/*": {
+        "target":"http://localhost:8070", 
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel":"debug"
+    },
+    "/odata/*": {
+        "target":"http://localhost:8070", 
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel":"debug"
+    }
+    
+   
+}

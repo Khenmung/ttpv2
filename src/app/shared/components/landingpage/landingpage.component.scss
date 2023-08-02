@@ -1,0 +1,107 @@
+
+// body {
+//     //    height: 100%;
+//     padding: 0;
+//     margin : 0;
+// }
+
+.content {
+    background: linear-gradient(150deg, var(--maincolor2) 10%, #198CFF 70%, #006EDB 15%);
+    //background-image: url('../../../../assets/images/school.png') ;
+    //background-repeat:no-repeat;
+    //background-position: center;
+    height         : 100%;
+    width          : 100%;
+    //opacity        : 1.1;
+    text-align     : center;
+    //border-radius: 1em;
+    z-index        : 999;
+    border-collapse: collapse;
+    top            : 0px;
+}
+
+@media only screen and (max-width: 800px) {
+    .content {
+        width: 100%;
+    }
+}
+
+
+:host {
+    width     : 100%;
+}
+
+.container {
+    float           : center;
+    //width     : 100%;
+    height          : 100%;
+    background-color: var(--maincolor2);
+    //background: #f4fbfe url("../../../../assets/images/lines.png") repeat;
+}
+
+.center {
+    margin          : auto;
+    width           : 50%;
+    height          : 100vh !important;
+    background-color: #1d4a8c;
+    background-image: none;
+    outline         : 2px solid;
+    box-shadow      : 0px 0px 6px black inset;
+}
+
+
+.logo {
+    padding-top   : 120px;
+    margin-bottom: 10px;
+}
+.name {
+    font-family: Roboto, Arial;
+    font-size  : 1.5em;
+    font-weight: 400;
+    padding    : 0 0 0 0;
+    color      : #ffffff;
+}
+
+.enter {
+    font-family    : roboto, arial;
+    font-weight    : 400;
+    text-decoration: none;
+    text-align     : center;
+    color          : #ffffff;
+    padding        : 50px 0 25px 0;
+    position       : relative;
+}
+
+.school {
+    margin-top     : 100px;
+    position       : absolute;
+    //width : 100%;
+    //margin-bottom: 0px;
+    clear          : both;
+}
+
+.button {
+    border             : none;
+    border-radius      : 24px;
+    color              : white;
+    padding            : 6px 32px;
+    text-align         : center;
+    text-decoration    : none;
+    display            : inline-block;
+    font-size          : 16px;
+    font-weight        : bold;
+    margin             : 4px 2px;
+    transition-duration: 0.4s;
+    cursor             : pointer;
+}
+
+.buttonon {
+    background-color: #f44336;
+    color           : white;
+    border          : 2px solid #f44336;
+}
+
+.buttonon:hover {
+    background-color: white;
+    color           : #1d4a8c;
+}

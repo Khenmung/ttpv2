@@ -1,0 +1,19 @@
+button{
+    margin-right: 15px;
+}
+mat-cell:first-of-type{
+    padding-left: 0px;
+}
+.mat-column-Sequence
+{
+    flex: 1 0 100px;
+}
+.mat-column-Active{
+    justify-content: center;
+    flex: 1 0 100px;
+}
+.mat-column-PeriodTypeId,
+.mat-column-PeriodName,
+.mat-column-FromToTime{
+    flex: 1 0 150px;
+}

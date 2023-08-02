@@ -1,0 +1,65 @@
+mat-form-field{
+    width:99%;
+    margin-right: 15px;
+}
+.mat-column-TotalAmount {
+    display: flex;
+   justify-content: center;
+   text-align:end;
+}
+
+// .mat-table {
+//     overflow  : auto;
+//     max-height: 500px;
+// }
+// mat-cell:first-of-type {
+//     padding-left: 0px;
+// }
+.element-row {
+    position: relative;
+    min-height: 29px;
+
+}
+
+.element-row:not(.expanded) {
+    cursor: pointer;
+}
+
+.element-row:not(.expanded):hover {
+    background: #f5f5f5;
+}
+
+.element-row.expanded {
+    border-bottom-color: transparent;
+}
+.mat-column-ReceiptNo
+{
+    flex:1 0 60px;
+}
+.mat-column-Status,.mat-column-TotalAmount{
+    flex:1 1 100px;
+}
+.mat-column-ReceiptDate,.mat-column-ReceivedBy{
+    flex:1 1 110px;
+}
+.mat-column-Name
+{
+    flex:1 0 250px;
+}
+//.mat-column-ClassName,
+.mat-column-PaymentType{
+    flex:1 1 150px;
+}
+
+@media print {
+    @page {
+        size: A4; /* landscape */
+        /* you can also specify margins here: */
+        margin: 25mm;
+        margin-right: 45mm; /* for compatibility with both A4 and Letter */
+      }
+    
+    mat-row {
+        break-inside: avoid;
+    }
+}    

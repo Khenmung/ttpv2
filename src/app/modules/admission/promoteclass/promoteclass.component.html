@@ -1,0 +1,213 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Promote Student</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<form style="display: flex;flex-direction:column;justify-content: space-around;" [formGroup]="searchForm">
+    <div style="display:flex;flex-direction: column;">
+        <div style="font-size: medium;padding: 15px 0px 15px 0px;font-weight: bold;color:darkgreen">Search Student From
+            Previous Batch.</div>
+        <div style="padding:10px 0px 0px 15px;border:1px solid lightgray">
+            <mat-form-field appearance="outline" style="width:100px">
+                <mat-label>PID</mat-label>
+                <input matInput autocomplete="Off" onfocus="this.select()" formControlName="searchPID">
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="300">
+                <mat-label>Student</mat-label>
+                <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="SetCategory($event)">
+                    <mat-option *ngFor="let option of filteredStudents|async" [value]="option">
+                        {{option.Name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width:150px">
+                <mat-label>Status from exam</mat-label>
+                <mat-select formControlName="searchExamId">
+                    <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                        {{item.ExamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button [disabled]="loading" style="margin-right: 10px;" mat-raised-button color="accent"
+                (click)="GetData()">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </div>
+
+    </div>
+    <mat-divider style="position:relative; margin-top:10px;margin-bottom: 15px;"></mat-divider>
+
+</form>
+
+
+<mat-table #table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="StudentName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Name
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.StudentName}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="GenderName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Gender </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.GenderName}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="AdmissionNo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header style="display:flex ;">
+            Admission No.
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <input matInput (blur)="onBlur(element)" [value]="element.AdmissionNo" [(ngModel)]="element.AdmissionNo"
+                    autocomplete="Off" [maxlength]="10">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ClassId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Class </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-select [disabled]="true" (selectionChange)="onBlur(element)" [value]="element.ClassId"
+                [(ngModel)]="element.ClassId">
+                <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
+                </mat-option>
+            </mat-select>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="AdmitTo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Admit To </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <mat-select (selectionChange)="onBlur(element)" [value]="element.AdmitTo" [(ngModel)]="element.AdmitTo">
+                    <mat-option *ngFor="let item of AdmitToClasses" [value]="item.ClassId">{{item.ClassName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="SemesterId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Semester </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <mat-select (selectionChange)="onBlur(element)" [value]="element.SemesterId" [(ngModel)]="element.SemesterId">
+                    <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">{{item.ClassName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <!-- <ng-container matColumnDef="CourseYearId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Course Year </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <mat-select (selectionChange)="onBlur(element)" [value]="element.CourseYearId" [(ngModel)]="element.CourseYearId">
+                    <mat-option *ngFor="let item of CourseYears" [value]="item.MasterDataId">{{item.ClassName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container> -->
+   
+    <ng-container matColumnDef="RollNo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>RollNo
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <input matInput (blur)="onBlur(element)" [value]="element.RollNo" [(ngModel)]="element.RollNo"
+                    autocomplete="Off" [maxlength]="10">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="SectionId">
+        <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef mat-sort-header>Section
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <mat-select (selectionChange)="onBlur(element)" [value]="element.SectionId"
+                    [(ngModel)]="element.SectionId">
+                    <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">{{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="FeeTypeId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Fee Type </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <mat-select (selectionChange)="onBlur(element)" [value]="element.FeeTypeId"
+                    [(ngModel)]="element.FeeTypeId">
+                    <mat-option *ngFor="let item of FeeTypes" [value]="item.FeeTypeId">{{item.FeeTypeName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Remark">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Remark </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.Remark}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Remarks">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Notes
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <input matInput (blur)="onBlur(element)" [value]="element.Remarks" [(ngModel)]="element.Remarks"
+                    autocomplete="Off" [maxlength]="250">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ExamStatus">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Exam Result
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.ExamStatus}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Active">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+            Admitted
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                [checked]="element.Active==1?true:false">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef>
+            <!-- <button [disabled]="loading || StudentClassList.length==0 || Permission=='read'" matTooltip="save all"
+                mat-mini-fab (click)="SaveAll()">
+                <mat-icon>all_out</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button> -->
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" style="display: flex;justify-content: center;">
+            <button style="margin-right:15px" [disabled]="loading || !element.Action || Permission=='read'"
+                matTooltip="save" mat-mini-fab color="accent" (click)="SaveRow(element)">
+                <mat-icon>plus_one</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+            <span *ngIf="element.StudentClassId>0">
+                <button (click)="feepayment(element)" matTooltip="fee" color="accent" mat-mini-fab>
+                    <mat-icon>payments</mat-icon>
+                </button>
+            </span>
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+</mat-table>
+<!-- <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,100]"></mat-paginator> -->

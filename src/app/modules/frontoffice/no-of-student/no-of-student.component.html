@@ -1,0 +1,47 @@
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>No. Of Students</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<div style="display: flex;flex-direction: row;">
+    <form [formGroup]="searchForm">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Class</mat-label>
+            <mat-select formControlName="searchClassId">
+                <mat-option value="0">select</mat-option>
+                <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                    {{item.ClassName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button [disabled]="loading" mat-raised-button color="accent" (click)="GetStudentClasses()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+</div>
+<div style="font-size: medium;">{{ HeaderTitle }}</div>
+<mat-table #table style="overflow: auto;" [dataSource]="dataSource" matSort>
+    <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="">{{disCol!='Action'?disCol:''}}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element[disCol]}}
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef style="justify-content: center;">
+            <span *ngIf="BoyGirlTotal[disCol]!=undefined">
+                {{BoyGirlTotal[disCol]}}
+            </span>            
+            <span *ngIf="disCol=='Total'">
+                Grand Total: {{TotalStudent}}
+            </span>
+        </mat-footer-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+    <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+</mat-table>
+<mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,100]"></mat-paginator>

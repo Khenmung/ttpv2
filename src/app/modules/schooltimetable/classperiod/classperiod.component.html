@@ -1,0 +1,144 @@
+<div>
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>Class Period</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <!-- <alert></alert> -->
+    <div style="padding: 15px;" fxLayout="row wrap">
+        <div style="width: 100%;">
+            <form [formGroup]="searchForm" fxLayout="row" fxLayoutAlign="space-between center">
+                <div>
+                    <mat-form-field appearance="outline" style="margin-right: 15px;">
+                        <mat-label>Class</mat-label>
+                        <mat-select formControlName="searchClassId" (selectionChange)="BindSectionSemester()">
+                            <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                                {{item.ClassName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()"  style="margin-right: 15px;">
+                        <mat-label>semester</mat-label>
+                        <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
+                            <mat-option [value]="Defaultvalue">select</mat-option>
+                            <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                                {{item.MasterDataName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()"  style="margin-right: 15px;">
+                        <mat-label>section</mat-label>
+                        <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+                            <mat-option [value]="Defaultvalue">select</mat-option>
+                            <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                                {{item.MasterDataName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>   
+                    <button [disabled]="loading" matTooltip="search" mat-raised-button color="accent"
+                        (click)="GetSchoolClassPeriods()">
+                         <mat-icon>search</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                    </button>
+                </div>
+                <div *ngIf="SchoolClassPeriodList.length>0">
+                   
+                    <mat-form-field appearance="outline"  style="margin-right: 15px;">
+                        <mat-label>Replicate to classes</mat-label>
+                        <mat-select formControlName="searchClassIdApplyAll" multiple>
+                            <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                                {{item.ClassName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button [disabled]="loading" matTooltip="replicate periods" mat-raised-button
+                        (click)="ReplicateToClasses()">
+                        <mat-icon>
+                            content_copy
+                        </mat-icon>
+                    </button>
+                    Only saved data will be replicated.
+                </div>
+            </form>
+
+            <mat-table #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="PeriodName">
+                    <mat-header-cell *matHeaderCellDef>Period
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element.PeriodName}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="PeriodTypeId">
+                    <mat-header-cell *matHeaderCellDef>Period Type
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <mat-select (selectionChange)="onBlur(element,$event)" [(ngModel)]="element.PeriodTypeId"
+                                [value]="element.PeriodTypeId">
+                                <mat-option *ngFor="let item of PeriodTypes" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="FromToTime">
+                    <mat-header-cell *matHeaderCellDef>Start and End Time
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input matInput [maxLength]="13" (blur)="onBlur(element,$event)"
+                                [(ngModel)]="element.FromToTime" autocomplete="Off" [value]="element.FromToTime">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Sequence">
+                    <mat-header-cell *matHeaderCellDef>Sequence
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field>
+                            <input matInput type="number" [max]="100" (blur)="onBlur(element,$event)"
+                                [(ngModel)]="element.Sequence" autocomplete="Off" [value]="element.Sequence">
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Active">
+                    <mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="CheckAll($event)">
+                        </mat-checkbox>&nbsp;Active
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                            [checked]="element.Active==1?true:false">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Action">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button [disabled]="loading || Permission=='read'" matTooltip="save all" mat-mini-fab (click)="SaveAll()">
+                            <mat-icon>all_out</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+                        </button>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                        <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save" 
+mat-raised-button color="accent"
+                            (click)="SaveRow(element)">
+                             <mat-icon>save</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+            </mat-table>
+        </div>
+
+    </div>
+</div>
