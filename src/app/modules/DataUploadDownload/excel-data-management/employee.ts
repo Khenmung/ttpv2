@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { NaomitsuService } from "src/app/shared/databaseService";
-import { TokenStorageService } from "src/app/_services/token-storage.service";
+import { NaomitsuService } from "../../../shared/databaseService";
+import { TokenStorageService } from "../../../_services/token-storage.service";
 @Injectable({
     providedIn: 'root'
 })
 export class employee {
-    ELEMENT_DATA = [];
+    ELEMENT_DATA :any[]= [];
     PageLoading=true;
     loading = false;
     optionsNoAutoClose = {
@@ -16,7 +16,7 @@ export class employee {
         autoClose: true,
         keepAfterRouteChange: true
     };
-    LoginUserDetail = [];
+    LoginUserDetail :any[]= [];
     constructor(
         private token: TokenStorageService,
         private dataservice: NaomitsuService,
@@ -26,7 +26,7 @@ export class employee {
         this.LoginUserDetail = this.token.getUserDetail();
     }
     save(ELEMENT_DATA) {
-        var toInsert = [];
+        var toInsert :any[]= [];
         ELEMENT_DATA.forEach(row => {
             toInsert.push({
                 EmpEmployeeId: row.EmpEmployeeId,

@@ -10,7 +10,7 @@ import { NgxFileDropModule } from 'ngx-file-drop';
 import { SchoolReportsComponents, SchoolReportsRoutingModule } from './reports-routing.module';
 import { SharedhomepageModule } from '../sharedhomepage.module';
 import { MatTableModule } from '@angular/material/table';
-import { TouchedErrorStateMatcher } from 'src/app/shared/formvalidation';
+import { TouchedErrorStateMatcher } from '../../shared/formvalidation';
 import { NgxPrintModule } from 'ngx-print';
 import { NgChartsModule } from 'ng2-charts';
 

@@ -5,11 +5,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 @Component({
   selector: 'app-holiday',
@@ -19,21 +19,21 @@ import { SwUpdate } from '@angular/service-worker';
 export class HolidayComponent implements OnInit {
     PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  HolidayTypes = [];
-  LoginUserDetail: any[] = [];
+  HolidayTypes :any[]= [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SubOrgId = 0;
   FilterOrgSubOrgBatchId='';
   FilterOrgSubOrg='';
   HolidayListName = 'Holidays';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0;
-  HolidayList: IHoliday[] = [];
+  HolidayList: IHoliday[]= [];
   filteredOptions: Observable<IHoliday[]>;
   dataSource: MatTableDataSource<IHoliday>;
-  allMasterData = [];
-  Holiday = [];
+  allMasterData :any[]= [];
+  Holiday :any[]= [];
   Permission = 'deny';
   //EmployeeId = 0;
   HolidayData = {
@@ -89,13 +89,13 @@ export class HolidayComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    //this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.misc.HOLIDAY);

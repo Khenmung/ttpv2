@@ -23,11 +23,11 @@ import {
   CalendarEventTimesChangedEvent,
   CalendarView,
 } from 'angular-calendar';
-import { List } from 'src/app/shared/interface';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { List } from '../../../shared/interface';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import * as moment from 'moment';
-import { globalconstants } from 'src/app/shared/globalconstant';
+import { globalconstants } from '../../../shared/globalconstant';
 import {SwUpdate} from '@angular/service-worker';
 import { MatTableDataSource } from '@angular/material/table';
 import { getMatIconFailedToSanitizeUrlError } from '@angular/material/icon';
@@ -66,12 +66,12 @@ const colors: any = {
 
   templateUrl: 'calendar.component.html',
 })
-export class DemoComponent implements OnInit { PageLoading=true;
+export class CalendarComponent implements OnInit { PageLoading=true;
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   events: CalendarEvent[];
-  EventList = [];
-  HolidayList = [];
+  EventList :any[]= [];
+  HolidayList :any[]= [];
   EventsListName = 'Events';
   HolidayListName = 'Holidays';
   view: CalendarView = CalendarView.Month;
@@ -107,7 +107,7 @@ export class DemoComponent implements OnInit { PageLoading=true;
   SelectedBatchId = 0;SubOrgId = 0;
   loading = false;
   refresh = new Subject<void>();
-  CalendarList = [];
+  CalendarList :any[]= [];
   // events: CalendarEvent[] = [
   //   {
   //     start: subDays(startOfDay(new Date()), 1),
@@ -156,7 +156,7 @@ export class DemoComponent implements OnInit { PageLoading=true;
     private tokenservice: TokenStorageService
   ) {
     this.LoginUserDetail = this.tokenservice.getUserDetail();
-    this.SelectedBatchId = +this.tokenservice.getSelectedBatchId();
+    this.SelectedBatchId = +this.tokenservice.getSelectedBatchId()!;
     this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenservice);
     this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenservice);
     this.GetEvents();
@@ -312,10 +312,10 @@ dataSource:MatTableDataSource<any>;
 //import { SwUpdate } from '@angular/service-worker';
   // import timeGridPlugin from '@fullcalendar/timegrid';
   // import { CalendarOptions } from '@fullcalendar/angular';
-  // import { NaomitsuService } from 'src/app/shared/databaseService';
-  // import { List } from 'src/app/shared/interface';
-  // import { TokenStorageService } from 'src/app/_services/token-storage.service';
-  // import { ContentService } from 'src/app/shared/content.service';
+  // import { NaomitsuService } from '../../../shared/databaseService';
+  // import { List } from '../../../shared/interface';
+  // import { TokenStorageService } from '../../../_services/token-storage.service';
+  // import { ContentService } from '../../../shared/content.service';
 
 
   // @Component({
@@ -325,11 +325,11 @@ dataSource:MatTableDataSource<any>;
   // })
   // export class CalendarComponent implements OnInit { PageLoading=true;
   //   loading = false;
-  //   LoginUserDetail = [];
-  //   EventList = [];
+  //   LoginUserDetail :any[]= [];
+  //   EventList :any[]= [];
   //   EventsListName = 'Events';
   //   HolidayListName = 'Holidays';
-  //   CalendarList = [];
+  //   CalendarList :any[]= [];
   //   SelectedBatchId=0;
   //   calendarOptions: CalendarOptions;
   //   constructor(private servicework: SwUpdate,
@@ -360,7 +360,7 @@ dataSource:MatTableDataSource<any>;
 
   //     list.PageName = this.HolidayListName;
   //     list.filter = [filterStr];
-  //     this.CalendarList = [];
+  //     this.CalendarList :any[]= [];
   //     this.dataservice.get(list)
   //       .subscribe((data: any) => {
   //         //debugger;
@@ -391,7 +391,7 @@ dataSource:MatTableDataSource<any>;
 
   //   list.PageName = this.EventsListName;
   //   list.filter = [filterStr];
-  //   this.EventList = [];
+  //   this.EventList :any[]= [];
   //   this.dataservice.get(list)
   //     .subscribe((data: any) => {
   //       if (data.value.length > 0) {

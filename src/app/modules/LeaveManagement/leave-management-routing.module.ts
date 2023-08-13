@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { EmployeeLeaveComponent } from './employee-leave/employee-leave.component';
 import { LeaveBalanceComponent } from './LeaveBalance/leavebalance.component';
 import { LeaveboardComponent } from './leaveboard/leaveboard.component';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { LeavepolicyComponent } from './leavepolicy/leavepolicy.component';
 
 const routes: Routes = [

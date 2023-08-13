@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from 'src/app/guards/auth.guard';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { AuthGuard } from '../../guards/auth.guard';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { AchievementandpointComponent } from './achievementandpoint/achievementandpoint.component';
 import { CertificateconfigComponent } from './certificateconfig/certificateconfig.component';
 import { GenerateCertificateComponent } from './generatecertificate/generatecertificate.component';

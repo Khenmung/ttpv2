@@ -10,8 +10,8 @@ import { NaomitsuService } from '../../../shared/databaseService';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { DialogService } from '../../../shared/dialog.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { ContentService } from 'src/app/shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { ContentService } from '../../../shared/content.service';
 
 @Component({
   selector: 'app-pagecontent',
@@ -27,8 +27,8 @@ export class pageDashboardComponent implements OnInit { PageLoading=true;
 
   ParentPages: [{ PageId, PageTitle }];
   PageDetail: IPage;
-  //SelectedData:PageDetail[] = [];
-  DATA: IPage[] = [];
+  //SelectedData:PageDetail[]= [];
+  DATA: IPage[]= [];
   loading = false;
   columns: Array<any>;
   title: string;
@@ -36,7 +36,7 @@ export class pageDashboardComponent implements OnInit { PageLoading=true;
   query: string;//displayedColumns: Array<any>;
   list: List;
 
-  displayedColumns = [];// ['id', 'name', 'progress', 'color'];
+  displayedColumns :any[]= [];// ['id', 'name', 'progress', 'color'];
   dataSource: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -47,7 +47,7 @@ export class pageDashboardComponent implements OnInit { PageLoading=true;
   ngOnInit() {
     this.checklogin();
     this.route.paramMap.subscribe(params => {
-      this.Id = +params.get("parentid");
+      this.Id = +params.get("parentid")!;
     })
     this.GetParentPage(this.Id);
   }
@@ -66,7 +66,7 @@ export class pageDashboardComponent implements OnInit { PageLoading=true;
         next: (arrPage: IPage[]) => {
           ////console.log('arrpage', arrPage);
           this.DATA=[];
-          let arr = [];
+          let arr :any[]= [];
           Object.keys(arrPage).map(function (key) {
             arr.push({ [key]: arrPage[key] })
             return arr;
@@ -93,7 +93,7 @@ export class pageDashboardComponent implements OnInit { PageLoading=true;
               cell: (element: any) => `${element[column] ? element[column] : ``}`
             };
           });
-          let SelectedArr = [];
+          let SelectedArr :any[]= [];
           SelectedArr = this.DATA.filter(key => key.Active === 1)
 
 
@@ -276,7 +276,7 @@ function flatten(data) {
       for (var i = 0, l = cur.length; i < l; i++)
         recurse(cur[i], prop + "[" + i + "]");
       if (l == 0)
-        result[prop] = [];
+        result[prop]= [];
     } else {
       var isEmpty = true;
       for (var p in cur) {

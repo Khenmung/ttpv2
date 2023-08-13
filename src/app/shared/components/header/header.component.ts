@@ -25,7 +25,7 @@ export class HeaderComponent implements OnInit {
   OrganizationName = '';
   SelectedApplicationName = '';
   SelectedBatchName = '';
-  LoginUserDetails = [];
+  LoginUserDetails :any[]= [];
   SubOrgId = 0;
   constructor(
     private route: Router,
@@ -44,24 +44,24 @@ export class HeaderComponent implements OnInit {
     }
     else {
       this.loggedIn = true;
-      this.userName = localStorage.getItem('email');
+      this.userName = localStorage.getItem('email')!;
       this.logoPath = this.LoginUserDetails[0].logoPath;
       if (this.logoPath == undefined) {
         this.logoPath = "assets/images/ttplogo1.png"
       }
       this.OrganizationName = this.LoginUserDetails[0].org
       var SelectedApplicationId = this.tokenStorage.getSelectedAPPId();
-      this.CompanyName = this.tokenStorage.getCompanyName();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.CompanyName = this.tokenStorage.getCompanyName()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.SelectedApplicationName = '';
 
       var PermittedApplications = this.tokenStorage.getPermittedApplications();
       if (PermittedApplications != '') {
-        var apps = PermittedApplications.filter(f => f.applicationId == SelectedApplicationId)
+        var apps = PermittedApplications.filter((f:any) => f.applicationId == SelectedApplicationId)
 
         if (apps.length > 0) {
 
-          this.SelectedBatchName = this.tokenStorage.getSelectedBatchName();
+          this.SelectedBatchName = this.tokenStorage.getSelectedBatchName()!;
           this.SelectedApplicationName = apps[0].applicationName + (this.SelectedBatchName == '' ? '' : ' - ' + this.SelectedBatchName)
         }
       }

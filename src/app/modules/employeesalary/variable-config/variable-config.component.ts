@@ -8,11 +8,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { evaluate } from 'mathjs';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -26,19 +26,19 @@ export class VariableConfigComponent implements OnInit {
   @ViewChild('varPaginator') paginator: MatPaginator;
 
   ListName = 'VariableConfigurations';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   
-  allMasterData = [];
+  allMasterData :any[]= [];
   StandardFilter = '';
   loading = false;
   SubOrgId=0;
   rowCount = 0;
   SelectedApplicationId = 0;
   filteredOptions: Observable<IVariableConfig[]>;
-  VariableConfig = [];
-  ConfigTypes = [];
-  VariableConfigList: IVariableConfig[] = [];
+  VariableConfig :any[]= [];
+  ConfigTypes :any[]= [];
+  VariableConfigList: IVariableConfig[]= [];
   dataSource: MatTableDataSource<IVariableConfig>;
   VariableConfigData = {
     VariableConfigurationId: 0,
@@ -84,12 +84,12 @@ export class VariableConfigComponent implements OnInit {
       searchTypeId: [0]
     });
     this.PageLoad();
-    this.filteredOptions = this.searchForm.get("searchVariableName").valueChanges
+    this.filteredOptions = this.searchForm.get("searchVariableName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.VariableName),
         map(Name => Name ? this._filter(Name) : this.VariableConfig.slice())
-      );
+      )!;
 
   }
   private _filter(name: string): IVariableConfig[] {
@@ -116,8 +116,8 @@ export class VariableConfigComponent implements OnInit {
         this.contentservice.openSnackBar(globalconstants.PermissionDeniedMessage, globalconstants.ActionText, globalconstants.RedBackground);
       }
       else {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.StandardFilter = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.GetMasterData();
       }
@@ -186,7 +186,7 @@ export class VariableConfigComponent implements OnInit {
           //this.VariableConfigData.VariableAmount = row.VariableAmount.toString();
           this.VariableConfigData.Active = row.Active;
           this.VariableConfigData.VariableDescription = row.VariableDescription;
-          //this.VariableConfigData.VariableTypeId = this.searchForm.get("searchTypeId").value;
+          //this.VariableConfigData.VariableTypeId = this.searchForm.get("searchTypeId")?.value;
           this.VariableConfigData.DisplayOrder = row.DisplayOrder;
           this.VariableConfigData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.VariableConfigData.SubOrgId = this.SubOrgId;
@@ -279,7 +279,7 @@ export class VariableConfigComponent implements OnInit {
     element["VariableAmount"] = evaluate(formula);//_amount;
     ////console.log("event", event);
     element.Action = true;
-    //var row = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
+    //var row = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
     //row[0][_colName] = element[_colName];
   }
 
@@ -295,7 +295,7 @@ export class VariableConfigComponent implements OnInit {
     //var columnexist;
     // for (var prop in element) {
 
-    //   //var row: any = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == prop && s.StudentClassSubjectId == element.StudentClassSubjectId);
+    //   //var row: any = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == prop && s.StudentClassSubjectId == element.StudentClassSubjectId);
 
     //   if (row.length > 0 && prop != 'StudentClassSubject' && prop != 'Action') {
     //     row[0].Active = 1;
@@ -308,7 +308,7 @@ export class VariableConfigComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ConfigTypes = this.getDropDownData(globalconstants.MasterDefinitions.common.CONFIGTYPE);
     this.GetVariables();
   }
@@ -317,15 +317,15 @@ export class VariableConfigComponent implements OnInit {
     var orgIdSearchstr = this.StandardFilter;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
     var filter = '';
-    // if (this.searchForm.get("searchTypeId").value > 0)
-    //   filter += ' and VariableTypeId eq ' + this.searchForm.get("searchTypeId").value;
+    // if (this.searchForm.get("searchTypeId")?.value > 0)
+    //   filter += ' and VariableTypeId eq ' + this.searchForm.get("searchTypeId")?.value;
     // else {
     //   this.contentservice.openSnackBar("Please select type", globalconstants.ActionText, globalconstants.RedBackground);
     //   return;
     // }
-    var configId =this.searchForm.get("searchVariableName").value.VariableConfigurationId;
+    var configId =this.searchForm.get("searchVariableName")?.value.VariableConfigurationId;
     if (configId)
-      " and VariableName eq '" + this.searchForm.get("searchVariableName").value.VariableName + "'";
+      " and VariableName eq '" + this.searchForm.get("searchVariableName")?.value.VariableName + "'";
 
 
     let list: List = new List();

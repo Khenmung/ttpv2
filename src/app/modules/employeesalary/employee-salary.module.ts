@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { employeesalaryComponents, EmployeeSalaryRoutingModule } from './employee-salary-routing.module';
 import { SharedhomepageModule } from '../sharedhomepage.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MaterialModule } from 'src/app/shared/material/material.module';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { MaterialModule } from '../../shared/material/material.module';
+import { SharedModule } from '../../shared/shared.module';
 import { NgxPrintModule } from 'ngx-print';
 
 @NgModule({

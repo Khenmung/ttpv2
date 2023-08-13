@@ -4,11 +4,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-achievementandpoint',
@@ -21,18 +21,18 @@ export class AchievementandpointComponent implements OnInit {
   RowsToUpdate = -1;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   ClassId = 0;
   Permission = '';
   FilterOrgSubOrg = '';
   loading = false;
-  Category = [];
-  AchievementAndPointList: any[] = [];
+  Category :any[]= [];
+  AchievementAndPointList:any[]= [];
   SelectedBatchId = 0;SubOrgId = 0;
   dataSource: MatTableDataSource<any>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   AchievementAndPointData = {
     AchievementAndPointId: 0,
     Rank: '',
@@ -41,7 +41,7 @@ export class AchievementandpointComponent implements OnInit {
     Active: 0,
     OrgId: 0
   };
-  AchievementAndPointForUpdate = [];
+  AchievementAndPointForUpdate :any[]= [];
   displayedColumns = [
     "AchievementAndPointId",
     "Rank",
@@ -73,7 +73,7 @@ export class AchievementandpointComponent implements OnInit {
       searchCategoryId: [0]
     });
 
-    this.ClassId = this.tokenStorage.getClassId();
+    this.ClassId = this.tokenStorage.getClassId()!;
     this.PageLoad();
 
   }
@@ -86,9 +86,9 @@ export class AchievementandpointComponent implements OnInit {
   displayFn(user: IStudent): string {
     return user && user.Name ? user.Name : '';
   }
-  //StudentGroups = [];
-  //StudentClubs = [];
-  //StudentHouses = [];
+  //StudentGroups :any[]= [];
+  //StudentClubs :any[]= [];
+  //StudentHouses :any[]= [];
   PageLoad() {
     debugger;
     this.loading = true;
@@ -103,8 +103,8 @@ export class AchievementandpointComponent implements OnInit {
       if (this.Permission != 'deny') {
         //this.GroupId = this.tokenStorage.getGroupId();
 
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.GetMasterData();
         // if (this.Classes.length == 0) {
@@ -144,8 +144,8 @@ export class AchievementandpointComponent implements OnInit {
       return;
     }
 
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let checkFilterString = "CategoryId eq " + row.CategoryId + " and Rank eq '" + row.Rank + "'"
     this.RowsToUpdate = 0;
 
@@ -167,7 +167,7 @@ export class AchievementandpointComponent implements OnInit {
         }
         else {
 
-          this.AchievementAndPointForUpdate = [];;
+          this.AchievementAndPointForUpdate = [];
           this.AchievementAndPointForUpdate.push(
             {
               AchievementAndPointId: row.AchievementAndPointId,
@@ -235,7 +235,7 @@ export class AchievementandpointComponent implements OnInit {
   GetAchievementAndPoint() {
     debugger;
     var filterStr = this.FilterOrgSubOrg;
-    var _categoryId = this.searchForm.get("searchCategoryId").value;
+    var _categoryId = this.searchForm.get("searchCategoryId")?.value;
     if (_categoryId > 0) {
       filterStr += " and CategoryId eq " + _categoryId;
     }
@@ -256,7 +256,7 @@ export class AchievementandpointComponent implements OnInit {
     this.AchievementAndPointList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        //var _subCategory = [];
+        //var _subCategory :any[]= [];
         this.AchievementAndPointList = data.value.map(m => {
           m.Action = false;
           return m;
@@ -273,14 +273,14 @@ export class AchievementandpointComponent implements OnInit {
   }
   SelectSubCategory(row, event) {
     if (row.CategoryId > 0)
-      row.SubCategories = this.allMasterData.filter(f => f.ParentId == row.CategoryId);
+      row.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
     else
       row.SubCategories = [];
     this.onBlur(row);
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Category = this.getDropDownData(globalconstants.MasterDefinitions.school.POINTSCATEGORY);
     this.PageLoading = false;
     this.loading = false;

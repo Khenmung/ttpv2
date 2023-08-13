@@ -12,10 +12,10 @@ import { AddstudentclassComponent } from '../addstudentclass/addstudentclass.com
 import { AddstudentfeepaymentComponent } from '../studentfeepayment/addstudentfeepayment/addstudentfeepayment.component';
 import { FeereceiptComponent } from '../studentfeepayment/feereceipt/feereceipt.component';
 import { SharedataService } from '../../../shared/sharedata.service';
-import { ContentService } from 'src/app/shared/content.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { forkJoin, Observable } from 'rxjs';
 @Component({
@@ -31,7 +31,7 @@ export class studentprimaryinfoComponent implements OnInit {
   Edit = false;
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   StudentLeaving = false;
   StudentName = '';
   StudentClassId = 0;
@@ -45,33 +45,33 @@ export class studentprimaryinfoComponent implements OnInit {
   formdata: FormData;
   StudentId = 0;
   loading = false;
-  Classes = [];
-  Clubs = [];
-  Genders = [];
-  Category = [];
-  Bloodgroup = [];
-  Religion = [];
+  Classes :any[]= [];
+  Clubs :any[]= [];
+  Genders :any[]= [];
+  Category :any[]= [];
+  Bloodgroup :any[]= [];
+  Religion :any[]= [];
   MaxPID = 0;
   Permission = '';
-  PrimaryContact = [];
-  Location = [];
-  allMasterData = [];
-  ReasonForLeaving = [];
-  studentData = [];
-  AdmissionStatuses = [];
-  ColumnsOfSelectedReports = [];
+  PrimaryContact :any[]= [];
+  Location :any[]= [];
+  allMasterData :any[]= [];
+  ReasonForLeaving :any[]= [];
+  studentData :any[]= [];
+  AdmissionStatuses :any[]= [];
+  ColumnsOfSelectedReports :any[]= [];
   CountryId = 0;
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   PrimaryContactDefaultId = 0;
   PrimaryContactOtherId = 0;
   displayContactPerson = false;
-  Houses = [];
-  Remarks = [];
+  Houses :any[]= [];
+  Remarks :any[]= [];
   studentForm: UntypedFormGroup;
   Edited = false;
   StudentActivatePermission = '';
-  public files: NgxFileDropEntry[] = [];
+  public files: NgxFileDropEntry[]= [];
   @ViewChild(ImageCropperComponent, { static: true }) imageCropper: ImageCropperComponent;
 
   preview(files) {
@@ -205,9 +205,9 @@ export class studentprimaryinfoComponent implements OnInit {
       Height: [0],
       Active: [1]
     });
-    this.PID = this.tokenStorage.getPID();
-    this.StudentId = this.tokenStorage.getStudentId();
-    this.StudentClassId = this.tokenStorage.getStudentClassId()
+    this.PID = this.tokenStorage.getPID()!;
+    this.StudentId = this.tokenStorage.getStudentId()!;;
+    this.StudentClassId = this.tokenStorage.getStudentClassId()!;
   }
   FeePaymentPermission = '';
   ngOnInit(): void {
@@ -240,12 +240,12 @@ export class studentprimaryinfoComponent implements OnInit {
           this.FeePaymentPermission = perObj[0].permission;
         }
         //console.log("this.FeePaymentPermission ", this.FeePaymentPermission);
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.getFields('Student Module');
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.GetMasterData();
 
       }
@@ -341,7 +341,7 @@ export class studentprimaryinfoComponent implements OnInit {
       .subscribe(res => {
         //row.Action = false;
         this.loading = false; this.PageLoading = false;
-        this.Students = this.tokenStorage.getStudents();
+        this.Students = this.tokenStorage.getStudents()!;
         var indx = this.Students.findIndex(s => s.StudentId == StudentId);
         if (indx > -1)
           this.Students.splice(indx, 1);
@@ -351,23 +351,23 @@ export class studentprimaryinfoComponent implements OnInit {
       });
   }
   generateDetail() {
-    let StudentName = this.PID + ' ' + this.studentForm.get("FirstName").value +
-      this.studentForm.get("LastName").value + ',' + this.studentForm.get("FatherName").value + ', ' +
-      this.studentForm.get("MotherName").value + ', ';
+    let StudentName = this.PID + ' ' + this.studentForm.get("FirstName")?.value +
+      this.studentForm.get("LastName")?.value + ',' + this.studentForm.get("FatherName")?.value + ', ' +
+      this.studentForm.get("MotherName")?.value + ', ';
 
     let studentclass = this.Students.filter(sid => sid.StudentId == this.StudentId);
     if (studentclass.length > 0) {
       var _clsName = '', rollNo = '';
-      var objcls = this.Classes.filter(f => f.ClassId == studentclass[0].ClassId);
+      var objcls = this.Classes.filter((f:any) => f.ClassId == studentclass[0].ClassId);
       if (objcls.length > 0)
         _clsName = objcls[0].ClassName
       rollNo = studentclass[0].RollNo ? studentclass[0].RollNo : '';
       var _sectionName = '';
-      var sectionObj = this.Sections.filter(f => f.MasterDataId == studentclass[0].SectionId)
+      var sectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclass[0].SectionId)
       if (sectionObj.length > 0)
         _sectionName = "-" + sectionObj[0].MasterDataName;
       var _semesterName = '';
-      var semesterObj = this.Semesters.filter(f => f.MasterDataId == studentclass[0].SemesterId)
+      var semesterObj = this.Semesters.filter((f:any) => f.MasterDataId == studentclass[0].SemesterId)
       if (semesterObj.length > 0)
         _semesterName = "-" + semesterObj[0].MasterDataName;
       this.StudentClassId = studentclass[0].StudentClassId
@@ -382,8 +382,8 @@ export class studentprimaryinfoComponent implements OnInit {
     //this.shareddata.ChangeStudentId(element.StudentId);
 
   }
-  Sections = [];
-  Semesters = [];
+  Sections :any[]= [];
+  Semesters :any[]= [];
   GetMasterData() {
     this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
       .subscribe((data: any) => {
@@ -456,12 +456,12 @@ export class studentprimaryinfoComponent implements OnInit {
         var _studentclass = all[1].value;
         var _photo = all[2].value;
         if (_student.length > 0) {
-          this.Students = this.tokenStorage.getStudents();
+          this.Students = this.tokenStorage.getStudents()!;
           var studcls = this.Students.filter(store => store.StudentId == this.StudentId);
           // if (studcls.length > 0)
           //   all[0].value[0].StudentClasses = studcls[0].StudentClasses ? studcls[0].StudentClasses : [];
           // else
-          //   all[1].value[0]["StudentClasses"] = [];
+          //   all[1].value[0]["StudentClasses"] :any[]= [];
 
           this.SetStudentClassForStore(_student, _studentclass);
           _student.forEach(stud => {
@@ -475,9 +475,9 @@ export class studentprimaryinfoComponent implements OnInit {
               var _sectionName = '', _semesterName = '', _className = '', _rollNo = '';
               _rollNo = _studentclass[0].RollNo ? _studentclass[0].RollNo : '';
               if (_studentclass[0].SectionId > 0)
-                _sectionName = "-" + this.Sections.filter(s => s.MasterDataId == _studentclass[0].SectionId)[0].MasterDataName;
+                _sectionName = "-" + this.Sections.filter((s:any) => s.MasterDataId == _studentclass[0].SectionId)[0].MasterDataName;
               if (_studentclass[0].SemesterId > 0)
-                _semesterName = "-" + this.Semesters.filter(s => s.MasterDataId == _studentclass[0].SemesterId)[0].MasterDataName;
+                _semesterName = "-" + this.Semesters.filter((s:any) => s.MasterDataId == _studentclass[0].SemesterId)[0].MasterDataName;
               _className = this.Classes.filter(c => c.ClassId == _studentclass[0].ClassId)[0].ClassName;
               StudentName += _className + _semesterName + _sectionName + "-" + _rollNo;
               this.StudentClassId = _studentclass[0].StudentClassId;
@@ -584,49 +584,49 @@ export class studentprimaryinfoComponent implements OnInit {
   ErrorMessage = '';
   UpdateOrSave() {
 
-    var _MandatoryColumns = this.ColumnsOfSelectedReports.filter(f => f.Active == 1);
+    var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f:any) => f.Active == 1);
     this.ErrorMessage = '';
     _MandatoryColumns.forEach(b => {
-      if (this.studentForm.get(b.ReportName).value == undefined
-        || this.studentForm.get(b.ReportName).value == null
-        || this.studentForm.get(b.ReportName).value.length == 0
-        || this.studentForm.get(b.ReportName).value == 0) {
+      if (this.studentForm.get(b.ReportName)?.value == undefined
+        || this.studentForm.get(b.ReportName)?.value == null
+        || this.studentForm.get(b.ReportName)?.value.length == 0
+        || this.studentForm.get(b.ReportName)?.value == 0) {
         this.ErrorMessage += b.ReportName + " is required.\n";
       }
     })
 
-    // if (this.studentForm.get("FirstName").value == 0) {
+    // if (this.studentForm.get("FirstName")?.value == 0) {
     //   errorMessage += "First Name is required.\n";
     // }
-    // if (this.studentForm.get("FatherName").value == 0) {
+    // if (this.studentForm.get("FatherName")?.value == 0) {
     //   errorMessage += "Father name is required.\n";
 
     // }
-    // if (this.studentForm.get("BloodgroupId").value == 0) {
+    // if (this.studentForm.get("BloodgroupId")?.value == 0) {
     //   errorMessage += "Please select blood group.\n";
 
     // }
-    // if (this.studentForm.get("GenderId").value == 0) {
+    // if (this.studentForm.get("GenderId")?.value == 0) {
     //   errorMessage += "Please select gender.\n";
 
     // }
-    // if (this.studentForm.get("ReligionId").value == 0) {
+    // if (this.studentForm.get("ReligionId")?.value == 0) {
     //   errorMessage += "Please select religion.\n";
 
     // }
-    // if (this.studentForm.get("CategoryId").value == 0) {
+    // if (this.studentForm.get("CategoryId")?.value == 0) {
     //   errorMessage += "Please select Category.\n";
     // }
-    // if (this.studentForm.get("ClassAdmissionSought").value == 0) {
+    // if (this.studentForm.get("ClassAdmissionSought")?.value == 0) {
     //   errorMessage += "Please select Class for which admission is sought.\n";
     // }
-    // if (this.studentForm.get("AdmissionStatusId").value == 0) {
+    // if (this.studentForm.get("AdmissionStatusId")?.value == 0) {
     //   errorMessage += "Please select admission status.\n";
     // }
-    // if (this.studentForm.get("ContactNo").value == 0) {
+    // if (this.studentForm.get("ContactNo")?.value == 0) {
     //   errorMessage += "Please provide contact no..\n";
     // }
-    // if (this.studentForm.get("WhatsAppNumber").value == 0) {
+    // if (this.studentForm.get("WhatsAppNumber")?.value == 0) {
     //   errorMessage += "Please provide whatsapp no..\n";
     // }
 
@@ -636,7 +636,7 @@ export class studentprimaryinfoComponent implements OnInit {
       return;
     }
     this.loading = true;
-    var _email = this.studentForm.get("EmailAddress").value;
+    var _email = this.studentForm.get("EmailAddress")?.value;
     if (_email != null && _email.length > 0) {
       var checkduppayload = { 'Id': this.StudentId, 'Email': _email }
       this.contentservice.CheckEmailDuplicate(checkduppayload)
@@ -649,64 +649,64 @@ export class studentprimaryinfoComponent implements OnInit {
         });
     }
     this.studentData = [];
-    var _genderId = this.studentForm.get("Gender").value;
+    var _genderId = this.studentForm.get("Gender")?.value;
     if (!_genderId)
       _genderId = 0;
     this.studentData.push({
       StudentId: this.StudentId,
-      FirstName: this.studentForm.get("FirstName").value ? this.studentForm.get("FirstName").value.trim() : '',
-      LastName: this.studentForm.get("LastName").value ? this.studentForm.get("LastName").value.trim() : '',
-      FatherName: this.studentForm.get("FatherName").value ? this.studentForm.get("FatherName").value.trim() : '',
-      FatherOccupation: this.studentForm.get("FatherOccupation").value,
-      MotherName: this.studentForm.get("MotherName").value ? this.studentForm.get("MotherName").value.trim() : '',
-      MotherOccupation: this.studentForm.get("MotherOccupation").value,
+      FirstName: this.studentForm.get("FirstName")?.value ? this.studentForm.get("FirstName")?.value.trim() : '',
+      LastName: this.studentForm.get("LastName")?.value ? this.studentForm.get("LastName")?.value.trim() : '',
+      FatherName: this.studentForm.get("FatherName")?.value ? this.studentForm.get("FatherName")?.value.trim() : '',
+      FatherOccupation: this.studentForm.get("FatherOccupation")?.value,
+      MotherName: this.studentForm.get("MotherName")?.value ? this.studentForm.get("MotherName")?.value.trim() : '',
+      MotherOccupation: this.studentForm.get("MotherOccupation")?.value,
       GenderId: _genderId,
-      PermanentAddress: this.studentForm.get("PermanentAddress").value,
-      PresentAddress: this.studentForm.get("PresentAddress").value,
-      DOB: this.adjustDateForTimeOffset(this.studentForm.get("DOB").value),
-      BloodgroupId: this.studentForm.get("Bloodgroup").value,
-      CategoryId: this.studentForm.get("Category").value,
-      AccountHolderName: this.studentForm.get("AccountHolderName").value,
-      BankAccountNo: this.studentForm.get("BankAccountNo").value,
-      IFSCCode: this.studentForm.get("IFSCCode").value,
-      MICRNo: this.studentForm.get("MICRNo").value,
-      AdhaarNo: this.studentForm.get("AdhaarNo").value,
-      Photo: this.studentForm.get("Photo").value,
-      ReligionId: this.studentForm.get("Religion").value,
-      PersonalNo: this.studentForm.get("PersonalNo").value,
-      WhatsAppNumber: this.studentForm.get("WhatsAppNumber").value,
-      FatherContactNo: this.studentForm.get("FatherContactNo").value,
-      MotherContactNo: this.studentForm.get("MotherContactNo").value,
-      PrimaryContactFatherOrMother: this.studentForm.get("PrimaryContactFatherOrMother").value,
-      NameOfContactPerson: this.studentForm.get("NameOfContactPerson").value,
-      RelationWithContactPerson: this.studentForm.get("RelationWithContactPerson").value,
-      ContactPersonContactNo: this.studentForm.get("ContactPersonContactNo").value,
-      AlternateContact: this.studentForm.get("AlternateContact").value,
-      ClassAdmissionSought: this.studentForm.get("ClassAdmissionSought").value,
-      LastSchoolPercentage: this.studentForm.get("LastSchoolPercentage").value,
-      TransferFromSchool: this.studentForm.get("TransferFromSchool").value,
-      TransferFromSchoolBoard: this.studentForm.get("TransferFromSchoolBoard").value,
-      ClubId: this.studentForm.get("Club").value,
-      HouseId: this.studentForm.get("House").value,
-      RemarkId: this.studentForm.get("Remarks").value,
-      AdmissionStatusId: this.studentForm.get("AdmissionStatus").value,
-      AdmissionDate: this.studentForm.get("AdmissionDate").value,
-      Notes: this.studentForm.get("Notes").value,
+      PermanentAddress: this.studentForm.get("PermanentAddress")?.value,
+      PresentAddress: this.studentForm.get("PresentAddress")?.value,
+      DOB: this.adjustDateForTimeOffset(this.studentForm.get("DOB")?.value),
+      BloodgroupId: this.studentForm.get("Bloodgroup")?.value,
+      CategoryId: this.studentForm.get("Category")?.value,
+      AccountHolderName: this.studentForm.get("AccountHolderName")?.value,
+      BankAccountNo: this.studentForm.get("BankAccountNo")?.value,
+      IFSCCode: this.studentForm.get("IFSCCode")?.value,
+      MICRNo: this.studentForm.get("MICRNo")?.value,
+      AdhaarNo: this.studentForm.get("AdhaarNo")?.value,
+      Photo: this.studentForm.get("Photo")?.value,
+      ReligionId: this.studentForm.get("Religion")?.value,
+      PersonalNo: this.studentForm.get("PersonalNo")?.value,
+      WhatsAppNumber: this.studentForm.get("WhatsAppNumber")?.value,
+      FatherContactNo: this.studentForm.get("FatherContactNo")?.value,
+      MotherContactNo: this.studentForm.get("MotherContactNo")?.value,
+      PrimaryContactFatherOrMother: this.studentForm.get("PrimaryContactFatherOrMother")?.value,
+      NameOfContactPerson: this.studentForm.get("NameOfContactPerson")?.value,
+      RelationWithContactPerson: this.studentForm.get("RelationWithContactPerson")?.value,
+      ContactPersonContactNo: this.studentForm.get("ContactPersonContactNo")?.value,
+      AlternateContact: this.studentForm.get("AlternateContact")?.value,
+      ClassAdmissionSought: this.studentForm.get("ClassAdmissionSought")?.value,
+      LastSchoolPercentage: this.studentForm.get("LastSchoolPercentage")?.value,
+      TransferFromSchool: this.studentForm.get("TransferFromSchool")?.value,
+      TransferFromSchoolBoard: this.studentForm.get("TransferFromSchoolBoard")?.value,
+      ClubId: this.studentForm.get("Club")?.value,
+      HouseId: this.studentForm.get("House")?.value,
+      RemarkId: this.studentForm.get("Remarks")?.value,
+      AdmissionStatusId: this.studentForm.get("AdmissionStatus")?.value,
+      AdmissionDate: this.studentForm.get("AdmissionDate")?.value,
+      Notes: this.studentForm.get("Notes")?.value,
       EmailAddress: _email,
-      Active: this.studentForm.get("Active").value == true ? 1 : 0,
-      ReasonForLeavingId: this.studentForm.get("ReasonForLeaving").value,
+      Active: this.studentForm.get("Active")?.value == true ? 1 : 0,
+      ReasonForLeavingId: this.studentForm.get("ReasonForLeaving")?.value,
       OrgId: this.LoginUserDetail[0]["orgId"],
       SubOrgId: this.SubOrgId,
-      IdentificationMark: this.studentForm.get("IdentificationMark").value,
-      BoardRegistrationNo: this.studentForm.get("BoardRegistrationNo").value,
-      Height: this.studentForm.get("Height").value,
-      Weight: this.studentForm.get("Weight").value
+      IdentificationMark: this.studentForm.get("IdentificationMark")?.value,
+      BoardRegistrationNo: this.studentForm.get("BoardRegistrationNo")?.value,
+      Height: this.studentForm.get("Height")?.value,
+      Weight: this.studentForm.get("Weight")?.value
 
     });
     //debugger;
     //console.log("studentData", this.studentData)
-    if (this.studentForm.get("StudentId").value == 0) {
-      //this.studentData[0].EmailAddress =this.studentForm.get("EmailAddress").value;
+    if (this.studentForm.get("StudentId")?.value == 0) {
+      //this.studentData[0].EmailAddress =this.studentForm.get("EmailAddress")?.value;
       this.save();
     }
     else {
@@ -806,21 +806,21 @@ export class studentprimaryinfoComponent implements OnInit {
         debugger;
         var _baseReportId = 0;
         if (data.value.length > 0) {
-          _baseReportId = data.value.filter(f => f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
-          var _studentModuleObj = data.value.filter(f => f.ReportName == pModuleName && f.ParentId == _baseReportId)
+          _baseReportId = data.value.filter((f:any) => f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
+          var _studentModuleObj = data.value.filter((f:any) => f.ReportName == pModuleName && f.ParentId == _baseReportId)
           var _studentModuleId = 0;
           if (_studentModuleObj.length > 0) {
             _studentModuleId = _studentModuleObj[0].ReportConfigItemId;
           }
 
-          var _orgStudentModuleObj = data.value.filter(f => f.ParentId == _studentModuleId
+          var _orgStudentModuleObj = data.value.filter((f:any) => f.ParentId == _studentModuleId
             && f.SubOrgId == this.SubOrgId && f.OrgId == this.LoginUserDetail[0]["orgId"] && f.Active == 1);
           var _orgStudentModuleId = 0;
           if (_orgStudentModuleObj.length > 0) {
             _orgStudentModuleId = _orgStudentModuleObj[0].ReportConfigItemId;
           }
 
-          this.ColumnsOfSelectedReports = data.value.filter(f => f.ParentId == _orgStudentModuleId
+          this.ColumnsOfSelectedReports = data.value.filter((f:any) => f.ParentId == _orgStudentModuleId
             && f.SubOrgId == this.SubOrgId && f.OrgId == this.LoginUserDetail[0]["orgId"])
 
         }
@@ -906,7 +906,7 @@ export class studentprimaryinfoComponent implements OnInit {
 
 
   }
-  Students = [];
+  Students :any[]= [];
   SetStudentClassForStore(stud, studclass) {
 
     var _student = [{
@@ -929,13 +929,13 @@ export class studentprimaryinfoComponent implements OnInit {
       "AdmissionStatusId": stud.AdmissionStatusId,
       StudentClasses: studclass
     }];
-    var _classNameobj = [];
+    var _classNameobj :any[]= [];
     var _className = '', _class;
 
     _student.forEach((d: any) => {
-      _classNameobj = [];
+      _classNameobj= [];
       _className = ''; _class = '';
-      var studcls = d.StudentClasses.filter(f => f.StudentId == d.StudentId);
+      var studcls = d.StudentClasses.filter((f:any) => f.StudentId == d.StudentId);
       if (studcls.length > 0) {
         _classNameobj = this.Classes.filter(c => c.ClassId == studcls[0].ClassId);
         if (_classNameobj.length > 0) {
@@ -943,13 +943,13 @@ export class studentprimaryinfoComponent implements OnInit {
           _class = "-" + _classNameobj[0].ClassName;
         }
         var _Section = '', _sectionName = '';
-        var _sectionobj = this.Sections.filter(f => f.MasterDataId == studcls[0].SectionId);
+        var _sectionobj = this.Sections.filter((f:any) => f.MasterDataId == studcls[0].SectionId);
         if (_sectionobj.length > 0) {
           _sectionName = _sectionobj[0].MasterDataName;
           _Section = "-" + _sectionobj[0].MasterDataName;
         }
         var _Semester = '', _semesterName = '';
-        var _semesterobj = this.Semesters.filter(f => f.MasterDataId == studcls[0].SectionId);
+        var _semesterobj = this.Semesters.filter((f:any) => f.MasterDataId == studcls[0].SectionId);
         if (_semesterobj.length > 0) {
           _semesterName = _semesterobj[0].MasterDataName;
           _Semester = "-" + _semesterobj[0].MasterDataName;

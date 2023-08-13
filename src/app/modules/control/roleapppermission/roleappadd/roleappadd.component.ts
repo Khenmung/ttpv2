@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../../shared/content.service';
+import { NaomitsuService } from '../../../../shared/databaseService';
+import { globalconstants } from '../../../../shared/globalconstant';
+import { List } from '../../../../shared/interface';
+import { SharedataService } from '../../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../../_services/token-storage.service';
 import {SwUpdate} from '@angular/service-worker';
 
 @Component({
@@ -20,12 +20,12 @@ export class roleappAddComponent implements OnInit { PageLoading=true;
   @Input("AppRoleId") AppRoleId: number;
   FilterOrgSubOrg='';
   loading =false;
-  allMasterData = [];
-  AppRoles = [];
-  Roles = [];
-  Applications = [];
-  Permissions=[];
-  //Users = [];
+  allMasterData :any[]= [];
+  AppRoles :any[]= [];
+  Roles :any[]= [];
+  Applications :any[]= [];
+  Permissions:any[]=[];
+  //Users :any[]= [];
   AppRoleData = {
     PermissionId: 0,
     ApplicationId:0,
@@ -40,7 +40,7 @@ export class roleappAddComponent implements OnInit { PageLoading=true;
     UpdatedBy:0,
     Active: 1
   };
-  UserDetail = [];
+  UserDetail :any[]= [];
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
     private shareddata: SharedataService,
@@ -118,25 +118,25 @@ export class roleappAddComponent implements OnInit { PageLoading=true;
 
   UpdateOrSave() {
 
-    if(this.AppRoleForm.get("ApplicationId").value ==0)
+    if(this.AppRoleForm.get("ApplicationId")?.value ==0)
     {
       this.contentservice.openSnackBar("Please select application.",globalconstants.ActionText,globalconstants.RedBackground);
       return;
     }
-    if(this.AppRoleForm.get("RoleId").value ==0)
+    if(this.AppRoleForm.get("RoleId")?.value ==0)
     {
       this.contentservice.openSnackBar("Please select role",globalconstants.ActionText,globalconstants.RedBackground);
       return;
     }
-    if(this.AppRoleForm.get("PermissionId").value ==0)
+    if(this.AppRoleForm.get("PermissionId")?.value ==0)
     {
       this.contentservice.openSnackBar("Please select permission",globalconstants.ActionText,globalconstants.RedBackground);
       return;
     }
     
     let checkFilterString = this.FilterOrgSubOrg + " and Active eq 1 " +
-      " and RoleId eq " + this.AppRoleForm.get("RoleId").value +
-      " and ApplicationId eq " + this.AppRoleForm.get("ApplicationId").value //+
+      " and RoleId eq " + this.AppRoleForm.get("RoleId")?.value +
+      " and ApplicationId eq " + this.AppRoleForm.get("ApplicationId")?.value //+
       //" and OrgId eq " + this.UserDetail[0]["orgId"];
 
     if (this.AppRoleData.ApplicationRoleId > 0)
@@ -155,13 +155,13 @@ export class roleappAddComponent implements OnInit { PageLoading=true;
         }
         else {
           ////console.log(this.UserDetail);
-          this.AppRoleData.Active = this.AppRoleForm.get("Active").value==true?1:0;
-          this.AppRoleData.ApplicationRoleId = this.AppRoleForm.get("ApplicationRoleId").value;
-          this.AppRoleData.ApplicationId = this.AppRoleForm.get("ApplicationId").value;
-          this.AppRoleData.RoleId = this.AppRoleForm.get("RoleId").value;
-          this.AppRoleData.PermissionId = this.AppRoleForm.get("PermissionId").value;
+          this.AppRoleData.Active = this.AppRoleForm.get("Active")?.value==true?1:0;
+          this.AppRoleData.ApplicationRoleId = this.AppRoleForm.get("ApplicationRoleId")?.value;
+          this.AppRoleData.ApplicationId = this.AppRoleForm.get("ApplicationId")?.value;
+          this.AppRoleData.RoleId = this.AppRoleForm.get("RoleId")?.value;
+          this.AppRoleData.PermissionId = this.AppRoleForm.get("PermissionId")?.value;
           this.AppRoleData.OrgId = this.UserDetail[0]["orgId"];
-          this.AppRoleData.SubOrgId = this.tokenStorage.getSubOrgId();
+          this.AppRoleData.SubOrgId = this.tokenStorage.getSubOrgId()!;
           this.AppRoleData.DepartmentId=0;
           this.AppRoleData.LocationId=0;
           this.AppRoleData.CreatedDate=new Date();

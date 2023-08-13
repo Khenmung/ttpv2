@@ -5,12 +5,13 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
+import { AnyObject } from 'chart.js/dist/types/basic';
 
 @Component({
   selector: 'app-exams',
@@ -21,25 +22,25 @@ export class ExamsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   PageLoading = true;
-  AttendanceModes = [];
-  LoginUserDetail: any[] = [];
+  AttendanceModes :any[]= [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
-  Students = [];
+  Students :any[]= [];
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  Exams: IExams[] = [];
+  Exams: IExams[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  ClassGroups = [];
+  ClassGroups :any[]= [];
   SelectedApplicationId = 0;
-  StudentGradeFormula = [];
-  ClassSubjectComponents = [];
-  ExamNames = [];
-  Batches = [];
-  ExamModes = [];
-  ExamStudentSubjectResult = [];
+  StudentGradeFormula :any[]= [];
+  ClassSubjectComponents :any[]= [];
+  ExamNames :any[]= [];
+  Batches :any[]= [];
+  ExamModes :any[]= [];
+  ExamStudentSubjectResult :any[]= [];
   dataSource: MatTableDataSource<IExams>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   Permission = 'deny';
   ExamId = 0;
   ExamsData = {
@@ -66,8 +67,8 @@ export class ExamsComponent implements OnInit {
     'Active',
     'Action'
   ];
-  StudentSubjects = [];
-  StudentGrades = [];
+  StudentSubjects :any[]= [];
+  StudentGrades :any[]= [];
   constructor(private servicework: SwUpdate,
     private dataservice: NaomitsuService,
     private tokenStorage: TokenStorageService,
@@ -96,7 +97,7 @@ export class ExamsComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var feature = globalconstants.AppAndMenuAndFeatures.edu.examination.exam;
 
       var perObj = globalconstants.getPermission(this.tokenStorage, feature);
@@ -107,8 +108,8 @@ export class ExamsComponent implements OnInit {
         this.nav.navigate(['/auth/login']);
       else {
         
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetMasterData();
@@ -119,7 +120,7 @@ export class ExamsComponent implements OnInit {
   }
   addnew() {
 
-    let toadd = {
+    let toadd:any = {
       ExamId: 0,
       ExamNameId: 0,
       ExamName: '',
@@ -268,7 +269,7 @@ debugger;
           if (existing.length > 0) {
             if (existing[0].ReleaseDate != null)
               existing[0].ReleaseDate = moment(existing[0].ReleaseDate).format("DD/MM/yyyy");
-            existing[0].ExamName = this.ExamNames.filter(f => f.MasterDataId == existing[0].ExamNameId)[0].MasterDataName;
+            existing[0].ExamName = this.ExamNames.filter((f:any) => f.MasterDataId == existing[0].ExamNameId)[0].MasterDataName;
             existing[0].Sequence = e.Sequence;
             existing[0].Action = false;
             return existing[0];
@@ -305,12 +306,12 @@ debugger;
 
   }
   private getTime(date?: Date) {
-    var std = new Date(date);
+    var std = new Date(date!);
     return std != null ? std.getTime() : 0;
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.StudentGradeFormula = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTGRADE);
     this.StudentGrades = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTGRADE);

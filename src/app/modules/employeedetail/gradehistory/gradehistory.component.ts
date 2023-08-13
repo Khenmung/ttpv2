@@ -5,11 +5,11 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-gradehistory',
@@ -19,7 +19,7 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 export class GradehistoryComponent implements OnInit {
     PageLoading = true;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   // optionsNoAutoClose = {
   //   autoClose: false,
@@ -30,21 +30,21 @@ export class GradehistoryComponent implements OnInit {
   //   keepAfterRouteChange: true
   // };
   EmploymentHistoryListName = 'EmpEmployeeGradeSalHistories';
-  Employees = [];
-  Grades = [];
-  Designations = [];
-  Departments = [];
-  WorkAccounts = [];
-  JobTitles = [];
+  Employees :any[]= [];
+  Grades :any[]= [];
+  Designations :any[]= [];
+  Departments :any[]= [];
+  WorkAccounts :any[]= [];
+  JobTitles :any[]= [];
   loading = false;
   FilterOrgSubOrgStr='';
   SelectedBatchId = 0;SubOrgId = 0;
-  EmploymentHistoryList: IEmployeementHistory[] = [];
+  EmploymentHistoryList: IEmployeementHistory[]= [];
   filteredOptions: Observable<IEmployeementHistory[]>;
   //filteredEmployees: Observable<IEmployee[]>;
   dataSource: MatTableDataSource<IEmployeementHistory>;
-  allMasterData = [];
-  EmploymentHistory = [];
+  allMasterData :any[]= [];
+  EmploymentHistory :any[]= [];
   Permission = 'deny';
   EmployeeId = 0;
   SelectedApplicationId = 0;
@@ -107,7 +107,7 @@ export class GradehistoryComponent implements OnInit {
     this.searchForm = this.fb.group({
       searchClassName: [0]
     });
-    // this.filteredEmployees = this.EmployeeSearchForm.get("searchemployeeName").valueChanges
+    // this.filteredEmployees = this.EmployeeSearchForm.get("searchemployeeName")?.valueChanges
     //   .pipe(
     //     startWith(''),
     //     map(value => typeof value === 'string' ? value : value.Name),
@@ -129,7 +129,7 @@ export class GradehistoryComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -143,8 +143,8 @@ export class GradehistoryComponent implements OnInit {
         //this.nav.navigate(['/edu'])
       }
       else {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = +this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgStr = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
 
         this.GetEmployees();
@@ -184,11 +184,11 @@ export class GradehistoryComponent implements OnInit {
   }
   UpdateManagerId(row: IEmployeementHistory) {
     row.Action = true;
-    row.ManagerId = this.Employees.filter(f => f.Name == row.ManagerName)[0].EmployeeId
+    row.ManagerId = this.Employees.filter((f:any) => f.Name == row.ManagerName)[0].EmployeeId
   }
   UpdateReportingToId(row) {
     row.Action = true;
-    row.ReportingTo = this.Employees.filter(f => f.Name == row.ReportingToName)[0].EmployeeId
+    row.ReportingTo = this.Employees.filter((f:any) => f.Name == row.ReportingToName)[0].EmployeeId
   }
   updateActive(row, value) {
     row.Action = true;
@@ -347,7 +347,7 @@ export class GradehistoryComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Grades = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGRADE);
     this.Designations = this.getDropDownData(globalconstants.MasterDefinitions.employee.DESIGNATION);
     this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.employee.DEPARTMENT);

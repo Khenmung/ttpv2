@@ -3,12 +3,12 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 import { MatPaginator } from '@angular/material/paginator';
 
@@ -24,7 +24,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
 
   loading = false;
   Permission = '';
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   CurrentBatch = '';
   CurrentBatchId = 0;
   SelectedBatchId = 0;
@@ -35,19 +35,19 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   StandardOrgIdWithPreviousBatchId = '';
   PreviousBatchId = 0;
-  Classes = [];
-  Subjects = [];
-  Sections = [];
-  ClassSubjectWithComponents = [];
-  ClassSubjects = [];
-  ClassGroups = [];
-  MarkComponents = [];
-  SelectedClassSubjects = [];
-  Batches = [];
-  Semesters = [];
-  ELEMENT_DATA: ISubjectMarkComponent[] = [];
+  Classes :any[]= [];
+  Subjects :any[]= [];
+  Sections :any[]= [];
+  ClassSubjectWithComponents :any[]= [];
+  ClassSubjects :any[]= [];
+  ClassGroups :any[]= [];
+  MarkComponents :any[]= [];
+  SelectedClassSubjects :any[]= [];
+  Batches :any[]= [];
+  Semesters :any[]= [];
+  ELEMENT_DATA: ISubjectMarkComponent[]= [];
   dataSource: MatTableDataSource<ISubjectMarkComponent>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm: UntypedFormGroup;
   classSubjectComponentData = {
     ClassSubjectMarkComponentId: 0,
@@ -63,8 +63,8 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: 0
   };
-  Exams = [];
-  ExamNames = [];
+  Exams :any[]= [];
+  ExamNames :any[]= [];
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
     private tokenStorage: TokenStorageService,
@@ -90,7 +90,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.StandardOrgIdWithPreviousBatchId = globalconstants.getOrgSubOrgFilterWithPreviousBatchId(this.tokenStorage);
@@ -110,8 +110,8 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   }
   PageLoad() {
     //this.shareddata.CurrentSelectedBatchId.subscribe(c=>this.SelectedBatchId=c);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
 
     this.GetMasterData();
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -126,15 +126,15 @@ export class StudentSubjectMarkCompComponent implements OnInit {
 
   }
   //displayedColumns = ['position', 'name', 'weight', 'symbol'];
-  ClassGroupMappings = [];
+  ClassGroupMappings :any[]= [];
   displayedColumns = ['ClassSubjectMarkComponentId', 'ClassSubject', 'SubjectComponent', 'FullMark', 'PassMark', 'OverallPassMark', 'Active', 'Action'];
   SelectedClassCategory = '';
   SelectClassSubject() {
     debugger;
-    //this.SelectedClassSubjects = this.ClassSubjects.filter(f => f.ClassId == this.searchForm.get("searchClassId").value);
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    //this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value);
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource<any>([]);
@@ -173,7 +173,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   UpdateOrSave(row) {
     //debugger;
     this.loading = true;
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
     let checkFilterString = this.FilterOrgSubOrgBatchId + //"OrgId eq " + this.LoginUserDetail[0]["orgId"] +
       " and ClassSubjectId eq " + row.ClassSubjectId +
       " and SemesterId eq " + row.SemesterId +
@@ -264,10 +264,10 @@ export class StudentSubjectMarkCompComponent implements OnInit {
           }
         });
   }
-  ClassCategory = [];
+  ClassCategory :any[]= [];
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.MarkComponents = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTMARKCOMPONENT);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
@@ -275,7 +275,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
 
-    this.Batches = this.tokenStorage.getBatches()
+    this.Batches = this.tokenStorage.getBatches()!;
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClassGroups(filterOrgSubOrg)
       .subscribe((data: any) => {
@@ -300,7 +300,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.loading=true;
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
-        let obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
           this.Classes.push(m);
@@ -372,9 +372,9 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   }
   CopyFromOtherExam() {
     //console.log("here ", this.PreviousBatchId)
-    var _otherExamId = this.searchForm.get("searchCopyExamId").value;
-    var _examId = this.searchForm.get("searchExamId").value;
-    this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId();
+    var _otherExamId = this.searchForm.get("searchCopyExamId")?.value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
+    this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
     if (_examId == 0)
       this.contentservice.openSnackBar("Please select exam for which formula to define.", globalconstants.ActionText, globalconstants.RedBackground);
     else if (_otherExamId == 0)
@@ -383,9 +383,9 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       this.GetClassSubjectComponent(_otherExamId)
   }
   DisableSaveButton = false;
-  SelectedClasses = [];
+  SelectedClasses :any[]= [];
   DisableSave() {
-    var examobj = this.Exams.filter(f => f.ExamId == this.searchForm.get("searchExamId").value);
+    var examobj = this.Exams.filter((f:any) => f.ExamId == this.searchForm.get("searchExamId")?.value);
     if (examobj.length > 0) {
       if (examobj[0].ReleaseResult == 1)
         this.DisableSaveButton = true;
@@ -405,16 +405,16 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   datafromotherexam = '';
   GetClassSubjectComponent(otherExamId) {
     debugger;
-    //var _copyExamId = this.searchForm.get("searchCopyExamId").value;
-    var _examId = this.searchForm.get("searchExamId").value;
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _classSubjectId = this.searchForm.get("searchSubjectId").value;//.SubjectId;
+    //var _copyExamId = this.searchForm.get("searchCopyExamId")?.value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _classSubjectId = this.searchForm.get("searchSubjectId")?.value;//.SubjectId;
     var _subjectId = 0;
-    var obj = this.SelectedClassSubjects.filter(f => f.ClassSubjectId == _classSubjectId);
+    var obj = this.SelectedClassSubjects.filter((f:any) => f.ClassSubjectId == _classSubjectId);
     if (obj.length > 0)
       _subjectId = obj[0].SubjectId;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
     // filterstr += " and SemesterId eq " + _semesterId;
     // filterstr += " and SectionId eq " + _sectionId;
 
@@ -463,12 +463,12 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        var clsSubjMarkComponentsDefinitionFiltered = [];
+        var clsSubjMarkComponentsDefinitionFiltered :any[]= [];
         //if all subject is selected.
         var fitlersectionsemesterClass = this.ClassSubjects.filter(c => c.SectionId == _sectionId && c.SemesterId == _semesterId && c.ClassId == _classId);
         // clsSubjFiltered = data.value.filter(item => item.ClassSubject.ClassId == _classId);
         clsSubjMarkComponentsDefinitionFiltered = data.value.map(item => {
-          var _clssubject = fitlersectionsemesterClass.filter(f => f.ClassSubjectId == item.ClassSubjectId);
+          var _clssubject = fitlersectionsemesterClass.filter((f:any) => f.ClassSubjectId == item.ClassSubjectId);
           if (_clssubject.length > 0) {
             item.SubjectId = _clssubject[0].SubjectId;
             item.SectionId = _clssubject[0].SectionId;
@@ -492,7 +492,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
 
         this.ELEMENT_DATA = [];
         ////////////////////
-        var _CopyFromExam = [];
+        var _CopyFromExam :any[]= [];
         var _SelectedExam = clsSubjMarkComponentsDefinitionFiltered.filter(d => d.ExamId == _examId);
         if (otherExamId > 0) {
           _CopyFromExam = clsSubjMarkComponentsDefinitionFiltered.filter(d => d.ExamId == otherExamId);
@@ -509,7 +509,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
             else {
               f.ClassSubjectMarkComponentId = 0;
             }
-            f.ClassSubject = this.ClassSubjects.filter(s => s.ClassSubjectId == f.ClassSubjectId)[0].ClassSubject;
+            f.ClassSubject = this.ClassSubjects.filter((s:any) => s.ClassSubjectId == f.ClassSubjectId)[0].ClassSubject;
             f.SubjectComponent = this.MarkComponents.filter(m => m.MasterDataId == f.SubjectComponentId)[0].MasterDataName;
             f.Action = false;
             f.Active = 0;
@@ -567,18 +567,18 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       });
   }
   ExamReleased = 0;
-  FilteredClasses = [];
-  ExamClassGroups = [];
+  FilteredClasses :any[]= [];
+  ExamClassGroups :any[]= [];
   FilterClass() {
-    var _examId = this.searchForm.get("searchExamId").value
+    var _examId = this.searchForm.get("searchExamId")?.value
     //var _classGroupId = 0;
     this.ExamReleased = 0;
     this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _examId)
       .subscribe((data: any) => {
         this.ExamClassGroups = [...data.value];
-        this.FilteredClasses = this.ClassGroupMappings.filter(f => this.ExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        this.FilteredClasses = this.ClassGroupMappings.filter((f:any) => this.ExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
       });
-    var obj = this.Exams.filter(f => f.ExamId == _examId);
+    var obj = this.Exams.filter((f:any) => f.ExamId == _examId);
     if (obj.length > 0) {
       this.ExamReleased = obj[0].ReleaseResult;
     }

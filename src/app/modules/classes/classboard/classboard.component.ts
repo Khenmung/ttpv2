@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { ClassdetailComponent } from '../classdetail/classdetail.component';
 import { ClassgroupComponent } from '../classgroup/classgroup.component';
 import { ClassgroupmappingComponent } from '../classgroupmapping/classgroupmapping.component';

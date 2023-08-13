@@ -4,7 +4,7 @@ import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../../_services/user.service';
 import { SharedataService } from '../../../shared/sharedata.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
+import { NaomitsuService } from '../../../shared/databaseService';
 @Component({
   selector: 'app-home',
   templateUrl: './authhome.component.html',

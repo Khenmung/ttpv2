@@ -6,12 +6,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -22,19 +22,19 @@ import { SwUpdate } from '@angular/service-worker';
 export class EvaluationMasterComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   EvaluationMasterListName = 'EvaluationMasters';
-  Applications = [];
-  ClassGroups = [];
+  Applications :any[]= [];
+  ClassGroups :any[]= [];
   loading = false;
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrg = '';
-  EvaluationMasterList: IEvaluationMaster[] = [];
+  EvaluationMasterList: IEvaluationMaster[]= [];
   filteredOptions: Observable<IEvaluationMaster[]>;
   dataSource: MatTableDataSource<IEvaluationMaster>;
-  allMasterData = [];
-  EvaluationMaster = [];
+  allMasterData :any[]= [];
+  EvaluationMaster :any[]= [];
   Permission = 'deny';
   EvaluationMasterData = {
     EvaluationMasterId: 0,
@@ -100,11 +100,11 @@ export class EvaluationMasterComponent implements OnInit {
     this.loading = true;
     console.log("environment", globalconstants.apiUrl);
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    //this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATIONTYPE);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
@@ -115,7 +115,7 @@ export class EvaluationMasterComponent implements OnInit {
       }
       else {
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.GetMasterData();
         this.EvaluationMasterList = [];
         this.GetEvaluationMaster();
@@ -315,14 +315,14 @@ export class EvaluationMasterComponent implements OnInit {
           this.loadingFalse();
         });
   }
-  EvaluationMasterForDropdown = [];
+  EvaluationMasterForDropdown :any[]= [];
   GetEvaluationMaster() {
     debugger;
 
     this.loading = true;
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    var _classGroupId = this.searchForm.get("searchClassGroupId").value;
-    var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId").value;
+    var _classGroupId = this.searchForm.get("searchClassGroupId")?.value;
+    var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
     //console.log("classgroup",this.ClassGroups)
     if (_evaluationMasterId)
       filterStr += " and EvaluationMasterId eq " + _evaluationMasterId;
@@ -330,16 +330,16 @@ export class EvaluationMasterComponent implements OnInit {
       filterStr += " and ClassGroupId eq " + _classGroupId;
 
 
-    var result = [];
+    var result :any[]= [];
     // if (this.EvaluationMasterList.length > 0) {
     //   if (_classGroupId > 0 && _evaluationMasterId > 0)
-    //     result = this.EvaluationMasterList.filter(f => f.ClassGroupId == _classGroupId
+    //     result = this.EvaluationMasterList.filter((f:any) => f.ClassGroupId == _classGroupId
     //       && f.EvaluationMasterId == _evaluationMasterId)
     //   else if (_evaluationMasterId > 0) {
-    //     result = this.EvaluationMasterList.filter(f => f.EvaluationMasterId == _evaluationMasterId)
+    //     result = this.EvaluationMasterList.filter((f:any) => f.EvaluationMasterId == _evaluationMasterId)
     //   }
     //   else if (_classGroupId > 0) {
-    //     result = this.EvaluationMasterList.filter(f => f.ClassGroupId == _classGroupId)
+    //     result = this.EvaluationMasterList.filter((f:any) => f.ClassGroupId == _classGroupId)
     //   }
     //   //console.log("result",result)
     //   this.dataSource = new MatTableDataSource<IEvaluationMaster>(result);
@@ -387,7 +387,7 @@ export class EvaluationMasterComponent implements OnInit {
         });
     //}
   }
-  AlreadyUsedEvaluation = [];
+  AlreadyUsedEvaluation :any[]= [];
   GetUsedEvaluationType(pEvaluationMasterId) {
     var filterStr = "EvaluationMasterId eq " + pEvaluationMasterId +
       " and Active eq 1 and OrgId eq " + this.LoginUserDetail[0]['orgId'];
@@ -403,13 +403,13 @@ export class EvaluationMasterComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
-          this.AlreadyUsedEvaluation = data.value.filter(f => f.StudentEvaluationResult.length > 0)
+          this.AlreadyUsedEvaluation = data.value.filter((f:any) => f.StudentEvaluationResult.length > 0)
         }
       })
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
 
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
       .subscribe((data: any) => {

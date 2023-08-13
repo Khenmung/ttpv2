@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AssetVendorComponent } from './assetvendor/assetvendor.component';
 
-const routes: Routes = [];
+const routes: Routes :any[]= [];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

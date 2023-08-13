@@ -7,7 +7,7 @@ import { List } from './interface';
   providedIn: 'root'
 })
 export class SharedataService {
-  items = [];
+  items :any[]= [];
   BatchId = 0;
   StudentId = 0;
   StudentClassId = 0;

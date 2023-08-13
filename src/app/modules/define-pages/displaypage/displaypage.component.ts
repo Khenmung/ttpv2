@@ -3,10 +3,10 @@ import { ThemePalette } from '@angular/material/core';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 //import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 import { NaomitsuService } from '../../../shared/databaseService'
 import {SwUpdate} from '@angular/service-worker';
@@ -20,7 +20,7 @@ import {SwUpdate} from '@angular/service-worker';
 })
 export class DisplaypageComponent implements OnInit { 
   PageLoading=true;
-  images = [];
+  images :any[]= [];
   Name = {};
   ImgUrl = '';
   loading: boolean = false;
@@ -59,7 +59,7 @@ export class DisplaypageComponent implements OnInit {
     this.loading = true;
     this.GroupId = 0;
     this.ar.queryParamMap.subscribe(params => {
-      this.GroupId = +params.get("GroupId");
+      this.GroupId = +params.get("GroupId")!;
 
     });
 
@@ -67,7 +67,7 @@ export class DisplaypageComponent implements OnInit {
     //  this.getRandomDisplayPhotoes();
 
     this.ar.paramMap.subscribe(params => {
-      this.pId = +params.get("pid");
+      this.pId = +params.get("pid")!;
       this.shareddata.CurrentRandomImages.subscribe(r => {
         this.images = r;
         if (this.images.length == 0)
@@ -156,7 +156,7 @@ export class DisplaypageComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FileId", "FileName", "ParentId"];
     list.PageName = "StorageFnPs";
-    list.filter = ['Active eq 1 and FileOrPhoto eq 0'];//  eq ' + this.searchForm.get("FilesNPhoto").value];
+    list.filter = ['Active eq 1 and FileOrPhoto eq 0'];//  eq ' + this.searchForm.get("FilesNPhoto")?.value];
     this.naomitsuService.get(list)
       .subscribe((data: any) => {
         //this.images =

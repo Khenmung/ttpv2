@@ -1,9 +1,9 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { EmpComponentsComponent } from '../emp-components/emp-components.component';
 import { EmployeeSalaryComponentComponent } from '../employee-salary-component/employee-salary-component.component';
 import { employeesalaryComponents } from '../employee-salary-routing.module';
@@ -37,7 +37,7 @@ export class EmpmanagementboardComponent implements AfterViewInit {
       ExamTimeTablePermission: '',
       ExamResultPermission: '',
     };
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
   constructor(private servicework: SwUpdate,

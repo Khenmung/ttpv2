@@ -4,9 +4,9 @@ import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { AuthService } from '../../../_services/auth.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { AuthService } from '../../../_services/auth.service';
 })
 export class ChangePasswordComponent implements OnInit { PageLoading=true;
   loading = false;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   changepwdForm: UntypedFormGroup;
   isSuccessful = false;
   isSignUpFailed = false;
@@ -73,9 +73,9 @@ export class ChangePasswordComponent implements OnInit { PageLoading=true;
     return this.changepwdForm.controls;
   }
   onSubmit(): void {
-    var ConfirmPassword = this.changepwdForm.get("ConfirmPassword").value;
-    var OldPassword = this.changepwdForm.get("OldPassword").value;
-    var NewPassword = this.changepwdForm.get("NewPassword").value;
+    var ConfirmPassword = this.changepwdForm.get("ConfirmPassword")?.value;
+    var OldPassword = this.changepwdForm.get("OldPassword")?.value;
+    var NewPassword = this.changepwdForm.get("NewPassword")?.value;
     var payload = {
       'UserId': this.LoginUserDetail[0]["userId"],
       'OldPassword': OldPassword,

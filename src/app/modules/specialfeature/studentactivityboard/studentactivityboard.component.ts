@@ -1,9 +1,9 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { GenerateCertificateComponent } from '../generatecertificate/generatecertificate.component';
 import { StudentActivityComponent } from '../StudentActivity/studentactivity.component';
 import { StudentfamilynfriendComponent } from '../studentfamilynfriend/studentfamilynfriend.component';
@@ -51,7 +51,7 @@ export class StudentactivityboardComponent implements AfterViewInit {
       DataUploadPermission: ''
     };
   StudentName = '';
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
 

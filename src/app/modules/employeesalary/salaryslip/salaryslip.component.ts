@@ -6,11 +6,11 @@ import { SwUpdate } from '@angular/service-worker';
 import * as moment from 'moment';
 import { Observable, forkJoin } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-salaryslip',
@@ -19,48 +19,48 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 })
 export class SalaryslipComponent implements OnInit {
   PageLoading = true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   FilterOrgSubOrg = '';
   loading = false;
   rowCount = 0;
   //Month = 0;
-  CurrentEmployee = [];
-  EmpComponents: IEmpComponent[] = [];
+  CurrentEmployee :any[]= [];
+  EmpComponents: IEmpComponent[]= [];
   SelectedBatchId = 0;
   SubOrgId = 0;
-  //StoredForUpdate = [];
-  Months = [];
-  EmployeeVariables = [];
-  VariableConfigs = [];
+  //StoredForUpdate :any[]= [];
+  Months :any[]= [];
+  EmployeeVariables :any[]= [];
+  VariableConfigs :any[]= [];
   BasicSalary = 0;
-  Employees = [];
-  Grades = [];
-  Departments = [];
-  WorkAccounts = [];
-  Designations = [];
-  JobTitles = [];
-  Genders = [];
-  City = [];
-  Countries = [];
-  States = [];
-  BloodGroups = [];
-  Religions = [];
-  Categories = [];
-  Locations = [];
-  EmploymentStatus = [];
-  EmploymentTypes = [];
-  Natures = [];
-  MaritalStatus = [];
-  SalaryComponents = [];
-  ComponentTypes = [];
-  VariableTypes = [];
+  Employees :any[]= [];
+  Grades :any[]= [];
+  Departments :any[]= [];
+  WorkAccounts :any[]= [];
+  Designations :any[]= [];
+  JobTitles :any[]= [];
+  Genders :any[]= [];
+  City :any[]= [];
+  Countries :any[]= [];
+  States :any[]= [];
+  BloodGroups :any[]= [];
+  Religions :any[]= [];
+  Categories :any[]= [];
+  Locations :any[]= [];
+  EmploymentStatus :any[]= [];
+  EmploymentTypes :any[]= [];
+  Natures :any[]= [];
+  MaritalStatus :any[]= [];
+  SalaryComponents :any[]= [];
+  ComponentTypes :any[]= [];
+  VariableTypes :any[]= [];
   EarnedDataSource: MatTableDataSource<IEmployeeSalaryComponent>;
   DeductionDataSource: MatTableDataSource<IEmployeeSalaryComponent>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   filteredOptions: Observable<IEmployee[]>;
-  EarnedSalary = [];
-  DeductionSalary = [];
+  EarnedSalary :any[]= [];
+  DeductionSalary :any[]= [];
   EarnedTotal = 0;
   DeductionTotal = 0;
   NetIncome = 0;
@@ -76,8 +76,8 @@ export class SalaryslipComponent implements OnInit {
   Permission = '';
   searchForm: UntypedFormGroup;
   SelectedApplicationId = 0;
-  SalarySlipHeader = [];
-  Organization = [];
+  SalarySlipHeader :any[]= [];
+  Organization :any[]= [];
   logourl = '';
   MonthYear = '';
   constructor(
@@ -109,12 +109,12 @@ export class SalaryslipComponent implements OnInit {
 
     this.PageLoad();
     this.Months = this.contentService.GetSessionFormattedMonths();
-    this.filteredOptions = this.searchForm.get("searchEmployee").valueChanges
+    this.filteredOptions = this.searchForm.get("searchEmployee")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.Employees.slice())
-      );
+      )!;
 
   }
   private _filter(name: string): IEmployee[] {
@@ -142,9 +142,9 @@ export class SalaryslipComponent implements OnInit {
         this.contentservice.openSnackBar(globalconstants.PermissionDeniedMessage, globalconstants.ActionText, globalconstants.RedBackground);
       }
       else {
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         //this.getVariablesText();
         //this.GetVariableConfigs();
@@ -212,15 +212,15 @@ export class SalaryslipComponent implements OnInit {
       .subscribe((org: any) => {
         this.Organization = org.value.map(m => {
           //m.CountryName = '';
-          var countryObj = this.allMasterData.filter(f => f.MasterDataId == m.CountryId);
+          var countryObj = this.allMasterData.filter((f:any) => f.MasterDataId == m.CountryId);
           if (countryObj.length > 0)
             m.Country = countryObj[0].MasterDataName;
 
-          var stateObj = this.allMasterData.filter(f => f.MasterDataId == m.StateId);
+          var stateObj = this.allMasterData.filter((f:any) => f.MasterDataId == m.StateId);
           if (stateObj.length > 0)
             m.State = stateObj[0].MasterDataName;
 
-          var cityObj = this.allMasterData.filter(f => f.MasterDataId == m.CityId);
+          var cityObj = this.allMasterData.filter((f:any) => f.MasterDataId == m.CityId);
           if (cityObj.length > 0)
             m.City = cityObj[0].MasterDataName;
 
@@ -257,11 +257,11 @@ export class SalaryslipComponent implements OnInit {
         })
         //console.log("this.Organization",this.Organization);
         //console.log("this.CommonHeader.",this.CommonHeader);
-        var imgobj = this.SalarySlipHeader.filter(f => f.MasterDataName == 'img');
+        var imgobj = this.SalarySlipHeader.filter((f:any) => f.MasterDataName == 'img');
         if (imgobj.length > 0) {
           this.logourl = imgobj[0].Description;
         }
-        this.SalarySlipHeader = this.SalarySlipHeader.filter(f => f.MasterDataName != 'img');
+        this.SalarySlipHeader = this.SalarySlipHeader.filter((f:any) => f.MasterDataName != 'img');
         //console.log("this.commonheadersetting.",commonheadersetting);
         this.SalarySlipHeader.forEach(header => {
           this.Organization[0].forEach(orgdet => {
@@ -275,7 +275,7 @@ export class SalaryslipComponent implements OnInit {
   GetVariableConfigs() {
 
     //var orgIdSearchstr = this.FilterOrgSubOrg;// ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    //var variabletypeId = this.VariableTypes.filter(f => f.MasterDataName.toLowerCase() == 'payroll')[0].MasterDataId;
+    //var variabletypeId = this.VariableTypes.filter((f:any) => f.MasterDataName.toLowerCase() == 'payroll')[0].MasterDataId;
     let list: List = new List();
 
     list.fields = [
@@ -313,11 +313,11 @@ export class SalaryslipComponent implements OnInit {
     list.PageName = "EmpComponents";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
     //list.orderBy = "ParentId";
-    this.EmpComponents = [];
+    this.EmpComponents= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         data.value.forEach(m => {
-          var obj = this.ComponentTypes.filter(f => f.MasterDataId == m.ComponentTypeId)
+          var obj = this.ComponentTypes.filter((f:any) => f.MasterDataId == m.ComponentTypeId)
           if (obj.length > 0) {
             m.Component = obj[0].MasterDataName;
             this.EmpComponents.push(m);
@@ -327,12 +327,12 @@ export class SalaryslipComponent implements OnInit {
         this.PageLoading = false;
       })
   }
-  EmployeeVariable = [];
+  EmployeeVariable :any[]= [];
   Employee: any = {}
   GetEmployeeSalaryComponents(mode) {
     var filterstr = this.FilterOrgSubOrg;
 
-    var _employeeObj = this.searchForm.get("searchEmployee").value;
+    var _employeeObj = this.searchForm.get("searchEmployee")?.value;
     var _employeeId = _employeeObj.EmployeeId;
 
 
@@ -342,12 +342,12 @@ export class SalaryslipComponent implements OnInit {
     // }
     // else 
 
-    var _Month = this.searchForm.get("searchMonth").value;
+    var _Month = this.searchForm.get("searchMonth")?.value;
     if (_Month == 0) {
       this.contentService.openSnackBar("Please select month.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _departmentId = this.searchForm.get("searchDepartment").value;
+    var _departmentId = this.searchForm.get("searchDepartment")?.value;
     if (!_departmentId && mode == 'update') {
       this.contentService.openSnackBar("Please select department.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -394,7 +394,7 @@ export class SalaryslipComponent implements OnInit {
         var _EmpSalaryComponents = [...data[0].value];
         var _EmpVariables = [...data[1].value];
         this.EarnedSalary = [];
-        var _deduction = [];
+        var _deduction :any[]= [];
         var _data = {};
         var _earnedIndx = 0, _deductionIndx = 0;
         _EmpVariables.forEach(emp => {
@@ -486,7 +486,7 @@ export class SalaryslipComponent implements OnInit {
 
     //var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     var searchfilter = this.FilterOrgSubOrg;
-    var _employeeId = this.searchForm.get("searchEmployee").value.EmployeeId;
+    var _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
     // if (mode == 'read' && !_employeeId) {
     //   this.contentService.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
     //   return [];
@@ -495,7 +495,7 @@ export class SalaryslipComponent implements OnInit {
     if (_employeeId)
       searchfilter += " and EmployeeId eq " + _employeeId;
 
-    var _departmentId = this.searchForm.get("searchDepartment").value;
+    var _departmentId = this.searchForm.get("searchDepartment")?.value;
     if (mode == 'update' && !_departmentId) {
       this.contentService.openSnackBar("Please select department.", globalconstants.ActionText, globalconstants.RedBackground);
       return [];
@@ -511,7 +511,7 @@ export class SalaryslipComponent implements OnInit {
     return this.dataservice.get(list);
   }
   getMasterText(arr, itemId) {
-    var filtered = arr.filter(f => f.MasterDataId == itemId);
+    var filtered = arr.filter((f:any) => f.MasterDataId == itemId);
     if (filtered.length > 0)
       return filtered[0].MasterDataName;
     else

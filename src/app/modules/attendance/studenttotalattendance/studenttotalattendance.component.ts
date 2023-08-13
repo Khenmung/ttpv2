@@ -4,11 +4,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -19,25 +19,25 @@ import { SwUpdate } from '@angular/service-worker';
 export class StudenttotalattendanceComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  ClassGroups = [];
-  //SubjectCategory = [];
-  LoginUserDetail: any[] = [];
+  ClassGroups :any[]= [];
+  //SubjectCategory :any[]= [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   TotalAttendanceListName = 'TotalAttendances';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
 
-  TotalAttendanceList: ITotalAttendance[] = [];
+  TotalAttendanceList: ITotalAttendance[]= [];
   filteredOptions: Observable<ITotalAttendance[]>;
   dataSource: MatTableDataSource<ITotalAttendance>;
-  allMasterData = [];
-  TotalAttendance = [];
+  allMasterData :any[]= [];
+  TotalAttendance :any[]= [];
   Permission = 'deny';
-  Classes = [];
-  ExamStatus = [];
+  Classes :any[]= [];
+  ExamStatus :any[]= [];
   TotalAttendanceData = {
     TotalAttendanceId: 0,
     ClassId: 0,
@@ -47,7 +47,7 @@ export class StudenttotalattendanceComponent implements OnInit {
     BatchId: 0,
     Active: false
   };
-  MonthYears = [];
+  MonthYears :any[]= [];
   displayedColumns = [
     "TotalAttendanceId",
     "ClassName",
@@ -81,9 +81,9 @@ export class StudenttotalattendanceComponent implements OnInit {
     });
     this.PageLoad();
   }
-  Exams = [];
-  ExamNames = [];
-  ClassGroupMapping = [];
+  Exams :any[]= [];
+  ExamNames :any[]= [];
+  ClassGroupMapping :any[]= [];
   GetClassGroupMapping() {
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClassGroupMapping(filterOrgSubOrg, 1)
@@ -100,13 +100,13 @@ export class StudenttotalattendanceComponent implements OnInit {
     this.loading = true;
     this.MonthYears = this.contentservice.GetSessionFormattedMonths();
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    //this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.ATTENDANCE.STUDENTTOTALATTENDANCE);
@@ -126,7 +126,7 @@ export class StudenttotalattendanceComponent implements OnInit {
   }
 
   // AddNew() {
-  //   var _examId = this.searchForm.get("searchExamId").value;
+  //   var _examId = this.searchForm.get("searchExamId")?.value;
   //   var newdata = {
   //     TotalAttendanceId: 0,
   //     ClassId: 0,
@@ -136,7 +136,7 @@ export class StudenttotalattendanceComponent implements OnInit {
   //     Active: 0,
   //     Action: false
   //   };
-  //   this.TotalAttendanceList = [];
+  //   this.TotalAttendanceList :any[]= [];
   //   this.TotalAttendanceList.push(newdata);
   //   this.dataSource = new MatTableDataSource<ITotalAttendance>(this.TotalAttendanceList);
   //   this.dataSource.paginator = this.paging;
@@ -196,7 +196,7 @@ export class StudenttotalattendanceComponent implements OnInit {
 
           this.TotalAttendanceData.TotalAttendanceId = row.TotalAttendanceId;
           this.TotalAttendanceData.Active = true;
-          this.TotalAttendanceData.ExamId = this.searchForm.get("searchExamId").value;
+          this.TotalAttendanceData.ExamId = this.searchForm.get("searchExamId")?.value;
           this.TotalAttendanceData.ClassId = row.ClassId;
           this.TotalAttendanceData.TotalNoOfAttendance = +row.TotalNoOfAttendance;
           this.TotalAttendanceData.BatchId = this.SelectedBatchId;
@@ -267,7 +267,7 @@ export class StudenttotalattendanceComponent implements OnInit {
     this.loading = true;
     let filterStr = this.FilterOrgSubOrgBatchId;
 
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
 
     if (_examId > 0) {
       filterStr += " and ExamId eq " + _examId;
@@ -278,7 +278,7 @@ export class StudenttotalattendanceComponent implements OnInit {
       return;
     }
     //var ExamReleaseResult =true; 
-    var examObj = this.Exams.filter(f => f.ExamId == _examId);
+    var examObj = this.Exams.filter((f:any) => f.ExamId == _examId);
     if (examObj.length > 0) {
       this.ExamReleaseResult = examObj[0].ReleaseResult == 1 ? true : false;
     }
@@ -287,11 +287,11 @@ export class StudenttotalattendanceComponent implements OnInit {
 
     list.PageName = this.TotalAttendanceListName;
     list.filter = [filterStr];
-    this.TotalAttendanceList = [];
+    
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        this.TotalAttendanceList = [];
+        this.TotalAttendanceList= [];
         var _classes = this.ClassGroupMapping.filter(g => g.ClassGroupId == examObj[0].ClassGroupId);
         _classes.forEach(f => {
 
@@ -315,7 +315,7 @@ export class StudenttotalattendanceComponent implements OnInit {
               ClassId: f.ClassId,
               ClassName: f.ClassName,
               TotalNoOfAttendance: 22,
-              ExamId: this.searchForm.get("searchExamId").value,
+              ExamId: this.searchForm.get("searchExamId")?.value,
               BatchId: this.SelectedBatchId,
               Action: false,
               Active: false
@@ -331,7 +331,7 @@ export class StudenttotalattendanceComponent implements OnInit {
   }
   RowsToUpdate = 0;
   SaveAll() {
-    var toupdate = this.TotalAttendanceList.filter(f => f.Action);
+    var toupdate = this.TotalAttendanceList.filter((f:any) => f.Action);
     this.RowsToUpdate = toupdate.length;
     toupdate.forEach(f => {
       this.RowsToUpdate--;
@@ -347,7 +347,7 @@ export class StudenttotalattendanceComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ExamStatus = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSTATUS)
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME)
 

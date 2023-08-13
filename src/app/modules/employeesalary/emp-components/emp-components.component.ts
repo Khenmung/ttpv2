@@ -4,11 +4,11 @@ import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-emp-components',
@@ -17,39 +17,39 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 })
 export class EmpComponentsComponent implements OnInit {
   PageLoading = true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   Permission = '';
-  VariableTypes = [];
-  VariableConfigs = [];
-  EmployeeVariables = [];
+  VariableTypes :any[]= [];
+  VariableConfigs :any[]= [];
+  EmployeeVariables :any[]= [];
   EmpComponentListName = 'EmpComponents';
   FilterOrgSubOrg = '';
   loading = false;
   rowCount = 0;
-  EmpComponentList: IEmpComponent[] = [];
+  EmpComponentList: IEmpComponent[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  Grades = [];
-  Departments = [];
-  WorkAccounts = [];
-  Designations = [];
-  JobTitles = [];
-  Genders = [];
-  City = [];
-  Countries = [];
-  States = [];
-  BloodGroups = [];
-  Religions = [];
-  Categories = [];
-  Locations = [];
-  EmploymentStatus = [];
-  EmploymentTypes = [];
-  Natures = [];
-  MaritalStatus = [];
-  ComponentTypes = [];
-  Batches = [];
+  Grades :any[]= [];
+  Departments :any[]= [];
+  WorkAccounts :any[]= [];
+  Designations :any[]= [];
+  JobTitles :any[]= [];
+  Genders :any[]= [];
+  City :any[]= [];
+  Countries :any[]= [];
+  States :any[]= [];
+  BloodGroups :any[]= [];
+  Religions :any[]= [];
+  Categories :any[]= [];
+  Locations :any[]= [];
+  EmploymentStatus :any[]= [];
+  EmploymentTypes :any[]= [];
+  Natures :any[]= [];
+  MaritalStatus :any[]= [];
+  ComponentTypes :any[]= [];
+  Batches :any[]= [];
   dataSource: MatTableDataSource<IEmpComponent>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   EmpComponentData = {
     EmpSalaryComponentId: 0,
     SalaryComponent: '',
@@ -109,8 +109,8 @@ export class EmpComponentsComponent implements OnInit {
         this.contentservice.openSnackBar(globalconstants.PermissionDeniedMessage, globalconstants.ActionText, globalconstants.RedBackground);
       }
       else {
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.GetMasterData();
         this.getEmployeeVariables();
@@ -236,7 +236,7 @@ export class EmpComponentsComponent implements OnInit {
     //var _colName = event.srcElement.name;
     element.Action = true;
     ////console.log("event", event);
-    //var row = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
+    //var row = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
     //row[0][_colName] = element[_colName];
   }
 
@@ -252,7 +252,7 @@ export class EmpComponentsComponent implements OnInit {
     //var columnexist;
     // for (var prop in element) {
 
-    //   //var row: any = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == prop && s.StudentClassSubjectId == element.StudentClassSubjectId);
+    //   //var row: any = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == prop && s.StudentClassSubjectId == element.StudentClassSubjectId);
 
     //   if (row.length > 0 && prop != 'StudentClassSubject' && prop != 'Action') {
     //     row[0].Active = 1;
@@ -266,7 +266,7 @@ export class EmpComponentsComponent implements OnInit {
   GetConfigVariables() {
 
     //var orgIdSearchstr = this.StandardFilter;// ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    //var variabletypeId = this.VariableTypes.filter(f => f.MasterDataName.toLowerCase() == 'payroll')[0].MasterDataId;
+    //var variabletypeId = this.VariableTypes.filter((f:any) => f.MasterDataName.toLowerCase() == 'payroll')[0].MasterDataId;
 
     let list: List = new List();
 
@@ -290,7 +290,7 @@ export class EmpComponentsComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.VariableTypes = this.getDropDownData(globalconstants.MasterDefinitions.common.CONFIGTYPE);
     //this.Grades = this.getDropDownData(globalconstants.MasterDefinitions.employee.GRADE);
     //this.SalaryComponents = this.getDropDownData(globalconstants.MasterDefinitions.employee.SALARYCOMPONENT);
@@ -320,8 +320,8 @@ export class EmpComponentsComponent implements OnInit {
     this.loading = true;
     //var orgIdSearchstr = this.StandardFilter;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     var compfilter = ''
-    if (this.searchForm.get("searchComponentId").value > 0)
-      compfilter = " and EmpSalaryComponentId eq " + this.searchForm.get("searchComponentId").value
+    if (this.searchForm.get("searchComponentId")?.value > 0)
+      compfilter = " and EmpSalaryComponentId eq " + this.searchForm.get("searchComponentId")?.value
 
     let list: List = new List();
     list.fields = [

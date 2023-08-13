@@ -4,11 +4,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import {SwUpdate} from '@angular/service-worker';
 
 @Component({
@@ -31,22 +31,22 @@ export class UserconfigreportnameComponent implements OnInit {
     "Active",
     "Action"
   ];
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SubOrgId=0;
   SelectedApplicationId = 0;
-  ColumnsOfAvailableReports = [];
+  ColumnsOfAvailableReports :any[]= [];
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  AvailableReportNames = [];
-  AppReportNames = [];
-  Applications = [];
-  ReportNames = [];
+  AvailableReportNames :any[]= [];
+  AppReportNames :any[]= [];
+  Applications :any[]= [];
+  ReportNames :any[]= [];
   ReportConfigItemListName = "ReportConfigItems";
-  ReportConfigItemList = [];
+  ReportConfigItemList :any[]= [];
   dataSource: MatTableDataSource<IReportConfigItem>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   PagePermission = '';
   ReportConfigItemData = {
     ReportConfigItemId: 0,
@@ -90,8 +90,8 @@ export class UserconfigreportnameComponent implements OnInit {
     });
     //this.dataSource = new MatTableDataSource<IReportConfigItem>([]);
     this.Applications = this.tokenStorage.getPermittedApplications();
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.PageLoad();
   }
 
@@ -123,7 +123,7 @@ export class UserconfigreportnameComponent implements OnInit {
   }
   addnew() {
     debugger;
-    // var appId = this.searchForm.get("searchApplicationId").value;
+    // var appId = this.searchForm.get("searchApplicationId")?.value;
     // if (appId == 0) {
     //   this.contentservice.openSnackBar("Please select application", globalconstants.ActionText,globalconstants.RedBackground);
     //   return;
@@ -153,7 +153,7 @@ export class UserconfigreportnameComponent implements OnInit {
   UpdateOrSave(row) {
 
     //debugger;
-    var AvailableReportId = this.searchForm.get("searchAvailableReportName").value;
+    var AvailableReportId = this.searchForm.get("searchAvailableReportName")?.value;
     var ApplicationId = this.SelectedApplicationId;
     if (ApplicationId == 0) {
       this.contentservice.openSnackBar("Please select application name", globalconstants.ActionText, globalconstants.RedBackground);
@@ -284,8 +284,8 @@ export class UserconfigreportnameComponent implements OnInit {
     this.ReportConfigItemList = [];
     var filterstr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    //var ApplicationId = this.searchForm.get("searchApplicationId").value;
-    var AvailableReportId = this.searchForm.get("searchAvailableReportName").value;
+    //var ApplicationId = this.searchForm.get("searchApplicationId")?.value;
+    var AvailableReportId = this.searchForm.get("searchAvailableReportName")?.value;
 
     if (this.SelectedApplicationId == 0) {
       this.contentservice.openSnackBar("Please select application name", globalconstants.ActionText, globalconstants.RedBackground);

@@ -4,11 +4,11 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Subscription } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { environment } from 'src/environments/environment';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../_services/auth.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 
@@ -20,19 +20,19 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 export class LoginComponent implements OnInit {
   PageLoading = true;
   jwtHelper = new JwtHelperService();
-  userInfo = [];
+  userInfo :any[]= [];
   loading = false;
-  Organizations = [];
-  Departments = [];
-  Applications = [];
-  Locations = [];
-  Roles = [];
-  ApplicationFeatures = [];
+  Organizations :any[]= [];
+  Departments :any[]= [];
+  Applications :any[]= [];
+  Locations :any[]= [];
+  Roles :any[]= [];
+  ApplicationFeatures :any[]= [];
   loginForm: UntypedFormGroup;
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
-  UserDetail = [];
+  UserDetail :any[]= [];
   RoleFilter = '';
   username: string = '';
   mediaSub: Subscription;
@@ -76,8 +76,8 @@ export class LoginComponent implements OnInit {
   }
   onSubmit(): void {
     this.IsSubmitted = true;
-    this.username = this.loginForm.get("username").value;
-    var password = this.loginForm.get("password").value;
+    this.username = this.loginForm.get("username")?.value;
+    var password = this.loginForm.get("password")?.value;
     debugger;
     if (this.username.length == 0) {
       this.contentservice.openSnackBar("Please enter user name", globalconstants.ActionText, globalconstants.RedBackground);
@@ -203,14 +203,14 @@ export class LoginComponent implements OnInit {
 
     this.contentservice.GetParentZeroMasters().subscribe((data: any) => {
       var TopMasters = [...data.value];
-      var countryparentId = TopMasters.filter(f => f.MasterDataName.toLowerCase() == 'application')[0].MasterDataId;
-      var appId = TopMasters.filter(f => f.MasterDataName.toLowerCase() == 'application')[0].ApplicationId;
+      var countryparentId = TopMasters.filter((f:any) => f.MasterDataName.toLowerCase() == 'application')[0].MasterDataId;
+      var appId = TopMasters.filter((f:any) => f.MasterDataName.toLowerCase() == 'application')[0].ApplicationId;
       var filterorgsuborg = 'OrgId eq 0 and SubOrgId eq 0';
       this.contentservice.GetDropDownDataFromDB(countryparentId, filterorgsuborg, 0)
         .subscribe((data: any) => {
           this.Applications = [...data.value];
-          var commonappId = this.Applications.filter(f => f.MasterDataName.toLowerCase() == 'common')[0].MasterDataId;
-          var roleparentId = TopMasters.filter(f => f.MasterDataName.toLowerCase() == 'role')[0].MasterDataId;
+          var commonappId = this.Applications.filter((f:any) => f.MasterDataName.toLowerCase() == 'common')[0].MasterDataId;
+          var roleparentId = TopMasters.filter((f:any) => f.MasterDataName.toLowerCase() == 'role')[0].MasterDataId;
           this.contentservice.GetDropDownDataFromDB(roleparentId, this.FilterOrgSubOrg, commonappId)
             .subscribe((data: any) => {
               this.Roles = [...data.value];
@@ -237,7 +237,7 @@ export class LoginComponent implements OnInit {
                     this.RoleFilter += ' or RoleId eq ' + roleuser.RoleId
                     var _role = '';
                     if (this.Roles.length > 0 && roleuser.RoleId != null)
-                      var _roleobj = this.Roles.filter(a => a.MasterDataId == roleuser.RoleId)
+                      var _roleobj:any = this.Roles.filter(a => a.MasterDataId == roleuser.RoleId)
                     if (_roleobj.length > 0) {
                       _role = _roleobj[0].MasterDataName;
                     }
@@ -305,7 +305,7 @@ export class LoginComponent implements OnInit {
       .subscribe((data: any) => {
         //debugger;
         //console.log("all",data.value)
-        var _allPermission = [];
+        var _allPermission :any[]= [];
         data.value.forEach(m => {
           if (m.PlanFeature.Page.Active == 1 && m.PlanFeature.Active == 1 && m.PlanFeature.PlanId == localStorage.getItem("planId")) {
             _allPermission.push(m);
@@ -319,7 +319,7 @@ export class LoginComponent implements OnInit {
           var _appShortName = '';
           this.UserDetail[0]["applicationRolePermission"] = [];
           _allPermission.forEach(item => {
-            var appObj = this.Applications.filter(f => f.MasterDataId == item.PlanFeature.Page.ApplicationId);
+            var appObj = this.Applications.filter((f:any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId);
             _applicationName = '';
             _appShortName = '';
             //only active application's features will be available. 

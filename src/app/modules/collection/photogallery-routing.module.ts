@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { AlbumsComponent } from './albums/albums.component';
 import { CarouselComponent } from './carousel/carousel.component';
 import { FiledragAndDropComponent } from './filedrag-and-drop/filedrag-and-drop.component';

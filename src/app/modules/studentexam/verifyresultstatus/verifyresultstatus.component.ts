@@ -5,11 +5,11 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import alasql from 'alasql';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 @Component({
   selector: 'app-verifyresultstatus',
@@ -22,25 +22,25 @@ export class VerifyresultstatusComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   ClickedVerified = false;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
-  SelectedClassStudentGrades = [];
+  SelectedClassStudentGrades :any[]= [];
   SelectedApplicationId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
   rowCount = 0;
-  ExamStudentResult: IExamStudentResult[] = [];
+  ExamStudentResult: IExamStudentResult[]= [];
   ClassFullMark = 0;
-  ClassSubjectComponents = [];
+  ClassSubjectComponents :any[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  Students = [];
-  Classes = [];
-  ExamNames = [];
-  Exams = [];
-  Batches = [];
+  Students :any[]= [];
+  Classes :any[]= [];
+  ExamNames :any[]= [];
+  Exams :any[]= [];
+  Batches :any[]= [];
   dataSource: MatTableDataSource<IExamStudentResult>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   Permission = 'deny';
   ExamId = 0;
   displayedColumns = [
@@ -76,12 +76,12 @@ export class VerifyresultstatusComponent implements OnInit {
     debugger;
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EXAM.VERIFYRESULTSTATUS);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
@@ -103,25 +103,25 @@ export class VerifyresultstatusComponent implements OnInit {
       }
     }
   }
-  ExamClassGroups = [];
+  ExamClassGroups :any[]= [];
   GetExamStudentResults() {
 
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.ExamStudentResult = [];
     var filterstr = ' and Active eq 1 ';
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
     if (_examId == 0) {
       this.contentservice.openSnackBar("Please select exam", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     var _examClassGroupId = []
-    var _examClassGroupId = this.Exams.filter(f => f.ExamId == _examId);
+    var _examClassGroupId = this.Exams.filter((f:any) => f.ExamId == _examId);
     // if (obj.length > 0) {
     //   _examClassGroupId = obj[0].ClassGroupId;
     // }
     this.loading = true;
-    filterstr = ' and ExamId eq ' + this.searchForm.get("searchExamId").value;
+    filterstr = ' and ExamId eq ' + this.searchForm.get("searchExamId")?.value;
 
     let list: List = new List();
     list.fields = [
@@ -136,31 +136,31 @@ export class VerifyresultstatusComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        var _examId = this.searchForm.get("searchExamId").value
+        var _examId = this.searchForm.get("searchExamId")?.value
         //var _classGroupId = 0;
-        var filteredClassGroupMapping = [];
+        var filteredClassGroupMapping :any[]= [];
         this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _examId)
           .subscribe((data: any) => {
             this.ExamClassGroups = [...data.value];
             var objExamClassGroups = this.ExamClassGroups.filter(g => g.ExamId == _examId);
-            filteredClassGroupMapping = this.ClassGroupMapping.filter(f => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+            filteredClassGroupMapping = this.ClassGroupMapping.filter((f:any) => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
 
-            //var filteredClassGroupMapping = this.ClassGroupMapping.filter(s => _examClassGroupId.findIndex(i=>i.ClassGroupMappingId == s.ClassGroupMappingId)>-1);
+            //var filteredClassGroupMapping = this.ClassGroupMapping.filter((s:any) => _examClassGroupId.findIndex(i=>i.ClassGroupMappingId == s.ClassGroupMappingId)>-1);
             data.value.forEach(d => {
               var _className = '';
-              var _classgroupObj = filteredClassGroupMapping.filter(s => s.ClassId == d.StudentClass["ClassId"]);
+              var _classgroupObj = filteredClassGroupMapping.filter((s:any) => s.ClassId == d.StudentClass["ClassId"]);
               if (_classgroupObj.length > 0) {
                 _className = _classgroupObj[0].ClassName;
                 d["ClassName"] = _className;
                 d["ClassId"] = d.StudentClass["ClassId"];
-                d["ExamName"] = this.Exams.filter(f => f.ExamId == d.ExamId)[0].ExamName;
+                d["ExamName"] = this.Exams.filter((f:any) => f.ExamId == d.ExamId)[0].ExamName;
                 this.ExamStudentResult.push(d);
               }
             })
             var _distinctExamClass = alasql("select distinct ExamId,ExamName,ClassId,ClassName,Active from ? where Active =true", [this.ExamStudentResult])
-            var statusdetail = [];
+            var statusdetail :any[]= [];
             filteredClassGroupMapping.forEach(cls => {
-              var verified = _distinctExamClass.filter(f => f.ClassId == cls.ClassId)
+              var verified = _distinctExamClass.filter((f:any) => f.ClassId == cls.ClassId)
               if (verified.length > 0) {
                 statusdetail.push(
                   {
@@ -171,10 +171,10 @@ export class VerifyresultstatusComponent implements OnInit {
                 )
               }
               else {
-                var _examId = this.searchForm.get("searchExamId").value;
+                var _examId = this.searchForm.get("searchExamId")?.value;
                 statusdetail.push(
                   {
-                    ExamName: this.Exams.filter(f => f.ExamId == _examId)[0].ExamName,
+                    ExamName: this.Exams.filter((f:any) => f.ExamId == _examId)[0].ExamName,
                     ClassName: cls.ClassName,
                     Active: 0
                   }
@@ -193,9 +193,9 @@ export class VerifyresultstatusComponent implements OnInit {
 
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
-    this.Batches = this.tokenStorage.getBatches()
+    this.Batches = this.tokenStorage.getBatches()!;
     this.GetExams();
 
   }
@@ -228,7 +228,7 @@ export class VerifyresultstatusComponent implements OnInit {
         this.PageLoading = false;
       })
   }
-  ClassGroupMapping = [];
+  ClassGroupMapping :any[]= [];
   GetClassGroupMapping() {
 
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);

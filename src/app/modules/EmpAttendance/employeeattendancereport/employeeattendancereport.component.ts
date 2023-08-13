@@ -6,12 +6,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-employeeattendancereport',
@@ -27,27 +27,27 @@ export class EmployeeAttendanceReportComponent implements OnInit {
   StudentDetail: any = {};
   rowCount = 0;
   edited = false;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
-  SelectedStudentSubjectCount = [];
+  SelectedStudentSubjectCount :any[]= [];
   StudentDetailToDisplay = '';
   SelectedApplicationId = 0;
   StudentClassId = 0;
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  //ClassSubjectList = [];
-  //Sections = [];
-  //Classes = [];
-  //Subjects = [];
+  //ClassSubjectList :any[]= [];
+  //Sections :any[]= [];
+  //Classes :any[]= [];
+  //Subjects :any[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  Batches = [];
-  StudentClassSubjects = [];
-  Departments = [];
-  //StudentSubjectList: IStudentSubject[] = [];
+  Batches :any[]= [];
+  StudentClassSubjects :any[]= [];
+  Departments :any[]= [];
+  //StudentSubjectList: IStudentSubject[]= [];
   dataSource: MatTableDataSource<IEmployeeAttendance>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm = this.fb.group({
     searchMonth: [0],
     searchDepartment: [0]
@@ -83,8 +83,8 @@ export class EmployeeAttendanceReportComponent implements OnInit {
     private nav: Router,
     private shareddata: SharedataService,
   ) { }
-  Months = [];
-  Employees = [];
+  Months :any[]= [];
+  Employees :any[]= [];
   WeekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   ngOnInit(): void {
 
@@ -106,16 +106,16 @@ export class EmployeeAttendanceReportComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeattendance.ATTENDANCEREPORT);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.GetMasterData();
         this.GetEmployees();
         this.GetHoliday();
@@ -126,7 +126,7 @@ export class EmployeeAttendanceReportComponent implements OnInit {
       }
     }
   }
-  HolidayList = [];
+  HolidayList :any[]= [];
   GetHoliday() {
     debugger;
 
@@ -149,11 +149,11 @@ export class EmployeeAttendanceReportComponent implements OnInit {
       });
 
   }
-  EmployeeAttendanceList = [];
+  EmployeeAttendanceList :any[]= [];
   GetEmployeeAttendance() {
     debugger;
-    var SelectedMonth = this.searchForm.get("searchMonth").value;
-    var _Department = this.searchForm.get("searchDepartment").value;
+    var SelectedMonth = this.searchForm.get("searchMonth")?.value;
+    var _Department = this.searchForm.get("searchDepartment")?.value;
     if (SelectedMonth == 0) {
       this.contentservice.openSnackBar("Please select month", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -208,9 +208,9 @@ export class EmployeeAttendanceReportComponent implements OnInit {
         let Present = 0;
         let today = new Date().getDay();
         //var lastDateOfMonth = new Date(moment(fromDate).endOf('month').format('YYYY-MM-DD')).getDate();
-        //var _employeeDepartmentWise = [];
+        //var _employeeDepartmentWise :any[]= [];
         if (_Department > 0)
-          this.EmployeeAttendanceList = this.Employees.filter(f => f.DepartmentId == _Department)
+          this.EmployeeAttendanceList = this.Employees.filter((f:any) => f.DepartmentId == _Department)
         else
           this.EmployeeAttendanceList = [...this.Employees];
 
@@ -234,7 +234,7 @@ export class EmployeeAttendanceReportComponent implements OnInit {
               var dayattendance = existing.filter(e => new Date(e.AttendanceDate).getDate() == dayCount);
               if (dayattendance.length > 0) {
 
-                var obj = this.AttendanceStatus.filter(f => f.MasterDataId == dayattendance[0].AttendanceStatusId);
+                var obj = this.AttendanceStatus.filter((f:any) => f.MasterDataId == dayattendance[0].AttendanceStatusId);
                 if (obj.length > 0)
                   dayattendance[0].AttendanceStatus = obj[0].MasterDataName.substr(0,1);
                 else
@@ -353,16 +353,16 @@ export class EmployeeAttendanceReportComponent implements OnInit {
       !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
 
-  AttendanceStatus = [];
+  AttendanceStatus :any[]= [];
   AttendancePresentId=0;
   AttendanceAbsentId=0;
   GetMasterData() {
     debugger;
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     //this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
-    this.AttendancePresentId = this.AttendanceStatus.filter(f=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
-    this.AttendanceAbsentId = this.AttendanceStatus.filter(f=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
+    this.AttendancePresentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
+    this.AttendanceAbsentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
     this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.employee.DEPARTMENT);
     this.loading = false; this.PageLoading = false;
   }

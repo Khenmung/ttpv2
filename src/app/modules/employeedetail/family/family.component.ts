@@ -4,11 +4,11 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-family',
@@ -18,7 +18,7 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 export class FamilyComponent implements OnInit {
     PageLoading = true;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -30,16 +30,16 @@ export class FamilyComponent implements OnInit {
   };
   SelectedApplicationId = 0;
   EmployeeFamilyListName = 'EmployeeFamilies';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0;SubOrgId = 0;
-  EmployeeFamilyList: IFamily[] = [];
+  EmployeeFamilyList: IFamily[]= [];
   filteredOptions: Observable<IFamily[]>;
   dataSource: MatTableDataSource<IFamily>;
-  allMasterData = [];
-  EmployeeFamilys = [];
-  FamilyRelationship = [];
-  Genders = [];
+  allMasterData :any[]= [];
+  EmployeeFamilys :any[]= [];
+  FamilyRelationship :any[]= [];
+  Genders :any[]= [];
   Permission = 'deny';
   EmployeeId = 0;
   EmployeeFamilyData = {
@@ -92,7 +92,7 @@ export class FamilyComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -105,7 +105,7 @@ export class FamilyComponent implements OnInit {
 
       }
       else {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.GetMasterData();
       }
     }
@@ -246,7 +246,7 @@ export class FamilyComponent implements OnInit {
 
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.FamilyRelationship = this.getDropDownData(globalconstants.MasterDefinitions.employee.FAMILYRELATIONSHIP);
     this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.employee.GENDER);
     if (this.EmployeeId > 0)

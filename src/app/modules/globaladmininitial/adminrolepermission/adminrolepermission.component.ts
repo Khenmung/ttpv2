@@ -6,11 +6,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import alasql from 'alasql';
 
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 @Component({
   selector: 'app-adminrolepermission',
@@ -21,18 +21,18 @@ export class AdminrolepermissionComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  TopMenu = [];
-  MasterData = [];
-  Roles = [];
-  Permissions = [];
+  TopMenu :any[]= [];
+  MasterData :any[]= [];
+  Roles :any[]= [];
+  Permissions :any[]= [];
   Permission = 'deny';
-  Organizations = [];
-  ApplicationRoleList = [];
-  TopPageFeatures = [];
-  DefinedMaster = [];
+  Organizations :any[]= [];
+  ApplicationRoleList :any[]= [];
+  TopPageFeatures :any[]= [];
+  DefinedMaster :any[]= [];
   NoOfRowsToUpdate = -1;
-  PlanFeaturePages = [];
-  FilteredPageFeatures = [];
+  PlanFeaturePages :any[]= [];
+  FilteredPageFeatures :any[]= [];
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   oldvalue = '';
@@ -48,10 +48,10 @@ export class AdminrolepermissionComponent implements OnInit {
     SubOrgId: 0,
     Active: 0
   };
-  CustomerApps = [];
+  CustomerApps :any[]= [];
   SelectedApplicationId = 0;
-  ApplicationDataStatus = [];
-  SchoolDataStatus = [];
+  ApplicationDataStatus :any[]= [];
+  SchoolDataStatus :any[]= [];
   DisplayColumns = [
     "ApplicationFeatureRoleId",
     "FeatureName",
@@ -59,7 +59,7 @@ export class AdminrolepermissionComponent implements OnInit {
     "Active",
     "Action"
   ];
-  UserDetails = [];
+  UserDetails :any[]= [];
 
   constructor(private servicework: SwUpdate,
     private fb: UntypedFormBuilder,
@@ -87,8 +87,8 @@ export class AdminrolepermissionComponent implements OnInit {
   enableTopEdit = false;
   loading: boolean = false;
   error: string = '';
-  Applications = [];
-  //CustomerApplications = [];
+  Applications :any[]= [];
+  //CustomerApplications :any[]= [];
   searchForm = this.fb.group(
     {
       searchCustomerId: [0],
@@ -113,7 +113,7 @@ export class AdminrolepermissionComponent implements OnInit {
         this.Permission = perObj[0].permission;
       //this.Permission='rwd'
       if (this.Permission != 'deny') {
-        //this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        //this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.Permissions = globalconstants.PERMISSIONTYPES;
@@ -141,7 +141,7 @@ export class AdminrolepermissionComponent implements OnInit {
   }
 
   GetTopMenu() {
-    this.TopMenu = this.PlanFeaturePages.filter(f => f.ApplicationId == this.SelectedApplicationId
+    this.TopMenu = this.PlanFeaturePages.filter((f:any) => f.ApplicationId == this.SelectedApplicationId
       && f.ParentId == 0)
     this.TopMenu = this.TopMenu.sort((a, b) => a.DisplayOrder - b.DisplayOrder);
   }
@@ -150,7 +150,7 @@ export class AdminrolepermissionComponent implements OnInit {
     //var applicationparentId = this.MasterData.filter(m => m.MasterDataName.toLowerCase() == "application")[0].MasterDataId;
     var RoleId = this.MasterData.filter(m => m.MasterDataName.toLowerCase() == "role")[0].MasterDataId;
 
-    var Org = this.searchForm.get("searchCustomerId").value;
+    var Org = this.searchForm.get("searchCustomerId")?.value;
     var appId = this.Applications.filter(m => m.MasterDataName.toLowerCase() == 'common')[0].MasterDataId;
     //debugger;this.
 
@@ -185,7 +185,7 @@ export class AdminrolepermissionComponent implements OnInit {
     debugger;
     this.EmptyData();
     this.getCustomersData();
-    this.SelectedCustomerPlanId = this.Organizations.filter(f => f.OrganizationId == event.value.Org.OrganizationId)[0].PlanId;
+    this.SelectedCustomerPlanId = this.Organizations.filter((f:any) => f.OrganizationId == event.value.Org.OrganizationId)[0].PlanId;
     var list = new List();
     list.fields = [
       "ApplicationId"
@@ -263,7 +263,7 @@ export class AdminrolepermissionComponent implements OnInit {
             d.DisplayOrder = d.Page.DisplayOrder;
             return d;
           });
-          this.TopPageFeatures = this.PlanFeaturePages.filter(f => f.ParentId == 0);
+          this.TopPageFeatures = this.PlanFeaturePages.filter((f:any) => f.ParentId == 0);
         }
         else
           this.PlanFeaturePages = [];
@@ -273,7 +273,7 @@ export class AdminrolepermissionComponent implements OnInit {
   }
   FilterPageFeatures() {
     //debugger;
-    this.FilteredPageFeatures = this.PlanFeaturePages.filter(f => f.ApplicationId == this.SelectedApplicationId);
+    this.FilteredPageFeatures = this.PlanFeaturePages.filter((f:any) => f.ApplicationId == this.SelectedApplicationId);
 
   }
   EmptyData() {
@@ -282,7 +282,7 @@ export class AdminrolepermissionComponent implements OnInit {
   }
   GetApplicationFeatureRole() {
     debugger;
-    var _customer = this.searchForm.get("searchCustomerId").value;
+    var _customer = this.searchForm.get("searchCustomerId")?.value;
     var _subOrgId = _customer.SubOrgId;
     var _customerId = _customer.Org.OrganizationId;
     if (_customerId == 0) {
@@ -292,23 +292,23 @@ export class AdminrolepermissionComponent implements OnInit {
     }
 
     var rolefilter = '';
-    this.SelectedApplicationId = this.searchForm.get("searchApplicationId").value
+    this.SelectedApplicationId = this.searchForm.get("searchApplicationId")?.value
     if (this.SelectedApplicationId == 0) {
       this.contentservice.openSnackBar("Please select Application", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     this.EmptyData();
-    var _planFeatureId = this.searchForm.get("PlanFeatureId").value;
+    var _planFeatureId = this.searchForm.get("PlanFeatureId")?.value;
     var _ParentId = 0;
     if (_planFeatureId > 0) {
 
-      var obj = this.PlanFeaturePages.filter(f => f.PlanFeatureId == _planFeatureId)
+      var obj = this.PlanFeaturePages.filter((f:any) => f.PlanFeatureId == _planFeatureId)
       if (obj.length > 0)
         _ParentId = obj[0].PageId;
     }
 
     //rolefilter += " and ParentId eq " + _ParentId;
-    var _roleId = this.searchForm.get("RoleId").value;
+    var _roleId = this.searchForm.get("RoleId")?.value;
     if (_roleId == 0) {
       this.contentservice.openSnackBar("Please select role.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -332,12 +332,12 @@ export class AdminrolepermissionComponent implements OnInit {
     this.ApplicationRoleList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var ResultedPermittedPageFeatures = [];
-        //var _roleId = this.searchForm.get("RoleId").value;
+        var ResultedPermittedPageFeatures :any[]= [];
+        //var _roleId = this.searchForm.get("RoleId")?.value;
         //var roleFilteredAssigned = data.value.filter(db => db.RoleId == _roleId);
-        var filteredFeature = [];
+        var filteredFeature :any[]= [];
         //if (_ParentId > 0)
-        filteredFeature = this.PlanFeaturePages.filter(f => f.ParentId == _ParentId);
+        filteredFeature = this.PlanFeaturePages.filter((f:any) => f.ParentId == _ParentId);
         //else
         //  filteredFeature = [...this.PlanFeaturePages];
         // console.log("filteredFeature")
@@ -403,7 +403,7 @@ export class AdminrolepermissionComponent implements OnInit {
     })
   }
   // saveall() {
-  //   var ToUpdate = this.ApplicationRoleList.filter(f => f.Action);
+  //   var ToUpdate = this.ApplicationRoleList.filter((f:any) => f.Action);
   //   this.NoOfRowsToUpdate = ToUpdate.length;
   //   ToUpdate.forEach((record, indx) => {
   //     this.NoOfRowsToUpdate--;
@@ -423,8 +423,8 @@ export class AdminrolepermissionComponent implements OnInit {
   addnew() {
     var newdata = {
       ApplicationFeatureRoleId: 0,
-      PlanFeatureId: this.searchForm.get("PlanFeatureId").value,
-      FeatureName: this.PlanFeaturePages.filter(t => t.PageId == this.searchForm.get("PlanFeatureId").value)[0].PageTitle,
+      PlanFeatureId: this.searchForm.get("PlanFeatureId")?.value,
+      FeatureName: this.PlanFeaturePages.filter(t => t.PageId == this.searchForm.get("PlanFeatureId")?.value)[0].PageTitle,
       RoleId: 0,
       Role: '',
       PermissionId: 0,
@@ -435,7 +435,7 @@ export class AdminrolepermissionComponent implements OnInit {
     this.datasource = new MatTableDataSource<IApplicationRolePermission>(this.ApplicationRoleList);
   }
   UpdateAll() {
-    var toUpdate = this.ApplicationRoleList.filter(f => f.Action);
+    var toUpdate = this.ApplicationRoleList.filter((f:any) => f.Action);
     this.NoOfRowsToUpdate = toUpdate.length;
     toUpdate.forEach((a, indx) => {
       this.NoOfRowsToUpdate -= 1;
@@ -475,7 +475,7 @@ export class AdminrolepermissionComponent implements OnInit {
         }
         else {
           var _ParentId = 0;
-          var _planFeatureId = this.searchForm.get("PlanFeatureId").value;
+          var _planFeatureId = this.searchForm.get("PlanFeatureId")?.value;
           if (_planFeatureId > 0) {
             var obj = this.TopPageFeatures.filter(t => t.PlanFeatureId == _planFeatureId);
             if (obj.length > 0)
@@ -488,8 +488,8 @@ export class AdminrolepermissionComponent implements OnInit {
           //this.AppRoleData.ParentId = _ParentId;
           this.AppRoleData.RoleId = row.RoleId;
           this.AppRoleData.PermissionId = row.PermissionId;
-          this.AppRoleData.OrgId = this.searchForm.get("searchCustomerId").value.Org.OrganizationId;
-          this.AppRoleData.SubOrgId = this.searchForm.get("searchCustomerId").value.SubOrgId;
+          this.AppRoleData.OrgId = this.searchForm.get("searchCustomerId")?.value.Org.OrganizationId;
+          this.AppRoleData.SubOrgId = this.searchForm.get("searchCustomerId")?.value.SubOrgId;
 
           //console.log('data', this.AppRoleData);
           if (this.AppRoleData.ApplicationFeatureRoleId == 0) {

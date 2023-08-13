@@ -6,11 +6,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-employee-gradehistory',
@@ -18,7 +18,7 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
   styleUrls: ['./employee-gradehistory.component.scss']
 })
 export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
 
   optionsNoAutoClose = {
@@ -29,23 +29,23 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
   FilterOrgSubOrg = '';
   loading = false;
   rowCount = 0;
-  EmployeeGradeHistoryList: IEmployeeGradeHistory[] = [];
-  Employees: IEmployee[] = [];
-  //EmployeeSalaryComponentList: IEmployeeSalaryComponent[] = [];
+  EmployeeGradeHistoryList: IEmployeeGradeHistory[]= [];
+  Employees: IEmployee[]= [];
+  //EmployeeSalaryComponentList: IEmployeeSalaryComponent[]= [];
   SelectedBatchId = 0;SubOrgId = 0;
-  StoredForUpdate = [];
-  //SubjectMarkComponents = [];
-  GradeComponents = [];
-  Grades = [];
-  SalaryComponents = [];
-  ComponentTypes = [];
-  Batches = [];
-  Departments = [];
-  WorkAccounts = [];
-  JobTitles = [];
-  Designations = [];
+  StoredForUpdate :any[]= [];
+  //SubjectMarkComponents :any[]= [];
+  GradeComponents :any[]= [];
+  Grades :any[]= [];
+  SalaryComponents :any[]= [];
+  ComponentTypes :any[]= [];
+  Batches :any[]= [];
+  Departments :any[]= [];
+  WorkAccounts :any[]= [];
+  JobTitles :any[]= [];
+  Designations :any[]= [];
   dataSource: MatTableDataSource<IEmployeeGradeHistory>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   filteredOptions: Observable<IEmployee[]>;
   
   EmployeeGradeHistoryData = {
@@ -99,12 +99,12 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
       searchEmployeeName: [''],
     });
     this.PageLoad();
-    this.filteredOptions = this.searchForm.get("searchEmployeeName").valueChanges
+    this.filteredOptions = this.searchForm.get("searchEmployeeName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.Employees.slice())
-      );
+      )!;
     this.GetEmployees();
   }
   private _filter(name: string): IEmployee[] {
@@ -122,7 +122,7 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    //this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+    //this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -134,8 +134,8 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
         this.contentservice.openSnackBar(globalconstants.PermissionDeniedMessage, globalconstants.ActionText, globalconstants.RedBackground);
       }
       else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SubOrgId= +this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SubOrgId= +this.tokenStorage.getSubOrgId()!;
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.GetMasterData();
       }
@@ -169,7 +169,7 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
 
     this.loading = true;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    let checkFilterString = this.FilterOrgSubOrg + " and EmployeeId eq " + this.searchForm.get("searchEmployeeName").value.EmployeeId +
+    let checkFilterString = this.FilterOrgSubOrg + " and EmployeeId eq " + this.searchForm.get("searchEmployeeName")?.value.EmployeeId +
       " and JobTitleId eq " + row.JobTitleId +
       " and EmpGradeId eq " + row.EmpGradeId +
       " and DepartmentId eq " + row.DepartmentId +
@@ -194,7 +194,7 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
         else {
 
           this.EmployeeGradeHistoryData.EmployeeGradeHistoryId = row.EmployeeGradeHistoryId;
-          this.EmployeeGradeHistoryData.EmployeeId = this.searchForm.get("searchEmployeeName").value.EmployeeId;
+          this.EmployeeGradeHistoryData.EmployeeId = this.searchForm.get("searchEmployeeName")?.value.EmployeeId;
           this.EmployeeGradeHistoryData.Active = row.Active;
           this.EmployeeGradeHistoryData.DepartmentId = row.DepartmentId;
           this.EmployeeGradeHistoryData.DesignationId = row.DesignationId;
@@ -277,7 +277,7 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
   //   //debugger;
   //   var _colName = event.srcElement.name;
   //   //console.log("event", event);
-  //   var row = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
+  //   var row = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
   //   row[0][_colName] = element[_colName];
   // }
 
@@ -293,7 +293,7 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
     //var columnexist;
     for (var prop in element) {
 
-      var row: any = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == prop && s.StudentClassSubjectId == element.StudentClassSubjectId);
+      var row: any = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == prop && s.StudentClassSubjectId == element.StudentClassSubjectId);
 
       if (row.length > 0 && prop != 'StudentClassSubject' && prop != 'Action') {
         row[0].Active = 1;
@@ -387,7 +387,7 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
     //debugger;
     //var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    var filterstr = this.FilterOrgSubOrg + ' and Active eq 1 and EmployeeId eq ' + this.searchForm.get("searchEmployeeName").value.EmployeeId;
+    var filterstr = this.FilterOrgSubOrg + ' and Active eq 1 and EmployeeId eq ' + this.searchForm.get("searchEmployeeName")?.value.EmployeeId;
     let list: List = new List();
 
     list.fields = [
@@ -430,7 +430,7 @@ export class EmployeeGradehistoryComponent implements OnInit { PageLoading=true;
 
     //var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    var filterstr = this.FilterOrgSubOrg + " and Active eq 1 and EmployeeId eq " + this.searchForm.get("searchEmployeeId").value;
+    var filterstr = this.FilterOrgSubOrg + " and Active eq 1 and EmployeeId eq " + this.searchForm.get("searchEmployeeId")?.value;
     let list: List = new List();
 
     list.fields = [

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 // import { ContactComponent } from '../contact/addMessage/contact.component';
 // import { ContactdashboardComponent } from '../contact/contactdashboard/contactdashboard.component';
 import { NewsdashboardComponent } from './newsdashboard/newsdashboard.component';

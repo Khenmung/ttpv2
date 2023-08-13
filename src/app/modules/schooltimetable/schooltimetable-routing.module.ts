@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { ClassperiodComponent } from './classperiod/classperiod.component';
 import { DailytimetablereportComponent } from './dailytimetablereport/dailytimetablereport.component';
 import { SchooltimetableComponent } from './schooltimetable/schooltimetable.component';

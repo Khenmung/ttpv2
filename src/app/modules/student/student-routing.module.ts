@@ -10,8 +10,8 @@ import { StudentattendancereportComponent } from './studentattendancereport/stud
 import { StudentboardComponent } from './studentboard/studentboard.component';
 import { StudentprogressreportComponent } from './studentprogressreport/studentprogressreport.component';
 import { StudentEvaluationComponent } from '../evaluation/studentevaluation/studentevaluation.component';
-import { AuthGuard } from 'src/app/guards/auth.guard';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { AuthGuard } from '../../guards/auth.guard';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { StudentviewComponent } from './studentview/studentview.component';
 
 const routes: Routes = [

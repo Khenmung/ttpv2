@@ -7,13 +7,13 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TableUtil } from 'src/app/shared/TableUtil';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TableUtil } from '../../../shared/TableUtil';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import * as XLSX from 'xlsx';
 import {SwUpdate} from '@angular/service-worker';
 
@@ -27,7 +27,7 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   loading = false;
-  Designations = [];
+  Designations :any[]= [];
   filterOrgIdNBatchId = '';
   filterOrgIdOnly = '';
   filterBatchIdNOrgId = '';
@@ -43,31 +43,31 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
     'Active',
     'Action'];
   SelectedApplicationId = 0;
-  allMasterData = [];
-  Employees = [];
-  Genders = [];
-  Grades = [];
-  Batches = [];
-  Bloodgroup = [];
-  Category = [];
-  Religion = [];
-  Departments = [];
+  allMasterData :any[]= [];
+  Employees :any[]= [];
+  Genders :any[]= [];
+  Grades :any[]= [];
+  Batches :any[]= [];
+  Bloodgroup :any[]= [];
+  Category :any[]= [];
+  Religion :any[]= [];
+  Departments :any[]= [];
   States = []
-  PrimaryContact = [];
-  Location = [];
-  LanguageSubjUpper = [];
-  LanguageSubjLower = [];
-  UploadTypes = [];
-  ReasonForLeaving = [];
+  PrimaryContact :any[]= [];
+  Location :any[]= [];
+  LanguageSubjUpper :any[]= [];
+  LanguageSubjLower :any[]= [];
+  UploadTypes :any[]= [];
+  ReasonForLeaving :any[]= [];
   //StandardFilter ='';
   SelectedBatchId = 0;
   SubOrgId = 0;
-  SelectedBatchEmpEmployeeIdRollNo = [];
+  SelectedBatchEmpEmployeeIdRollNo :any[]= [];
   EmployeeClassId = 0;
   EmployeeSearchForm: UntypedFormGroup;
   filteredEmployees: Observable<IEmployee[]>;
   filteredEmployeeCode: Observable<IEmployee[]>;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   Permission = '';
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
@@ -96,27 +96,27 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
       this.contentservice.openSnackBar(globalconstants.PermissionDeniedMessage, globalconstants.ActionText, globalconstants.RedBackground);
     }
     else {
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.filterOrgIdOnly = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.filterBatchIdNOrgId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.EmployeeSearchForm = this.fb.group({
         searchemployeeName: [''],
         searchEmployeeCode: ['']
       })
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
      
-      this.filteredEmployees = this.EmployeeSearchForm.get("searchemployeeName").valueChanges
+      this.filteredEmployees = this.EmployeeSearchForm.get("searchemployeeName")?.valueChanges
         .pipe(
           startWith(''),
           map(value => typeof value === 'string' ? value : value.Name),
           map(Name => Name ? this._filter(Name) : this.Employees.slice())
-        );
-      this.filteredEmployeeCode = this.EmployeeSearchForm.get("searchEmployeeCode").valueChanges
+        )!;
+      this.filteredEmployeeCode = this.EmployeeSearchForm.get("searchEmployeeCode")?.valueChanges
         .pipe(
           startWith(''),
           map(value => typeof value === 'string' ? value : value.EmployeeCode),
           map(EmployeeCode => EmployeeCode ? this._filterC(EmployeeCode) : this.Employees.slice())
-        );
+        )!;
 
       this.GetMasterData();
       this.GetEmployees();
@@ -145,7 +145,7 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
     this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"],this.SubOrgId, this.SelectedApplicationId)
       .subscribe((data: any) => {
 
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
 
         this.shareddata.ChangeMasterData(data.value);
@@ -155,7 +155,7 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
         this.shareddata.ChangeReasonForLeaving(this.ReasonForLeaving);
 
         //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-        this.Batches = this.tokenStorage.getBatches()
+        this.Batches = this.tokenStorage.getBatches()!;
 
         this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
         this.shareddata.ChangeCategory(this.Category);
@@ -277,12 +277,12 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
     debugger;
     this.loading = true;
     let checkFilterString = '';//"OrgId eq " + this.LoginUserDetail[0]["orgId"] + ' and Batch eq ' + 
-    var EmployeeName = this.EmployeeSearchForm.get("searchemployeeName").value.Name;
-    var EmployeeCode = this.EmployeeSearchForm.get("searchEmployeeCode").value.EmployeeCode;
+    var EmployeeName = this.EmployeeSearchForm.get("searchemployeeName")?.value.Name;
+    var EmployeeCode = this.EmployeeSearchForm.get("searchEmployeeCode")?.value.EmployeeCode;
     if (EmployeeCode != undefined && EmployeeCode.trim().length > 0)
-      checkFilterString += " and  EmployeeCode eq '" + this.EmployeeSearchForm.get("searchEmployeeCode").value.EmployeeCode + "'";
+      checkFilterString += " and  EmployeeCode eq '" + this.EmployeeSearchForm.get("searchEmployeeCode")?.value.EmployeeCode + "'";
     if (EmployeeName != undefined && EmployeeName.trim().length > 0)
-      checkFilterString += " and  EmpEmployeeId eq " + this.EmployeeSearchForm.get("searchemployeeName").value.EmployeeId;
+      checkFilterString += " and  EmpEmployeeId eq " + this.EmployeeSearchForm.get("searchemployeeName")?.value.EmployeeId;
 
     let list: List = new List();
     list.fields = [
@@ -332,7 +332,7 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
           })
         }
         else {
-          this.EmployeeData = [];
+          this.EmployeeData= [];
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         this.dataSource = new MatTableDataSource<IEmployee>(this.EmployeeData);

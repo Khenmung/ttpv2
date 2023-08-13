@@ -3,13 +3,13 @@ import { SwUpdate } from '@angular/service-worker';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-subject-types',
@@ -18,19 +18,19 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 })
 export class SubjectTypesComponent implements OnInit {
     PageLoading = true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   CheckBatchIdForEdit = 1;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  Classes = [];
-  Subjects = [];
+  Classes :any[]= [];
+  Subjects :any[]= [];
   SubjectTypes: ISubjectType[];
   SelectedBatchId = 0;SubOrgId = 0;
-  Batches = [];
+  Batches :any[]= [];
   dataSource: MatTableDataSource<ISubjectType>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   SelectedApplicationId = 0;
   StandardFilterWithPreviousBatchId = '';
   PreviousBatchId = -1;
@@ -77,15 +77,15 @@ export class SubjectTypesComponent implements OnInit {
   PageLoad() {
 
     debugger;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
 
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.SUBJECT.SUBJECTTYPE);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
@@ -94,9 +94,9 @@ export class SubjectTypesComponent implements OnInit {
         //this.IsCurrentBatchSelected = +this.tokenStorage.getCheckEqualBatchId();
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        if (+this.tokenStorage.getPreviousBatchId() > 0)
+        if (+this.tokenStorage.getPreviousBatchId()! > 0)
           this.StandardFilterWithPreviousBatchId = globalconstants.getOrgSubOrgFilterWithPreviousBatchId(this.tokenStorage)
-        this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId();
+        this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
 
         this.GetSubjectTypes();
       }//    this.GetMasterData();      
@@ -286,11 +286,11 @@ export class SubjectTypesComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
 
     //this.Batches = this.getDropDownData(globalconstants.MasterDefinitions.school.BATCH);
     //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-    this.Batches = this.tokenStorage.getBatches()
+    this.Batches = this.tokenStorage.getBatches()!;
 
     //this.shareddata.ChangeBatch(this.Batches);
     this.loading = false; this.PageLoading = false;

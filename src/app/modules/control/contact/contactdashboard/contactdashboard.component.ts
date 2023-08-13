@@ -6,11 +6,11 @@ import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { ContentService } from 'src/app/shared/content.service';
-import { IMessage, List } from 'src/app/shared/interface';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { globalconstants } from '../../../../shared/globalconstant';
+import { ContentService } from '../../../../shared/content.service';
+import { IMessage, List } from '../../../../shared/interface';
+import { NaomitsuService } from '../../../../shared/databaseService';
+import { TokenStorageService } from '../../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-contactdashboard',
@@ -23,7 +23,7 @@ export class ContactdashboardComponent implements OnInit { PageLoading=true;
     autoClose: true,
     keepAfterRouteChange: true
   };
-  DATA: IMessage[] = [];
+  DATA: IMessage[]= [];
   messageDetail: IMessage;
   columns: Array<any>;
   title: string;
@@ -31,7 +31,7 @@ export class ContactdashboardComponent implements OnInit { PageLoading=true;
   query: string;//displayedColumns: Array<any>;
   list: List;
 
-  displayedColumns = [];// ['id', 'name', 'progress', 'color'];
+  displayedColumns :any[]= [];// ['id', 'name', 'progress', 'color'];
   dataSource: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -77,7 +77,7 @@ export class ContactdashboardComponent implements OnInit { PageLoading=true;
               cell: (element: any) => `${element[column] ? element[column] : ``}`
             };
           });
-          let SelectedArr = [];
+          let SelectedArr :any[]= [];
           SelectedArr = this.DATA.filter(key => key.Active === 1)
 
           ////console.log("DATA",this.DATA);  

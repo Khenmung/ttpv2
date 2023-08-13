@@ -5,12 +5,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { evaluate } from 'mathjs';
-import { ContentService } from 'src/app/shared/content.service';
+import { ContentService } from '../../../shared/content.service';
 
 @Component({
   selector: 'app-employee-salary-component',
@@ -19,47 +19,47 @@ import { ContentService } from 'src/app/shared/content.service';
 })
 export class EmployeeSalaryComponentComponent implements OnInit {
   PageLoading = true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   FilterOrgSubOrg = '';
   loading = false;
   rowCount = 0;
   //Month = 0;
-  CurrentEmployee = [];
-  EmpComponents: IEmpComponent[] = [];
+  CurrentEmployee :any[]= [];
+  EmpComponents: IEmpComponent[]= [];
   SelectedBatchId = 0;
   SubOrgId = 0;
-  //StoredForUpdate = [];
-  Months = [];
-  EmployeeVariables = [];
-  VariableConfigs = [];
+  //StoredForUpdate :any[]= [];
+  Months :any[]= [];
+  EmployeeVariables :any[]= [];
+  VariableConfigs :any[]= [];
   BasicSalary = 0;
-  Employees = [];
-  Grades = [];
-  Departments = [];
-  WorkAccounts = [];
-  Designations = [];
-  JobTitles = [];
-  Genders = [];
-  City = [];
-  Countries = [];
-  States = [];
-  BloodGroups = [];
-  Religions = [];
-  Categories = [];
-  Locations = [];
-  EmploymentStatus = [];
-  EmploymentTypes = [];
-  Natures = [];
-  MaritalStatus = [];
-  SalaryComponents = [];
-  ComponentTypes = [];
-  VariableTypes = [];
+  Employees :any[]= [];
+  Grades :any[]= [];
+  Departments :any[]= [];
+  WorkAccounts :any[]= [];
+  Designations :any[]= [];
+  JobTitles :any[]= [];
+  Genders :any[]= [];
+  City :any[]= [];
+  Countries :any[]= [];
+  States :any[]= [];
+  BloodGroups :any[]= [];
+  Religions :any[]= [];
+  Categories :any[]= [];
+  Locations :any[]= [];
+  EmploymentStatus :any[]= [];
+  EmploymentTypes :any[]= [];
+  Natures :any[]= [];
+  MaritalStatus :any[]= [];
+  SalaryComponents :any[]= [];
+  ComponentTypes :any[]= [];
+  VariableTypes :any[]= [];
   dataSource: MatTableDataSource<IEmployeeSalaryComponent>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   filteredOptions: Observable<IEmployee[]>;
-  EmployeeSalaryComponentList = [];
-  EmployeeSalaryComponentToSave = [];
+  EmployeeSalaryComponentList :any[]= [];
+  EmployeeSalaryComponentToSave :any[]= [];
   EmployeeSalaryComponentData = {
     EmployeeSalaryComponentId: 0,
     EmployeeId: 0,
@@ -112,12 +112,12 @@ export class EmployeeSalaryComponentComponent implements OnInit {
 
     this.PageLoad();
     this.Months = this.contentService.GetSessionFormattedMonths();
-    this.filteredOptions = this.searchForm.get("searchEmployee").valueChanges
+    this.filteredOptions = this.searchForm.get("searchEmployee")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.Employees.slice())
-      );
+      )!;
 
   }
   private _filter(name: string): IEmployee[] {
@@ -145,9 +145,9 @@ export class EmployeeSalaryComponentComponent implements OnInit {
         this.contentservice.openSnackBar(globalconstants.PermissionDeniedMessage, globalconstants.ActionText, globalconstants.RedBackground);
       }
       else {
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.getVariablesText();
         this.GetVariableConfigs();
@@ -180,7 +180,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
 
     this.loading = true;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    let checkFilterString = this.FilterOrgSubOrg + " and EmployeeId eq " + this.searchForm.get("searchEmployee").value.EmployeeId +
+    let checkFilterString = this.FilterOrgSubOrg + " and EmployeeId eq " + this.searchForm.get("searchEmployee")?.value.EmployeeId +
       " and EmpComponentId eq " + row.EmpComponentId +
       " and Month eq " + row.Month
 
@@ -260,7 +260,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
         (data: any) => {
           this.loading = false; this.PageLoading = false;
           row.Action = false;
-          var vartoUpdate = this.VariableConfigs.filter(f => f.VariableName == row.VariableName);
+          var vartoUpdate = this.VariableConfigs.filter((f:any) => f.VariableName == row.VariableName);
           if (vartoUpdate.length > 0)
             vartoUpdate[0].VariableAmount = row.Amount;
           // this.rowCount+=1;
@@ -301,7 +301,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
   }
   resolveFormula(formula, pEmployeeId) {
     //employee detail must be replaced first.
-    var _employeeVariable = this.EmployeeVariable.filter(f => f.EmployeeId == pEmployeeId)[0].data;
+    var _employeeVariable = this.EmployeeVariable.filter((f:any) => f.EmployeeId == pEmployeeId)[0].data;
     _employeeVariable.forEach(f => {
       if (formula.includes("["+f.VariableName+"]"))
         formula = formula.replaceAll("["+f.VariableName+"]", f.VariableAmount);
@@ -354,7 +354,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
   //   //var columnexist;
   //   for (var prop in element) {
 
-  //     var row: any = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == prop && s.StudentClassSubjectId == element.StudentClassSubjectId);
+  //     var row: any = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == prop && s.StudentClassSubjectId == element.StudentClassSubjectId);
 
   //     if (row.length > 0 && prop != 'StudentClassSubject' && prop != 'Action') {
   //       row[0].Active = 1;
@@ -399,7 +399,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
   GetVariableConfigs() {
 
     //var orgIdSearchstr = this.FilterOrgSubOrg;// ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    //var variabletypeId = this.VariableTypes.filter(f => f.MasterDataName.toLowerCase() == 'payroll')[0].MasterDataId;
+    //var variabletypeId = this.VariableTypes.filter((f:any) => f.MasterDataName.toLowerCase() == 'payroll')[0].MasterDataId;
     let list: List = new List();
 
     list.fields = [
@@ -410,7 +410,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
     list.PageName = "VariableConfigurations";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];// and VariableTypeId eq " + variabletypeId];
     //list.orderBy = "ParentId";
-    this.VariableConfigs = [];
+    this.VariableConfigs= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         data.value.forEach(f => {
@@ -447,10 +447,10 @@ export class EmployeeSalaryComponentComponent implements OnInit {
         //this.dataSource = new MatemTableDataSource<IEmployeeSalaryComponent>(this.GradeComponentList);
       })
   }
-  EmployeeVariable = [];
+  EmployeeVariable :any[]= [];
   GetEmployeeSalaryComponents(mode) {
     var filterstr = this.FilterOrgSubOrg;
-    var _employeeId = this.searchForm.get("searchEmployee").value.EmployeeId;
+    var _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
     // if (!_employeeId && mode == 'read') {
     //   this.contentService.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
     //   return;
@@ -459,12 +459,12 @@ export class EmployeeSalaryComponentComponent implements OnInit {
     if (_employeeId) {
       filterstr += " and EmployeeId eq " + _employeeId;
     }
-    var _Month = this.searchForm.get("searchMonth").value;
+    var _Month = this.searchForm.get("searchMonth")?.value;
     if (_Month == 0) {
       this.contentService.openSnackBar("Please select month.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _departmentId = this.searchForm.get("searchDepartment").value;
+    var _departmentId = this.searchForm.get("searchDepartment")?.value;
     if (!_departmentId && mode == 'update') {
       this.contentService.openSnackBar("Please select department.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -530,9 +530,9 @@ export class EmployeeSalaryComponentComponent implements OnInit {
         });
         ///////////////////////
 
-        //var empDetailForVariable=[];
+        //var empDetailForVariable:any[]=[];
         _EmpVariables.forEach(emp => {
-          //empDetailForVariable=[];
+          //empDetailForVariable:any[]=[];
           this.EmpComponents.forEach(ec => {
 
             var existing = _EmpSalaryComponents.filter(e => e.EmpComponentId == ec.EmpSalaryComponentId
@@ -655,7 +655,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
 
     //var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     var searchfilter = this.FilterOrgSubOrg;
-    var _employeeId = this.searchForm.get("searchEmployee").value.EmployeeId;
+    var _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
     // if (mode == 'read' && !_employeeId) {
     //   this.contentService.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
     //   return [];
@@ -664,7 +664,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
     if (_employeeId)
       searchfilter += " and EmployeeId eq " + _employeeId;
 
-    var _departmentId = this.searchForm.get("searchDepartment").value;
+    var _departmentId = this.searchForm.get("searchDepartment")?.value;
     if (mode == 'update' && !_departmentId) {
       this.contentService.openSnackBar("Please select department.", globalconstants.ActionText, globalconstants.RedBackground);
       return [];
@@ -686,7 +686,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
     //})
   }
   getMasterText(arr, itemId) {
-    var filtered = arr.filter(f => f.MasterDataId == itemId);
+    var filtered = arr.filter((f:any) => f.MasterDataId == itemId);
     if (filtered.length > 0)
       return filtered[0].MasterDataName;
     else

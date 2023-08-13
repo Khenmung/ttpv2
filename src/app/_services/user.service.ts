@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { globalconstants } from '../shared/globalconstant';
-import { environment } from 'src/environments/environment';
+//import { environment } from 'src/environments/environment';
 
 //const API_URL = 'http://localhost:8070/api/';
 

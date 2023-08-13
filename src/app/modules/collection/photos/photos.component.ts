@@ -6,8 +6,8 @@ import { DialogService } from '../../../shared/dialog.service';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { globalconstants } from '../../../shared/globalconstant';
-import { ContentService } from 'src/app/shared/content.service';
-import { environment } from 'src/environments/environment';
+import { ContentService } from '../../../shared/content.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-photos',
@@ -40,7 +40,7 @@ export class PhotosComponent implements OnInit { PageLoading=true;
     private dialog: DialogService,
     private tokenStorage:TokenStorageService) {
     this.route.paramMap.subscribe(item => {
-      this.selectedAlbumId = +this.route.snapshot.queryParamMap.get('AlbumId');//item.get('AlbumId')
+      this.selectedAlbumId = +this.route.snapshot.queryParamMap.get('AlbumId')!;//item.get('AlbumId')
       ////console.log('this.selectedAlbum',item);
     })
   }

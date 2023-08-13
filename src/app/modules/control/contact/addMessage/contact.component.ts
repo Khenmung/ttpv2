@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { NaomitsuService } from '../../../../shared/databaseService';
+import { List } from '../../../../shared/interface';
+import { TokenStorageService } from '../../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-contact',
@@ -38,11 +38,11 @@ export class ContactComponent implements OnInit {
     private route: Router,
     private activeUrl: ActivatedRoute) {
     this.activeUrl.paramMap.subscribe(params => {
-      this.Id = +params.get("id");
+      this.Id = +params.get("id")!;
       ////console.log("id",this.Id);
     })
   }
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   SubOrgId = 0;
   ngOnInit(): void {
     // this.servicework.activateUpdate().then(() => {
@@ -57,7 +57,7 @@ export class ContactComponent implements OnInit {
     if (this.LoginUserDetail.length != 0) {
       // this.UserId = this.LoginUserDetail[0]["userId"];
       // this.OrgId = this.LoginUserDetail[0]["orgId"];
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     }
     if (this.Id > 0) {
       this.title = "Message";

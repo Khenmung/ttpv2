@@ -6,11 +6,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import alasql from 'alasql';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-studentsubjectreport',
@@ -23,33 +23,33 @@ export class StudentSubjectReportComponent implements OnInit {
   PageLoading = true;
   ResultReleased = 0;
   Defaultvalue = 0;
-  LoginUserDetail: any[] = [];
-  Semesters = [];
+  LoginUserDetail:any[]= [];
+  Semesters :any[]= [];
   CurrentRow: any = {};
-  ClassSubjects = [];
-  AllowedSubjectIds = [];
+  ClassSubjects :any[]= [];
+  AllowedSubjectIds :any[]= [];
   FilterOrgSubOrgBatchId = '';
   loading = false;
   rowCount = 0;
-  ExamStudentSubjectResult: IExamStudentSubjectResult[] = [];
+  ExamStudentSubjectResult: IExamStudentSubjectResult[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  //StoredForUpdate = [];
-  SubjectMarkComponents = [];
-  MarkComponents = [];
-  Classes = [];
-  //ClassGroups = [];
-  Subjects = [];
-  Sections = [];
-  //ExamStatuses = [];
-  //ExamNames = [];
-  //Exams = [];
-  Batches = [];
-  StudentSubjects = [];
-  SelectedClassSubjects = [];
-  Students = [];
+  //StoredForUpdate :any[]= [];
+  SubjectMarkComponents :any[]= [];
+  MarkComponents :any[]= [];
+  Classes :any[]= [];
+  //ClassGroups :any[]= [];
+  Subjects :any[]= [];
+  Sections :any[]= [];
+  //ExamStatuses :any[]= [];
+  //ExamNames :any[]= [];
+  //Exams :any[]= [];
+  Batches :any[]= [];
+  StudentSubjects :any[]= [];
+  SelectedClassSubjects :any[]= [];
+  Students :any[]= [];
   dataSource: MatTableDataSource<IExamStudentSubjectResult>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   Permission = 'deny';
   ExamId = 0;
   ExamStudentSubjectResultData = {
@@ -101,12 +101,12 @@ export class StudentSubjectReportComponent implements OnInit {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.SUBJECT.STUDENTSUBJECTREPORT)
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
@@ -132,25 +132,25 @@ export class StudentSubjectReportComponent implements OnInit {
         this.PageLoading = false;
       })
   }
-  FilteredClasses = [];
-  SubjectCount = [];
+  FilteredClasses :any[]= [];
+  SubjectCount :any[]= [];
   // FilterClass() {
-  //   var _examId = this.searchForm.get("searchExamId").value
+  //   var _examId = this.searchForm.get("searchExamId")?.value
   //   var _classGroupId = 0;
-  //   var obj = this.Exams.filter(f => f.ExamId == _examId);
+  //   var obj = this.Exams.filter((f:any) => f.ExamId == _examId);
   //   if (obj.length > 0)
   //     _classGroupId = obj[0].ClassGroupId;
-  //   this.FilteredClasses = this.ClassGroupMapping.filter(f => f.ClassGroupId == _classGroupId);
-  //   this.SelectedClassStudentGrades = this.StudentGrades.filter(f => f.ClassGroupId == _classGroupId);
+  //   this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => f.ClassGroupId == _classGroupId);
+  //   this.SelectedClassStudentGrades = this.StudentGrades.filter((f:any) => f.ClassGroupId == _classGroupId);
   // }
   GetStudentSubjects() {
     debugger;
 
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
-    var _classSubjectId = this.searchForm.get("searchClassSubjectId").value;
-    //var _examId =this.searchForm.get("searchExamId").value
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
+    //var _examId =this.searchForm.get("searchExamId")?.value
     // if (_examId == 0) {
     //   this.contentservice.openSnackBar("Please select exam", globalconstants.ActionText, globalconstants.RedBackground);
     //   return;
@@ -208,7 +208,7 @@ export class StudentSubjectReportComponent implements OnInit {
         var _studname = '';
 
         this.StudentSubjects = [];
-        var filteredStudents = this.Students.filter(f => f.StudentClasses.length > 0
+        var filteredStudents = this.Students.filter((f:any) => f.StudentClasses.length > 0
           && f.StudentClasses[0].ClassId == _classId 
           && f.StudentClasses[0].SemesterId == _semesterId 
           && f.StudentClasses[0].SectionId == _sectionId 
@@ -220,7 +220,7 @@ export class StudentSubjectReportComponent implements OnInit {
           //s.StudentClassSubjects.forEach((inner, index) => {
 
           //console.log("index",index);
-          var studentcls: any = filteredStudents.filter(f => f.StudentClasses[0].StudentClassId == s.StudentClassId);
+          var studentcls: any = filteredStudents.filter((f:any) => f.StudentClasses[0].StudentClassId == s.StudentClassId);
           _class = '';
           _subject = '';
           _studname = '';
@@ -270,7 +270,7 @@ export class StudentSubjectReportComponent implements OnInit {
           }
           //})
         })
-        //SubjectCount = [];
+        //SubjectCount :any[]= [];
         this.displayedColumns = [
           //'ClassName',
           //'SectionName',
@@ -296,13 +296,13 @@ export class StudentSubjectReportComponent implements OnInit {
   SelectedClassCategory = '';
   SelectClassSubject() {
     debugger;
-    let _classId = this.searchForm.get("searchClassId").value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
     let obj = this.Classes.filter(c => c.ClassId == _classId);
     if (obj.length > 0) {
       this.SelectedClassCategory = obj[0].Category.toLowerCase();
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
-    this.SelectedClassSubjects = this.ClassSubjects.filter(f => f.ClassId == _classId
+    this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == _classId
       && f.SelectHowMany > 0);
     //this.GetSpecificStudentGrades();
   }
@@ -321,8 +321,8 @@ export class StudentSubjectReportComponent implements OnInit {
 
     // this.dataservice.get(list)
     //   .subscribe((data: any) => {
-    var _students: any = this.tokenStorage.getStudents();
-    this.Students = _students.filter(s => s.Active == 1);
+    var _students: any = this.tokenStorage.getStudents()!;
+    this.Students = _students.filter((s:any) => s.Active == 1);
     this.GetMasterData();
     //});
   }
@@ -386,7 +386,7 @@ export class StudentSubjectReportComponent implements OnInit {
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId + " and Active eq 1";
     orgIdSearchstr += ' and ClassSubjectId eq ' + pClassSubjectId;
 
-    //filterstr = 'ExamId eq ' + this.searchForm.get("searchExamId").value;
+    //filterstr = 'ExamId eq ' + this.searchForm.get("searchExamId")?.value;
 
     let list: List = new List();
     list.fields = [
@@ -407,7 +407,7 @@ export class StudentSubjectReportComponent implements OnInit {
       .subscribe((data: any) => {
         this.SubjectMarkComponents = [];
         data.value.forEach(x => {
-          var clsSubject = this.ClassSubjects.filter(f => f.ClassSubjectId == x.ClassSubjectId)
+          var clsSubject = this.ClassSubjects.filter((f:any) => f.ClassSubjectId == x.ClassSubjectId)
           if (clsSubject.length > 0) {
             x.SubjectId = clsSubject[0].SubjectId;
             x.SemesterId = clsSubject[0].SemesterId;
@@ -418,7 +418,7 @@ export class StudentSubjectReportComponent implements OnInit {
         })
         this.SubjectMarkComponents = this.SubjectMarkComponents.map(c => {
           var _sequence = 0;
-          var _sequenceObj = this.MarkComponents.filter(s => s.MasterDataId == c.SubjectComponentId);
+          var _sequenceObj = this.MarkComponents.filter((s:any) => s.MasterDataId == c.SubjectComponentId);
           if (_sequenceObj.length > 0) {
             _sequence = _sequenceObj[0].Sequence
           }
@@ -444,9 +444,9 @@ export class StudentSubjectReportComponent implements OnInit {
       })
   }
 
-  StudentGrades = [];
-  SelectedClassStudentGrades = [];
-  ClassGroupMapping = [];
+  StudentGrades :any[]= [];
+  SelectedClassStudentGrades :any[]= [];
+  ClassGroupMapping :any[]= [];
   // GetClassGroupMapping() {
   //   var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
   //   //+ ' and BatchId eq ' + this.SelectedBatchId;
@@ -471,14 +471,14 @@ export class StudentSubjectReportComponent implements OnInit {
   }
   // GetSpecificStudentGrades() {
   //   debugger;
-  //   var _examId = this.searchForm.get("searchExamId").value;
+  //   var _examId = this.searchForm.get("searchExamId")?.value;
   //   var _classGroupId = 0;
 
   //   if (_examId > 0) {
-  //     var obj = this.Exams.filter(f => f.ExamId == _examId)
+  //     var obj = this.Exams.filter((f:any) => f.ExamId == _examId)
   //     if (obj.length > 0) {
   //       _classGroupId = obj[0].ClassGroupId;
-  //       this.SelectedClassStudentGrades = this.StudentGrades.filter(f => f.ClassGroupId == _classGroupId);
+  //       this.SelectedClassStudentGrades = this.StudentGrades.filter((f:any) => f.ClassGroupId == _classGroupId);
   //     }
   //     else {
   //       this.contentservice.openSnackBar("Class group not found for selected class.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -497,11 +497,11 @@ export class StudentSubjectReportComponent implements OnInit {
     })
   }
 
-  SubjectCategory = [];
-  ClassCategory = [];
+  SubjectCategory :any[]= [];
+  ClassCategory :any[]= [];
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
@@ -510,7 +510,7 @@ export class StudentSubjectReportComponent implements OnInit {
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
-        let obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
           this.Classes.push(m);

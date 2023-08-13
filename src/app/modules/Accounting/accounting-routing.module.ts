@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../../shared/components/home/home.component';
 import { JournalEntryComponent } from './JournalEntry/JournalEntry.component';
 import { AccountingboardComponent } from './accountingboard/accountingboard.component';
 import { TrialBalanceComponent } from './trial-balance/trial-balance.component';

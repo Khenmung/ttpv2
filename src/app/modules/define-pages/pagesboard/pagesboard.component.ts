@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { DisplaypageComponent } from '../displaypage/displaypage.component';
 import { NewsdashboardComponent } from '../newsdashboard/newsdashboard.component';
 import { TextEditorComponent } from '../texteditor/texteditor.component';
@@ -21,7 +21,7 @@ export class PagesboardComponent implements OnInit { PageLoading=true;
     TextEditorComponent,
     NewsdashboardComponent    
   ];
-  LoginUserDetail=[];
+  LoginUserDetail:any[]=[];
   tabNames = [
     { 'label': 'Plan', 'faIcon': '' },
     { 'label': 'Plan Feature', 'faIcon': '' },

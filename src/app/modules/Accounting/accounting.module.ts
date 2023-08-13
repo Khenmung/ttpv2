@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { AccountingComponents, AccountingRoutingModule } from './accounting-routing.module';
 import { SharedhomepageModule } from '../sharedhomepage.module';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StudentSubjectModule } from '../ClassSubject/student-subject.module';
-import { MaterialModule } from 'src/app/shared/material/material.module';
+import { MaterialModule } from '../../../shared/material/material.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ErrorStateMatcher, MAT_DATE_LOCALE } from '@angular/material/core';
-import { TouchedErrorStateMatcher } from 'src/app/shared/formvalidation';
+import { TouchedErrorStateMatcher } from '../../../shared/formvalidation';
 import { ProfitandlossComponent } from './profitandloss/profitandloss.component';
 import { BalancesheetComponent } from './balancesheet/balancesheet.component';
 

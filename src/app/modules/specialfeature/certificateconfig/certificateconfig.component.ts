@@ -5,11 +5,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-certificateconfig',
@@ -22,7 +23,7 @@ export class CertificateconfigComponent implements OnInit {
   RowsToUpdate = -1;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   ClassId = 0;
@@ -30,11 +31,11 @@ export class CertificateconfigComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  //Category = [];
-  CertificateConfigList: any[] = [];
+  //Category :any[]= [];
+  CertificateConfigList:any[]= [];
   SelectedBatchId = 0;SubOrgId = 0;
   dataSource: MatTableDataSource<any>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   CertificateConfigData = {
     CertificateConfigId: 0,
     Title: '',
@@ -45,9 +46,9 @@ export class CertificateconfigComponent implements OnInit {
     Active: false,
     OrgId: 0
   };
-  filteredMaster: any = [];
-  CertificateConfigForUpdate = [];
-  StudentVariableNames = [];
+  filteredMaster: Observable<ICertificateConfig[]>;
+  CertificateConfigForUpdate :any[]= [];
+  StudentVariableNames :any[]= [];
   displayedColumns = [
     "CertificateConfigId",
     "Title",
@@ -80,13 +81,13 @@ export class CertificateconfigComponent implements OnInit {
     this.searchForm = this.fb.group({
       searchTitleId: [0]
     });
-    this.filteredMaster = this.searchForm.get("searchTitleId").valueChanges
+    this.filteredMaster = this.searchForm.get("searchTitleId")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.MasterDataName),
         map(Name => Name ? this._filter(Name) : this.AllCertificateConfig.slice())
-      );
-    this.ClassId = this.tokenStorage.getClassId();
+      )!;
+    this.ClassId = this.tokenStorage.getClassId()!;
     this.PageLoad();
 
   }
@@ -113,8 +114,8 @@ export class CertificateconfigComponent implements OnInit {
       if (this.Permission != 'deny') {
         //this.GroupId = this.tokenStorage.getGroupId();
         this.StudentVariableNames = globalconstants.MasterDefinitions.StudentVariableName;
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetMasterData();
@@ -156,8 +157,8 @@ export class CertificateconfigComponent implements OnInit {
       this.contentservice.openSnackBar("Please select parent.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let checkFilterString = this.FilterOrgSubOrg + " and Title eq '" + row.Title + "' and ParentId eq " + row.ParentId
     this.RowsToUpdate = 0;
 
@@ -178,7 +179,7 @@ export class CertificateconfigComponent implements OnInit {
         }
         else {
 
-          this.CertificateConfigForUpdate = [];;
+          this.CertificateConfigForUpdate = [];
           this.CertificateConfigForUpdate.push(
             {
               CertificateConfigId: row.CertificateConfigId,
@@ -244,8 +245,8 @@ export class CertificateconfigComponent implements OnInit {
           this.loadingFalse();
         });
   }
-  AllCertificateConfig = [];
-  TopCertificateConfig = [];
+  AllCertificateConfig :any[]= [];
+  TopCertificateConfig :any[]= [];
   GetAllCertificateConfig() {
     debugger;
     var filterStr = "Active eq true and (OrgId eq 0 or (" + this.FilterOrgSubOrg + "))";
@@ -268,7 +269,7 @@ export class CertificateconfigComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AllCertificateConfig = [...data.value];
-        var _certificatetypeId = this.AllCertificateConfig.filter(f => f.Title.toLowerCase() == 'certificate type')[0].CertificateConfigId;
+        var _certificatetypeId = this.AllCertificateConfig.filter((f:any) => f.Title.toLowerCase() == 'certificate type')[0].CertificateConfigId;
         this.TopCertificateConfig = this.AllCertificateConfig.filter(a => a.ParentId == _certificatetypeId);
         this.loadingFalse();
       });
@@ -280,7 +281,7 @@ export class CertificateconfigComponent implements OnInit {
   GetCertificateConfig() {
     debugger;
     var filterStr = this.FilterOrgSubOrg;// "OrgId eq " + this.LoginUserDetail[0]["orgId"];
-    var _searchCertificateConfigId = this.searchForm.get("searchTitleId").value.CertificateConfigId;
+    var _searchCertificateConfigId = this.searchForm.get("searchTitleId")?.value.CertificateConfigId;
     if (_searchCertificateConfigId > 0) {
       filterStr += " and ParentId eq " + _searchCertificateConfigId;
     }
@@ -308,7 +309,7 @@ export class CertificateconfigComponent implements OnInit {
     this.CertificateConfigList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var _subCategory = [];
+        var _subCategory :any[]= [];
         this.CertificateConfigList = data.value.map(m => {
           m.Action = false;
           return m;
@@ -326,14 +327,14 @@ export class CertificateconfigComponent implements OnInit {
   }
   SelectSubCategory(row, event) {
     if (row.CategoryId > 0)
-      row.SubCategories = this.allMasterData.filter(f => f.ParentId == row.CategoryId);
+      row.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
     else
       row.SubCategories = [];
     this.onBlur(row);
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     //this.Category = this.getDropDownData(globalconstants.MasterDefinitions.school.POINTSCATEGORY);
     this.PageLoading = false;
     this.loading = false;

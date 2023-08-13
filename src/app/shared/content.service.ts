@@ -17,10 +17,10 @@ import { AuthService } from '../_services/auth.service';
 export class ContentService implements OnInit {
   PageLoading = true;
   RoleFilter = '';
-  Roles = [];
-  allMasterData = [];
-  Applications = [];
-  UserDetail = [];
+  Roles:any[]= [];
+  allMasterData:any[]= [];
+  Applications :any[]= [];
+  UserDetail:any[]= [];
   url: any;
   SelectedApplicationId = 0;
   HostUrl = globalconstants.apiUrl;
@@ -35,7 +35,7 @@ export class ContentService implements OnInit {
   ) { }
   ngOnInit(): void {
 
-    this.SelectedApplicationId = +this.tokenService.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenService.getSelectedAPPId()!;
 
   }
   openSnackBar(message: string, action: string, option: MatSnackBarConfig<any>) {
@@ -224,7 +224,7 @@ export class ContentService implements OnInit {
   getSelectedReportColumn(pOrgSubOrg, pSelectedApplicationId) {
 
     debugger;
-    //var MyReportNameId = this.searchForm.get("searchReportName").value;
+    //var MyReportNameId = this.searchForm.get("searchReportName")?.value;
 
     // if (pModuleName == 0) {
     //   this.contentservice.openSnackBar("Please select report name", globalconstants.ActionText, globalconstants.RedBackground);
@@ -317,7 +317,7 @@ export class ContentService implements OnInit {
     return this.dataservice.get(list);
   }
   getMasterText(arr, itemId) {
-    var filtered = arr.filter(f => f.MasterDataId == itemId);
+    var filtered = arr.filter((f:any) => f.MasterDataId == itemId);
     if (filtered.length > 0)
       return filtered[0].MasterDataName;
     else
@@ -340,9 +340,9 @@ export class ContentService implements OnInit {
       'Nov',
       'Dec'
     ]
-    var monthArray = [];
+    var monthArray:any[]= [];
     debugger;
-    _sessionStartEnd = JSON.parse(this.tokenService.getSelectedBatchStartEnd());
+    _sessionStartEnd = JSON.parse(this.tokenService.getSelectedBatchStartEnd()!);
 
     var _StartYear = new Date(_sessionStartEnd["StartDate"]).getFullYear();
     var _EndYear = new Date(_sessionStartEnd["EndDate"]).getFullYear();
@@ -473,7 +473,7 @@ export class ContentService implements OnInit {
     if (Ids.length > 0) {
       Id = Ids[0].MasterDataId;
       var dropvalues = pAllMasterData.filter(item => item.ParentId == Id);
-      //var confidentialdatalist = dropvalues.filter(f => f.Confidential == 1)
+      //var confidentialdatalist = dropvalues.filter((f:any) => f.Confidential == 1)
       for (var i = 0; i < dropvalues.length; i++) {
         if (dropvalues[i].Confidential) {
 
@@ -508,7 +508,7 @@ export class ContentService implements OnInit {
     if (Ids.length > 0) {
       Id = Ids[0].MasterDataId;
       var dropvalues = pAllMasterData.filter(item => item.ParentId == Id);
-      //var confidentialdatalist = dropvalues.filter(f => f.Confidential == 1)
+      //var confidentialdatalist = dropvalues.filter((f:any) => f.Confidential == 1)
       // for (var i = 0; i < dropvalues.length; i++) {
       //   if (dropvalues[i].Confidential) {
 
@@ -579,7 +579,7 @@ export class ContentService implements OnInit {
   // }
   /////
   getInvoice(pOrgId, pSubOrgId, pSelectedBatchId, pStudentClassId) {
-    //var selectedMonth = this.searchForm.get("searchMonth").value;
+    //var selectedMonth = this.searchForm.get("searchMonth")?.value;
     var _function = "";
     if (pStudentClassId == 0)
       _function = 'getinvoice';
@@ -649,10 +649,10 @@ export class ContentService implements OnInit {
   }
   createInvoice(data, pSelectedBatchId, pOrgId, pSubOrgId) {
     var AmountAfterFormulaApplied = 0;
-    var _VariableObjList = [];
-    var _LedgerData = [];
-    //console.log("data", data.filter(f => f.StudentClassId == 3852))
-    data.forEach(inv => {
+    var _VariableObjList:any[]= [];
+    var _LedgerData:any[]= [];
+    //console.log("data", data.filter((f:any) => f.StudentClassId == 3852))
+    data.forEach((inv:any) => {
       _VariableObjList.push(inv)
       if (inv.Formula.length > 0) {
         //      if (inv.Month == 202200)
@@ -760,7 +760,7 @@ export class ContentService implements OnInit {
 
     list.PageName = "RoleUsers";
     list.lookupFields = ["Org($select=OrganizationId,OrganizationName,LogoPath,Active)"];
-    var _subOrgId = +this.tokenService.getSubOrgId();
+    var _subOrgId = +this.tokenService.getSubOrgId()!;
     list.filter = ["Active eq 1 and UserId eq '" + userdetail[0]["userId"] +
       "' and OrgId eq " + userdetail[0]["orgId"] + ' and SubOrgId eq ' + _subOrgId];
 
@@ -790,8 +790,8 @@ export class ContentService implements OnInit {
         var Ids = [...data.value];
 
         if (Ids.length > 0) {
-          var ApplicationMasterDataId = Ids.filter(f => f.MasterDataName.toLowerCase() == applicationtext)[0].MasterDataId;
-          var RoleMasterDataId = Ids.filter(f => f.MasterDataName.toLowerCase() == roletext)[0].MasterDataId;
+          var ApplicationMasterDataId = Ids.filter((f:any) => f.MasterDataName.toLowerCase() == applicationtext)[0].MasterDataId;
+          var RoleMasterDataId = Ids.filter((f:any) => f.MasterDataName.toLowerCase() == roletext)[0].MasterDataId;
           let list: List = new List();
           list.fields = ["MasterDataId,MasterDataName,Description,ParentId,Confidential"];
           list.PageName = "MasterItems";
@@ -820,7 +820,7 @@ export class ContentService implements OnInit {
                     this.RoleFilter += ' or RoleId eq ' + roleuser.RoleId
                     var _role = '';
                     if (this.Roles.length > 0 && roleuser.RoleId != null)
-                      _role = this.Roles.filter(a => a.MasterDataId == roleuser.RoleId)[0].MasterDataName;
+                      _role = this.Roles.filter((a:any) => a.MasterDataId == roleuser.RoleId)[0].MasterDataName;
                     return {
                       roleId: roleuser.RoleId,
                       role: _role,
@@ -854,7 +854,7 @@ export class ContentService implements OnInit {
       'ApplicationId'
     ];
     var _orgSubOrgFilter = "OrgId eq " + pOrgId + " and SubOrgId eq " + pSubOrgId; //globalconstants.getOrgSubOrgFilter(pOrgId,pSubOrgId);
-    var _denyPermissionId = globalconstants.PERMISSIONTYPES.filter(f => f.type == 'deny')[0].val;
+    var _denyPermissionId = globalconstants.PERMISSIONTYPES.filter((f:any) => f.type == 'deny')[0].val;
     list.PageName = "CustomFeatureRolePermissions";
     list.lookupFields = ["CustomFeature($select=CustomFeatureName)"]
     list.filter = [_orgSubOrgFilter + " and ApplicationId eq " + pSelectedAppId + " and RoleId eq " + pRoleId + " and Active eq true"];
@@ -881,7 +881,7 @@ export class ContentService implements OnInit {
         debugger;
         //hilai hi ei.
         var LoginUserDetail = this.tokenService.getUserDetail();
-        var planfilteredFeature = data.value.filter(f => f.PlanFeature.PlanId == LoginUserDetail[0]["planId"]);
+        var planfilteredFeature = data.value.filter((f:any) => f.PlanFeature.PlanId == LoginUserDetail[0]["planId"]);
         if (planfilteredFeature.length > 0) {
           var _applicationName = '';
           var _appShortName = '';
@@ -889,7 +889,7 @@ export class ContentService implements OnInit {
           planfilteredFeature.forEach(item => {
             _applicationName = '';
             _appShortName = '';
-            var appobj = this.Applications.filter(f => f.MasterDataId == item.PlanFeature.Page.ApplicationId);
+            var appobj:any[] = this.Applications.filter((f:any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId);
             if (appobj.length > 0) {
               _applicationName = appobj[0].Description;
               _appShortName = appobj[0].MasterDataName
@@ -917,20 +917,20 @@ export class ContentService implements OnInit {
           _customFeature.forEach(item => {
             _applicationName = '';
             _appShortName = '';
-            var appobj = this.Applications.filter(f => f.MasterDataId == item.ApplicationId);
+            var appobj:any[] = this.Applications.filter((f:any) => f.MasterDataId == item.ApplicationId);
             if (appobj.length > 0) {
               _applicationName = appobj[0].Description;
               _appShortName = appobj[0].MasterDataName
             }
 
-            var feature = this.UserDetail[0]['applicationRolePermission'].filter(f => f.applicationFeature == item.CustomFeature.CustomFeatureName)
+            var feature = this.UserDetail[0]['applicationRolePermission'].filter((f:any) => f.applicationFeature == item.CustomFeature.CustomFeatureName)
             if (feature.length == 0) {
               this.UserDetail[0]['applicationRolePermission'].push({
                 'planFeatureId': 0,
                 'applicationFeature': item.CustomFeature.CustomFeatureName,//_applicationFeature,
                 'roleId': item.RoleId,
                 'permissionId': item.PermissionId,
-                'permission': globalconstants.PERMISSIONTYPES.filter(f => f.val == item.PermissionId)[0].type,
+                'permission': globalconstants.PERMISSIONTYPES.filter((f:any) => f.val == item.PermissionId)[0].type,
                 'applicationName': _applicationName,
                 'applicationId': item.ApplicationId,
                 'appShortName': _appShortName,
@@ -991,7 +991,7 @@ export class ContentService implements OnInit {
   GetPermittedAppId(appShortName) {
     var appId = 0;
     var apps = this.tokenService.getPermittedApplications();
-    var commonAppobj = apps.filter(f => f.appShortName == appShortName)
+    var commonAppobj = apps.filter((f:any) => f.appShortName == appShortName)
     if (commonAppobj.length > 0)
       appId = commonAppobj[0].applicationId;
     return appId;

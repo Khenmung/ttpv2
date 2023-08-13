@@ -8,9 +8,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
-import { ContentService } from 'src/app/shared/content.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ContentService } from '../../../shared/content.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
@@ -28,17 +28,17 @@ export class AddMasterDataComponent implements OnInit {
   Parent = '';
   //topMaster = 0;
 
-  RowParent = [];
-  MasterList = [];
-  MasterData = [];
-  SubMasters = [];
-  Classes = [];
-  Batches = [];
-  PermittedApplications = [];
-  Organizations = [];
-  Locations = [];
-  TopMasters = [];
-  DefinedMaster = [];
+  RowParent :any[]= [];
+  MasterList :any[]= [];
+  MasterData :any[]= [];
+  SubMasters :any[]= [];
+  Classes :any[]= [];
+  Batches :any[]= [];
+  PermittedApplications :any[]= [];
+  Organizations :any[]= [];
+  Locations :any[]= [];
+  TopMasters :any[]= [];
+  DefinedMaster :any[]= [];
   oldvalue = '';
   selectedData = '';
   OrgId = 0;
@@ -51,9 +51,9 @@ export class AddMasterDataComponent implements OnInit {
   SelectedApplicationName = '';
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  //ApplicationDataStatus = [];
-  //SchoolDataStatus = [];
-  StudentVariableNames = [];
+  //ApplicationDataStatus :any[]= [];
+  //SchoolDataStatus :any[]= [];
+  StudentVariableNames :any[]= [];
   DisplayColumns = [
     "MasterDataId",
     "MasterDataName",
@@ -66,7 +66,7 @@ export class AddMasterDataComponent implements OnInit {
     "Action"
   ];
   //SearchParentId = 0;
-  UserDetails = [];
+  UserDetails :any[]= [];
   //enableAddNew = false;
   loading: boolean = false;
   error: string = '';
@@ -93,11 +93,11 @@ export class AddMasterDataComponent implements OnInit {
     //     }
     //   })
     // })
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
 
     this.PermittedApplications = this.tokenStorage.getPermittedApplications();
     this.SelectedApplicationName = '';
-    var apps = this.PermittedApplications.filter(f => f.applicationId == this.SelectedApplicationId)
+    var apps = this.PermittedApplications.filter((f:any) => f.applicationId == this.SelectedApplicationId)
     if (apps.length > 0) {
       this.SelectedApplicationName = apps[0].applicationName;
     }
@@ -106,12 +106,12 @@ export class AddMasterDataComponent implements OnInit {
         ParentId: [0],
         SubId: [0]
       })
-    this.filteredMaster = this.searchForm.get("ParentId").valueChanges
+    this.filteredMaster = this.searchForm.get("ParentId")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.MasterDataName),
         map(Name => Name ? this._filter(Name) : this.MasterData.slice())
-      );
+      )!;
     this.nameFilter.valueChanges
       .subscribe(
         name => {
@@ -147,7 +147,7 @@ export class AddMasterDataComponent implements OnInit {
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.OrgId = this.UserDetails[0]["orgId"];
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.searchForm.patchValue({ "OrgId": this.OrgId });
         this.GetMastersForAutoComplete();
         this.GetOrganizations();
@@ -170,7 +170,7 @@ export class AddMasterDataComponent implements OnInit {
     debugger;
     var apps = this.tokenStorage.getPermittedApplications();
 
-    var objcommon = apps.filter(f => f.appShortName == 'common')
+    var objcommon = apps.filter((f:any) => f.appShortName == 'common')
     if (objcommon.length == 0) {
       this.contentservice.openSnackBar("User needs common panel access.", globalconstants.ActionText, globalconstants.RedBackground);
     }
@@ -191,7 +191,7 @@ export class AddMasterDataComponent implements OnInit {
       //debugger;
       //console.log("GetMastersForAutoComplete",this.SelectedApplicationId)  
       this.dataservice.get(list).subscribe((data: any) => {
-        var result = [];
+        var result :any[]= [];
         data.value.forEach(d => {
           var description = d.Description == null || d.Description == '' ? "" : "-" + d.Description
           result.push({
@@ -206,12 +206,12 @@ export class AddMasterDataComponent implements OnInit {
           //}
         })
         this.MasterData = result.sort((a, b) => a.ParentId - b.ParentId);
-        var _companyName = this.tokenStorage.getCompanyName();
+        var _companyName = this.tokenStorage.getCompanyName()!;
 
         if (_companyName.toLowerCase() != 'primary')
-          this.MasterData = this.MasterData.filter(f => f.MasterDataName.toLowerCase() != 'company');
+          this.MasterData = this.MasterData.filter((f:any) => f.MasterDataName.toLowerCase() != 'company');
         else if (this.UserDetails[0]["planId"] < globalconstants.PremiumPlusId)
-          this.MasterData = this.MasterData.filter(f => f.MasterDataName.toLowerCase() != 'company');
+          this.MasterData = this.MasterData.filter((f:any) => f.MasterDataName.toLowerCase() != 'company');
       })
     }
   }
@@ -259,7 +259,7 @@ export class AddMasterDataComponent implements OnInit {
   SaveAll() {
 
     this.loading = true;
-    var ToUpdate = this.MasterList.filter(f => f.Action);
+    var ToUpdate = this.MasterList.filter((f:any) => f.Action);
     this.DataToSaveCount = ToUpdate.length;
 
     ToUpdate.forEach(s => {
@@ -275,7 +275,7 @@ export class AddMasterDataComponent implements OnInit {
   GetSubMasters(element) {
     debugger;
     this.loading = true;
-    var _appId = this.MasterData.filter(f => f.MasterDataId == element.MasterDataId)[0].ApplicationId;
+    var _appId = this.MasterData.filter((f:any) => f.MasterDataId == element.MasterDataId)[0].ApplicationId;
     this.SubMasters = [];
     this.ClearData();
     this.contentservice.GetDropDownDataFromDB(element.MasterDataId, this.FilterOrgSubOrg, _appId, 0)
@@ -292,8 +292,8 @@ export class AddMasterDataComponent implements OnInit {
   }
   AddData() {
     debugger;
-    var subMasterId = this.searchForm.get("SubId").value;
-    if (this.searchForm.get("ParentId").value == 0) {
+    var subMasterId = this.searchForm.get("SubId")?.value;
+    if (this.searchForm.get("ParentId")?.value == 0) {
       this.contentservice.openSnackBar("Please select master name to add items to", globalconstants.ActionText, globalconstants.RedBackground);
       //this.contentservice.openSnackBar("Please select master name to add items to", globalconstants.ActionText,globalconstants.RedBackground);
       return;
@@ -304,9 +304,9 @@ export class AddMasterDataComponent implements OnInit {
     if (subMasterId > 0)
       _ParentId = subMasterId;
     else
-      _ParentId = this.searchForm.get("ParentId").value.MasterDataId;
+      _ParentId = this.searchForm.get("ParentId")?.value.MasterDataId;
 
-    var obj = this.MasterData.filter(f => f.MasterDataId == _ParentId)
+    var obj = this.MasterData.filter((f:any) => f.MasterDataId == _ParentId)
     if (obj.length > 0)
       _appId = obj[0].ApplicationId;
     this.MasterList = [];
@@ -392,24 +392,24 @@ export class AddMasterDataComponent implements OnInit {
     var _OrgId = 0;
     var _appId = 0;
     //this.RowParent = [...this.SubMasters];
-    if (this.searchForm.get("SubId").value > 0) {
-      _searchParentId = this.searchForm.get("SubId").value;
+    if (this.searchForm.get("SubId")?.value > 0) {
+      _searchParentId = this.searchForm.get("SubId")?.value;
 
     }
-    else if (this.searchForm.get("ParentId").value.MasterDataId != undefined) {
-      _searchParentId = this.searchForm.get("ParentId").value.MasterDataId;
+    else if (this.searchForm.get("ParentId")?.value.MasterDataId != undefined) {
+      _searchParentId = this.searchForm.get("ParentId")?.value.MasterDataId;
     }
     else {
       _searchParentId = 0;
-      //this.RowParent = [];
+      //this.RowParent :any[]= [];
     }
     //if (_searchParentId > 0) {
-    //_appId = this..filter(f=>f.MasterDataId==_searchParentId)[0].ApplicationId;
+    //_appId = this..filter((f:any)=>f.MasterDataId==_searchParentId)[0].ApplicationId;
     var commonAppId;
     var permittedAppIdObj = this.tokenStorage.getPermittedApplications();
     var Ids = '';
     if (permittedAppIdObj.length > 0) {
-      commonAppId = permittedAppIdObj.filter(f => f.appShortName == 'common');
+      commonAppId = permittedAppIdObj.filter((f:any) => f.appShortName == 'common');
       Ids = commonAppId[0].applicationId + "," + this.SelectedApplicationId
     }
     //_OrgId = this.UserDetails[0]["orgId"];
@@ -438,13 +438,13 @@ export class AddMasterDataComponent implements OnInit {
         if (this.MasterList.length == 0) {
           this.contentservice.openSnackBar("No record found.", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        if (this.searchForm.get("SubId").value > 0) {
-          var obj = this.SubMasters.filter(f => f.MasterDataId == _searchParentId)
+        if (this.searchForm.get("SubId")?.value > 0) {
+          var obj = this.SubMasters.filter((f:any) => f.MasterDataId == _searchParentId)
           if (obj.length > 0)
             this.Parent = obj[0].MasterDataName;
         }
         else
-          this.Parent = this.searchForm.get("ParentId").value.MasterDataName;
+          this.Parent = this.searchForm.get("ParentId")?.value.MasterDataName;
 
         ////console.log("parent", this.Parent)
         this.MasterList.sort((a, b) => a.Sequence - b.Sequence);
@@ -491,7 +491,7 @@ export class AddMasterDataComponent implements OnInit {
       //this.contentservice.openSnackBar("Character should not be empty or greater than 50!", globalconstants.ActionText,globalconstants.RedBackground);
       return;
     }
-    if (this.searchForm.get("ParentId").value == 0) {
+    if (this.searchForm.get("ParentId")?.value == 0) {
       // this.SubMasters = [];
       // let duplicate = this.TopMasters.filter(item => item.OrgId == this.UserDetails[0]["orgId"]
       //   && item.MasterDataName.toLowerCase() == row.MasterDataName.toLowerCase()
@@ -513,7 +513,7 @@ export class AddMasterDataComponent implements OnInit {
       }
     }
 
-    var parent = this.searchForm.get("ParentId").value.MasterDataName;
+    var parent = this.searchForm.get("ParentId")?.value.MasterDataName;
     if (parent.length > 0) {
       if (parent.toLowerCase() == "student grade") {
         if (row.Sequence == 0) {
@@ -525,7 +525,7 @@ export class AddMasterDataComponent implements OnInit {
     }
     var _ParentId = 0;
     if (row.ParentId == undefined || row.ParentId == 0)
-      _ParentId = this.searchForm.get("ParentId").value.MasterDataId;
+      _ParentId = this.searchForm.get("ParentId")?.value.MasterDataId;
     else
       _ParentId = row.ParentId;
 
@@ -558,11 +558,11 @@ export class AddMasterDataComponent implements OnInit {
           if (res != undefined) {
             row.MasterDataId = res.MasterDataId;
             row.Action = false;
-            this.MasterList = this.tokenStorage.getMasterData();
+            this.MasterList = this.tokenStorage.getMasterData()!;
             mastertoUpdate.MasterDataId = res.MasterDataId;
             this.MasterList.push(mastertoUpdate)
             this.tokenStorage.saveMasterData(this.MasterList);
-            this.MasterList = this.tokenStorage.getMasterData();
+            this.MasterList = this.tokenStorage.getMasterData()!;
             if (this.DataToSaveCount == 0) {
               this.loading = false;
               this.PageLoading = false;
@@ -584,10 +584,10 @@ export class AddMasterDataComponent implements OnInit {
       this.dataservice.postPatch('MasterItems', mastertoUpdate, row.MasterDataId, 'patch')
         .subscribe(res => {
           row.Action = false;
-          this.MasterList = this.tokenStorage.getMasterData();
+          this.MasterList = this.tokenStorage.getMasterData()!;
           this.MasterList.push(mastertoUpdate)
           this.tokenStorage.saveMasterData(this.MasterList);
-          this.MasterList = this.tokenStorage.getMasterData();
+          this.MasterList = this.tokenStorage.getMasterData()!;
           if (this.DataToSaveCount == 0) {
             this.loading = false;
             this.PageLoading = false;

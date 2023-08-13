@@ -7,8 +7,8 @@ import { Router } from '@angular/router';
 import alasql from 'alasql';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
@@ -32,21 +32,21 @@ export class FeecollectionreportComponent implements OnInit {
   };
   SelectedApplicationId = 0;
   Permission = 'deny';
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   TotalPaidStudentCount = 0;
   TotalUnPaidStudentCount = 0;
-  allMasterData = [];
-  DropdownFeeDefinitions = [];
-  FeeDefinitions = [];
-  Classes = [];
-  Batches = [];
-  Sections = [];
-  Months = [];
-  ELEMENT_DATA = [];
-  StudentDetail = [];
+  allMasterData :any[]= [];
+  DropdownFeeDefinitions :any[]= [];
+  FeeDefinitions :any[]= [];
+  Classes :any[]= [];
+  Batches :any[]= [];
+  Sections :any[]= [];
+  Months :any[]= [];
+  ELEMENT_DATA :any[]= [];
+  StudentDetail :any[]= [];
   TotalAmount = 0;
   CurrentBatch: string = '';
-  Students = [];
+  Students :any[]= [];
   DisplayColumns = [
     "Name",
     "ClassRollNoSection",
@@ -99,14 +99,14 @@ export class FeecollectionreportComponent implements OnInit {
       }
       //      //console.log('this.Permission', this.Permission)
       if (this.Permission != 'deny') {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.shareddata.CurrentFeeDefinitions.subscribe(c => (this.FeeDefinitions = c));
         //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-        this.Batches = this.tokenStorage.getBatches();
+        this.Batches = this.tokenStorage.getBatches()!;;
         this.shareddata.CurrentSection.subscribe(c => (this.Sections = c));
 
         var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -123,12 +123,12 @@ export class FeecollectionreportComponent implements OnInit {
           PaidNotPaid: ['']
         })
 
-        this.filteredOptions = this.SearchForm.get("searchStudentName").valueChanges
+        this.filteredOptions = this.SearchForm.get("searchStudentName")?.valueChanges
           .pipe(
             startWith(''),
             map(value => typeof value === 'string' ? value : value.Name),
             map(Name => Name ? this._filter(Name) : this.Students.slice())
-          );
+          )!;
       }
       this.PageLoad();
     }
@@ -145,7 +145,7 @@ export class FeecollectionreportComponent implements OnInit {
   PageLoad() {
     debugger;
     this.Months = this.contentservice.GetSessionFormattedMonths();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
     this.GetMasterData();
     this.GetStudents();
   }
@@ -158,10 +158,10 @@ export class FeecollectionreportComponent implements OnInit {
     this.ErrorMessage = '';
     let filterstring = this.FilterOrgSubOrgBatchId;
 
-    var selectedMonth = this.SearchForm.get("searchMonth").value;
-    var _selectedClassId = this.SearchForm.get("searchClassId").value;
-    var paidNotPaid = this.SearchForm.get("PaidNotPaid").value;
-    //var studentclassId = this.SearchForm.get("searchStudentName").value.StudentClassId;
+    var selectedMonth = this.SearchForm.get("searchMonth")?.value;
+    var _selectedClassId = this.SearchForm.get("searchClassId")?.value;
+    var paidNotPaid = this.SearchForm.get("PaidNotPaid")?.value;
+    //var studentclassId = this.SearchForm.get("searchStudentName")?.value.StudentClassId;
     var nestedFilter = '';
 
     if (selectedMonth == 0) {
@@ -197,7 +197,7 @@ export class FeecollectionreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        var result = [];
+        var result :any[]= [];
         if (data.value.length > 0) {
           //this.TotalStudentCount = data.value.length;
           var _className = '';
@@ -209,7 +209,7 @@ export class FeecollectionreportComponent implements OnInit {
             var clsobj = this.Classes.filter(c => c.ClassId == item.ClassId)
             if (clsobj.length > 0) {
               _className = clsobj[0].ClassName
-              var sectionObj = this.Sections.filter(s => s.MasterDataId == item.SectionId)
+              var sectionObj = this.Sections.filter((s:any) => s.MasterDataId == item.SectionId)
               if (sectionObj.length > 0)
                 _sectionName = sectionObj[0].MasterDataName
               var _lastname = item.Student.LastName == null ? '' : " " + item.Student.LastName;
@@ -227,9 +227,9 @@ export class FeecollectionreportComponent implements OnInit {
           //result =result.sort((a,b)=>a.Sequence - b.Sequence);
           this.ELEMENT_DATA = alasql("select Name,ClassRollNoSection,RollNo,Sequence,Section,MAX(Month) month from ? group by Name,Sequence,ClassRollNoSection,Section,RollNo", [result]);
           if (paidNotPaid == 'NotPaid')
-            this.ELEMENT_DATA = this.ELEMENT_DATA.filter(f => f.month == 0); //.sort((a, b) => a.month - b.month)
+            this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f:any) => f.month == 0); //.sort((a, b) => a.month - b.month)
           else
-            this.ELEMENT_DATA = this.ELEMENT_DATA.filter(f => f.month > 0); //.sort((a, b) => a.month - b.month)
+            this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f:any) => f.month > 0); //.sort((a, b) => a.month - b.month)
           this.loading = false; this.PageLoading = false;
           this.TotalPaidStudentCount = this.ELEMENT_DATA.length;
           if (this.ELEMENT_DATA.length == 0) {
@@ -267,7 +267,7 @@ export class FeecollectionreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         let paid;
-        this.StudentDetail = [];
+        this.StudentDetail= [];
         if (data.value.length > 0) {
           data.value.forEach((item, indx) => {
             paid = this.ELEMENT_DATA.filter(paidlist => {
@@ -290,7 +290,7 @@ export class FeecollectionreportComponent implements OnInit {
   }
 
   GetMasterData() {
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
 
   }
@@ -325,8 +325,8 @@ export class FeecollectionreportComponent implements OnInit {
         //debugger;
         //  //console.log('data.value', data.value);
         if (data.value.length > 0) {
-          var _students: any = this.tokenStorage.getStudents();
-          var _filteredStudents = _students.filter(s => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
+          var _students: any = this.tokenStorage.getStudents()!;
+          var _filteredStudents = _students.filter((s:any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
           this.Students = data.value.map(studentcls => {
             var matchstudent = _filteredStudents.filter(stud => stud.StudentId == studentcls.StudentId)
             var _classNameobj = this.Classes.filter(c => c.ClassId == studentcls.ClassId);
@@ -335,7 +335,7 @@ export class FeecollectionreportComponent implements OnInit {
               _className = _classNameobj[0].ClassName;
 
             var _Section = '';
-            var _sectionobj = this.Sections.filter(f => f.MasterDataId == studentcls.SectionId);
+            var _sectionobj = this.Sections.filter((f:any) => f.MasterDataId == studentcls.SectionId);
             if (_sectionobj.length > 0)
               _Section = _sectionobj[0].MasterDataName;
 

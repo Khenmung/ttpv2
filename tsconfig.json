@@ -4,6 +4,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
+    "strictNullChecks": false,
     "strictPropertyInitialization": false,
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
@@ -25,14 +26,16 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "types": ["cypress", "@testing-library/cypress"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
-    "enableIvy": true 
-
-  }
+    "enableIvy": true
+  },
+  "exclude": ["cypress.config.ts"],
+  "files": ["cypress.config.ts"]
 }

@@ -3,11 +3,11 @@ import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 //import alasql from 'alasql';
 import { MatPaginator } from '@angular/material/paginator';
 import { evaluate } from 'mathjs';
@@ -24,36 +24,36 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   SelectedClassCategory = '';
   PageLoading = true;
   ResultReleased = 0;
-  Semesters = [];
-  ClassCategory = [];
-  LoginUserDetail: any[] = [];
+  Semesters :any[]= [];
+  ClassCategory :any[]= [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
-  ClassSubjects = [];
-  ExamMarkConfigs = [];
-  AllowedSubjectIds = [];
+  ClassSubjects :any[]= [];
+  ExamMarkConfigs :any[]= [];
+  AllowedSubjectIds :any[]= [];
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
   rowCount = 0;
-  ExamStudentSubjectResult: IExamStudentSubjectResult[] = [];
+  ExamStudentSubjectResult: IExamStudentSubjectResult[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  StoredForUpdate = [];
-  SubjectMarkComponents = [];
-  MarkComponents = [];
-  Classes = [];
-  ClassGroups = [];
-  Subjects = [];
-  Sections = [];
-  ExamStatuses = [];
-  ExamNames = [];
-  Exams = [];
-  Batches = [];
-  StudentSubjects = [];
-  SelectedClassSubjects = [];
-  Students = [];
+  StoredForUpdate :any[]= [];
+  SubjectMarkComponents :any[]= [];
+  MarkComponents :any[]= [];
+  Classes :any[]= [];
+  ClassGroups :any[]= [];
+  Subjects :any[]= [];
+  Sections :any[]= [];
+  ExamStatuses :any[]= [];
+  ExamNames :any[]= [];
+  Exams :any[]= [];
+  Batches :any[]= [];
+  StudentSubjects :any[]= [];
+  SelectedClassSubjects :any[]= [];
+  Students :any[]= [];
   dataSource: MatTableDataSource<IExamStudentSubjectResult>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   Permission = 'deny';
   ExamId = 0;
   ExamStudentSubjectResultData = {
@@ -76,7 +76,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     'StudentClassSubject',
   ];
   searchForm: UntypedFormGroup;
-  ExamClassGroups = [];
+  ExamClassGroups :any[]= [];
   constructor(private servicework: SwUpdate,
     private dataservice: NaomitsuService,
     private tokenStorage: TokenStorageService,
@@ -110,12 +110,12 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EXAM.ExamMarkEntry)
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
@@ -123,7 +123,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         //this.GetStudents();
-        this.Students = this.tokenStorage.getStudents();
+        this.Students = this.tokenStorage.getStudents()!;
         this.GetMasterData();
         this.GetClassGroupMapping();
         this.GetStudentGradeDefn();
@@ -168,11 +168,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       this.contentservice.openSnackBar("Marks cannot be greater than 1000.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _classSubjectId = this.searchForm.get("searchClassSubjectId").value;
-    var _sectionId =this.searchForm.get("searchSectionId").value;
-    var _semesterId =this.searchForm.get("searchSemesterId").value;
-    var _examId = this.searchForm.get("searchExamId").value
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
+    var _sectionId =this.searchForm.get("searchSectionId")?.value;
+    var _semesterId =this.searchForm.get("searchSemesterId")?.value;
+    var _examId = this.searchForm.get("searchExamId")?.value
     if (_examId == 0) {
       this.contentservice.openSnackBar("Please select exam", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -195,7 +195,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     }
 
     this.loading = true;
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
     let checkFilterString = this.FilterOrgSubOrgBatchId + " and ExamId eq " + _examId +
       " and StudentClassSubjectId eq " + row.StudentClassSubjectId +
@@ -221,12 +221,12 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         else {
           let _examstatus = 0;
           if (row.Marks >= row.PassMark)
-            _examstatus = this.ExamStatuses.filter(f => f.MasterDataName.toLowerCase() == "pass")[0].MasterDataId;
+            _examstatus = this.ExamStatuses.filter((f:any) => f.MasterDataName.toLowerCase() == "pass")[0].MasterDataId;
           else
-            _examstatus = this.ExamStatuses.filter(f => f.MasterDataName.toLowerCase() == "fail")[0].MasterDataId;
-          var _classId = this.searchForm.get("searchClassId").value;
-          var _sectionId = this.searchForm.get("searchSectionId").value;
-          var _semesterId = this.searchForm.get("searchSemesterId").value;
+            _examstatus = this.ExamStatuses.filter((f:any) => f.MasterDataName.toLowerCase() == "fail")[0].MasterDataId;
+          var _classId = this.searchForm.get("searchClassId")?.value;
+          var _sectionId = this.searchForm.get("searchSectionId")?.value;
+          var _semesterId = this.searchForm.get("searchSemesterId")?.value;
           this.ExamStudentSubjectResultData.ExamStudentSubjectResultId = row.ExamStudentSubjectResultId;
           this.ExamStudentSubjectResultData.ExamId = _examId;
           this.ExamStudentSubjectResultData.StudentClassId = row.StudentClassId;
@@ -305,47 +305,47 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.PageLoading = false;
       })
   }
-  FilteredClasses = [];
+  FilteredClasses :any[]= [];
   // FilterClass() {
-  //   var _examId = this.searchForm.get("searchExamId").value
+  //   var _examId = this.searchForm.get("searchExamId")?.value
   //   var _classGroupId = 0;
-  //   var obj = this.Exams.filter(f => f.ExamId == _examId);
+  //   var obj = this.Exams.filter((f:any) => f.ExamId == _examId);
   //   if (obj.length > 0)
   //     _classGroupId = obj[0].ClassGroupId;
-  //   this.FilteredClasses = this.ClassGroupMapping.filter(f => f.ClassGroupId == _classGroupId);
-  //   this.SelectedClassStudentGrades = this.StudentGrades.filter(f => f.ClassGroupId == _classGroupId);
+  //   this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => f.ClassGroupId == _classGroupId);
+  //   this.SelectedClassStudentGrades = this.StudentGrades.filter((f:any) => f.ClassGroupId == _classGroupId);
   // }
   ExamReleased = 0;
   FilterClass() {
-    var _examId = this.searchForm.get("searchExamId").value
+    var _examId = this.searchForm.get("searchExamId")?.value
     //var _classGroupId = 0;
     this.ExamReleased = 0;
     this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _examId)
       .subscribe((data: any) => {
         this.ExamClassGroups = [...data.value];
         var objExamClassGroups = this.ExamClassGroups.filter(g => g.ExamId == _examId);
-        this.FilteredClasses = this.ClassGroupMapping.filter(f => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
       });
 
-    var obj = this.Exams.filter(f => f.ExamId == _examId);
+    var obj = this.Exams.filter((f:any) => f.ExamId == _examId);
     if (obj.length > 0) {
       //this.ClassGroupIdOfExam = obj[0].ClassGroupId;     
 
       this.ExamReleased = obj[0].ReleaseResult;
     }
 
-    //this.SelectedClassStudentGrades = this.StudentGrades.filter(f =>f.ExamId == _examId 
+    //this.SelectedClassStudentGrades = this.StudentGrades.filter((f:any) =>f.ExamId == _examId 
     //  && this.ExamClassGroups.findIndex(element=> element.ClassGroupId == f.ClassGroupId)>-1);
 
   }
   GetStudentSubjects() {
     debugger;
 
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
-    var _classSubjectId = this.searchForm.get("searchClassSubjectId").value;
-    var _examId = this.searchForm.get("searchExamId").value
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
+    var _examId = this.searchForm.get("searchExamId")?.value
     if (_examId == 0) {
       this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -402,8 +402,8 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.StudentSubjects = [];
 
         //var dbdata = data.value.filter(x => x.ClassSubject.Active == 1)
-        var dbdata = [];
-        var clssubj = this.ClassSubjects.filter(f => f.ClassSubjectId == _classSubjectId);
+        var dbdata :any[]= [];
+        var clssubj = this.ClassSubjects.filter((f:any) => f.ClassSubjectId == _classSubjectId);
         data.value.forEach(x => {
 
           if (clssubj.length > 0) {
@@ -431,7 +431,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           _subject = '';
           _studname = '';
           _semester = '';
-          //var clssubj = this.ClassSubjects.filter(f=>f.ClassSubjectId == s.ClassSubjectId);
+          //var clssubj = this.ClassSubjects.filter((f:any)=>f.ClassSubjectId == s.ClassSubjectId);
           // let _studentObj = this.Students.filter(c => c.StudentId == s.StudentClass.StudentId);
           // if (_studentObj.length > 0) {
           //   var _lastname = _studentObj[0].LastName == null || _studentObj[0].LastName == '' ? '' : " " + _studentObj[0].LastName;
@@ -489,11 +489,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   }
   SelectClassSubject() {
     debugger;
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     this.SelectedClassCategory = '';
 
     if (_classId > 0) {
-      let obj = this.Classes.filter(f => f.ClassId == _classId);
+      let obj = this.Classes.filter((f:any) => f.ClassId == _classId);
       if (obj.length > 0)
         this.SelectedClassCategory = obj[0].Category;
     }
@@ -527,7 +527,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       .subscribe((data: any) => {
         debugger;
         this.ClassSubjects = [];
-        var result = data.value.filter(f => f.SubjectType.SelectHowMany > 0)
+        var result = data.value.filter((f:any) => f.SubjectType.SelectHowMany > 0)
         result.forEach(cs => {
           var _class = '';
           var objclass = this.Classes.filter(c => c.ClassId == cs.ClassId)
@@ -563,7 +563,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId;
     var filterstr = ' and ClassSubjectId eq ' + pClassSubjectId + ' and Active eq 1';
 
-    //filterstr = 'ExamId eq ' + this.searchForm.get("searchExamId").value;
+    //filterstr = 'ExamId eq ' + this.searchForm.get("searchExamId")?.value;
 
     let list: List = new List();
     list.fields = [
@@ -583,11 +583,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //this.SubjectMarkComponents = data.value.filter(x => x.ClassSubject.Active == 1)
-        let clsSubject = this.ClassSubjects.filter(s => s.ClassSubjectId == pClassSubjectId);
+        let clsSubject = this.ClassSubjects.filter((s:any) => s.ClassSubjectId == pClassSubjectId);
         this.SubjectMarkComponents = data.value.map(c => {
           var _sequence = 0;
 
-          var _sequenceObj = this.MarkComponents.filter(s => s.MasterDataId == c.SubjectComponentId);
+          var _sequenceObj = this.MarkComponents.filter((s:any) => s.MasterDataId == c.SubjectComponentId);
           if (_sequenceObj.length > 0) {
             _sequence = _sequenceObj[0].Sequence
           }
@@ -616,15 +616,15 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   GetExamStudentSubjectResults() {
     debugger;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.ExamStudentSubjectResult = [];
     this.StoredForUpdate = [];
     this.loading = true;
 
-    var _examId = this.searchForm.get("searchExamId").value;
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _classSubjectId = this.searchForm.get("searchClassSubjectId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
     var _examMarkFormulaObj = this.ExamMarkConfigs.filter(e => e.ExamId == _examId
       && e.ClassId == _classId && e.ClassSubjectId == _classSubjectId && e.Formula.length > 0);
     if (_examMarkFormulaObj.length > 0) {
@@ -638,11 +638,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   GetOneExamResult(pExamsSubjectMarks) {
     var filterstr = '';
     this.loading = true;
-    var _classId = this.searchForm.get("searchClassId").value
-    var _classSubjectId = this.searchForm.get("searchClassSubjectId").value
-    var _examId = this.searchForm.get("searchExamId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value
+    var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value
+    var _examId = this.searchForm.get("searchExamId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     filterstr = ' and ExamId eq ' + _examId + " and ClassSubjectId eq " + _classSubjectId;
 
     let list: List = new List();
@@ -660,7 +660,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       .subscribe((data: any) => {
         debugger;
         //var _examReleased =this.Exams.filter(e=>e.ExamId == _examId)[0].ReleaseResult;
-        var result = [];
+        var result :any[]= [];
         data.value.forEach(db => {
           db.ExamStudentSubjectResults.forEach(mark => {
             result.push({
@@ -680,11 +680,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           })
         })
         //console.log("result", result);
-        var toUpdate = this.searchForm.get("updateCheckBox").value;
+        var toUpdate = this.searchForm.get("updateCheckBox")?.value;
         let sectionwiseexist = this.StudentSubjects.filter(sec => sec.SectionId > 0);
         let semesterwiseexist = this.StudentSubjects.filter(sec => sec.SemesterId > 0);
 
-        var filteredStudentSubjects = [];
+        var filteredStudentSubjects :any[]= [];
         if (sectionwiseexist.length > 0 && semesterwiseexist.length > 0) {
           filteredStudentSubjects = this.StudentSubjects.filter(studentsubject => {
             return studentsubject.ClassId == _classId
@@ -741,7 +741,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
                 this.displayedColumns.push(_ComponentName)
               var _mark = 0;
               if (toUpdate) {
-                var replacedFormula = this.ExamMarkFormula;
+                var replacedFormula:any = this.ExamMarkFormula;
                 var _subjectmarkconfig = pExamsSubjectMarks.filter(m => m.StudentClassSubjectId == ss.StudentClassSubjectId)
                 //if exammarkconfig is defined. other wise mark is 0
                 if (_subjectmarkconfig.length > 0) {
@@ -788,7 +788,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
                 this.displayedColumns.push(_componentName)
 
               var _mark = 0;
-              var replacedFormula = this.ExamMarkFormula;
+              var replacedFormula:any = this.ExamMarkFormula;
               var _subjectmarkconfig = pExamsSubjectMarks.filter(m => m.StudentClassSubjectId == ss.StudentClassSubjectId)
               //if exammarkconfig is defined. other wise mark is 0
               if (_subjectmarkconfig.length > 0) {
@@ -841,26 +841,26 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   ClearData() {
     this.ExamStudentSubjectResult = [];
     this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(this.ExamStudentSubjectResult);
-    var _classId = this.searchForm.get("searchClassId").value
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
   }
-  MultiExamsStudentSubjectResult = [];
+  MultiExamsStudentSubjectResult :any[]= [];
   GetMultiExamsStudentSubjectResults(pExamSubjectFormula) {
     debugger;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.MultiExamsStudentSubjectResult = [];
     this.StoredForUpdate = [];
     //var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and BatchId eq ' + this.SelectedBatchId;
     var filterstr = '', mainfilter = ' and Active eq 1';
     this.loading = true;
 
-    //var _classId = this.searchForm.get("searchClassId").value;
-    var _classSubjectId = this.searchForm.get("searchClassSubjectId").value;
-    var _examId = this.searchForm.get("searchExamId").value;
+    //var _classId = this.searchForm.get("searchClassId")?.value;
+    var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
 
 
     // var _examMarkFormulaObj = this.Exams.filter(e => e.ExamId == _examId && e.Formula.length > 0);
@@ -901,7 +901,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     list.filter = [this.FilterOrgSubOrgBatchId + mainfilter];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var result = [];
+        var result :any[]= [];
 
         data.value.forEach(d => {
 
@@ -936,9 +936,9 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.GetOneExamResult(result);
       })
   }
-  StudentGrades = [];
-  SelectedClassStudentGrades = [];
-  ClassGroupMapping = [];
+  StudentGrades :any[]= [];
+  SelectedClassStudentGrades :any[]= [];
+  ClassGroupMapping :any[]= [];
   GetExamMarkConfig() {
     let list: List = new List();
     list.fields = [
@@ -968,14 +968,14 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   }
   GetSpecificStudentGrades() {
     debugger;
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
     var _classGroupId = 0;
 
     if (_examId > 0) {
-      var obj = this.Exams.filter(f => f.ExamId == _examId)
+      var obj = this.Exams.filter((f:any) => f.ExamId == _examId)
       if (obj.length > 0) {
         _classGroupId = obj[0].ClassGroupId;
-        this.SelectedClassStudentGrades = this.StudentGrades.filter(f => f.ClassGroupId == _classGroupId);
+        this.SelectedClassStudentGrades = this.StudentGrades.filter((f:any) => f.ClassGroupId == _classGroupId);
       }
       else {
         this.contentservice.openSnackBar("Class group not found for selected class.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -1004,7 +1004,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     debugger;
     //var _colName = event.srcElement.name;
     ////console.log("event", event);
-    var row = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
+    var row = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
     row[0][colName] = element[colName];
     element.Action = true;
   }
@@ -1021,7 +1021,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     //var columnexist;
     for (var prop in element) {
 
-      var row: any = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == prop
+      var row: any = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == prop
         && s.StudentClassSubjectId == element.StudentClassSubjectId);
 
       if (row.length > 0 && prop != 'StudentClassSubject' && prop != 'Action') {
@@ -1031,11 +1031,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       }
     }
   }
-  SubjectCategory = [];
-  SubjectTypes = [];
+  SubjectCategory :any[]= [];
+  SubjectTypes :any[]= [];
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.ExamStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSTATUS);
@@ -1056,7 +1056,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [];
       data.value.map(m => {
-        let obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
           this.Classes.push(m);

@@ -5,12 +5,12 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { IFamily } from '../family/family.component';
 
 @Component({
@@ -20,7 +20,7 @@ import { IFamily } from '../family/family.component';
 })
 export class EmployeeskillComponent implements OnInit { PageLoading=true;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -32,15 +32,15 @@ export class EmployeeskillComponent implements OnInit { PageLoading=true;
   };
   SelectedApplicationId=0;
   EmployeeSkillsListName = 'EmpEmployeeSkills';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0;
   SubOrgId=0;
-  EmployeeSkillsList: ISkill[] = [];
+  EmployeeSkillsList: ISkill[]= [];
   filteredOptions: Observable<ISkill[]>;
   dataSource: MatTableDataSource<ISkill>;
-  allMasterData = [];
-  EmployeeSkills = [];
+  allMasterData :any[]= [];
+  EmployeeSkills :any[]= [];
   Permission = 'deny';
   EmployeeId = 0;
   EmployeeSkillsData = {
@@ -90,12 +90,12 @@ export class EmployeeskillComponent implements OnInit { PageLoading=true;
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.EMPLOYEESKILL)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;

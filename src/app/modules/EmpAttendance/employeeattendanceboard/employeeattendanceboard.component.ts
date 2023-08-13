@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { EmployeeAttendanceComponent } from '../employeeattendance/employeeattendance.component';
 import { EmployeeAttendanceReportComponent } from '../employeeattendancereport/employeeattendancereport.component';
 //import { EmployeeAttendanceComponent } from '../../employeeattendance/employeeattendance.component';
@@ -36,7 +36,7 @@ export class EmployeeattendanceboardComponent implements AfterViewInit {
 
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   constructor(
     private cdr: ChangeDetectorRef,
     private tokenStorage: TokenStorageService,
@@ -46,7 +46,7 @@ export class EmployeeattendanceboardComponent implements AfterViewInit {
 
   public ngAfterViewInit(): void {
     debugger;
-    this.SelectedAppName = this.tokenStorage.getSelectedAppName();
+    this.SelectedAppName = this.tokenStorage.getSelectedAppName()!;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
     //console.log("this.SelectedAppName",this.SelectedAppName);

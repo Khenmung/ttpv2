@@ -5,13 +5,13 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TableUtil } from 'src/app/shared/TableUtil';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TableUtil } from '../../../shared/TableUtil';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import * as XLSX from 'xlsx';
 import { SwUpdate } from '@angular/service-worker';
 import * as moment from 'moment';
@@ -31,48 +31,48 @@ export class StudentDatadumpComponent implements OnInit {
   filterOrgIdNBatchId = '';
   filterOrgSubOrgIdOnly = '';
   filterBatchIdNOrgId = '';
-  ELEMENT_DATA: IStudent[] = [];
+  ELEMENT_DATA: IStudent[]= [];
   dataSource: MatTableDataSource<IStudent>;
-  displayedColumns = [];
-  allMasterData = [];
-  Students = [];
-  Genders = [];
-  Classes = [];
-  Batches = [];
-  Bloodgroup = [];
-  Category = [];
-  Religion = [];
+  displayedColumns :any[]= [];
+  allMasterData :any[]= [];
+  Students :any[]= [];
+  Genders :any[]= [];
+  Classes :any[]= [];
+  Batches :any[]= [];
+  Bloodgroup :any[]= [];
+  Category :any[]= [];
+  Religion :any[]= [];
   States = []
-  Remarks = [];
-  PrimaryContact = [];
-  Location = [];
-  LanguageSubjUpper = [];
-  LanguageSubjLower = [];
-  FeeType = [];
-  FeeDefinitions = [];
-  Sections = [];
-  Semesters = [];
-  Houses = [];
-  StudentClasses = [];
-  UploadTypes = [];
-  ReasonForLeaving = [];
-  Siblings = [];
-  AdmissionStatus = [];
-  Clubs = [];
+  Remarks :any[]= [];
+  PrimaryContact :any[]= [];
+  Location :any[]= [];
+  LanguageSubjUpper :any[]= [];
+  LanguageSubjLower :any[]= [];
+  FeeType :any[]= [];
+  FeeDefinitions :any[]= [];
+  Sections :any[]= [];
+  Semesters :any[]= [];
+  Houses :any[]= [];
+  StudentClasses :any[]= [];
+  UploadTypes :any[]= [];
+  ReasonForLeaving :any[]= [];
+  Siblings :any[]= [];
+  AdmissionStatus :any[]= [];
+  Clubs :any[]= [];
   SelectedApplicationId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
-  SelectedBatchStudentIDRollNo = [];
+  SelectedBatchStudentIDRollNo :any[]= [];
   StudentClassId = 0;
   StudentId = 0;
-  StudentFamilyNFriendList = [];
+  StudentFamilyNFriendList :any[]= [];
   studentSearchForm: UntypedFormGroup;
   filteredStudents: Observable<IStudent[]>;
   filteredFathers: Observable<IStudent[]>;
   filteredMothers: Observable<IStudent[]>;
   LoginUserDetail;
   FeePaymentPermission = '';
-  ClassGroups = [];
-  ClassGroupMapping = [];
+  ClassGroups :any[]= [];
+  ClassGroupMapping :any[]= [];
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
     private dataservice: NaomitsuService,
@@ -102,10 +102,10 @@ export class StudentDatadumpComponent implements OnInit {
         this.FeePaymentPermission = perObj[0].permission;
       }
       //var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.SEARCHSTUDENT);
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       //this.filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       this.filterOrgSubOrgIdOnly = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.filterBatchIdNOrgId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.studentSearchForm = this.fb.group({
@@ -134,7 +134,7 @@ export class StudentDatadumpComponent implements OnInit {
 
       this.GetMasterData();
       this.GetFeeTypes();
-      if (+localStorage.getItem('studentId') > 0) {
+      if (+localStorage.getItem('studentId')! > 0) {
         this.GetSibling();
       }
     }
@@ -167,7 +167,7 @@ export class StudentDatadumpComponent implements OnInit {
   displayFnM(stud: IStudent): string {
     return stud && stud.MotherName ? stud.MotherName : '';
   }
-  Groups = [];
+  Groups :any[]= [];
   GetMasterData() {
     this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
       .subscribe((data: any) => {
@@ -179,7 +179,7 @@ export class StudentDatadumpComponent implements OnInit {
         this.shareddata.ChangeReasonForLeaving(this.ReasonForLeaving);
 
         //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-        this.Batches = this.tokenStorage.getBatches()
+        this.Batches = this.tokenStorage.getBatches()!;
         this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
         this.shareddata.ChangeCategory(this.Category);
 
@@ -304,12 +304,12 @@ export class StudentDatadumpComponent implements OnInit {
     let studentclass = this.SelectedBatchStudentIDRollNo.filter(sid => sid.StudentId == element.StudentId);
     if (studentclass.length > 0) {
       var _clsName = '';
-      var objcls = this.Classes.filter(f => f.ClassId == studentclass[0].ClassId);
+      var objcls = this.Classes.filter((f:any) => f.ClassId == studentclass[0].ClassId);
       if (objcls.length > 0)
         _clsName = objcls[0].ClassName
 
       var _sectionName = '';
-      var sectionObj = this.Sections.filter(f => f.MasterDataId == studentclass[0].SectionId)
+      var sectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclass[0].SectionId)
       if (sectionObj.length > 0)
         _sectionName = sectionObj[0].MasterDataName;
       this.StudentClassId = studentclass[0].StudentClassId
@@ -377,10 +377,10 @@ export class StudentDatadumpComponent implements OnInit {
     debugger;
     this.loading = true;
     //let checkFilterString = '';//"OrgId eq " + this.LoginUserDetail[0]["orgId"] + ' and Batch eq ' + 
-    var _ClassGroupId = this.studentSearchForm.get("searchGroupId").value;
+    var _ClassGroupId = this.studentSearchForm.get("searchGroupId")?.value;
     var _classes = this.ClassGroupMapping.filter(c => c.ClassGroupId == _ClassGroupId);
 
-    var _remarkId = this.studentSearchForm.get("searchRemarkId").value;
+    var _remarkId = this.studentSearchForm.get("searchRemarkId")?.value;
 
     if (_remarkId == 0 && _ClassGroupId == 0) {
       this.loading = false; this.PageLoading = false;
@@ -388,7 +388,7 @@ export class StudentDatadumpComponent implements OnInit {
       return;
     }
     // if (_remarkId > 0) {
-    //   var obj = [];
+    //   var obj :any[]= [];
     //   this.Groups.forEach(f => {
     //     var check = f.group.filter(h => h.MasterDataId == _remarkId);
     //     if (check.length > 0)
@@ -422,12 +422,12 @@ export class StudentDatadumpComponent implements OnInit {
       .subscribe((data: any) => {
         ////console.log(data.value);
         if (data.value.length > 0) {
-          var formattedData = [];
+          var formattedData :any[]= [];
           //formattedData = [...data.value];
           data.value.filter(sc => {
             let reason = this.ReasonForLeaving.filter(r => r.MasterDataId == sc.Student.ReasonForLeavingId)
             //if (sc.StudentClasses.length > 0) {
-            var obj = this.FeeType.filter(f => f.FeeTypeId == sc.FeeTypeId);
+            var obj = this.FeeType.filter((f:any) => f.FeeTypeId == sc.FeeTypeId);
             if (obj.length > 0) {
               sc.FeeType = obj[0].FeeTypeName
             }
@@ -447,7 +447,7 @@ export class StudentDatadumpComponent implements OnInit {
             var _lastname = element.Student.LastName == null ? '' : " " + element.Student.LastName;
             element.Name = element.Student.FirstName + _lastname;
             if (element.RemarkId > 0) {
-              var obj = this.Remarks.filter(f => f.MasterDataId == element.Student.RemarkId);
+              var obj = this.Remarks.filter((f:any) => f.MasterDataId == element.Student.RemarkId);
               if (obj.length > 0)
                 element.Remarks = obj[0].MasterDataName;
               else
@@ -802,7 +802,7 @@ export class StudentDatadumpComponent implements OnInit {
   GetStudents() {
     this.loading = true;
 
-    var _students: any = this.tokenStorage.getStudents();
+    var _students: any = this.tokenStorage.getStudents()!;
 
     this.Students = _students.map(student => {
       var _RollNo = '';
@@ -810,14 +810,14 @@ export class StudentDatadumpComponent implements OnInit {
       var _className = '';
       var _section = '';
       var _studentClassId = 0;
-      var studentclassobj = this.StudentClasses.filter(f => f.StudentId == student.StudentId);
+      var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
       if (studentclassobj.length > 0) {
         _studentClassId = studentclassobj[0].StudentClassId;
         var _classNameobj = this.Classes.filter(c => c.ClassId == studentclassobj[0].ClassId);
 
         if (_classNameobj.length > 0)
           _className = _classNameobj[0].ClassName;
-        var _SectionObj = this.Sections.filter(f => f.MasterDataId == studentclassobj[0].SectionId)
+        var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclassobj[0].SectionId)
 
         if (_SectionObj.length > 0)
           _section = _SectionObj[0].MasterDataName;

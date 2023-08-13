@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { AdminsettingsRoutingModule, settingsComponent } from './control-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MaterialModule } from 'src/app/shared/material/material.module';
+import { MaterialModule } from '../../shared/material/material.module';
 import { SharedhomepageModule } from '../sharedhomepage.module';
 import { SchoolReportsModule } from '../schoolreports/reports.module';
 import { FlexLayoutModule } from '@angular/flex-layout';

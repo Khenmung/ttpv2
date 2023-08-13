@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../../shared/content.service';
+import { NaomitsuService } from '../../../../shared/databaseService';
+import { globalconstants } from '../../../../shared/globalconstant';
+import { List } from '../../../../shared/interface';
+import { SharedataService } from '../../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../../_services/token-storage.service';
 import {SwUpdate} from '@angular/service-worker';
 
 @Component({
@@ -21,10 +21,10 @@ loading=false;
 title ='';
   breakpoint = 0;
   SaveDisable = false;
-  allMasterData = [];
-  AppUsers = [];
-  Departments=[];
-  Locations=[];
+  allMasterData :any[]= [];
+  AppUsers :any[]= [];
+  Departments:any[]=[];
+  Locations:any[]=[];
   AppUsersForm: UntypedFormGroup;
   AppUsersData = {
     ApplicationUserId: 0,
@@ -148,7 +148,7 @@ title ='';
         (data: any) => {
                if(data.value.length>0)
                {
-                 this.AppUsersForm.get("Email").setErrors({'duplicate':true})
+                 this.AppUsersForm.get("Email")?.setErrors({'duplicate':true})
                }                     
         })
   }
@@ -165,13 +165,13 @@ title ='';
 
     let ErrorMessage = '';
 
-    // if (this.AppUsersForm.get("ContactNo").value == 0) {
+    // if (this.AppUsersForm.get("ContactNo")?.value == 0) {
     //   ErrorMessage += "Please select contact.<br>";
     // }
-    if (this.AppUsersForm.get("UserName").value == 0) {
+    if (this.AppUsersForm.get("UserName")?.value == 0) {
       ErrorMessage += "User name is required.<br>";
     }
-    if (this.AppUsersForm.get("EmailAddress").value == 0) {
+    if (this.AppUsersForm.get("EmailAddress")?.value == 0) {
       ErrorMessage += "Please enter email Id.<br>";
     }
 
@@ -181,21 +181,21 @@ title ='';
     }
     else {
       this.AppUsersData.Active = 1;
-      this.AppUsersData.UserName = this.AppUsersForm.get("UserName").value;
-      this.AppUsersData.EmailAddress = this.AppUsersForm.get("EmailAddress").value;
-      this.AppUsersData.Address = this.AppUsersForm.get("Address").value;
-      this.AppUsersData.ContactNo = this.AppUsersForm.get("ContactNo").value;
-      this.AppUsersData.ValidFrom = this.AppUsersForm.get("ValidFrom").value;
-      this.AppUsersData.ValidTo = this.AppUsersForm.get("ValidTo").value;
+      this.AppUsersData.UserName = this.AppUsersForm.get("UserName")?.value;
+      this.AppUsersData.EmailAddress = this.AppUsersForm.get("EmailAddress")?.value;
+      this.AppUsersData.Address = this.AppUsersForm.get("Address")?.value;
+      this.AppUsersData.ContactNo = this.AppUsersForm.get("ContactNo")?.value;
+      this.AppUsersData.ValidFrom = this.AppUsersForm.get("ValidFrom")?.value;
+      this.AppUsersData.ValidTo = this.AppUsersForm.get("ValidTo")?.value;
       if (this.UserId == 0)
-        this.AppUsersData.OrgId = null;//this.AppUsersForm.get("OrgId").value;
+        this.AppUsersData.OrgId = 0;//this.AppUsersForm.get("OrgId")?.value;
       else
-        this.AppUsersData.OrgId = this.AppUsersForm.get("OrgId").value;
+        this.AppUsersData.OrgId = this.AppUsersForm.get("OrgId")?.value;
       
-        this.AppUsersData.DepartmentId = this.AppUsersForm.get("DepartmentId").value;
-      this.AppUsersData.LocationId = this.AppUsersForm.get("LocationId").value;
-      this.AppUsersData.ManagerId = this.AppUsersForm.get("ManagerId").value;
-      this.AppUsersData.Remarks = this.AppUsersForm.get("Remarks").value;
+        this.AppUsersData.DepartmentId = this.AppUsersForm.get("DepartmentId")?.value;
+      this.AppUsersData.LocationId = this.AppUsersForm.get("LocationId")?.value;
+      this.AppUsersData.ManagerId = this.AppUsersForm.get("ManagerId")?.value;
+      this.AppUsersData.Remarks = this.AppUsersForm.get("Remarks")?.value;
       this.AppUsersData.CreatedBy = 0;
       this.AppUsersData.UpdatedBy = 0;
       this.AppUsersData.ApplicationUserId = this.UserId;

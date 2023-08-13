@@ -5,12 +5,12 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -20,23 +20,23 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ClassgroupComponent implements OnInit {
   PageLoading = true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   //IscurrentBatchSelect = 1;
   classgroupListName = 'ClassGroups';
-  Applications = [];
+  Applications :any[]= [];
   Permission = '';
   loading = false;
   SelectedApplicationId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  ClassGroupType = [];
+  ClassGroupType :any[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  classgroupList: IClassgroup[] = [];
+  classgroupList: IClassgroup[]= [];
   filteredOptions: Observable<IClassgroup[]>;
   dataSource: MatTableDataSource<IClassgroup>;
-  allMasterData = [];
-  ClassMasters = [];
+  allMasterData :any[]= [];
+  ClassMasters :any[]= [];
   classgroupData = {
     ClassGroupId: 0,
     GroupName: '',
@@ -81,13 +81,13 @@ export class ClassgroupComponent implements OnInit {
   PageLoad() {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
       //this.IscurrentBatchSelect = +this.tokenStorage.getCheckEqualBatchId();
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.CLASSCOURSE.CLASSGROUP);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
@@ -112,7 +112,7 @@ export class ClassgroupComponent implements OnInit {
   }
   AddNew() {
 
-    // if (this.searchForm.get("searchClassId").value == 0) {
+    // if (this.searchForm.get("searchClassId")?.value == 0) {
     //   this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText,globalconstants.RedBackground);
     //   return;
     // }
@@ -296,7 +296,7 @@ export class ClassgroupComponent implements OnInit {
 
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ClassGroupType = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUPTYPE)
     this.loading = false; this.PageLoading = false;
   }

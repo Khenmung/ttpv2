@@ -18,14 +18,14 @@ export class NewsdashboardComponent implements OnInit { PageLoading=true;
   PageTitle: string = "News & Events";
   ParentPages: [{ PageId, PageTitle }];
   PageDetail: IPage;
-  DATA = [];
-  AllData = [];
+  DATA :any[]= [];
+  AllData :any[]= [];
   title: string;
   Id: number = 0;
   query: string;
   list: List;
 
-  displayedColumns = [];// ['id', 'name', 'progress', 'color'];
+  displayedColumns :any[]= [];// ['id', 'name', 'progress', 'color'];
   dataSource: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -45,7 +45,7 @@ export class NewsdashboardComponent implements OnInit { PageLoading=true;
   } 
   getDetails() {
 
-          this.AllData = this.DATA.filter(f=>{
+          this.AllData = this.DATA.filter((f:any)=>{
             return f.ParentId==this.Id;
           }).sort((a,b)=> {
             return +new Date(b.UpdateDate) - +new Date(a.UpdateDate)
@@ -87,8 +87,8 @@ export class NewsdashboardComponent implements OnInit { PageLoading=true;
   HiddenBadge(newsdate): boolean {
     //return false;
     let today = new Date();
-    let badgeDate = this.datePipe.transform(today, 'yyyy/MM/dd');//today.setDate(today.getDate()-2);
-    let NewsDate = this.datePipe.transform(newsdate, 'yyyy/MM/dd');
+    let badgeDate = this.datePipe.transform(today, 'yyyy/MM/dd')!;//today.setDate(today.getDate()-2);
+    let NewsDate = this.datePipe.transform(newsdate, 'yyyy/MM/dd')!;
     ////console.log('newsdate',NewsDate)
     ////console.log('badgeDate',badgeDate)
     ////console.log(newsdate<badgeDate);

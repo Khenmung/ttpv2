@@ -1,11 +1,11 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MenuConfigComponent } from '../menu-config/menu-config.component';
 import { CustomerPlansComponent } from '../../control/customerplans/customerplans.component';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { PlansComponent } from '../plans/plans.component';
-import { ContentService } from 'src/app/shared/content.service';
+import { ContentService } from '../../../shared/content.service';
 import { PlanFeatureComponent } from '../planfeature/planfeature.component';
 import { AdminrolepermissionComponent } from '../adminrolepermission/adminrolepermission.component';
 import { PlanandmasteritemComponent } from '../planandmasteritem/planandmasteritem.component';
@@ -31,7 +31,7 @@ export class GlobaladminboardComponent implements AfterViewInit {
     CustomerPlansComponent,
     CustomerPlanFeatureComponent
   ];
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   tabNames = [
     { 'label': 'Plan', 'faIcon': '' },
     { 'label': 'Plan Feature', 'faIcon': '' },

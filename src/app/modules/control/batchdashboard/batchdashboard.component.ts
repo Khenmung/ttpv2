@@ -3,12 +3,12 @@ import { UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
 import {SwUpdate} from '@angular/service-worker';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-batchdashboard',
@@ -19,7 +19,7 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
 
   @ViewChild("table") mattable;
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   Permission = '';
@@ -29,10 +29,10 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
   FilterOrgSubOrg='';
   FilterOrgSubOrgBatchId='';
 
-  Batches = [];
-  BatchList: IBatches[] = [];
+  Batches :any[]= [];
+  BatchList: IBatches[]= [];
   dataSource: MatTableDataSource<IBatches>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   BatchData = {
     BatchId: 0,
     BatchName: '',
@@ -84,7 +84,7 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
 
         this.GetBatches();
@@ -116,7 +116,7 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
 
     list.PageName = "Batches";
     list.filter = [filterStr];
-    this.BatchList = [];
+    this.BatchList= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;

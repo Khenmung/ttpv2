@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/_services/auth.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { AuthService } from '../../../_services/auth.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-resetpassword',
@@ -12,7 +12,7 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 })
 export class ResetpasswordComponent implements OnInit { PageLoading=true;
   loading = false;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   resetpwdForm: UntypedFormGroup;
   isSuccessful = false;
   isSignUpFailed = false;
@@ -45,8 +45,8 @@ export class ResetpasswordComponent implements OnInit { PageLoading=true;
     //   })
     // })
     this.aroute.queryParamMap.subscribe(param=>{
-      this.Code = param.get("code");
-      this.UserId = param.get("userid");
+      this.Code = param.get("code")!;
+      this.UserId = param.get("userid")!;
     })
     // this.LoginUserDetail = this.tokenService.getUserDetail();
     // if (this.LoginUserDetail == null)
@@ -66,8 +66,8 @@ export class ResetpasswordComponent implements OnInit { PageLoading=true;
   }
   onSubmit(): void {
     this.loading=true;
-    var ConfirmPassword = this.resetpwdForm.get("ConfirmPassword").value;
-    var NewPassword = this.resetpwdForm.get("NewPassword").value;
+    var ConfirmPassword = this.resetpwdForm.get("ConfirmPassword")?.value;
+    var NewPassword = this.resetpwdForm.get("NewPassword")?.value;
     var payload = {
       'UserId': this.UserId,
       'Code': this.Code,

@@ -5,11 +5,11 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import {SwUpdate} from '@angular/service-worker';
 @Component({
   selector: 'app-plans',
@@ -20,19 +20,19 @@ export class PlansComponent implements OnInit { PageLoading=true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   
   PlanListName = 'Plans';
   loading = false;
   SelectedApplicationId=0;
   SelectedBatchId = 0;SubOrgId = 0;
-  PlanList: IPlan[] = [];
+  PlanList: IPlan[]= [];
   filteredOptions: Observable<IPlan[]>;
   dataSource: MatTableDataSource<IPlan>;
-  allMasterData = [];
-  Plans = [];
-  FeeCategories = [];
+  allMasterData :any[]= [];
+  Plans :any[]= [];
+  FeeCategories :any[]= [];
   Permission = 'deny';
   ExamId = 0;
   PlanData = {
@@ -89,9 +89,9 @@ export class PlansComponent implements OnInit { PageLoading=true;
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -105,7 +105,7 @@ export class PlansComponent implements OnInit { PageLoading=true;
         //this.nav.navigate(['/edu'])
       }
       else {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.GetMasterData();
         this.GetPlans();
 

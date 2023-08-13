@@ -6,12 +6,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { FileUploadService } from 'src/app/shared/upload.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { FileUploadService } from '../../../shared/upload.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { ISyllabus } from '../syllabus/syllabus.component';
 
 @Component({
@@ -24,13 +24,13 @@ export class QuestionandexamComponent implements OnInit {
   @ViewChild("table") mattable;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  LoginUserDetail: any[] = [];
-  ClassGroups = [];
+  LoginUserDetail:any[]= [];
+  ClassGroups :any[]= [];
   CurrentRow: any = {};
   selectedIndex = 0;
   selectedRowIndex = -1;
   RowToUpdate = -1;
-  EvaluationNames = [];
+  EvaluationNames :any[]= [];
   QuestionBankIdTopass = 0;
   SelectedApplicationId = 0;
   StudentClassId = 0;
@@ -38,21 +38,21 @@ export class QuestionandexamComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  QuestionBankOptionList = [];
-  QuestionBankList: IQuestionNExam[] = [];
+  QuestionBankOptionList :any[]= [];
+  QuestionBankList: IQuestionNExam[]= [];
   //EvaluationMasterId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
-  QuestionnaireTypes = [];
-  SubCategories = [];
-  Classes = [];
-  ClassSubjects = [];
-  Exams = [];
-  ExamNames = [];
-  SelectedClassSubjects = [];
+  QuestionnaireTypes :any[]= [];
+  SubCategories :any[]= [];
+  Classes :any[]= [];
+  ClassSubjects :any[]= [];
+  Exams :any[]= [];
+  ExamNames :any[]= [];
+  SelectedClassSubjects :any[]= [];
   filteredOptions: Observable<IQuestionNExam[]>;
   dataSource: MatTableDataSource<IQuestionNExam>;
   SyllabusDataSource: MatTableDataSource<ISyllabus>;
-  allMasterData = [];
+  allMasterData :any[]= [];
 
   QuestionBankNExamData = {
     QuestionBankId: 0,
@@ -62,8 +62,8 @@ export class QuestionandexamComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: false
   };
-  EvaluationMasterForClassGroup = [];
-  QuestionBankNExamForUpdate = [];
+  EvaluationMasterForClassGroup :any[]= [];
+  QuestionBankNExamForUpdate :any[]= [];
   displayedColumns = [
     'Id',
     'Question',
@@ -93,7 +93,7 @@ export class QuestionandexamComponent implements OnInit {
     // })
     debugger;
     this.imgURL = '';
-    this.StudentClassId = this.tokenStorage.getStudentClassId();
+    this.StudentClassId = this.tokenStorage.getStudentClassId()!;
     this.searchForm = this.fb.group({
       searchClassId: [0],
       searchSubjectId: [0],
@@ -120,9 +120,9 @@ export class QuestionandexamComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         //this.GetEvaluationNames();
@@ -153,14 +153,14 @@ export class QuestionandexamComponent implements OnInit {
     return str.replace(format, function (m) { return map[m]; });
     //return str.replace(/[&<>"']/g, function(m) { return map[m]; });
   }
-  SelectedLessons = [];
-  SelectContentUnit = [];
-  SelectedSubContentUnit = [];
+  SelectedLessons :any[]= [];
+  SelectContentUnit :any[]= [];
+  SelectedSubContentUnit :any[]= [];
   SelectedClassCategory = '';
   Defaultvalue = 0;
-  Semesters = [];
-  ClassCategory = [];
-  Sections = [];
+  Semesters :any[]= [];
+  ClassCategory :any[]= [];
+  Sections :any[]= [];
   getCollegeCategory() {
     return globalconstants.CategoryCollege;
   }
@@ -169,23 +169,23 @@ export class QuestionandexamComponent implements OnInit {
   }
   SelectSubject() {
     debugger;
-    var _searchClassId = this.searchForm.get("searchClassId").value;
-    var _searchSectionId = this.searchForm.get("searchSectionId").value;
-    var _searchSemesterId = this.searchForm.get("searchSemesterId").value;
+    var _searchClassId = this.searchForm.get("searchClassId")?.value;
+    var _searchSectionId = this.searchForm.get("searchSectionId")?.value;
+    var _searchSemesterId = this.searchForm.get("searchSemesterId")?.value;
     this.SelectedClassSubjects = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects, _searchClassId, _searchSectionId, _searchSemesterId);
     this.cleardata();
     //this.GetSyllabusDetailForDropDown();
   }
   SelectContentUnitChanged() {
     debugger;
-    var _searchContentUnitId = this.searchForm.get("searchContentUnitId").value;
+    var _searchContentUnitId = this.searchForm.get("searchContentUnitId")?.value;
     if (_searchContentUnitId > 0)
       this.SelectedSubContentUnit = this.allMasterData.filter(d => d.ParentId == _searchContentUnitId);
     this.cleardata();
   }
   SelectSubContentUnitChanged() {
     debugger;
-    var _searchSubContentUnitId = this.searchForm.get("searchSubContentUnitId").value;
+    var _searchSubContentUnitId = this.searchForm.get("searchSubContentUnitId")?.value;
     if (_searchSubContentUnitId > 0)
       this.SelectedLessons = this.allMasterData.filter(d => d.ParentId == _searchSubContentUnitId);
     else
@@ -239,7 +239,7 @@ export class QuestionandexamComponent implements OnInit {
       })
   }
   SelectSubContentUnit(pContentUnitId) {
-    this.SelectedSubContentUnit = this.allMasterData.filter(f => f.ParentId == pContentUnitId.value);
+    this.SelectedSubContentUnit = this.allMasterData.filter((f:any) => f.ParentId == pContentUnitId.value);
   }
   delete(element) {
     let toupdate = {
@@ -265,7 +265,7 @@ export class QuestionandexamComponent implements OnInit {
   }
   AddNew() {
     debugger;
-    var _syllabusId = this.searchForm.get("searchUnitDetailId").value;
+    var _syllabusId = this.searchForm.get("searchUnitDetailId")?.value;
     if (_syllabusId == 0) {
       this.contentservice.openSnackBar("Please select unit detail", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -282,7 +282,7 @@ export class QuestionandexamComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.QuestionBankList);
   }
   SaveAll() {
-    var _toUpdate = this.QuestionBankList.filter(f => f.Action);
+    var _toUpdate = this.QuestionBankList.filter((f:any) => f.Action);
     this.RowToUpdate = _toUpdate.length;
     _toUpdate.forEach(question => {
       this.RowToUpdate--;
@@ -324,8 +324,8 @@ export class QuestionandexamComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-          this.SubOrgId = this.tokenStorage.getSubOrgId();
+          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+          this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
           this.QuestionBankNExamForUpdate = [];
           this.QuestionBankNExamData.QuestionBankNExamId = row.QuestionBankNExamId;
           this.QuestionBankNExamData.QuestionBankId = row.QuestionBankId;
@@ -355,11 +355,11 @@ export class QuestionandexamComponent implements OnInit {
         }
       })
   }
-  RandomArr = [];
-  RandomQuestion = [];
+  RandomArr :any[]= [];
+  RandomQuestion :any[]= [];
   GetRandomNumber() {
     debugger;
-    var noofRandom = this.searchForm.get("searchNoOfRandom").value;
+    var noofRandom = this.searchForm.get("searchNoOfRandom")?.value;
     if (noofRandom < 1) {
       this.loading = false;
       this.contentservice.openSnackBar("Please enter no. of random number.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -421,19 +421,19 @@ export class QuestionandexamComponent implements OnInit {
     this.QuestionBankList = [];
     this.dataSource = new MatTableDataSource<IQuestionNExam>(this.QuestionBankList);
   }
-  Lessons = [];
-  ContentUnit = [];
-  SubContentUnit = [];
-  DifficultyLevels = [];
-  UnitDetails = [];
+  Lessons :any[]= [];
+  ContentUnit :any[]= [];
+  SubContentUnit :any[]= [];
+  DifficultyLevels :any[]= [];
+  UnitDetails :any[]= [];
   GetSyllabusDetailForDropDown() {
     debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";// and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId > 0)
       filterStr += " and ClassId eq " + _classId
     else {
@@ -442,7 +442,7 @@ export class QuestionandexamComponent implements OnInit {
       return;
     }
 
-    var _classSubjectId = this.searchForm.get("searchSubjectId").value;
+    var _classSubjectId = this.searchForm.get("searchSubjectId")?.value;
     if (_classSubjectId > 0)
       filterStr += " and SubjectId eq " + _classSubjectId
     else {
@@ -450,11 +450,11 @@ export class QuestionandexamComponent implements OnInit {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _ContentUnitId = this.searchForm.get("searchContentUnitId").value;
+    var _ContentUnitId = this.searchForm.get("searchContentUnitId")?.value;
     if (_ContentUnitId > 0)
       filterStr += " and ContentUnitId eq " + _ContentUnitId
 
-    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId").value;
+    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId")?.value;
     if (_SubContentUnitId > 0)
       filterStr += " and SubContentUnitId eq " + _SubContentUnitId
 
@@ -480,7 +480,7 @@ export class QuestionandexamComponent implements OnInit {
             f.ClassName = clsObj[0].ClassName;
           else
             f.ClassName = '';
-          var subjObj = this.ClassSubjects.filter(s => s.SubjectId == f.SubjectId);
+          var subjObj = this.ClassSubjects.filter((s:any) => s.SubjectId == f.SubjectId);
           if (subjObj.length > 0)
             f.SubjectName = subjObj[0].SubjectName
           else
@@ -511,11 +511,11 @@ export class QuestionandexamComponent implements OnInit {
   GetSyllabusDetail() {
     debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";//'Active eq true and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId > 0)
       filterStr += " and ClassId eq " + _classId
     else {
@@ -524,7 +524,7 @@ export class QuestionandexamComponent implements OnInit {
       return;
     }
 
-    var _classSubjectId = this.searchForm.get("searchSubjectId").value;
+    var _classSubjectId = this.searchForm.get("searchSubjectId")?.value;
     if (_classSubjectId > 0)
       filterStr += " and SubjectId eq " + _classSubjectId
     else {
@@ -532,11 +532,11 @@ export class QuestionandexamComponent implements OnInit {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _ContentUnitId = this.searchForm.get("searchContentUnitId").value;
+    var _ContentUnitId = this.searchForm.get("searchContentUnitId")?.value;
     if (_ContentUnitId > 0)
       filterStr += " and ContentUnitId eq " + _ContentUnitId
 
-    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId").value;
+    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId")?.value;
     if (_SubContentUnitId > 0)
       filterStr += " and SubContentUnitId eq " + _SubContentUnitId
 
@@ -570,7 +570,7 @@ export class QuestionandexamComponent implements OnInit {
             f.ClassName = clsObj[0].ClassName;
           else
             f.ClassName = '';
-          var subjObj = this.ClassSubjects.filter(s => s.SubjectId == f.SubjectId);
+          var subjObj = this.ClassSubjects.filter((s:any) => s.SubjectId == f.SubjectId);
           if (subjObj.length > 0)
             f.SubjectName = subjObj[0].SubjectName
           else
@@ -611,16 +611,16 @@ export class QuestionandexamComponent implements OnInit {
             this.QuestionBankList.push(q);
           })
         })
-        this.GetQuestionNExam(this.searchForm.get("searchExamId").value);
+        this.GetQuestionNExam(this.searchForm.get("searchExamId")?.value);
 
       })
   }
-  QuestionNExams = [];
+  QuestionNExams :any[]= [];
   GetQuestionNExam(pExamId) {
     debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";//"Active eq true and OrgId eq " + this.LoginUserDetail[0]["orgId"];
     if (pExamId > 0)
       filterStr += " and ExamId eq " + pExamId;
@@ -684,7 +684,7 @@ export class QuestionandexamComponent implements OnInit {
       .subscribe((data: any) => {
         this.ClassSubjects = data.value.map(m => {
           var _subjectname = "";
-          var subjectobj = this.allMasterData.filter(f => f.MasterDataId == m.SubjectId);
+          var subjectobj = this.allMasterData.filter((f:any) => f.MasterDataId == m.SubjectId);
           if (subjectobj.length > 0)
             _subjectname = subjectobj[0].MasterDataName;
           m.SubjectName = _subjectname;
@@ -696,13 +696,13 @@ export class QuestionandexamComponent implements OnInit {
   }
   // GetSelectedClassSubject() {
   //   debugger;
-  //   this.SelectedClassSubjects = this.ClassSubjects.filter(f => f.ClassId == this.searchForm.get("searchClassId").value)
+  //   this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value)
   // }
 
   GetMasterData() {
     debugger;
-    this.allMasterData = this.tokenStorage.getMasterData();
-    //var result = this.allMasterData.filter(f=>f.MasterDataName =='Question Bank ContentUnit')
+    this.allMasterData = this.tokenStorage.getMasterData()!;
+    //var result = this.allMasterData.filter((f:any)=>f.MasterDataName =='Question Bank ContentUnit')
     //console.log("result",result)
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.ContentUnit = this.getDropDownData(globalconstants.MasterDefinitions.school.BOOKCONTENTUNIT);
@@ -719,7 +719,7 @@ export class QuestionandexamComponent implements OnInit {
     // }
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
-        let obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
           this.Classes.push(m);
@@ -750,14 +750,14 @@ export class QuestionandexamComponent implements OnInit {
     debugger;
     row.Action = true;
     if (row.ContentUnitId > 0)
-      row.SubCategories = this.allMasterData.filter(f => f.ParentId == row.ContentUnitId);
+      row.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.ContentUnitId);
     else
       row.SubCategories = [];
   }
   SubContentUnitChanged(row) {
     row.Action = true;
     if (row.SubContentUnitId > 0)
-      row.Lessons = this.allMasterData.filter(f => f.ParentId == row.SubContentUnitId);
+      row.Lessons = this.allMasterData.filter((f:any) => f.ParentId == row.SubContentUnitId);
     else
       row.Lessons = [];
   }

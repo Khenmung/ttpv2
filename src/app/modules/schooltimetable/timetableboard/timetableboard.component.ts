@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { ClassperiodComponent } from '../classperiod/classperiod.component';
 import { DailytimetablereportComponent } from '../dailytimetablereport/dailytimetablereport.component';
 import { SchooltimetableComponent } from '../schooltimetable/schooltimetable.component';
@@ -41,7 +41,7 @@ export class TimetableboardComponent implements AfterViewInit {
       ClassTimeTablePermission: ''
     };
   selectedIndex = 0;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
 

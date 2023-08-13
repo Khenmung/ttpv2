@@ -15,7 +15,7 @@ import { List } from '../../interface';
 export class LandingpageComponent implements OnInit { 
   loading=false;
   PageLoading=true;
-  images=[];
+  images:any[]=[];
   constructor(private servicework: SwUpdate,private route:Router,
     private naomitsuService:NaomitsuService,
     private dataStorage:TokenStorageService) { }
@@ -33,7 +33,7 @@ export class LandingpageComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FileId", "FileName", "ParentId"];
     list.PageName = "StorageFnPs";
-    list.filter = ['Active eq 1 and FileOrPhoto eq 0'];//  eq ' + this.searchForm.get("FilesNPhoto").value];
+    list.filter = ['Active eq 1 and FileOrPhoto eq 0'];//  eq ' + this.searchForm.get("FilesNPhoto")?.value];
     this.naomitsuService.get(list)
       .subscribe((data: any) => {
         //this.images =

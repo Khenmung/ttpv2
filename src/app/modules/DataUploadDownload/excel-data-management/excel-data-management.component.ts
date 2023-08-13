@@ -7,8 +7,8 @@ import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { SharedataService } from '../../../shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
-import { ContentService } from 'src/app/shared/content.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
 import { DatePipe } from '@angular/common';
 import { employee } from './employee';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -37,7 +37,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
   }
   SelectedApplicationName = '';
-  SubOrgId = 0;
+  SubOrgId:number = 0;
   NoOfStudent = 0;
   NoOfStudentInPlan = 0;
   UploadType = {
@@ -49,12 +49,12 @@ export class ExcelDataManagementComponent implements OnInit {
   SelectedApplicationId = 0;
   FilterOrgSubOrgNBatchId = '';
   FilterOrgSubOrg = '';
-  ClassEvaluations = [];
+  ClassEvaluations:any[]= [];
   loading = false;
   SelectedBatchId = 0;
-  loginDetail = [];
+  loginDetail :any[]= [];
   Permission = '';
-  ColumnsOfSelectedReports = [];
+  ColumnsOfSelectedReports :any[]= [];
   ReportConfigItemListName = "ReportConfigItems";
   ngOnInit() {
     //this.dataSource = new MatTableDataSource<any>(this.ELEMENT_DATA);
@@ -70,12 +70,12 @@ export class ExcelDataManagementComponent implements OnInit {
     this.shareddata.CurrentLocation.subscribe(c => (this.Location = c));
 
 
-    this.Batches = this.tokenStorage.getBatches();
+    this.Batches = this.tokenStorage.getBatches()!;;
     //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
     this.shareddata.CurrentSection.subscribe(c => (this.Sections = c));
     this.shareddata.CurrentUploadType.subscribe(c => (this.UploadTypes = c));
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.shareddata.CurrentFeeType.subscribe(b => this.FeeTypes = b);
 
     this.uploadForm = this.fb.group({
@@ -88,7 +88,7 @@ export class ExcelDataManagementComponent implements OnInit {
   }
   PageLoad() {
     debugger;
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
     var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.DATA.UPLOAD);
     if (perObj.length > 0)
       this.Permission = perObj[0].permission;
@@ -98,7 +98,7 @@ export class ExcelDataManagementComponent implements OnInit {
     }
     else {
       var PermittedApplications = this.tokenStorage.getPermittedApplications();
-      var apps = PermittedApplications.filter(f => f.applicationId == this.SelectedApplicationId)
+      var apps = PermittedApplications.filter((f:any)=> f.applicationId == this.SelectedApplicationId)
       if (apps.length > 0) {
         this.SelectedApplicationName = apps[0].appShortName;
       }
@@ -126,10 +126,10 @@ export class ExcelDataManagementComponent implements OnInit {
   //   "PrimaryContactFatherOrMother", "Remarks"];
 
   ErrorMessage = '';
-  StudentList = [];
-  StudentClassList = [];
+  StudentList :any[]= [];
+  StudentClassList:any[]= [];
   displayedColumns: any[];
-  ELEMENT_DATA = [];
+  ELEMENT_DATA:any[]= [];
   //dataSource: MatTableDataSource<any>;
   uploadForm: UntypedFormGroup;
   AllMasterData: any[];
@@ -142,35 +142,35 @@ export class ExcelDataManagementComponent implements OnInit {
   fileUploaded: File;
   worksheet: any;
   selectedFile: string;
-  Houses = [];
-  Clubs = [];
-  Classes = [];
-  Batches = [];
-  Sections = [];
-  Semesters = [];
-  CourseYears = [];
-  FeeTypes = [];
-  Genders = [];
-  Category = [];
-  Bloodgroup = [];
-  Religion = [];
-  EmployeeTypes = [];
-  States = [];
-  Country = [];
-  AdmissionStatuses = [];
-  PrimaryContact = [];
-  Location = [];
-  Remarks = [];
-  ActivityCategory = [];
-  ActivitySubCategory = [];
-  PrimaryContactFatherOrMother = [];
-  EmployeeStatus = [];
-  MaritalStatus = [];
-  Departments = [];
-  EmployeeGrades = [];
-  Designations = [];
-  WorkNatures = [];
-  WorkAccounts = [];
+  Houses :any[]= [];
+  Clubs :any[]= [];
+  Classes:any[]= [];
+  Batches:any[]= [];
+  Sections :any[]= [];
+  Semesters :any[]= [];
+  CourseYears :any[]= [];
+  FeeTypes :any[]= [];
+  Genders :any[]= [];
+  Category :any[]= [];
+  Bloodgroup :any[]= [];
+  Religion :any[]= [];
+  EmployeeTypes :any[]= [];
+  States :any[]= [];
+  Country :any[]= [];
+  AdmissionStatuses :any[]= [];
+  PrimaryContact :any[]= [];
+  Location :any[]= [];
+  Remarks :any[]= [];
+  ActivityCategory :any[]= [];
+  ActivitySubCategory :any[]= [];
+  PrimaryContactFatherOrMother :any[]= [];
+  EmployeeStatus :any[]= [];
+  MaritalStatus :any[]= [];
+  Departments :any[]= [];
+  EmployeeGrades :any[]= [];
+  Designations :any[]= [];
+  WorkNatures :any[]= [];
+  WorkAccounts :any[]= [];
   studentData: any[];
   SelectedUploadtype = '';
 
@@ -250,20 +250,20 @@ export class ExcelDataManagementComponent implements OnInit {
       .subscribe((data: any) => {
         var _baseReportId = 0;
         if (data.value.length > 0) {
-          _baseReportId = data.value.filter(f => f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
-          var _studentModuleObj = data.value.filter(f => f.ReportName == pModuleName && f.ParentId == _baseReportId)
+          _baseReportId = data.value.filter((f:any)=> f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
+          var _studentModuleObj = data.value.filter((f:any)=> f.ReportName == pModuleName && f.ParentId == _baseReportId)
           var _studentModuleId = 0;
           if (_studentModuleObj.length > 0) {
             _studentModuleId = _studentModuleObj[0].ReportConfigItemId;
           }
 
-          var _orgStudentModuleObj = data.value.filter(f => f.ParentId == _studentModuleId && f.OrgId != 0 && f.Active == 1);
+          var _orgStudentModuleObj = data.value.filter((f:any)=> f.ParentId == _studentModuleId && f.OrgId != 0 && f.Active == 1);
           var _orgStudentModuleId = 0;
           if (_orgStudentModuleObj.length > 0) {
             _orgStudentModuleId = _orgStudentModuleObj[0].ReportConfigItemId;
           }
 
-          this.ColumnsOfSelectedReports = data.value.filter(f => f.ParentId == _orgStudentModuleId)
+          this.ColumnsOfSelectedReports = data.value.filter((f:any)=> f.ParentId == _orgStudentModuleId)
 
         }
 
@@ -327,9 +327,9 @@ export class ExcelDataManagementComponent implements OnInit {
       element.NoticePeriodDays = +element.NoticePeriodDays;
       element.ProbationPeriodDays = +element.ProbationPeriodDays;
 
-      var _MandatoryColumns = this.ColumnsOfSelectedReports.filter(f => f.Active == 1);
+      var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f:any) => f.Active == 1);
 
-      _MandatoryColumns.forEach(b => {
+      _MandatoryColumns.forEach((b:any) => {
         if (element[b.ReportName] == undefined || element[b.ReportName] == null || element[b.ReportName].length == 0) {
           //_MadatoryField = b.ReportName;
           this.ErrorMessage += b.ReportName + " is required at row " + indx + ".<br>";
@@ -337,7 +337,7 @@ export class ExcelDataManagementComponent implements OnInit {
       })
       if (element.WorkAccount != '') {
 
-        var workaccountobj = this.WorkAccounts.filter(f => f.MasterDataName.toLowerCase() == element.WorkAccount.toLowerCase())
+        var workaccountobj:any = this.WorkAccounts.filter((f:any) => f.MasterDataName.toLowerCase() == element.WorkAccount.toLowerCase())
         if (workaccountobj.length > 0) {
           element.WorkAccountId = workaccountobj[0].MasterDataId;
         }
@@ -349,7 +349,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
 
       if (element.Gender != '') {
-        var Genderobj = this.Genders.filter(f => f.MasterDataName.toLowerCase() == element.Gender.toLowerCase())
+        var Genderobj:any = this.Genders.filter((f:any) => f.MasterDataName.toLowerCase() == element.Gender.toLowerCase())
         if (Genderobj.length > 0) {
           element.GenderId = Genderobj[0].MasterDataId;
         }
@@ -361,7 +361,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
 
       if (element.Bloodgroup != '') {
-        var bloodgroupobj = this.Bloodgroup.filter(f => f.MasterDataName.toLowerCase() == element.Bloodgroup.toLowerCase())
+        var bloodgroupobj:any = this.Bloodgroup.filter((f:any) => f.MasterDataName.toLowerCase() == element.Bloodgroup.toLowerCase())
         if (bloodgroupobj.length == 0)
           this.ErrorMessage += 'Invalid blood group at row ' + indx + '.\n';
         else
@@ -371,7 +371,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.BloodgroupId = 0;
 
       if (element.Category != '') {
-        var categoryobj = this.Category.filter(f => f.MasterDataName.toLowerCase() == element.Category.toLowerCase())
+        var categoryobj:any = this.Category.filter((f:any) => f.MasterDataName.toLowerCase() == element.Category.toLowerCase())
         if (categoryobj.length == 0)
           this.ErrorMessage += 'Invalid category at row ' + indx + '.\n';
         else
@@ -381,7 +381,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.CategoryId = 0;
 
       if (element.EmploymentStatus != '') {
-        var EmploymentStatusIdobj = this.EmployeeStatus.filter(f => f.MasterDataName.toLowerCase() == element.EmploymentStatus.toLowerCase())
+        var EmploymentStatusIdobj:any = this.EmployeeStatus.filter((f:any) => f.MasterDataName.toLowerCase() == element.EmploymentStatus.toLowerCase())
         if (EmploymentStatusIdobj.length == 0)
           this.ErrorMessage += 'Invalid employee status at row ' + indx + '.\n';
         else
@@ -391,7 +391,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.EmploymentStatusId = 0;
 
       if (element.Religion != '') {
-        var ReligionIdobj = this.Religion.filter(f => f.MasterDataName.toLowerCase() == element.Religion.toLowerCase())
+        var ReligionIdobj:any = this.Religion.filter((f:any) => f.MasterDataName.toLowerCase() == element.Religion.toLowerCase())
         if (ReligionIdobj.length == 0)
           this.ErrorMessage += 'Invalid religion at row ' + indx + '.\n';
         else
@@ -401,7 +401,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.ReligionId = 0;
 
       if (element.EmploymentType != '') {
-        var EmploymentTypeIdobj = this.EmployeeTypes.filter(f => f.MasterDataName.toLowerCase() == element.EmploymentType.toLowerCase())
+        var EmploymentTypeIdobj:any = this.EmployeeTypes.filter((f:any)=> f.MasterDataName.toLowerCase() == element.EmploymentType.toLowerCase())
         if (EmploymentTypeIdobj.length == 0)
           this.ErrorMessage += 'Invalid employment type at row ' + indx + '.\n';
         else
@@ -411,7 +411,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.EmploymentTypeId = 0;
 
       if (element.MaritalStatus != '') {
-        var MaritalStatusobj = this.MaritalStatus.filter(f => f.MasterDataName.toLowerCase() == element.MaritalStatus.toLowerCase())
+        var MaritalStatusobj:any = this.MaritalStatus.filter((f:any)=> f.MasterDataName.toLowerCase() == element.MaritalStatus.toLowerCase())
         if (MaritalStatusobj.length == 0)
           this.ErrorMessage += 'Invalid marital status at row ' + indx + '.\n';
         else
@@ -421,7 +421,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.MaritalStatusId = 0;
 
       if (element.Nature != '') {
-        var Natureobj = this.WorkNatures.filter(f => f.MasterDataName.toLowerCase() == element.Nature.toLowerCase())
+        var Natureobj :any= this.WorkNatures.filter((f:any)=> f.MasterDataName.toLowerCase() == element.Nature.toLowerCase())
         if (Natureobj.length == 0)
           this.ErrorMessage += 'Invalid work nature at row ' + indx + '.\n';
         else
@@ -432,23 +432,23 @@ export class ExcelDataManagementComponent implements OnInit {
 
 
       if (element.PermanentAddressCountry != '') {
-        var PermanentAddressCountryIdobj = this.Country.filter(f => f.MasterDataName.toLowerCase() == element.PermanentAddressCountry.toLowerCase())
+        var PermanentAddressCountryIdobj:any = this.Country.filter((f:any)=> f.MasterDataName.toLowerCase() == element.PermanentAddressCountry.toLowerCase())
         if (PermanentAddressCountryIdobj.length == 0)
           this.ErrorMessage += 'Invalid permament country at row ' + indx + '.\n';
         else {
           element.PermanentAddressCountryId = PermanentAddressCountryIdobj[0].MasterDataId;
           if (element.PermanentAddressState != '') {
-            var PermanentAddressStateobj = this.AllMasterData.filter(f => f.ParentId == element.PermanentAddressCountryId)
+            var PermanentAddressStateobj = this.AllMasterData.filter((f:any)=> f.ParentId == element.PermanentAddressCountryId)
             if (PermanentAddressStateobj.length > 0) {
-              var listOfStates = PermanentAddressStateobj.filter(f => f.MasterDataName.toLowerCase() == element.PermanentAddressState.toLowerCase());
+              var listOfStates = PermanentAddressStateobj.filter((f:any)=> f.MasterDataName.toLowerCase() == element.PermanentAddressState.toLowerCase());
               if (listOfStates.length == 0)
                 this.ErrorMessage += 'Invalid permament state at row ' + indx + '.\n';
               else {
                 element.PermanentAddressStateId = +listOfStates[0].MasterDataId;
                 if (element.PermanentAddressCity != '') {
-                  var ListPermanentAddressCityobj = this.AllMasterData.filter(f => f.ParentId == element.PermanentAddressStateId)
+                  var ListPermanentAddressCityobj = this.AllMasterData.filter((f:any)=> f.ParentId == element.PermanentAddressStateId)
                   if (ListPermanentAddressCityobj.length > 0) {
-                    var CityObj = ListPermanentAddressCityobj.filter(f => f.MasterDataName.toLowerCase() == element.PermanentAddressCity.toLowerCase());
+                    var CityObj = ListPermanentAddressCityobj.filter((f:any)=> f.MasterDataName.toLowerCase() == element.PermanentAddressCity.toLowerCase());
                     if (CityObj.length == 0)
                       this.ErrorMessage += 'Invalid permament city at row ' + indx + '.\n';
                     else
@@ -473,23 +473,23 @@ export class ExcelDataManagementComponent implements OnInit {
         element.PermanentAddressCityId = 0;
       }
       if (element.PresentAddressCountry != '') {
-        var PresentAddressCountryIdobj = this.Country.filter(f => f.MasterDataName.toLowerCase() == element.PresentAddressCountry.toLowerCase())
+        var PresentAddressCountryIdobj:any = this.Country.filter((f:any)=> f.MasterDataName.toLowerCase() == element.PresentAddressCountry.toLowerCase())
         if (PresentAddressCountryIdobj.length == 0)
           this.ErrorMessage += 'Invalid present country at row ' + indx + '.\n';
         else {
           element.PresentAddressCountryId = +PresentAddressCountryIdobj[0].MasterDataId;
           if (element.PresentAddressState != '') {
-            var PresentAddressStateobj = this.AllMasterData.filter(f => f.ParentId == element.PresentAddressCountryId)
+            var PresentAddressStateobj = this.AllMasterData.filter((f:any)=> f.ParentId == element.PresentAddressCountryId)
             if (PresentAddressStateobj.length > 0) {
-              var listOfStates = PresentAddressStateobj.filter(f => f.MasterDataName.toLowerCase() == element.PresentAddressState.toLowerCase());
+              var listOfStates = PresentAddressStateobj.filter((f:any)=> f.MasterDataName.toLowerCase() == element.PresentAddressState.toLowerCase());
               if (listOfStates.length == 0)
                 this.ErrorMessage += 'Invalid present state at row ' + indx + '.\n';
               else {
                 element.PresentAddressStateId = +listOfStates[0].MasterDataId;
                 if (element.PresentAddressCity != '') {
-                  var ListPresentAddressCityobj = this.AllMasterData.filter(f => f.ParentId == element.PresentAddressStateId)
+                  var ListPresentAddressCityobj = this.AllMasterData.filter((f:any)=> f.ParentId == element.PresentAddressStateId)
                   if (ListPresentAddressCityobj.length > 0) {
-                    var CityObj = ListPresentAddressCityobj.filter(f => f.MasterDataName.toLowerCase() == element.PresentAddressCity.toLowerCase());
+                    var CityObj = ListPresentAddressCityobj.filter((f:any)=> f.MasterDataName.toLowerCase() == element.PresentAddressCity.toLowerCase());
                     if (CityObj.length == 0)
                       this.ErrorMessage += 'Invalid present city at row ' + indx + '.\n';
                     else
@@ -516,7 +516,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.PermanentAddressCityId = 0;
       }
       if (element.Department != '') {
-        var DepartmentIdobj = this.Departments.filter(f => f.MasterDataName.toLowerCase() == element.Department.toLowerCase())
+        var DepartmentIdobj:any = this.Departments.filter((f:any)=> f.MasterDataName.toLowerCase() == element.Department.toLowerCase())
         if (DepartmentIdobj.length == 0)
           this.ErrorMessage += 'Invalid department at row ' + indx + '.\n';
         else
@@ -526,7 +526,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.DepartmentId = 0;
 
       if (element.Designation != '') {
-        var DesignationIdobj = this.Designations.filter(f => f.MasterDataName.toLowerCase() == element.Designation.toLowerCase())
+        var DesignationIdobj:any = this.Designations.filter((f:any)=> f.MasterDataName.toLowerCase() == element.Designation.toLowerCase())
         if (DesignationIdobj.length == 0)
           this.ErrorMessage += 'Invalid designation at row ' + indx + '.\n';
         else
@@ -536,7 +536,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.DesignationId = 0;
 
       if (element.EmpGrade != '') {
-        var EmpGradeIdobj = this.EmployeeGrades.filter(f => f.MasterDataName.toLowerCase() == element.EmpGrade.toLowerCase())
+        var EmpGradeIdobj:any = this.EmployeeGrades.filter((f:any)=> f.MasterDataName.toLowerCase() == element.EmpGrade.toLowerCase())
         if (EmpGradeIdobj.length == 0)
           this.ErrorMessage += 'Invalid grade at row ' + indx + '.\n';
         else
@@ -668,7 +668,7 @@ export class ExcelDataManagementComponent implements OnInit {
       element.OrgId = this.loginDetail[0]["orgId"];
       element.SubOrgId = this.SubOrgId;
 
-      var _nonManadatory = this.ColumnsOfSelectedReports.filter(f => f.Active == 0);
+      var _nonManadatory:any = this.ColumnsOfSelectedReports.filter((f:any)=> f.Active == 0);
       _nonManadatory.forEach(f => {
         if (element[f.ReportName] == undefined || element[f.ReportName] == null) {
           element[f.ReportName] = '';
@@ -709,7 +709,7 @@ export class ExcelDataManagementComponent implements OnInit {
               this.ErrorMessage += "ClassEvaluationId cannot be blank or zero at row " + slno + ": " + element.ClassEvaluationId + "<br>";
             }
             else {
-              var checkexist = this.ClassEvaluations.filter(f => f.ClassEvaluationId == element.ClassEvaluationId);
+              var checkexist = this.ClassEvaluations.filter((f:any)=> f.ClassEvaluationId == element.ClassEvaluationId);
               if (checkexist.length == 0)
                 this.ErrorMessage += "ClassEvaluationId is not valid at row " + slno + ": " + element.ClassEvaluationId + "<br>";
 
@@ -717,7 +717,7 @@ export class ExcelDataManagementComponent implements OnInit {
             if (_ratingId == 0 && _detail == '')
               this.ErrorMessage += "Either rating or detail should be entered at row " + slno + ".<br>";
 
-            let StudentClsFilter = this.StudentClassList.filter(g => g.StudentId == element.StudentId);
+            let StudentClsFilter:any = this.StudentClassList.filter((g:any) => g.StudentId == element.StudentId);
             if (StudentClsFilter.length == 0)
               this.ErrorMessage += "Invalid StudentId at row " + slno + ":" + element.StudentId + "<br>";
             else
@@ -745,11 +745,11 @@ export class ExcelDataManagementComponent implements OnInit {
     this.jsonData.forEach((element, indx) => {
       slno = parseInt(indx) + 1;
 
-      let studentFilter = this.StudentList.filter(g => g.PID == element.PID);
+      let studentFilter:any = this.StudentList.filter((g:any) => g.PID == element.PID);
       if (studentFilter.length == 0)
         this.ErrorMessage += "Invalid PID at row " + slno + ":" + element.PID + "<br>";
       if (element.Section) {
-        let sectionFilter = this.Sections.filter(g => g.MasterDataName.toUpperCase() == element.Section.trim().toUpperCase());
+        let sectionFilter:any = this.Sections.filter((g:any) => g.MasterDataName.toUpperCase() == element.Section.trim().toUpperCase());
         if (sectionFilter.length == 0)
           this.ErrorMessage += "Invalid section at row " + slno + ":" + element.Section + "<br>";
         else {
@@ -760,7 +760,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.Section = 0;
 
       if (element.Semester) {
-        let semesterFilter = this.Semesters.filter(g => g.MasterDataName.toUpperCase() == element.Semester.trim().toUpperCase());
+        let semesterFilter:any = this.Semesters.filter((g:any) => g.MasterDataName.toUpperCase() == element.Semester.trim().toUpperCase());
         if (semesterFilter.length == 0)
           this.ErrorMessage += "Invalid semester at row " + slno + ":" + element.Semester + "<br>";
         else {
@@ -771,7 +771,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.SemesterId = 0;
 
       // if (element.CourseYear) {
-      //   let CourseYearFilter = this.CourseYears.filter(g => g.MasterDataName.toUpperCase() == element.CourseYear.trim().toUpperCase());
+      //   let CourseYearFilter = this.CourseYears.filter((g:any)=> g.MasterDataName.toUpperCase() == element.CourseYear.trim().toUpperCase());
       //   if (CourseYearFilter.length == 0)
       //     this.ErrorMessage += "Invalid Course Year at row " + slno + ":" + element.CourseYear + "<br>";
       //   else {
@@ -781,19 +781,19 @@ export class ExcelDataManagementComponent implements OnInit {
       // else
       //   element.CourseYearId = 0;
 
-      let classFilter = this.Classes.filter(g => g.ClassName == element.ClassName);
+      let classFilter:any = this.Classes.filter((g:any) => g.ClassName == element.ClassName);
       if (classFilter.length == 0)
         this.ErrorMessage += "Invalid Class at row " + slno + ":" + element.ClassName + "<br>";
       else
         element.ClassId = classFilter[0].ClassId;
 
-      var _studentclass = this.StudentClassList.filter(f => f.StudentId == studentFilter[0].StudentId);
+      var _studentclass :any= this.StudentClassList.filter((f:any)=> f.StudentId == studentFilter[0].StudentId);
       if (_studentclass.length > 0)
         element.StudentClassId = _studentclass[0].StudentClassId
       else
         element.StudentClassId = 0;
 
-      var _regularFeeTypeIds = this.FeeTypes.filter(f => f.FeeTypeName.toLowerCase() == 'regular');
+      var _regularFeeTypeIds:any = this.FeeTypes.filter((f:any)=> f.FeeTypeName.toLowerCase() == 'regular');
       var _regularFeeTypeId = 0;
       if (_regularFeeTypeIds.length > 0)
         _regularFeeTypeId = _regularFeeTypeIds[0].FeeTypeId;
@@ -806,7 +806,7 @@ export class ExcelDataManagementComponent implements OnInit {
             SectionId: element.Section,
             RollNo: element.RollNo ? element.RollNo : '',
             SemesterId: element.SemesterId,
-            IsCurrent: false,
+            IsCurrent: true,
             StudentClassId: element.StudentClassId,
             FeeTypeId: _regularFeeTypeId,
             BatchId: this.SelectedBatchId,
@@ -828,7 +828,7 @@ export class ExcelDataManagementComponent implements OnInit {
             BatchId: this.SelectedBatchId,
             OrgId: this.loginDetail[0]["orgId"],
             SubOrgId: this.SubOrgId,
-            Active: 0
+            Active: 1
           });
         }
       }
@@ -861,9 +861,9 @@ export class ExcelDataManagementComponent implements OnInit {
         element.UpdatedDate = new Date();
 
       var _MadatoryField = ''
-      var _MandatoryColumns = this.ColumnsOfSelectedReports.filter(f => f.Active == 1);
+      var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f:any)=> f.Active == 1);
 
-      _MandatoryColumns.forEach(b => {
+      _MandatoryColumns.forEach((b:any) => {
         if (element[b.ReportName] == undefined || element[b.ReportName] == null || element[b.ReportName].length == 0) {
           //_MadatoryField = b.ReportName;
           this.ErrorMessage += b.ReportName + " is required at row " + slno + ".<br>";
@@ -875,7 +875,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
       //debugger;
       if (element.Gender != undefined) {
-        let GenderFilter = this.Genders.filter(g => g.MasterDataName.toLowerCase() == element.Gender.toLowerCase());
+        let GenderFilter:any = this.Genders.filter((g:any)=> g.MasterDataName.toLowerCase() == element.Gender.toLowerCase());
         if (GenderFilter.length == 0)
           this.ErrorMessage += "Invalid Gender at row " + slno + ":" + element.Gender + "<br>";
         else
@@ -885,7 +885,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.GenderId = 0;
 
       if (element.House != undefined) {
-        let houseFilter = this.Houses.filter(g => g.MasterDataName.toLowerCase() == element.House.toLowerCase());
+        let houseFilter:any = this.Houses.filter((g:any)=> g.MasterDataName.toLowerCase() == element.House.toLowerCase());
         if (houseFilter.length == 0)
           this.ErrorMessage += "Invalid House at row " + slno + ":" + element.House + "<br>";
         else
@@ -895,7 +895,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.HouseId = 0;
 
       if (element.Bloodgroup != undefined) {
-        let BloodgroupFilter = this.Bloodgroup.filter(g => g.MasterDataName.toLowerCase() == element.Bloodgroup.toLowerCase());
+        let BloodgroupFilter:any = this.Bloodgroup.filter((g:any)=> g.MasterDataName.toLowerCase() == element.Bloodgroup.toLowerCase());
         if (BloodgroupFilter.length == 0)
           this.ErrorMessage += "Invalid Bloodgroup at row " + slno + ":" + element.Bloodgroup + "<br>";
         else
@@ -905,7 +905,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.BloodgroupId = 0;
 
       if (element.Section != undefined) {
-        let SectionFilter = this.Sections.filter(g => g.MasterDataName.toLowerCase() == element.Section.toLowerCase());
+        let SectionFilter:any = this.Sections.filter((g:any)=> g.MasterDataName.toLowerCase() == element.Section.toLowerCase());
         if (SectionFilter.length == 0)
           this.ErrorMessage += "Invalid Section at row " + slno + ":" + element.Section + "<br>";
         else
@@ -915,7 +915,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.SectionId = 0;
 
       if (element.Category != undefined) {
-        let Categoryfilter = this.Category.filter(g => g.MasterDataName.toLowerCase() == element.Category.toLowerCase());
+        let Categoryfilter:any = this.Category.filter((g:any)=> g.MasterDataName.toLowerCase() == element.Category.toLowerCase());
         if (Categoryfilter.length == 0)
           this.ErrorMessage += "Invalid Category at row " + slno + ":" + element.Category + "<br>";
         else
@@ -925,7 +925,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.CategoryId = 0;
 
       if (element.Religion != undefined) {
-        let ReligionFilter = this.Religion.filter(g => g.MasterDataName.toLowerCase() == element.Religion.toLowerCase());
+        let ReligionFilter:any = this.Religion.filter((g:any)=> g.MasterDataName.toLowerCase() == element.Religion.toLowerCase());
         if (ReligionFilter.length == 0)
           this.ErrorMessage += "Invalid Religion at row " + slno + ":" + element.Religion + "<br>";
         else
@@ -935,7 +935,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.ReligionId = 0;
 
       if (element.AdmissionStatus != undefined) {
-        let AdmissionStatusFilter = this.AdmissionStatuses.filter(g => g.MasterDataName.toLowerCase() == element.AdmissionStatus.toLowerCase());
+        let AdmissionStatusFilter:any = this.AdmissionStatuses.filter((g:any)=> g.MasterDataName.toLowerCase() == element.AdmissionStatus.toLowerCase());
         if (AdmissionStatusFilter.length == 0)
           this.ErrorMessage += "Invalid admission status at row " + slno + ":" + element.AdmissionStatus + "<br>";
         else
@@ -945,7 +945,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.AdmissionStatusId = 0;
 
       if (element.PrimaryContactFatherOrMother != undefined) {
-        let PrimaryContactFatherOrMotherFilter = this.PrimaryContact.filter(g => g.MasterDataName.toLowerCase() == element.PrimaryContactFatherOrMother.toLowerCase());
+        let PrimaryContactFatherOrMotherFilter:any = this.PrimaryContact.filter((g:any)=> g.MasterDataName.toLowerCase() == element.PrimaryContactFatherOrMother.toLowerCase());
         if (PrimaryContactFatherOrMotherFilter.length == 0)
           this.ErrorMessage += "Invalid PrimaryContactFatherOrMother at row " + slno + ":" + element.PrimaryContactFatherOrMother + "<br>";
         else
@@ -955,7 +955,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.PrimaryContactFatherOrMother = 0;
 
       if (element.ClassAdmissionSought != undefined) {
-        let ClassAdmissionSoughtFilter = this.Classes.filter(g => g.ClassName.toLowerCase() == element.ClassAdmissionSought.toLowerCase());
+        let ClassAdmissionSoughtFilter = this.Classes.filter((g:any)=> g.ClassName.toLowerCase() == element.ClassAdmissionSought.toLowerCase());
         if (ClassAdmissionSoughtFilter.length == 0)
           this.ErrorMessage += "Invalid ClassAdmissionSought at row " + slno + ":" + element.ClassAdmissionSought + "<br>";
         else
@@ -966,7 +966,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
 
       if (element.Club != undefined) {
-        let ClubObj = this.Clubs.filter(g => g.MasterDataName.toLowerCase() == element.Club.toLowerCase());
+        let ClubObj :any= this.Clubs.filter((g:any)=> g.MasterDataName.toLowerCase() == element.Club.toLowerCase());
         if (ClubObj.length == 0)
           this.ErrorMessage += "Invalid Club at row " + slno + ":" + element.Club + "<br>";
         else
@@ -976,7 +976,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.ClubId = 0;
 
       if (element.House != undefined) {
-        let houseObj = this.Houses.filter(g => g.MasterDataName.toLowerCase() == element.House.toLowerCase());
+        let houseObj :any= this.Houses.filter((g:any)=> g.MasterDataName.toLowerCase() == element.House.toLowerCase());
         if (houseObj.length == 0)
           this.ErrorMessage += "Invalid house at row " + slno + ":" + element.House + "<br>";
         else
@@ -986,7 +986,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.HouseId = 0;
 
       if (element.Remarks != undefined) {
-        let remarkObj = this.Remarks.filter(g => g.MasterDataName.toLowerCase() == element.Remarks.toLowerCase());
+        let remarkObj:any = this.Remarks.filter((g:any)=> g.MasterDataName.toLowerCase() == element.Remarks.toLowerCase());
         if (remarkObj.length == 0)
           this.ErrorMessage += "Invalid remark at row " + slno + ":" + element.Remarks + "<br>";
         else
@@ -996,20 +996,20 @@ export class ExcelDataManagementComponent implements OnInit {
         element.RemarkId = 0;
       debugger;
       if (element.PermanentAddressCountry != undefined) {
-        let CountryObj = this.AllMasterData.filter(g => g.MasterDataName.toLowerCase() == element.PermanentAddressCountry.toLowerCase());
+        let CountryObj = this.AllMasterData.filter((g:any)=> g.MasterDataName.toLowerCase() == element.PermanentAddressCountry.toLowerCase());
         if (CountryObj.length == 0)
           this.ErrorMessage += "Invalid country at row " + slno + ":" + element.PermanentAddressCountry + "<br>";
         else {
           element.PermanentAddressCountryId = CountryObj[0].MasterDataId;
           if (element.PermanentAddressState != undefined) {
-            let stateObj = this.AllMasterData.filter(g => g.MasterDataName.toLowerCase() == element.PermanentAddressState.toLowerCase()
+            let stateObj = this.AllMasterData.filter((g:any)=> g.MasterDataName.toLowerCase() == element.PermanentAddressState.toLowerCase()
               && g.ParentId == element.PermanentAddressCountryId);
             if (stateObj.length == 0)
               this.ErrorMessage += "Invalid state at row " + slno + ":" + element.PermanentAddressState + "<br>";
             else {
               element.PermanentAddressStateId = stateObj[0].MasterDataId;
               if (element.PermanentAddressCity != undefined) {
-                let CityObj = this.AllMasterData.filter(g => g.MasterDataName.toLowerCase() == element.PermanentAddressCity.toLowerCase()
+                let CityObj = this.AllMasterData.filter((g:any)=> g.MasterDataName.toLowerCase() == element.PermanentAddressCity.toLowerCase()
                   && g.ParentId == element.PermanentAddressStateId);
                 if (CityObj.length == 0)
                   this.ErrorMessage += "Invalid city at row " + slno + ":" + element.PermanentAddressCity + "<br>";
@@ -1033,20 +1033,20 @@ export class ExcelDataManagementComponent implements OnInit {
 
       }
       if (element.PresentAddressCountry != undefined) {
-        let CountryObj = this.AllMasterData.filter(g => g.MasterDataName.toLowerCase() == element.PresentAddressCountry.toLowerCase());
+        let CountryObj = this.AllMasterData.filter((g:any)=> g.MasterDataName.toLowerCase() == element.PresentAddressCountry.toLowerCase());
         if (CountryObj.length == 0)
           this.ErrorMessage += "Invalid country at row " + slno + ":" + element.PresentAddressCountry + "<br>";
         else {
           element.PresentAddressCountryId = CountryObj[0].MasterDataId;
           if (element.PresentAddressState != undefined) {
-            let stateObj = this.AllMasterData.filter(g => g.MasterDataName.toLowerCase() == element.PresentAddressState.toLowerCase()
+            let stateObj = this.AllMasterData.filter((g:any)=> g.MasterDataName.toLowerCase() == element.PresentAddressState.toLowerCase()
               && g.ParentId == element.PresentAddressCountryId);
             if (stateObj.length == 0)
               this.ErrorMessage += "Invalid state at row " + slno + ":" + element.PresentAddressState + "<br>";
             else {
               element.PresentAddressStateId = stateObj[0].MasterDataId;
               if (element.PresentAddressCity != undefined) {
-                let CityObj = this.AllMasterData.filter(g => g.MasterDataName.toLowerCase() == element.PresentAddressCity.toLowerCase()
+                let CityObj = this.AllMasterData.filter((g:any)=> g.MasterDataName.toLowerCase() == element.PresentAddressCity.toLowerCase()
                   && g.ParentId == element.PresentAddressStateId);
                 if (CityObj.length == 0)
                   this.ErrorMessage += "Invalid city at row " + slno + ":" + element.PresentAddressCity + "<br>";
@@ -1167,7 +1167,7 @@ export class ExcelDataManagementComponent implements OnInit {
       element.SubOrgId = this.SubOrgId;
       element.BatchId = this.SelectedBatchId;
 
-      var _nonManadatory = this.ColumnsOfSelectedReports.filter(f => f.Active == 0);
+      var _nonManadatory:any = this.ColumnsOfSelectedReports.filter((f:any)=> f.Active == 0);
       _nonManadatory.forEach(f => {
         if (element[f.ReportName] == undefined || element[f.ReportName] == null) {
           element[f.ReportName] = '';
@@ -1272,7 +1272,7 @@ export class ExcelDataManagementComponent implements OnInit {
   }
 
   save() {
-    var toInsert = [];
+    var toInsert :any= [];
     this.loading = true;
     this.contentservice.GetStudentMaxPID(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
@@ -1478,9 +1478,9 @@ export class ExcelDataManagementComponent implements OnInit {
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var _students: any = [...data.value];// this.tokenStorage.getStudents();
-        this.StudentList = _students.filter(s => s.Active == 1);
-        this.StudentList = this.StudentList.sort((a, b) => a.ParentId - b.ParentId);
+        var _students: any = [...data.value];// this.tokenStorage.getStudents()!;
+        this.StudentList = _students.filter((s:any) => s.Active == 1);
+        this.StudentList = this.StudentList.sort((a:any, b:any) => a.ParentId - b.ParentId);
         this.NoOfStudent = this.StudentList.length;
         this.GetStudentClasses();
 
@@ -1528,8 +1528,8 @@ export class ExcelDataManagementComponent implements OnInit {
 
         }
         //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-        this.Batches = this.tokenStorage.getBatches();
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+        this.Batches = this.tokenStorage.getBatches()!;;
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.loading = false;
         this.PageLoading = false;
 

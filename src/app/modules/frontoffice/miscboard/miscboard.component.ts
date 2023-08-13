@@ -1,9 +1,9 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
-import { DemoComponent } from '../calendar/calendar.component';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+import { CalendarComponent } from '../calendar/calendar.component';
 import { EventComponent } from '../event/event.component';
 import { HolidayComponent } from '../holiday/holiday.component';
 import { NoOfStudentComponent } from '../no-of-student/no-of-student.component';
@@ -20,7 +20,7 @@ export class MiscboardComponent implements AfterViewInit {
 
   components: any = [
     NoOfStudentComponent,
-    DemoComponent,
+    CalendarComponent,
     EventComponent,
     HolidayComponent,
     CreatehtmlpageComponent,
@@ -41,7 +41,7 @@ export class MiscboardComponent implements AfterViewInit {
       DataDownloadPermission: '',
       DataUploadPermission: ''
     };
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
 
@@ -98,7 +98,7 @@ export class MiscboardComponent implements AfterViewInit {
     var comindx = 0;
     switch (featureName) {
       case globalconstants.Pages.common.misc.CALENDAR:
-        comindx = this.components.indexOf(DemoComponent);
+        comindx = this.components.indexOf(CalendarComponent);
         break;
       case globalconstants.Pages.common.misc.EVENT:
         comindx = this.components.indexOf(EventComponent);

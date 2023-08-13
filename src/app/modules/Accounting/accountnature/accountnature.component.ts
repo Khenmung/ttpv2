@@ -7,13 +7,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -26,9 +26,9 @@ export class AccountNatureComponent implements OnInit {
   @ViewChild("table") mattable;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  GeneralLedgers = [];
+  GeneralLedgers :any[]= [];
   AccountNatureListName = 'AccountNatures';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   DummyMasterItemId = 4579;
@@ -36,18 +36,18 @@ export class AccountNatureComponent implements OnInit {
     StartDate: new Date(),
     EndDate: new Date()
   }
-  AccountNatures = [];
+  AccountNatures :any[]= [];
   Permission = '';
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   SelectedApplicationId = 0;
   loading = false;
-  GLAccounts = [];
+  GLAccounts :any[]= [];
   CurrentBatchId = 0;
   SelectedBatchId = 0;SubOrgId = 0;
-  AccountNatureList: IAccountNature[] = [];
+  AccountNatureList: IAccountNature[]= [];
   dataSource: MatTableDataSource<IAccountNature>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm: UntypedFormGroup;
   AccountNatureData = {
     AccountNatureId: 0,
@@ -100,7 +100,7 @@ export class AccountNatureComponent implements OnInit {
       searchParentId: [0],
       searchAccountName: ['']
     });
-    this.filteredAccounts = this.searchForm.get("searchAccountName").valueChanges
+    this.filteredAccounts = this.searchForm.get("searchAccountName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.AccountName),
@@ -114,7 +114,7 @@ debugger;
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
 
-    // this.filteredOptions = this.searchForm.get("searchGeneralLedgerId").valueChanges
+    // this.filteredOptions = this.searchForm.get("searchGeneralLedgerId")?.valueChanges
     //   .pipe(
     //     startWith(''),
     //     map(value => typeof value === 'string' ? value : value.TeacherName),
@@ -124,14 +124,14 @@ debugger;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      //this.SubOrgId = this.tokenStorage.getSubOrgId();
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      //this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.accounting.ACCOUNTNATURE);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {       
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.GetAccountNatureAutoComplete();
@@ -139,10 +139,10 @@ debugger;
     }
 
   }
-  FilteredAccountNature=[];
+  FilteredAccountNature:any[]=[];
   filterAccountNature(){
-    var _parentId = this.searchForm.get("searchAccountName").value;
-    this.FilteredAccountNature = this.AccountNatureList.filter(f=>f.ParentId == _parentId);
+    var _parentId = this.searchForm.get("searchAccountName")?.value;
+    this.FilteredAccountNature = this.AccountNatureList.filter((f:any)=>f.ParentId == _parentId);
   }
   private _filter(name: string): IAccountNature[] {
 
@@ -179,8 +179,8 @@ debugger;
     debugger;
     this.loading = true;
 
-    var _searchAccountId = this.searchForm.get("searchAccountName").value.AccountNatureId;
-    //var _searchParentId = this.searchForm.get("searchParentId").value;
+    var _searchAccountId = this.searchForm.get("searchAccountName")?.value.AccountNatureId;
+    //var _searchParentId = this.searchForm.get("searchParentId")?.value;
     if (_searchAccountId == undefined) {
       filterStr = "ParentId eq 0 and OrgId eq 0";
     }
@@ -204,7 +204,7 @@ debugger;
 
     list.PageName = this.AccountNatureListName;
     list.filter = [filterStr];
-    this.AccountNatureList = [];
+    this.AccountNatureList :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountNatureList = [...data.value];
@@ -236,7 +236,7 @@ debugger;
 
     list.PageName = this.AccountNatureListName;
     list.filter = [filterStr];
-    this.AccountNatureList = [];
+    this.AccountNatureList :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountNatureList = [...data.value];
@@ -259,7 +259,7 @@ debugger;
 
     list.PageName = this.AccountNatureListName;
     list.filter = [filterStr];
-    //this.AccountNatures = [];
+    //this.AccountNatures :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountNatures = [...data.value];
@@ -433,7 +433,7 @@ debugger;
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {

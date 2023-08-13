@@ -7,7 +7,7 @@ import { NaomitsuService } from '../../../shared/databaseService'
 import { Router } from '@angular/router';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { globalconstants } from '../../../shared/globalconstant';
-import { ContentService } from 'src/app/shared/content.service';
+import { ContentService } from '../../../shared/content.service';
 @Component({
   selector: 'app-file-drag-and-drop',
   templateUrl: './imgDragAndDrop.html',
@@ -22,7 +22,7 @@ export class ImgDragAndDropComponent implements OnInit { PageLoading=true;
   Processing=false;
   Albums: any[];
   title = 'Dropzone';
-  files: File[] = [];
+  files: File[]= [];
   formData: FormData;
   uploadedImage: File;
   errorMessage = '';
@@ -120,8 +120,8 @@ export class ImgDragAndDropComponent implements OnInit { PageLoading=true;
       return;
     }
     let error: boolean = false;
-    let selectedAlbum = this.dragdropForm.get("UpdatedFileFolderName").value;
-    let selectedAlbumId = this.dragdropForm.get("parentId").value;
+    let selectedAlbum = this.dragdropForm.get("UpdatedFileFolderName")?.value;
+    let selectedAlbumId = this.dragdropForm.get("parentId")?.value;
     if (this.files.length < 1) {
       error = true;
       //this.alert.warn("No image to upload", this.options);
@@ -141,7 +141,7 @@ export class ImgDragAndDropComponent implements OnInit { PageLoading=true;
       this.formData.append("folderName", selectedAlbum);
       this.formData.append("parentId", selectedAlbumId);
       ////console.log('formdata',this.formData);
-      let filteredAlbum: any[] = [];
+      let filteredAlbum:any[]= [];
       if (this.Albums.length > 0) {
         filteredAlbum = this.Albums.filter(item => {
           return item.UpdatedFolder == selectedAlbum
@@ -161,7 +161,7 @@ export class ImgDragAndDropComponent implements OnInit { PageLoading=true;
       ////console.log("Upload complete");
       this.contentservice.openSnackBar("Files Uploaded successfully.", globalconstants.ActionText,globalconstants.RedBackground);
       this.formData = null;
-      this.files = [];
+      this.files :any[]= [];
       this.getAlbums();
       this.route.navigate(['/home/managefile']);
       //this.messages.push("Upload complete");
@@ -189,7 +189,7 @@ export class ImgDragAndDropComponent implements OnInit { PageLoading=true;
           this.Albums = [...data.value];
         }
         else
-          this.Albums = [];
+          this.Albums :any[]= [];
       });
   }
 

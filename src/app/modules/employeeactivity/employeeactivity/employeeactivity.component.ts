@@ -5,11 +5,11 @@ import { FormBuilder, FormGroup, UntypedFormBuilder, UntypedFormGroup } from '@a
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { IStudent } from '../../admission/AssignStudentClass/Assignstudentclassdashboard.component';
 import { map, startWith } from 'rxjs/operators';
 
@@ -20,7 +20,7 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class EmployeeactivityComponent implements OnInit {
   PageLoading = true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   EmployeeId = 0;
@@ -28,18 +28,18 @@ export class EmployeeactivityComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  EmployeeActivityList: IEmployeeActivity[] = [];
+  EmployeeActivityList: IEmployeeActivity[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  EmployeeActivity = [];
-  EmployeeActivitySession = [];
-  EmployeeActivityCategories = [];
-  EmployeeActivitySubCategories = [];
-  //Classes = [];
-  Batches = [];
-  Employees: IEmployee[] = [];
+  EmployeeActivity :any[]= [];
+  EmployeeActivitySession :any[]= [];
+  EmployeeActivityCategories :any[]= [];
+  EmployeeActivitySubCategories :any[]= [];
+  //Classes :any[]= [];
+  Batches :any[]= [];
+  Employees: IEmployee[]= [];
   filteredOptions: Observable<IEmployee[]>;
   dataSource: MatTableDataSource<IEmployeeActivity>;
-  allMasterData = [];
+  allMasterData :any[]= [];
 
   EmployeeActivityData = {
     EmployeeActivityId: 0,
@@ -56,7 +56,7 @@ export class EmployeeactivityComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
-  EmployeeActivityForUpdate = [];
+  EmployeeActivityForUpdate :any[]= [];
   displayedColumns = [
     'EmployeeActivityId',
     'Employee',
@@ -95,13 +95,13 @@ export class EmployeeactivityComponent implements OnInit {
       searchSession: [0],
       searchCategoryId:[0]
     });
-    this.filteredOptions = this.searchForm.get("searchEmployeeName").valueChanges
+    this.filteredOptions = this.searchForm.get("searchEmployeeName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.Employees.slice())
-      );
-    //this.EmployeeId = this.tokenStorage.getEmployeeId();
+      )!;
+    //this.EmployeeId = this.tokenStorage.getEmployeeId()!;
     this.PageLoad();
   }
   private _filter(name: string): IEmployee[] {
@@ -125,8 +125,8 @@ export class EmployeeactivityComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetMasterData();
@@ -148,7 +148,7 @@ export class EmployeeactivityComponent implements OnInit {
         });
   }
   AddNew() {
-    var _employee = this.searchForm.get("searchEmployeeName").value.name;
+    var _employee = this.searchForm.get("searchEmployeeName")?.value.name;
     if (!_employee) {
       this.contentservice.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
     }
@@ -176,8 +176,8 @@ export class EmployeeactivityComponent implements OnInit {
   UpdateOrSave(row) {
 
     //debugger;
-    var _employeeId = this.searchForm.get("searchEmployeeName").value.EmployeeId;
-    var _ActivityId = this.searchForm.get("searchActivity").value;
+    var _employeeId = this.searchForm.get("searchEmployeeName")?.value.EmployeeId;
+    var _ActivityId = this.searchForm.get("searchActivity")?.value;
     this.loading = true;
     if (_employeeId == undefined) {
       this.loading = false;
@@ -215,8 +215,8 @@ export class EmployeeactivityComponent implements OnInit {
         }
         else {
           //this.shareddata.CurrentSelectedBatchId.subscribe(c => this.SelectedBatchId = c);
-          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-          this.SubOrgId = this.tokenStorage.getSubOrgId();
+          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+          this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
           this.EmployeeActivityForUpdate = [];;
           //console.log("inserting-1",this.EmployeeActivityForUpdate);
 
@@ -282,10 +282,10 @@ export class EmployeeactivityComponent implements OnInit {
   GetEmployeeActivity() {
     debugger;
     this.loading = true;
-    var _employeeId = this.searchForm.get("searchEmployeeName").value.EmployeeId;
-    var _activityId = this.searchForm.get("searchActivity").value;
-    var _sessionId = this.searchForm.get("searchSession").value;
-    var _categoryId = this.searchForm.get("searchCategoryId").value;
+    var _employeeId = this.searchForm.get("searchEmployeeName")?.value.EmployeeId;
+    var _activityId = this.searchForm.get("searchActivity")?.value;
+    var _sessionId = this.searchForm.get("searchSession")?.value;
+    var _categoryId = this.searchForm.get("searchCategoryId")?.value;
 
     // if (_employeeId == undefined) {
     //   this.loading = false;
@@ -293,8 +293,8 @@ export class EmployeeactivityComponent implements OnInit {
     //   return;
     // }
     //this.EmployeeId = _employeeId;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     if (_employeeId)
       filterStr += ' and EmployeeId eq ' + _employeeId;
@@ -349,8 +349,8 @@ export class EmployeeactivityComponent implements OnInit {
 
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
-    this.Batches = this.tokenStorage.getBatches()
+    this.allMasterData = this.tokenStorage.getMasterData()!;
+    this.Batches = this.tokenStorage.getBatches()!;
     this.EmployeeActivity = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEACTIVITY);
     this.EmployeeActivityCategories = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEACTIVITYCATEGORY);
     this.EmployeeActivitySession = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEACTIVITYSESSION);
@@ -363,9 +363,9 @@ export class EmployeeactivityComponent implements OnInit {
   CategoryChanged(row) {
     debugger;
     row.Action = true;
-    //row.SubCategories = this.Categories.filter(f=>f.MasterDataId == row.CategoryId);
-    var item = this.EmployeeActivityList.filter(f => f.EmployeeActivityId == row.EmployeeActivityId);
-    //item[0].SubCategories = this.allMasterData.filter(f => f.ParentId == row.CategoryId);
+    //row.SubCategories = this.Categories.filter((f:any)=>f.MasterDataId == row.CategoryId);
+    var item = this.EmployeeActivityList.filter((f:any) => f.EmployeeActivityId == row.EmployeeActivityId);
+    //item[0].SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
 
     ////console.log("dat", this.EmployeeActivityList);
     this.dataSource = new MatTableDataSource(this.EmployeeActivityList);

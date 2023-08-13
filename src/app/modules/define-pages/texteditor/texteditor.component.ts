@@ -2,11 +2,11 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, UntypedFormBuilder, Validators, NgForm, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NaomitsuService } from '../../../shared/databaseService';
-import { List, IPage } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
-import { FileUploadService } from 'src/app/shared/upload.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { ContentService } from 'src/app/shared/content.service';
+import { List, IPage } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+import { FileUploadService } from '../../../shared/upload.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { ContentService } from '../../../shared/content.service';
 
 import { SwUpdate } from '@angular/service-worker';
 
@@ -90,7 +90,7 @@ export class TextEditorComponent implements OnInit {
     private contentservice: ContentService,
     private tokenStorage: TokenStorageService,
     private fileUploadService: FileUploadService,) {
-    //this.PageDetail =[];
+    //this.PageDetail :any[]=[];
   }
 
   get f() { return this.PageDetailForm.controls; }
@@ -272,7 +272,7 @@ export class TextEditorComponent implements OnInit {
     }
     else {
       //if save as draft is clicked & the latest is published.
-      if (this.PageDetailForm.get("Published").value == 1 && this.PublishOrDraft == 0)
+      if (this.PageDetailForm.get("Published")?.value == 1 && this.PublishOrDraft == 0)
         this.insert();
       else
         this.Update();
@@ -280,7 +280,7 @@ export class TextEditorComponent implements OnInit {
   }
   insert() {
     let active = 1;
-    let duplicate = [];
+    let duplicate :any[]= [];
     if (this.Id == undefined) {
       duplicate = this.PageGroups.filter(ele => {
         return ele.ParentId == this.PageDetailForm.value.ParentId
@@ -293,17 +293,17 @@ export class TextEditorComponent implements OnInit {
       this.contentservice.openSnackBar('There is already a page named ' + this.PageDetailForm.value.PageTitle, globalconstants.ActionText, globalconstants.RedBackground);
     }
     else {
-      let PageTitle = this.PageDetailForm.get("PageTitle").value;
-      this.PageDetail.PageTitle = PageTitle;// .get("PageTitle").value;
+      let PageTitle = this.PageDetailForm.get("PageTitle")?.value;
+      this.PageDetail.PageTitle = PageTitle;// .get("PageTitle")?.value;
       this.PageDetail.label = PageTitle;
-      this.PageDetail.link = this.PageDetailForm.get("link").value;
-      this.PageDetail.ParentId = this.PageDetailForm.get("ParentId").value;
-      this.PageDetail.FullPath = this.PageDetailForm.get("ParentId").value == 0 ? PageTitle : this.PageGroups.filter(g => g.PageId == this.PageDetailForm.get("ParentId").value)[0].FullPath + ' > ' + PageTitle;
+      this.PageDetail.link = this.PageDetailForm.get("link")?.value;
+      this.PageDetail.ParentId = this.PageDetailForm.get("ParentId")?.value;
+      this.PageDetail.FullPath = this.PageDetailForm.get("ParentId")?.value == 0 ? PageTitle : this.PageGroups.filter(g => g.PageId == this.PageDetailForm.get("ParentId")?.value)[0].FullPath + ' > ' + PageTitle;
       this.PageDetail.Active = active;
       this.PageDetail.CurrentVersion = 1;
       this.PageDetail.UpdateDate = new Date();
-      this.PageDetail.PhotoPath = this.PageDetailForm.get("PhotoPath").value;
-      this.PageDetail.HasSubmenu = this.PageDetailForm.get("HasSubmenu").value == true ? 1 : 0;
+      this.PageDetail.PhotoPath = this.PageDetailForm.get("PhotoPath")?.value;
+      this.PageDetail.HasSubmenu = this.PageDetailForm.get("HasSubmenu")?.value == true ? 1 : 0;
       let mode: 'patch' | 'post' = 'post';
 
       //if save as draft the Pages should be updated but histories to be inserted.
@@ -320,8 +320,8 @@ export class TextEditorComponent implements OnInit {
           (page: any) => {
             let pageId = page == null ? this.PageDetail.PageId : page.PageId;
 
-            this.PageHistory.PageHistoryId = this.PageDetailForm.get("PageHistoryId").value;
-            this.PageHistory.PageBody = this.PageDetailForm.get("PageBody").value;
+            this.PageHistory.PageHistoryId = this.PageDetailForm.get("PageHistoryId")?.value;
+            this.PageHistory.PageBody = this.PageDetailForm.get("PageBody")?.value;
             this.PageHistory.CreatedDate = new Date();
             this.PageHistory.UpdateDate = new Date();
             this.PageHistory.Published = this.PublishOrDraft;
@@ -338,7 +338,7 @@ export class TextEditorComponent implements OnInit {
                     else
                       this.PageDetail.link = '/home/display/' + history.PageHistoryId + "/" + pageId;
 
-                    delete this.PageDetail.PageId;
+                    delete this.PageDetail["PageId"];
                     this.naomitsuService.postPatch('Pages', this.PageDetail, pageId, 'patch')
                       .subscribe(
                         (data: any) => {
@@ -377,7 +377,7 @@ export class TextEditorComponent implements OnInit {
           Published: this.PublishOrDraft
         });
 
-      this.PageDetail.PageTitle = this.PageDetailForm.value.PageTitle;// .get("PageTitle").value;
+      this.PageDetail.PageTitle = this.PageDetailForm.value.PageTitle;// .get("PageTitle")?.value;
       this.PageDetail.label = this.PageDetailForm.value.PageTitle;
       //debugger;
       this.PageDetail.HasSubmenu = this.PageDetailForm.value.HasSubmenu == true ? 1 : 0;
@@ -387,7 +387,7 @@ export class TextEditorComponent implements OnInit {
         if (this.PageDetailForm.value.PageTitle.toUpperCase().includes("NEWS"))
           this.PageDetail.link = '/home/about/' + this.Id + "/" + this.Id;
         else
-          this.PageDetail.link = '/home/display/' + this.PageDetailForm.get("PageHistoryId").value + "/" + this.Id;
+          this.PageDetail.link = '/home/display/' + this.PageDetailForm.get("PageHistoryId")?.value + "/" + this.Id;
       }
       else
         this.PageDetail.link = this.PageDetailForm.value.link;
@@ -398,9 +398,9 @@ export class TextEditorComponent implements OnInit {
       else
         FullPath = this.PageGroups.filter(g => g.PageId == this.PageDetailForm.value.ParentId)[0].FullPath + ' > ' + this.PageDetailForm.value.PageTitle;
 
-      this.PageDetail.ParentId = this.PageDetailForm.value.ParentId;//").value;
+      this.PageDetail.ParentId = this.PageDetailForm.value.ParentId;//")?.value;
       this.PageDetail.FullPath = FullPath;
-      this.PageDetail.PhotoPath = this.PageDetailForm.get("PhotoPath").value;
+      this.PageDetail.PhotoPath = this.PageDetailForm.get("PhotoPath")?.value;
       this.PageDetail.Active = 1;
       this.PageDetail.CurrentVersion = this.PageHistory.Version + 1;
       this.PageDetail.UpdateDate = new Date();
@@ -408,8 +408,8 @@ export class TextEditorComponent implements OnInit {
       this.naomitsuService.postPatch('Pages', this.PageDetail, this.Id, 'patch')
         .subscribe(
           (data: any) => {
-            this.PageHistory.PageHistoryId = this.PageDetailForm.get("PageHistoryId").value;
-            this.PageHistory.PageBody = this.PageDetailForm.get("PageBody").value;
+            this.PageHistory.PageHistoryId = this.PageDetailForm.get("PageHistoryId")?.value;
+            this.PageHistory.PageBody = this.PageDetailForm.get("PageBody")?.value;
             this.PageHistory.CreatedDate = new Date();
             this.PageHistory.UpdateDate = new Date();
             this.PageHistory.Published = this.PublishOrDraft;

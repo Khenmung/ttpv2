@@ -9,7 +9,7 @@ import { AppuserdashboardComponent } from './users/appuserdashboard/appuserdashb
 import { ControlhomeComponent } from './controlhome/controlhome.component';
 import { BatchdashboardComponent } from './batchdashboard/batchdashboard.component';
 import { AddMasterDataComponent } from './add-master-data/add-master-data.component';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { OrganizationComponent } from './organization/organization.component';
 import { SingleorganizationComponent } from './singleorganization/singleorganization.component';
 import { CustomerPlansComponent } from './customerplans/customerplans.component';

@@ -89,7 +89,10 @@
     <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
         <ul>
             <li>
-                <div>Whenever student class is uploaded, <b>Fee Type</b> of all uploaded students will be reset to regular</div>
+                <div>Whenever student class is uploaded, <b>Fee Type</b> of all uploaded students will be reset to default fee type.</div>
+            </li>            
+            <li>
+                <div>Class all students uploaded through excel are active immediately.</div>
             </li>            
         </ul>
     </span>

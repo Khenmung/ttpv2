@@ -9,14 +9,14 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { AuthService } from 'src/app/_services/auth.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ConfirmDialogComponent } from '../../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ContentService } from '../../../../shared/content.service';
+import { NaomitsuService } from '../../../../shared/databaseService';
+import { globalconstants } from '../../../../shared/globalconstant';
+import { List } from '../../../../shared/interface';
+import { SharedataService } from '../../../../shared/sharedata.service';
+import { AuthService } from '../../../../_services/auth.service';
+import { TokenStorageService } from '../../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-appuserdashboard',
@@ -39,18 +39,18 @@ export class AppuserdashboardComponent implements OnInit {
   loading = false;
   errorMessage = '';
   Permission = '';
-  Users: IUser[] = [];
+  Users: IUser[]= [];
   filteredOptions: Observable<IUser[]>;
   FilterOrgSubOrg = '';
-  allMasterData = [];
-  Organizations = [];
-  Departments = [];
-  Locations = [];
-  Roles = [];
-  LoginDetail = [];
-  UserDetail = [];
-  Classes = [];
-  RoleUserList = [];
+  allMasterData :any[]= [];
+  Organizations :any[]= [];
+  Departments :any[]= [];
+  Locations :any[]= [];
+  Roles :any[]= [];
+  LoginDetail :any[]= [];
+  UserDetail :any[]= [];
+  Classes :any[]= [];
+  RoleUserList :any[]= [];
   OrgIdAndBatchIdFilter = '';
   SelectedApplicationId = 0;
   SubOrgId = 0;
@@ -83,8 +83,8 @@ export class AppuserdashboardComponent implements OnInit {
   RoleName = '';
   Password = '';
   UserId = 0;
-  AppUsers = [];
-  UserTypes = [];
+  AppUsers :any[]= [];
+  UserTypes :any[]= [];
   SelectedApplicationName = '';
   searchForm: UntypedFormGroup;
   constructor(
@@ -102,12 +102,12 @@ export class AppuserdashboardComponent implements OnInit {
       searchUserName: [''],
       searchClassId: [0]
     })
-    this.filteredOptions = this.searchForm.get("searchUserName").valueChanges
+    this.filteredOptions = this.searchForm.get("searchUserName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.FirstName),
         map(FirstName => FirstName ? this._filter(FirstName) : this.Users.slice())
-      );
+      )!;
     this.OrgIdAndBatchIdFilter = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
     this.PageLoad();
   }
@@ -131,9 +131,9 @@ export class AppuserdashboardComponent implements OnInit {
     if (perObj.length > 0)
       this.Permission = perObj[0].permission;
     if (this.Permission != 'deny') {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
-      this.SelectedApplicationName = this.tokenStorage.getSelectedAppName();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.SelectedApplicationName = this.tokenStorage.getSelectedAppName()!;
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         this.Classes = [...data.value];
@@ -181,7 +181,7 @@ export class AppuserdashboardComponent implements OnInit {
   OnClassSelected() {
 
     if (this.SelectedApplicationName.toLowerCase() == this.EducationManagement) {
-      var _classId = this.searchForm.get("searchClassId").value;
+      var _classId = this.searchForm.get("searchClassId")?.value;
       if (_classId == 0) {
         this.loading = false;
         this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -244,7 +244,7 @@ export class AppuserdashboardComponent implements OnInit {
 
         this.UserDetail.forEach(userdetail => {
           if (userdetail.EmailAddress != null) {
-            var existinglogin = data.filter(f => f.Email.toLowerCase() == userdetail.EmailAddress.toLowerCase());
+            var existinglogin = data.filter((f:any) => f.Email.toLowerCase() == userdetail.EmailAddress.toLowerCase());
             if (existinglogin.length > 0) {
               this.Users.push(
                 {
@@ -269,7 +269,7 @@ export class AppuserdashboardComponent implements OnInit {
             }
           }
           // data.forEach(userdetail => {
-          //   var existinglogin = this.Users.filter(f => f.Email.toLowerCase() == userdetail.Email.toLowerCase());
+          //   var existinglogin = this.Users.filter((f:any) => f.Email.toLowerCase() == userdetail.Email.toLowerCase());
           //   if (existinglogin.length == 0) {
           //     this.Users.push(
           //       {
@@ -338,7 +338,7 @@ export class AppuserdashboardComponent implements OnInit {
   GetStudents() {
     debugger;
     this.loading = true;
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     let filterStr = " and ClassId eq " + _classId;
 
     // let list: List = new List();
@@ -356,7 +356,7 @@ export class AppuserdashboardComponent implements OnInit {
     // this.dataservice.get(list)
     //   .subscribe((data: any) => {
     debugger;
-    var _students: any = this.tokenStorage.getStudents();
+    var _students: any = this.tokenStorage.getStudents()!;
     this.UserDetail = [];
     //_students = _students.filter(student => data.value.findIndex(fi => fi.StudentId == student.StudentId) > -1);
     _students = _students.filter(student => student.StudentClasses.findIndex(e => e.ClassId == _classId) > -1);
@@ -387,16 +387,16 @@ export class AppuserdashboardComponent implements OnInit {
     debugger;
     this.loading = true;
     let filterStr = this.FilterOrgSubOrg;// "OrgId eq " + this.LoginDetail[0]["orgId"];
-    var searchObj = this.searchForm.get("searchUserName").value;
+    var searchObj = this.searchForm.get("searchUserName")?.value;
     if (searchObj != "") {
       filterStr += " and Email eq '" + searchObj.Email + "'";
     }
 
     // var _userTypeId = 0;
     // if (this.SelectedApplicationName.toLowerCase() == this.EducationManagement)
-    //   _userTypeId = this.UserTypes.filter(f => f.MasterDataName.toLowerCase() == 'student')[0].MasterDataId;
+    //   _userTypeId = this.UserTypes.filter((f:any) => f.MasterDataName.toLowerCase() == 'student')[0].MasterDataId;
     // else if (this.SelectedApplicationName.toLowerCase() == this.EmployeeManagement)
-    //   _userTypeId = this.UserTypes.filter(f => f.MasterDataName.toLowerCase() == 'employee')[0].MasterDataId;
+    //   _userTypeId = this.UserTypes.filter((f:any) => f.MasterDataName.toLowerCase() == 'employee')[0].MasterDataId;
 
     // filterStr += " and UserTypeId eq " + _userTypeId;
 
@@ -443,7 +443,7 @@ export class AppuserdashboardComponent implements OnInit {
           })
         }
         else {
-          var newlogin = this.UserDetail.filter(f => f.EmailAddress == searchObj.Email);
+          var newlogin = this.UserDetail.filter((f:any) => f.EmailAddress == searchObj.Email);
           var today = new Date();
           newlogin.forEach(login => {
 
@@ -604,7 +604,7 @@ export class AppuserdashboardComponent implements OnInit {
     //debugger;
 
     let ErrorMessage = '';
-    // if (this.AppUsersForm.get("ContactNo").value == 0) {
+    // if (this.AppUsersForm.get("ContactNo")?.value == 0) {
     //   ErrorMessage += "Please select contact.<br>";
     // }
     if (row.UserName.length == 0) {

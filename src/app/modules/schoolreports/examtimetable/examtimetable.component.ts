@@ -6,12 +6,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import alasql from 'alasql';
 import * as moment from 'moment';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 @Component({
   selector: 'app-examtimetable',
@@ -23,7 +23,7 @@ export class ExamtimetableComponent implements OnInit {
   @ViewChild('allSelected') private allSelected: MatOption;
 
   weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -39,20 +39,20 @@ export class ExamtimetableComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  SlotNClassSubjects = [];
+  SlotNClassSubjects :any[]= [];
   SelectedApplicationId = 0;
   SelectedBatchId = 0;SubOrgId = 0;
-  ExamSlots = [];
-  Classes = [];
-  Subjects = [];
-  ExamNames = [];
-  SlotNames = [];
-  Batches = [];
-  Exams = [];
-  DateArray = [];
-  ClassSubjectList = [];
+  ExamSlots :any[]= [];
+  Classes :any[]= [];
+  Subjects :any[]= [];
+  ExamNames :any[]= [];
+  SlotNames :any[]= [];
+  Batches :any[]= [];
+  Exams :any[]= [];
+  DateArray :any[]= [];
+  ClassSubjectList :any[]= [];
   dataSource: MatTableDataSource<[]>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   Permission = 'deny';
   ExamId = 0;
   SlotNClassSubjectData = {
@@ -63,7 +63,7 @@ export class ExamtimetableComponent implements OnInit {
     BatchId: 0,
     Active: 0
   };
-  displayedColumns = [
+  displayedColumns:any[] = [
   ];
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
@@ -100,7 +100,7 @@ export class ExamtimetableComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.REPORT.EXAMTIMETABLE);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
@@ -112,8 +112,8 @@ export class ExamtimetableComponent implements OnInit {
           this.GetMasterData();
         });
 
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
 
@@ -199,7 +199,7 @@ export class ExamtimetableComponent implements OnInit {
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        //var filteredExams = data.value.filter(d => d.ExamId == this.searchForm.get("searchExamId").value)
+        //var filteredExams = data.value.filter(d => d.ExamId == this.searchForm.get("searchExamId")?.value)
 
         this.ExamSlots = data.value.map(s => {
 
@@ -227,11 +227,12 @@ export class ExamtimetableComponent implements OnInit {
   }
   toggleAllSelection() {
     debugger;
+    let obj=this.searchForm.get("searchClassId")!;
     if (this.allSelected.selected) {
-      this.searchForm.get("searchClassId")
-        .patchValue([...this.Classes.map(item => item.ClassId), 0]);
+      
+      obj.patchValue([...this.Classes.map(item => item.ClassId), 0]);
     } else {
-      this.searchForm.get("searchClassId").patchValue([]);
+      obj.patchValue([]);
     }
   }
   tosslePerOne() {
@@ -240,7 +241,7 @@ export class ExamtimetableComponent implements OnInit {
       return false;
     }
 
-    if (this.searchForm.get("searchClassId").value.length == this.Classes.length) {
+    if (this.searchForm.get("searchClassId")?.value.length == this.Classes.length) {
       this.allSelected.select();
 
     }
@@ -249,16 +250,16 @@ export class ExamtimetableComponent implements OnInit {
 
   }
   GetSlotNClassSubjects() {
-    ////console.log("this.searchForm.get(searchClassId).value",this.searchForm.get("searchClassId").value)
+    ////console.log("this.searchForm.get(searchClassId).value",this.searchForm.get("searchClassId")?.value)
     var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and BatchId eq ' + this.SelectedBatchId;
     var filterstr = 'Active eq 1 ';
-    if (this.searchForm.get("searchExamId").value == 0) {
+    if (this.searchForm.get("searchExamId")?.value == 0) {
       this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     this.SelectedClasses = '';
-    this.SelectedExamName = this.Exams.filter(f => f.ExamId == this.searchForm.get("searchExamId").value)[0].ExamName;
-    var classesobj = this.Classes.filter(f => (this.searchForm.get("searchClassId").value+"").includes(f.ClassId));
+    this.SelectedExamName = this.Exams.filter((f:any) => f.ExamId == this.searchForm.get("searchExamId")?.value)[0].ExamName;
+    var classesobj = this.Classes.filter((f:any) => (this.searchForm.get("searchClassId")?.value+"").includes(f.ClassId));
     classesobj.forEach((m, indx) => {
 
       this.SelectedClasses += indx == classesobj.length - 1 ? m.ClassName + "." : m.ClassName + ", ";
@@ -278,19 +279,19 @@ export class ExamtimetableComponent implements OnInit {
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var filteredData = [];
-        if (this.searchForm.get("searchClassId").value.length > 0)
+        var filteredData :any[]= [];
+        if (this.searchForm.get("searchClassId")?.value.length > 0)
           data.value.forEach(d => {
             d.Slot.ExamDate = moment(d.Slot.ExamDate).format('DD/MM/yyyy');
-            if (d.Slot.ExamId == this.searchForm.get("searchExamId").value
-              && this.searchForm.get("searchClassId").value.indexOf(d.ClassSubject.ClassId) > -1) {
+            if (d.Slot.ExamId == this.searchForm.get("searchExamId")?.value
+              && this.searchForm.get("searchClassId")?.value.indexOf(d.ClassSubject.ClassId) > -1) {
               filteredData.push(d);
             }
           })
         else
           data.value.forEach(d => {
             d.Slot.ExamDate = moment(d.Slot.ExamDate).format('DD/MM/yyyy');
-            if (d.Slot.ExamId == this.searchForm.get("searchExamId").value) {
+            if (d.Slot.ExamId == this.searchForm.get("searchExamId")?.value) {
               filteredData.push(d);
             }
           });
@@ -298,7 +299,7 @@ export class ExamtimetableComponent implements OnInit {
         this.SlotNClassSubjects = [];
         this.displayedColumns = [];
         var _EachExamDate = alasql("select distinct Slot->ExamDate as ExamDate from ? order by Slot->ExamDate", [filteredData]);
-        var filteredOneSlotSubjects = [];
+        var filteredOneSlotSubjects :any[]= [];
 
         debugger;
 
@@ -306,7 +307,7 @@ export class ExamtimetableComponent implements OnInit {
         //var timeTableRow = {};
         var SubjectRow = {};
         _EachExamDate.forEach(edate => {
-          var RowsForOneExamDate = [];
+          var RowsForOneExamDate :any[]= [];
 
           var header = {};
           var SlotRow = {};
@@ -314,15 +315,15 @@ export class ExamtimetableComponent implements OnInit {
           var daynumber = moment(_examDate, 'DD/MM/YYYY').day()
           var day = this.weekday[daynumber]
           var _dateHeader = '<b>' + _examDate + " - " + day + "</b>";
-          var timeTableRow = [];
+          var timeTableRow :any[]= [];
 
-          var examDateSlot = this.ExamSlots.filter(f => {
-            return f.ExamDate == _examDate && f.ExamId == this.searchForm.get("searchExamId").value
+          var examDateSlot = this.ExamSlots.filter((f:any) => {
+            return f.ExamDate == _examDate && f.ExamId == this.searchForm.get("searchExamId")?.value
           });//.sort((a,b)=>a.Sequence - b.Sequence);
 
           SubjectRow = {};
           examDateSlot.forEach((slot, index) => {
-            var oneSlotClasslist = [];
+            var oneSlotClasslist :any[]= [];
             if (index == 0) {
               header["Slot0"] = _dateHeader;
               header["daterow"] = true;
@@ -332,20 +333,20 @@ export class ExamtimetableComponent implements OnInit {
               header["Slot" + index] = '';
             }
             SlotRow["Slot" + index] = "<b>" + slot.SlotName + "</b>";
-
-            if (this.displayedColumns.indexOf("Slot" + index) == -1)
-              this.displayedColumns.push("Slot" + index);
+            let indxstr='Slot' + index;
+            if (this.displayedColumns.indexOf(indxstr) == -1)
+              this.displayedColumns.push(indxstr);
 
             //filtering only for one slot in one exam date
-            filteredOneSlotSubjects = filteredData.filter(f => f.SlotId == slot.SlotId
+            filteredOneSlotSubjects = filteredData.filter((f:any) => f.SlotId == slot.SlotId
               && moment(f.Slot.ExamDate).format('dd/MM/yyyy') == moment(edate.ExamDate).format('dd/MM/yyyy'))
               .sort((a, b) => a.Slot.Sequence - b.Slot.Sequence);
-            //timeTableRow["ExamDate"]["slot" + index]["ClassSubject"] = [];
+            //timeTableRow["ExamDate"]["slot" + index]["ClassSubject"] :any[]= [];
             //console.log("filteredOneSlotSubjects",filteredOneSlotSubjects)
 
             var distinctClasses = alasql("select distinct ClassSubject->ClassId as ClassId from ? ", [filteredOneSlotSubjects]);
             oneSlotClasslist = distinctClasses.map(d => {
-              var _classobj = this.Classes.filter(s => s.ClassId == d.ClassId);
+              var _classobj = this.Classes.filter((s:any) => s.ClassId == d.ClassId);
               var _className = '';
               var _classSequence = '';
               if (_classobj.length > 0) {
@@ -359,7 +360,7 @@ export class ExamtimetableComponent implements OnInit {
             //console.log("oneSlotClasslist", oneSlotClasslist);
             filteredOneSlotSubjects.forEach(f => {
               var _subject = '';
-              var obj = this.Subjects.filter(s => s.MasterDataId == f.ClassSubject.SubjectId)
+              var obj = this.Subjects.filter((s:any) => s.MasterDataId == f.ClassSubject.SubjectId)
               if (obj.length > 0)
                 _subject = obj[0].MasterDataName;
               var classobj = oneSlotClasslist.filter(c => c.ClassId == f.ClassSubject.ClassId)
@@ -402,10 +403,10 @@ export class ExamtimetableComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.SlotNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSLOTNAME);
     //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-    this.Batches = this.tokenStorage.getBatches()
+    this.Batches = this.tokenStorage.getBatches()!;
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
 

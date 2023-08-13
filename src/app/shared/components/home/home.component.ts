@@ -5,7 +5,7 @@ import { MediaObserver } from '@angular/flex-layout'
 import { NaomitsuService } from '../../databaseService';
 import { SharedataService } from '../../sharedata.service';
 import { List } from '../../interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { SidenavService } from '../../sidenav.service';
 import { Meta, Title } from '@angular/platform-browser';
@@ -26,15 +26,15 @@ export class HomeComponent implements OnInit {
   contentcls: string;
   sidebarcls: string;
   openSideBar = true;
-  //MenuData = [];
+  //MenuData :any[]= [];
   NewsNEventPageId = 0;
   //////////////////////////
   SelectedBatchId = 0; SubOrgId = 0;
-  LoginUserDetail = [];
-  sideMenu = [];
+  LoginUserDetail :any[]= [];
+  sideMenu :any[]= [];
   opened = true;
   SelectedApplicationId = 0;
-  MenuData = [];
+  MenuData :any[]= [];
   /////////////////////////
 
   constructor(
@@ -86,12 +86,12 @@ export class HomeComponent implements OnInit {
         //this.sidebarcls = "sidebartop65width100";
       }
       ////////////////
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.LoginUserDetail = this.tokenStorage.getUserDetail();
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       // if (this.SelectedApplicationId > 1)
-      this.sideMenu = this.tokenStorage.getMenuData();
+      this.sideMenu = this.tokenStorage.getMenuData()!;
       //console.log("home init this.sideMenu", this.sideMenu)
       // console.log("this.scroller.nativeElement.scrollTop", this.scroller)
       // this.scroller._elementRef.onscroll = () => {

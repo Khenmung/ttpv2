@@ -4,11 +4,11 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { DatePipe } from '@angular/common';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -31,24 +31,24 @@ export class LedgerBalanceComponent implements OnInit {
 
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
   AccountingVoucherListName = 'AccountingVouchers';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   filteredOptions: Observable<IGeneralLedger[]>;
-  AccountingPeriod = [];
+  AccountingPeriod :any[]= [];
   SelectedApplicationId = 0;
   Permission = '';
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  GLAccounts = [];
-  GeneralLedgers = [];
+  GLAccounts :any[]= [];
+  GeneralLedgers :any[]= [];
   CurrentBatchId = 0;
   SelectedBatchId = 0;
   SubOrgId = 0;
-  AccountingVoucherList: IAccountingVoucher[] = [];
+  AccountingVoucherList: IAccountingVoucher[]= [];
   dataSource: MatTableDataSource<IAccountingVoucher>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm: UntypedFormGroup;
   TotalDebit = 0;
   TotalCredit = 0;
@@ -96,7 +96,7 @@ export class LedgerBalanceComponent implements OnInit {
       searchToDate: [new Date()],
       searchGeneralLedgerId: [0]
     });
-    this.filteredOptions = this.searchForm.get("searchGeneralLedgerId").valueChanges
+    this.filteredOptions = this.searchForm.get("searchGeneralLedgerId")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.TeacherName),
@@ -131,10 +131,10 @@ export class LedgerBalanceComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
-      this.AccountingPeriod = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd());
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.AccountingPeriod = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
 
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.accounting.TRIALBALANCE);
       if (perObj.length > 0) {
@@ -176,11 +176,11 @@ export class LedgerBalanceComponent implements OnInit {
   GetAccountingVoucher() {
     debugger;
     let filterStr = this.FilterOrgSubOrg + " and LedgerId eq 0 and Active eq 1";
-    filterStr += " and PostingDate ge " + this.datepipe.transform(this.searchForm.get("searchFromDate").value, 'yyyy-MM-dd') + //T00:00:00.000Z
-      " and  PostingDate le " + this.datepipe.transform(this.searchForm.get("searchToDate").value, 'yyyy-MM-dd');//T00:00:00.000Z
+    filterStr += " and PostingDate ge " + this.datepipe.transform(this.searchForm.get("searchFromDate")?.value, 'yyyy-MM-dd') + //T00:00:00.000Z
+      " and  PostingDate le " + this.datepipe.transform(this.searchForm.get("searchToDate")?.value, 'yyyy-MM-dd');//T00:00:00.000Z
     this.loading = true;
 
-    var _GeneralLedgerId = this.searchForm.get("searchGeneralLedgerId").value.GeneralLedgerId;
+    var _GeneralLedgerId = this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId;
     // if (_GeneralLedgerId) {
     //   filterStr += " and GeneralLedgerAccountId eq " + _GeneralLedgerId;
 
@@ -201,7 +201,7 @@ export class LedgerBalanceComponent implements OnInit {
     list.PageName = this.AccountingVoucherListName;
     //list.lookupFields = ["AccountingTrialBalance"];
     list.filter = [filterStr];
-    this.AccountingVoucherList = [];
+    this.AccountingVoucherList :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         data.value.forEach(f => {
@@ -218,7 +218,7 @@ export class LedgerBalanceComponent implements OnInit {
         var currentAccountType = this.AccountingVoucherList.filter(ac => ac.GeneralLedgerAccountId == _GeneralLedgerId)
         var allRelatedAccounts = this.AccountingVoucherList.filter(all => currentAccountType.findIndex(indx => indx.Reference == all.Reference) > -1);
         const DistinctReference = [...new Set(allRelatedAccounts.map(item => item.Reference))];
-        var _ledgerBalance = [];
+        var _ledgerBalance :any[]= [];
         DistinctReference.forEach((related: any) => {
           var sameReference = allRelatedAccounts.filter(same => same.Reference == related);
 
@@ -299,7 +299,7 @@ export class LedgerBalanceComponent implements OnInit {
 
     list.PageName = "GeneralLedgers";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts = [];
+    this.GLAccounts :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.GeneralLedgers = [...data.value];
@@ -403,7 +403,7 @@ export class LedgerBalanceComponent implements OnInit {
     list.PageName = "GeneralLedgers";
     list.lookupFields = ["AccountNature($select=Active,AccountNatureId,DebitType)"];
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts = [];
+    this.GLAccounts :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -430,7 +430,7 @@ export class LedgerBalanceComponent implements OnInit {
 
     list.PageName = "AccountingPeriods";
     list.filter = [this.FilterOrgSubOrg + " and CurrentPeriod eq 1 and Active eq 1"];
-    this.GLAccounts = [];
+    this.GLAccounts :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountingPeriod = data.value.map(f => {
@@ -446,7 +446,7 @@ export class LedgerBalanceComponent implements OnInit {
 
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {

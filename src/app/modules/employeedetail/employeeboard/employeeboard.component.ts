@@ -1,9 +1,9 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { EducationhistoryComponent } from '../educationhistory/educationhistory.component';
 import { EmployeeComponent } from '../employee/employee.component';
 import { EmployeeactivityComponent } from '../../employeeactivity/employeeactivity/employeeactivity.component';
@@ -47,7 +47,7 @@ export class EmployeeboardComponent implements AfterViewInit {
       DataDownloadPermission: '',
       DataUploadPermission: ''
     };
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
 

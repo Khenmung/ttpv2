@@ -4,11 +4,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 @Component({
   selector: 'app-studentgrade',
@@ -18,23 +18,23 @@ import { SwUpdate } from '@angular/service-worker';
 export class StudentgradeComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  ClassGroups = [];
-  SubjectCategory = [];
-  LoginUserDetail: any[] = [];
+  ClassGroups :any[]= [];
+  SubjectCategory :any[]= [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   StudentGradeListName = 'StudentGrades';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0; SubOrgId = 0;
-  StudentGradeList: IStudentGrade[] = [];
+  StudentGradeList: IStudentGrade[]= [];
   filteredOptions: Observable<IStudentGrade[]>;
   dataSource: MatTableDataSource<IStudentGrade>;
-  allMasterData = [];
-  StudentGrade = [];
+  allMasterData :any[]= [];
+  StudentGrade :any[]= [];
   Permission = 'deny';
-  Classes = [];
-  ExamStatus = [];
-  Exams = [];
+  Classes :any[]= [];
+  ExamStatus :any[]= [];
+  Exams :any[]= [];
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   StudentGradeData = {
@@ -62,8 +62,8 @@ export class StudentgradeComponent implements OnInit {
     "Active",
     "Action"
   ];
-  ExamClassGroups = [];
-  ExamNames = [];
+  ExamClassGroups :any[]= [];
+  ExamNames :any[]= [];
   SelectedApplicationId = 0;
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
@@ -100,13 +100,13 @@ export class StudentgradeComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    //this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EXAM.STUDENTGRADE);
@@ -129,11 +129,11 @@ export class StudentgradeComponent implements OnInit {
 
     var newdata = {
       StudentGradeId: 0,
-      ExamId: this.searchForm.get("searchExamId").value,
+      ExamId: this.searchForm.get("searchExamId")?.value,
       GradeName: '',
       Formula: '',
-      ClassGroupId: this.searchForm.get("searchClassGroupId").value,
-      SubjectCategoryId: this.searchForm.get("searchSubjectCategoryId").value,
+      ClassGroupId: this.searchForm.get("searchClassGroupId")?.value,
+      SubjectCategoryId: this.searchForm.get("searchSubjectCategoryId")?.value,
       GradeStatusId: 0,
       Sequence: 0,
       Points: 0,
@@ -298,9 +298,9 @@ export class StudentgradeComponent implements OnInit {
   DatafromotherexamMSG = '';
   CopyFromOtherExam() {
     debugger;
-    var _copyFromExamId = this.searchForm.get("searchCopyFromExamId").value;
-    var _copyFromClassGroupId = this.searchForm.get("searchCopyFromClassGroupId").value;
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _copyFromExamId = this.searchForm.get("searchCopyFromExamId")?.value;
+    var _copyFromClassGroupId = this.searchForm.get("searchCopyFromClassGroupId")?.value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
     if (_copyFromExamId == 0) {
       this.contentservice.openSnackBar("Please select exam to copy from.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -316,14 +316,14 @@ export class StudentgradeComponent implements OnInit {
     this.GetStudentGrade(_copyFromExamId, _copyFromClassGroupId);
   }
   ExamReleased = 0;
-  FilteredClassGroup = [];
-  FilteredCopyFromClassGroup = [];
+  FilteredClassGroup :any[]= [];
+  FilteredCopyFromClassGroup :any[]= [];
   ShowCopyBlock = false;
   ShowHide() {
     this.ShowCopyBlock = !this.ShowCopyBlock;
   }
   SelectClassGroup() {
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
     this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _examId)
       .subscribe((data: any) => {
         this.ExamClassGroups = data.value.map(e => {
@@ -342,7 +342,7 @@ export class StudentgradeComponent implements OnInit {
   }
   SelectCopyFromClassGroup() {
     debugger;
-    var _examId = this.searchForm.get("searchCopyFromExamId").value;
+    var _examId = this.searchForm.get("searchCopyFromExamId")?.value;
     this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _examId)
       .subscribe((data: any) => {
         this.ExamClassGroups = data.value.map(e => {
@@ -360,9 +360,9 @@ export class StudentgradeComponent implements OnInit {
     let filterStr = this.FilterOrgSubOrg;
     //" and BatchId eq " + this.SelectedBatchId;
 
-    var _examId = this.searchForm.get("searchExamId").value;
-    var _ClassGroupId = this.searchForm.get("searchClassGroupId").value;
-    var _SubjectCategoryId = this.searchForm.get("searchSubjectCategoryId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
+    var _ClassGroupId = this.searchForm.get("searchClassGroupId")?.value;
+    var _SubjectCategoryId = this.searchForm.get("searchSubjectCategoryId")?.value;
     if (pCopyFromExamId == 0 && _examId == 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -429,7 +429,7 @@ export class StudentgradeComponent implements OnInit {
       .subscribe((data: any) => {
         //debugger;
         if (data.value.length > 0) {
-          var _CopyFromExam = [];
+          var _CopyFromExam :any[]= [];
           var _SelectedExam = data.value.filter(d => d.ExamId == _examId);
           if (pCopyFromExamId > 0) {
             _CopyFromExam = data.value.filter(d => d.ExamId == pCopyFromExamId);
@@ -438,7 +438,7 @@ export class StudentgradeComponent implements OnInit {
               //convert all examid to _examId
               f.ExamId = _examId;
 
-              var existingstudentgrade = _SelectedExam.filter(s => s.ClassGroupId == _ClassGroupId && s.SubjectCategoryId == _SubjectCategoryId);
+              var existingstudentgrade = _SelectedExam.filter((s:any) => s.ClassGroupId == _ClassGroupId && s.SubjectCategoryId == _SubjectCategoryId);
               if (existingstudentgrade.length > 0) {
                 f.StudentGradeId = existingstudentgrade[0].StudentGradeId;
               }
@@ -474,9 +474,9 @@ export class StudentgradeComponent implements OnInit {
   EnableCopy = false;
   EnableCopyButton() {
 
-    var _examId = this.searchForm.get("searchExamId").value;
-    var _ClassGroupId = this.searchForm.get("searchClassGroupId").value;
-    var _SubjectCategoryId = this.searchForm.get("searchSubjectCategoryId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
+    var _ClassGroupId = this.searchForm.get("searchClassGroupId")?.value;
+    var _SubjectCategoryId = this.searchForm.get("searchSubjectCategoryId")?.value;
     if (_examId > 0 && _ClassGroupId > 0 && _SubjectCategoryId > 0)
       this.EnableCopy = true;
     else
@@ -501,7 +501,7 @@ export class StudentgradeComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.SubjectCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTCATEGORY)
     this.ExamStatus = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSTATUS);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);

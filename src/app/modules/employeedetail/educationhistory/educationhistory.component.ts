@@ -5,11 +5,11 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-educationhistory',
@@ -18,7 +18,7 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 })
 export class EducationhistoryComponent implements OnInit { 
   PageLoading=true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -29,14 +29,14 @@ export class EducationhistoryComponent implements OnInit {
     keepAfterRouteChange: true
   };
   EmployeeEducationHistoryListName = 'EmployeeEducationHistories';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0;SubOrgId = 0;
-  EmployeeEducationHistoryList: IEducationHistory[] = [];
+  EmployeeEducationHistoryList: IEducationHistory[]= [];
   filteredOptions: Observable<IEducationHistory[]>;
   dataSource: MatTableDataSource<IEducationHistory>;
-  allMasterData = [];
-  EmployeeEducationHistory = [];
+  allMasterData :any[]= [];
+  EmployeeEducationHistory :any[]= [];
   Permission = 'deny';
   SelectedApplicationId=0;
   EmployeeId = 0;
@@ -93,12 +93,12 @@ export class EducationhistoryComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
-    this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.EDUCATIONHISTORY)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;

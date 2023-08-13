@@ -4,13 +4,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
-import { FileUploadService } from 'src/app/shared/upload.service';
+import { FileUploadService } from '../../../shared/upload.service';
 
 @Component({
   selector: 'app-createhtmlpage',
@@ -199,23 +199,23 @@ export class CreatehtmlpageComponent implements OnInit {
 
   ///////////////////
   AddNewMode = false;
-  RulesOrPolicyTypes = [];
+  RulesOrPolicyTypes :any[]= [];
   PageLoading = false;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   RulesOrPolicyListName = 'RulesOrPolicies';
-  RulesOrPolicyDisplayTypes = [];
-  Applications = [];
+  RulesOrPolicyDisplayTypes :any[]= [];
+  Applications :any[]= [];
   ckeConfig: any;
   loading = false;
   FilterOrgSubOrg='';
   SelectedBatchId = 0;SubOrgId = 0;
-  RulesOrPolicyList: IRulesOrPolicy[] = [];
+  RulesOrPolicyList: IRulesOrPolicy[]= [];
   filteredOptions: Observable<IRulesOrPolicy[]>;
   dataSource: MatTableDataSource<IRulesOrPolicy>;
-  allMasterData = [];
-  PageCategory = [];
-  RulesOrPolicySubCategory = [];
+  allMasterData :any[]= [];
+  PageCategory :any[]= [];
+  RulesOrPolicySubCategory :any[]= [];
   Permission = 'deny';
   RulesOrPolicyData = {
     RulesOrPolicyId: 0,
@@ -262,7 +262,7 @@ export class CreatehtmlpageComponent implements OnInit {
       Active: [true]
       // searchSubCategoryId: [0]
     });
-    this.searchForm.get("RulesOrPolicyId").disable();
+    this.searchForm.get("RulesOrPolicyId")?.disable();
     this.PageLoad();
   }
 
@@ -272,13 +272,13 @@ export class CreatehtmlpageComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    //this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.misc.CREATEHTMLPAGE);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
@@ -388,11 +388,11 @@ export class CreatehtmlpageComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    var _title = this.searchForm.get("Title").value;
-    var _description = this.searchForm.get("EditorDescription").value;
-    var _categoryId = this.searchForm.get("searchCategoryId").value;
-    var _rulesOrPolicyId = this.searchForm.get("RulesOrPolicyId").value;
-    var _active = this.searchForm.get("Active").value;
+    var _title = this.searchForm.get("Title")?.value;
+    var _description = this.searchForm.get("EditorDescription")?.value;
+    var _categoryId = this.searchForm.get("searchCategoryId")?.value;
+    var _rulesOrPolicyId = this.searchForm.get("RulesOrPolicyId")?.value;
+    var _active = this.searchForm.get("Active")?.value;
     let checkFilterString = this.FilterOrgSubOrg + " and Title eq '" + globalconstants.encodeSpecialChars(_title) + "'";
     if (_title.length == 0) {
       this.loading = false;
@@ -478,7 +478,7 @@ export class CreatehtmlpageComponent implements OnInit {
           this.loadingFalse();
         });
   }
-  FileNames = [];
+  FileNames :any[]= [];
   GetRulesOrPolicys() {
     debugger;
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
@@ -501,17 +501,17 @@ export class CreatehtmlpageComponent implements OnInit {
       });
 
   }
-  FilteredFileNames = [];
+  FilteredFileNames :any[]= [];
   FilterTitle() {
     debugger;
-    var searchCategoryId = this.searchForm.get("searchCategoryId").value;
-    this.FilteredFileNames = this.FileNames.filter(f => f.CategoryId == searchCategoryId);
+    var searchCategoryId = this.searchForm.get("searchCategoryId")?.value;
+    this.FilteredFileNames = this.FileNames.filter((f:any) => f.CategoryId == searchCategoryId);
   }
   GetRulesOrPolicy() {
     debugger;
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    var _searchId = this.searchForm.get("searchId").value;
-    //var _searchSubCategoryId = this.searchForm.get("searchSubCategoryId").value;
+    var _searchId = this.searchForm.get("searchId")?.value;
+    //var _searchSubCategoryId = this.searchForm.get("searchSubCategoryId")?.value;
     var _fields = ["RulesOrPolicyId", "CategoryId", "Title", "Description"];
     if (_searchId == 0) {
       this.loading = false;
@@ -546,7 +546,7 @@ export class CreatehtmlpageComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.PageCategory = this.getDropDownData(globalconstants.MasterDefinitions.common.PAGECATEGORY)
     this.RulesOrPolicyDisplayTypes = this.getDropDownData(globalconstants.MasterDefinitions.common.RULEORPOLICYCATEGORYDISPLAYTYPE)
 

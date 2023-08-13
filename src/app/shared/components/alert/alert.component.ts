@@ -10,7 +10,7 @@ export class AlertComponent implements OnInit, OnDestroy {
     @Input() id = 'default-alert';
     @Input() fade = true;
 
-    alerts: Alert[] = [];
+    alerts: Alert[]= [];
     alertSubscription: Subscription;
     routeSubscription: Subscription;
 

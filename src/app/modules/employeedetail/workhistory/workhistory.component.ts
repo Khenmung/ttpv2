@@ -5,11 +5,11 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-workhistory',
@@ -18,7 +18,7 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 })
 export class WorkhistoryComponent implements OnInit { PageLoading=true;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -29,14 +29,14 @@ export class WorkhistoryComponent implements OnInit { PageLoading=true;
     keepAfterRouteChange: true
   };
   EmployeeWorkHistoryListName = 'EmpWorkHistories';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0;SubOrgId = 0;
-  EmployeeWorkHistoryList: IWorkHistory[] = [];
+  EmployeeWorkHistoryList: IWorkHistory[]= [];
   filteredOptions: Observable<IWorkHistory[]>;
   dataSource: MatTableDataSource<IWorkHistory>;
-  allMasterData = [];
-  EmployeeWorkHistory = [];
+  allMasterData :any[]= [];
+  EmployeeWorkHistory :any[]= [];
   Permission = 'deny';
   EmployeeId = 0;
   SelectedApplicationId=0;
@@ -92,8 +92,8 @@ export class WorkhistoryComponent implements OnInit { PageLoading=true;
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.EmployeeId = +this.tokenStorage.getEmployeeId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -107,7 +107,7 @@ export class WorkhistoryComponent implements OnInit { PageLoading=true;
         //this.nav.navigate(['/edu'])
       }
       else {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.GetEmployeeWorkHistory();
       }
     }

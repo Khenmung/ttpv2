@@ -3,10 +3,10 @@ import { LeaveBalanceComponent } from '../LeaveBalance/leavebalance.component';
 import { EmployeeLeaveComponent } from '../employee-leave/employee-leave.component';
 import { LeavepolicyComponent } from '../leavepolicy/leavepolicy.component';
 import { SwUpdate } from '@angular/service-worker';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-leaveboard',
@@ -33,7 +33,7 @@ export class LeaveboardComponent implements AfterViewInit {
       ExamTimeTablePermission: '',
       ExamResultPermission: '',
     };
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
   constructor(private servicework: SwUpdate,

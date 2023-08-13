@@ -4,11 +4,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -22,17 +22,17 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  TopMenu = [];
-  MasterData = [];
-  Roles = [];
-  Permissions = [];
+  TopMenu :any[]= [];
+  MasterData :any[]= [];
+  Roles :any[]= [];
+  Permissions :any[]= [];
   Permission = 'deny';
-  ApplicationRoleList = [];
-  TopPageFeatures = [];
-  DefinedMaster = [];
+  ApplicationRoleList :any[]= [];
+  TopPageFeatures :any[]= [];
+  DefinedMaster :any[]= [];
   NoOfRowsToUpdate = -1;
-  PageFeatures = [];
-  FilteredPageFeatures = [];
+  PageFeatures :any[]= [];
+  FilteredPageFeatures :any[]= [];
   oldvalue = '';
   selectedData = '';
   FilterOrgSubOrg = '';
@@ -51,10 +51,10 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
     SubOrgId: 0,
     Active: 0
   };
-  CustomFeatures = [];
+  CustomFeatures :any[]= [];
   SelectedApplicationId = 0;
-  ApplicationDataStatus = [];
-  SchoolDataStatus = [];
+  ApplicationDataStatus :any[]= [];
+  SchoolDataStatus :any[]= [];
   DisplayColumns = [
     "CustomFeatureRolePermissionId",
     "FeatureName",
@@ -62,7 +62,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
     "Active",
     "Action"
   ];
-  UserDetails = [];
+  UserDetails :any[]= [];
 
   constructor(private servicework: SwUpdate,
     private fb: UntypedFormBuilder,
@@ -107,7 +107,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
   filterValues = {
     FeatureName: ''
   };
-  FilteredCustomFeatures = [];
+  FilteredCustomFeatures :any[]= [];
   PageLoad() {
     debugger;
     this.loading = true;
@@ -125,15 +125,15 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
       if (this.Permission != 'deny') {
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-        this.filteredFeatures = this.searchForm.get("searchFeatureName").valueChanges
+        this.filteredFeatures = this.searchForm.get("searchFeatureName")?.valueChanges
           .pipe(
             startWith(''),
             map(value => typeof value === 'string' ? value : value.CustomFeatureName),
             map(Name => Name ? this._filter(Name) : this.FilteredCustomFeatures.slice())
-          );
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+          )!;
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.Permissions = globalconstants.PERMISSIONTYPES;
-        this.MasterData = this.tokenStorage.getMasterData();
+        this.MasterData = this.tokenStorage.getMasterData()!;
         this.TableNames = this.getDropDownData(globalconstants.MasterDefinitions.common.TABLENAMES)
         this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
         this.GetCustomFeatures();
@@ -165,7 +165,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
     }
     return filterFunction;
   }
-  TableNames = [];
+  TableNames :any[]= [];
   GetCustomFeatures() {
     let list: List = new List();
     list.fields = [
@@ -209,7 +209,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
       });
   }
   GetTopMenu() {
-    this.TopMenu = this.PageFeatures.filter(f => f.ApplicationId == this.SelectedApplicationId
+    this.TopMenu = this.PageFeatures.filter((f:any) => f.ApplicationId == this.SelectedApplicationId
       && f.ParentId == 0)
     this.TopMenu = this.TopMenu.sort((a, b) => a.DisplayOrder - b.DisplayOrder);
   }
@@ -243,7 +243,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
       this.enableTopEdit = true;
     else
       this.enableTopEdit = false;
-    var _tableNameId = this.searchForm.get("searchTableName").value;
+    var _tableNameId = this.searchForm.get("searchTableName")?.value;
     this.FilteredCustomFeatures = this.CustomFeatures.filter(c => c.TableNameId == _tableNameId);
     this.ClearData();
   }
@@ -272,7 +272,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
             d.DisplayOrder = d.Page.DisplayOrder;
             return d;
           });
-          this.TopPageFeatures = this.PageFeatures.filter(f => f.ParentId == 0);
+          this.TopPageFeatures = this.PageFeatures.filter((f:any) => f.ParentId == 0);
         }
         else
           this.PageFeatures = [];
@@ -282,10 +282,10 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
   }
   FilterPageFeatures() {
     //debugger;
-    this.FilteredPageFeatures = this.PageFeatures.filter(f => f.ApplicationId == this.SelectedApplicationId);
+    this.FilteredPageFeatures = this.PageFeatures.filter((f:any) => f.ApplicationId == this.SelectedApplicationId);
 
   }
-  CustomerFeaturePermissionList = [];
+  CustomerFeaturePermissionList :any[]= [];
   GetCustomerFeatures() {
     debugger;
 
@@ -294,9 +294,9 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
       this.contentservice.openSnackBar("Please select Application", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _roleId = this.searchForm.get("searchRoleId").value;
-    var _tableNameId = this.searchForm.get("searchTableName").value;
-    var _featureId = this.searchForm.get("searchFeatureName").value.CustomFeatureId;
+    var _roleId = this.searchForm.get("searchRoleId")?.value;
+    var _tableNameId = this.searchForm.get("searchTableName")?.value;
+    var _featureId = this.searchForm.get("searchFeatureName")?.value.CustomFeatureId;
     if(_tableNameId==0 )
     {
       this.contentservice.openSnackBar("Please select table name.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -332,12 +332,12 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
         this.CustomerFeaturePermissionList = [];
         if (_featureId > 0) {
           this.CustomerFeaturePermissionList = data.value.map(m => {
-            m.FeatureName = this.CustomFeatures.filter(f => f.CustomerFeatureId == m.CustomerFeatureId)[0].CustomFeatureName;
+            m.FeatureName = this.CustomFeatures.filter((f:any) => f.CustomerFeatureId == m.CustomerFeatureId)[0].CustomFeatureName;
             return m;
           })
         }
         else {
-          var filteredFeatures= this.CustomFeatures.filter(f=>f.TableNameId ==_tableNameId);
+          var filteredFeatures= this.CustomFeatures.filter((f:any)=>f.TableNameId ==_tableNameId);
           filteredFeatures.forEach(custom => {
             var obj = data.value.filter(e => e.CustomFeatureId == custom.CustomFeatureId);
             if (obj.length > 0) {
@@ -387,7 +387,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
     })
   }
   // saveall() {
-  //   var ToUpdate = this.ApplicationRoleList.filter(f => f.Action);
+  //   var ToUpdate = this.ApplicationRoleList.filter((f:any) => f.Action);
   //   this.NoOfRowsToUpdate = ToUpdate.length;
   //   ToUpdate.forEach((record, indx) => {
   //     this.NoOfRowsToUpdate--;
@@ -404,8 +404,8 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
     element.Active = event.checked;
   }
   AddNew() {
-    var _roleId = this.searchForm.get("searchRoleId").value;
-    var _tableNameId = this.searchForm.get("searchTableName").value;
+    var _roleId = this.searchForm.get("searchRoleId")?.value;
+    var _tableNameId = this.searchForm.get("searchTableName")?.value;
     if (_roleId == 0) {
       this.contentservice.openSnackBar("Please select role.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -414,13 +414,13 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
       this.contentservice.openSnackBar("Please select table name.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _featureId = this.searchForm.get("searchFeatureName").value.CustomFeatureId;
+    var _featureId = this.searchForm.get("searchFeatureName")?.value.CustomFeatureId;
     if (_featureId == 0) {
       this.contentservice.openSnackBar("Please select feature.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
 
-    var _featureName = this.CustomFeatures.filter(f => f.CustomFeatureId == _featureId)[0].CustomFeatureName;
+    var _featureName = this.CustomFeatures.filter((f:any) => f.CustomFeatureId == _featureId)[0].CustomFeatureName;
 
     var newdata = {
       CustomFeatureRolePermissionId: 0,
@@ -437,7 +437,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
     this.datasource = new MatTableDataSource<ICustomFeatureRolePermission>(this.CustomerFeaturePermissionList);
   }
   UpdateAll() {
-    var toUpdate = this.CustomerFeaturePermissionList.filter(f => f.Action);
+    var toUpdate = this.CustomerFeaturePermissionList.filter((f:any) => f.Action);
     this.NoOfRowsToUpdate = toUpdate.length;
     toUpdate.forEach((a, indx) => {
       this.NoOfRowsToUpdate -= 1;
@@ -491,7 +491,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
           this.AppRoleData.ApplicationId = row.ApplicationId;
           this.AppRoleData.TableNameId = row.TableNameId;
           this.AppRoleData.OrgId = this.UserDetails[0]["orgId"];
-          this.AppRoleData.SubOrgId = this.tokenStorage.getSubOrgId();
+          this.AppRoleData.SubOrgId = this.tokenStorage.getSubOrgId()!;
 
           console.log('data', this.AppRoleData);
           if (this.AppRoleData.CustomFeatureRolePermissionId == 0) {

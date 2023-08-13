@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { ClassboardComponent } from './classboard/classboard.component';
 import { ClassdetailComponent } from './classdetail/classdetail.component';
 import { ClassgroupComponent } from './classgroup/classgroup.component';

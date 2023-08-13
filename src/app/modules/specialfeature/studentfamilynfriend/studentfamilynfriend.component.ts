@@ -5,11 +5,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { IStudent } from '../../student/searchstudent/searchstudent.component';
 
 @Component({
@@ -20,30 +20,30 @@ import { IStudent } from '../../student/searchstudent/searchstudent.component';
 export class StudentfamilynfriendComponent implements OnInit {
   PageLoading = true;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   StudentFamilyNFriendListName = 'StudentFamilyNFriends';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0;SubOrgId = 0;
   FilterOrgSubOrgBatchId='';
   FilterOrgSubOrg='';
-  StudentFamilyNFriendList: IStudentFamilyNFriends[] = [];
+  StudentFamilyNFriendList: IStudentFamilyNFriends[]= [];
   filteredOptions: Observable<IStudentFamilyNFriends[]>;
   dataSource: MatTableDataSource<IStudentFamilyNFriends>;
   dataSourceSiblings: MatTableDataSource<any>;
-  allMasterData = [];
-  StudentFamilyNFriends = [];
-  FamilyRelationship = [];
-  Genders = [];
+  allMasterData :any[]= [];
+  StudentFamilyNFriends :any[]= [];
+  FamilyRelationship :any[]= [];
+  Genders :any[]= [];
   Permission = 'deny';
-  Classes = [];
-  Sections = [];
+  Classes :any[]= [];
+  Sections :any[]= [];
   StudentId = 0;
-  Students = [];
-  StudentClasses = [];
-  FeeType = [];
+  Students :any[]= [];
+  StudentClasses :any[]= [];
+  FeeType :any[]= [];
   filteredStudents: Observable<IStudent[]>;
   filteredSiblings: Observable<IStudent[]>;
   StudentFamilyNFriendData = {
@@ -71,8 +71,8 @@ export class StudentfamilynfriendComponent implements OnInit {
   searchForm: UntypedFormGroup;
   filteredFathers: Observable<IStudent[]>;
   filteredMothers: Observable<IStudent[]>;
-  UniqueFathers=[];
-  UniqueMothers=[];
+  UniqueFathers:any[]=[];
+  UniqueMothers:any[]=[];
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
     private dataservice: NaomitsuService,
@@ -99,30 +99,30 @@ export class StudentfamilynfriendComponent implements OnInit {
       searchRelationshipId: [''],
       searchOtherSiblingorFriend: ['']
     });
-    this.filteredStudents = this.searchForm.get("searchStudentName").valueChanges
+    this.filteredStudents = this.searchForm.get("searchStudentName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.Students.slice())
-      );
-    this.filteredSiblings = this.searchForm.get("searchSiblings").valueChanges
+      )!;
+    this.filteredSiblings = this.searchForm.get("searchSiblings")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.Students.slice())
-      );
-    this.filteredFathers = this.searchForm.get("FatherName").valueChanges
+      )!;
+    this.filteredFathers = this.searchForm.get("FatherName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.FatherName),
         map(Name => Name ? this._filterF(Name) : this.Students.slice())
-      );
-    this.filteredMothers = this.searchForm.get("MotherName").valueChanges
+      )!;
+    this.filteredMothers = this.searchForm.get("MotherName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.MotherName),
         map(Name => Name ? this._filterM(Name) : this.Students.slice())
-      );
+      )!;
    
       this.PageLoad();
 
@@ -154,7 +154,7 @@ export class StudentfamilynfriendComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.StudentId = +this.tokenStorage.getStudentId();
+    this.StudentId = +this.tokenStorage.getStudentId()!;;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -169,9 +169,9 @@ export class StudentfamilynfriendComponent implements OnInit {
       }
       else {
         this.FilterOrgSubOrgBatchId= globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.GetFeeTypes();
         this.GetMasterData();
 
@@ -197,25 +197,25 @@ export class StudentfamilynfriendComponent implements OnInit {
   // }
   AddNew() {
     debugger;
-    if (this.searchForm.get("searchStudentName").value == '') {
+    if (this.searchForm.get("searchStudentName")?.value == '') {
       this.loading = false;
       this.contentservice.openSnackBar("Please select student.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var siblingNamefromOthers = this.searchForm.get("searchOtherSiblingorFriend").value;
-    if (this.searchForm.get("searchSiblings").value == '' && siblingNamefromOthers == '') {
+    var siblingNamefromOthers = this.searchForm.get("searchOtherSiblingorFriend")?.value;
+    if (this.searchForm.get("searchSiblings")?.value == '' && siblingNamefromOthers == '') {
       this.loading = false;
       this.contentservice.openSnackBar("Please select siblings or friend.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    // if (siblingNamefromOthers.length > 0 && this.searchForm.get("searchContactNo").value == '') {
+    // if (siblingNamefromOthers.length > 0 && this.searchForm.get("searchContactNo")?.value == '') {
     //   this.loading = false;
     //   this.contentservice.openSnackBar("Please enter contact number..", globalconstants.ActionText, globalconstants.RedBackground);
     //   return;
     // }
     var _relationship = 0;
-    if (this.searchForm.get("searchRelationshipId").value != '') {
-      _relationship = this.searchForm.get("searchRelationshipId").value;
+    if (this.searchForm.get("searchRelationshipId")?.value != '') {
+      _relationship = this.searchForm.get("searchRelationshipId")?.value;
     }
     else {
       this.loading = false;
@@ -224,25 +224,25 @@ export class StudentfamilynfriendComponent implements OnInit {
     }
 
     var siblingorfriendName = '';
-    if (this.searchForm.get("searchSiblings").value.Name == undefined)
-      siblingorfriendName = this.searchForm.get("searchOtherSiblingorFriend").value;
+    if (this.searchForm.get("searchSiblings")?.value.Name == undefined)
+      siblingorfriendName = this.searchForm.get("searchOtherSiblingorFriend")?.value;
     else
-      siblingorfriendName = this.searchForm.get("searchSiblings").value.Name;
-    var Id = this.searchForm.get("searchStudentName").value.ParentStudentId;
+      siblingorfriendName = this.searchForm.get("searchSiblings")?.value.Name;
+    var Id = this.searchForm.get("searchStudentName")?.value.ParentStudentId;
     var _ParentId = 0
     if (Id == 0) {
-      _ParentId = this.searchForm.get("searchStudentName").value.StudentId;
+      _ParentId = this.searchForm.get("searchStudentName")?.value.StudentId;
     }
     else
       _ParentId = Id;
 
     var newdata = {
       StudentFamilyNFriendId: 0,
-      StudentId: this.searchForm.get("searchSiblings").value.StudentId,
+      StudentId: this.searchForm.get("searchSiblings")?.value.StudentId,
       ParentStudentId: _ParentId,
       SiblingName: siblingorfriendName,
-      Name: this.searchForm.get("searchOtherSiblingorFriend").value,
-      ContactNo: this.searchForm.get("searchContactNo").value,
+      Name: this.searchForm.get("searchOtherSiblingorFriend")?.value,
+      ContactNo: this.searchForm.get("searchContactNo")?.value,
       RelationshipId: _relationship,
       Remarks: '',
       Active: 0,
@@ -278,13 +278,13 @@ export class StudentfamilynfriendComponent implements OnInit {
   UpdateOrSave(row) {
 
     debugger;
-    if (this.searchForm.get("searchStudentName").value == '') {
+    if (this.searchForm.get("searchStudentName")?.value == '') {
       this.loading = false;
       this.contentservice.openSnackBar("Please select student.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     else {
-      this.StudentId = this.searchForm.get("searchStudentName").value.StudentId
+      this.StudentId = this.searchForm.get("searchStudentName")?.value.StudentId
     }
 
     this.loading = true;
@@ -298,7 +298,7 @@ export class StudentfamilynfriendComponent implements OnInit {
       this.contentservice.openSnackBar("Please select relationship..", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    //var relationship = this.FamilyRelationship.filter(f => f.MasterDataId == row.RelationshipId)[0].MasterDataName;
+    //var relationship = this.FamilyRelationship.filter((f:any) => f.MasterDataId == row.RelationshipId)[0].MasterDataName;
     // if (relationship.toLowerCase() == 'friend' && row.ContactNo.length == 0) {
     //   this.loading = false; this.PageLoading = false;
     //   this.contentservice.openSnackBar("Please enter friend's contact no..", globalconstants.ActionText, globalconstants.RedBackground);
@@ -327,7 +327,7 @@ export class StudentfamilynfriendComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-          var studentIdObj = this.Students.filter(s => s.Name == row.SiblingName)
+          var studentIdObj = this.Students.filter((s:any) => s.Name == row.SiblingName)
           var _studentId = 0;
           if (studentIdObj.length > 0)
             _studentId = studentIdObj[0].StudentId;
@@ -389,9 +389,9 @@ export class StudentfamilynfriendComponent implements OnInit {
   }
   GetStudentFamilyNFriends() {
     debugger;
-    var _ParentStudentId = this.searchForm.get("searchStudentName").value.ParentStudentId;
-    var _fatherName = this.searchForm.get("FatherName").value.FatherName;
-    var _motherName = this.searchForm.get("MotherName").value.MotherName;
+    var _ParentStudentId = this.searchForm.get("searchStudentName")?.value.ParentStudentId;
+    var _fatherName = this.searchForm.get("FatherName")?.value.FatherName;
+    var _motherName = this.searchForm.get("MotherName")?.value.MotherName;
     if (_ParentStudentId == undefined && _fatherName == undefined && _motherName == undefined) {
       this.contentservice.openSnackBar("Please select student or father or mother.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -403,7 +403,7 @@ export class StudentfamilynfriendComponent implements OnInit {
     if (_ParentStudentId != undefined && _ParentStudentId > 0)
       filterStr += ' and ParentStudentId eq ' + _ParentStudentId;
     else
-      filterStr += ' and ParentStudentId eq ' + this.searchForm.get("searchStudentName").value.StudentId;
+      filterStr += ' and ParentStudentId eq ' + this.searchForm.get("searchStudentName")?.value.StudentId;
 
     if (_fatherName != undefined)
       _fatherMotherFilter += " and FatherName eq '" + _fatherName + "'";
@@ -413,9 +413,9 @@ export class StudentfamilynfriendComponent implements OnInit {
       this.GetStudentFromCache();
     }
     else {
-      this.dataSourceSiblings = new MatTableDataSource([]);
+      this.dataSourceSiblings = new MatTableDataSource();
 
-      var _RelationshipId = this.searchForm.get("searchRelationshipId").value;
+      var _RelationshipId = this.searchForm.get("searchRelationshipId")?.value;
       if (_RelationshipId > 0)
         filterStr += ' and RelationshipId eq ' + _RelationshipId;
 
@@ -442,7 +442,7 @@ export class StudentfamilynfriendComponent implements OnInit {
           if (data.value.length > 0) {
             this.StudentFamilyNFriendList = data.value.map(m => {
               if (m.StudentId > 0) {
-                var obj = this.Students.filter(f => f.StudentId == m.StudentId);
+                var obj = this.Students.filter((f:any) => f.StudentId == m.StudentId);
                 if (obj.length > 0) {
                   m.SiblingName = obj[0].Name;
                   m.FeeType = obj[0].FeeType;
@@ -462,21 +462,21 @@ export class StudentfamilynfriendComponent implements OnInit {
         });
     }
   }
-  siblingsColumns = [];
+  siblingsColumns :any[]= [];
   GetStudentFromCache() {
     debugger;
     this.siblingsColumns = ["Name","FatherName","MotherName", "ContactNo", "FeeType", "Remarks"]
     this.StudentFamilyNFriendList =[];
-    var _fatherName = this.searchForm.get("FatherName").value.FatherName;
-    var _motherName = this.searchForm.get("MotherName").value.MotherName;
-    var _students: any = this.tokenStorage.getStudents();
+    var _fatherName = this.searchForm.get("FatherName")?.value.FatherName;
+    var _motherName = this.searchForm.get("MotherName")?.value.MotherName;
+    var _students: any = this.tokenStorage.getStudents()!;
     if (_fatherName != undefined && _motherName != undefined)
-      _students = _students.filter(f => f.FatherName == _fatherName && f.MotherName == _motherName);
+      _students = _students.filter((f:any) => f.FatherName == _fatherName && f.MotherName == _motherName);
     else if (_motherName != undefined && _fatherName == undefined)
-      _students = _students.filter(f => f.MotherName == _motherName);
+      _students = _students.filter((f:any) => f.MotherName == _motherName);
     else if (_motherName == undefined && _fatherName != undefined)
-      _students = _students.filter(f => f.FatherName == _fatherName);
-    var result = [];
+      _students = _students.filter((f:any) => f.FatherName == _fatherName);
+    var result :any[]= [];
     _students.forEach(student => {
       var _RollNo = '';
       var _name = '';
@@ -485,11 +485,11 @@ export class StudentfamilynfriendComponent implements OnInit {
       var _feeType = '';
       var _remarks = '';
       var _studentClassId = 0;
-      //ar studentclassobj = this.StudentClasses.filter(f => f.StudentId == student.StudentId);
+      //ar studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
       if (student.StudentClasses.length > 0) {
         _studentClassId = student.StudentClasses[0].StudentClassId;
 
-        var feetypeobj = this.FeeType.filter(f => f.FeeTypeId == student.StudentClasses[0].FeeTypeId)
+        var feetypeobj = this.FeeType.filter((f:any) => f.FeeTypeId == student.StudentClasses[0].FeeTypeId)
         if (feetypeobj.length > 0)
           _feeType = feetypeobj[0].FeeTypeName;
 
@@ -498,7 +498,7 @@ export class StudentfamilynfriendComponent implements OnInit {
 
         if (_classNameobj.length > 0)
           _className = _classNameobj[0].ClassName;
-        var _SectionObj = this.Sections.filter(f => f.MasterDataId == student.StudentClasses[0].SectionId)
+        var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == student.StudentClasses[0].SectionId)
 
         if (_SectionObj.length > 0)
           _section = _SectionObj[0].MasterDataName;
@@ -564,7 +564,7 @@ export class StudentfamilynfriendComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //if (data.value.length > 0) {
-          var _students: any = this.tokenStorage.getStudents();
+          var _students: any = this.tokenStorage.getStudents()!;
           _students.forEach(student => {
             var _RollNo = '';
             var _name = '';
@@ -574,11 +574,11 @@ export class StudentfamilynfriendComponent implements OnInit {
             var _remarks = '';
             var _studentClassId = 0;
             var siblingnfrients = data.value.filter(d => d.StudentId == student.StudentId)
-            var studentclassobj = this.StudentClasses.filter(f => f.StudentId == student.StudentId);
+            var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
             if (studentclassobj.length > 0) {
               _studentClassId = studentclassobj[0].StudentClassId;
 
-              var feetypeobj = this.FeeType.filter(f => f.FeeTypeId == studentclassobj[0].FeeTypeId)
+              var feetypeobj = this.FeeType.filter((f:any) => f.FeeTypeId == studentclassobj[0].FeeTypeId)
               if (feetypeobj.length > 0)
                 _feeType = feetypeobj[0].FeeTypeName;
 
@@ -587,7 +587,7 @@ export class StudentfamilynfriendComponent implements OnInit {
 
               if (_classNameobj.length > 0)
                 _className = _classNameobj[0].ClassName;
-              var _SectionObj = this.Sections.filter(f => f.MasterDataId == studentclassobj[0].SectionId)
+              var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclassobj[0].SectionId)
 
               if (_SectionObj.length > 0)
                 _section = _SectionObj[0].MasterDataName;
@@ -633,7 +633,7 @@ export class StudentfamilynfriendComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.FamilyRelationship = this.getDropDownData(globalconstants.MasterDefinitions.school.SIBLINGSNFRIENDSRELATIONSHIP);
     this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);

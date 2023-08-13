@@ -37,9 +37,9 @@ export class TokenStorageService {
   constructor() { }
 
   signOut(): void {
-    var username = localStorage.getItem("username");
+    let username = localStorage.getItem("username");
     localStorage.clear();
-    localStorage.setItem("username", username);
+    localStorage.setItem("username", username?username:'');
   }
 
 
@@ -198,7 +198,7 @@ export class TokenStorageService {
     localStorage.setItem(EMPLOYEEID, token);
   }
   public getEmployeeId(): number | null {
-    return +localStorage.getItem(EMPLOYEEID);
+    return +localStorage.getItem(EMPLOYEEID)!;
   }
   public getCurrentBatchStartEnd(): string | null {
     var batch = localStorage.getItem(CURRENTBATCHSTARTEND);
@@ -225,23 +225,23 @@ export class TokenStorageService {
   }
  
   public getPID(): number | null {
-    return +localStorage.getItem(PID);
+    return +localStorage.getItem(PID)!;
   }
   public getStudentId(): number | null {
-    return +localStorage.getItem(STUDENTID);
+    return +localStorage.getItem(STUDENTID)!;
   }
   public getStudentClassId(): number | null {
-    return +localStorage.getItem(STUDENTCLASSID);
+    return +localStorage.getItem(STUDENTCLASSID)!;
   }
   public getClassId(): number | null {
-    return +localStorage.getItem(CLASSID);
+    return +localStorage.getItem(CLASSID)!;
   }
   public saveSelectedAppId(token: string): void {
     localStorage.removeItem(SELECTEDAPPID);
     localStorage.setItem(SELECTEDAPPID, token);
   }
   public getSubOrgId(): number | null {
-    return +localStorage.getItem(SubOrgId);
+    return +localStorage.getItem(SubOrgId)!;
   }
   public saveSubOrgId(token: string): void {
     localStorage.removeItem(SubOrgId);

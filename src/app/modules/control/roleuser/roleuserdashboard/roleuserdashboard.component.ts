@@ -3,16 +3,16 @@ import { UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { NaomitsuService } from '../../../../shared/databaseService';
+import { globalconstants } from '../../../../shared/globalconstant';
+import { List } from '../../../../shared/interface';
+import { SharedataService } from '../../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../../_services/token-storage.service';
 import { map, startWith } from 'rxjs/operators';
-import { AuthService } from 'src/app/_services/auth.service';
+import { AuthService } from '../../../../_services/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { ContentService } from 'src/app/shared/content.service';
+import { ContentService } from '../../../../shared/content.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -29,22 +29,22 @@ export class roleuserdashboardComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   loading = false;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   FeePayable = true;
 
   SelectedApplicationId = 0;
-  Departments = [];
-  Locations = [];
-  Applications = [];
-  Roles = [];
-  RolesTemp = [];
-  Users: IUser[] = [];
+  Departments :any[]= [];
+  Locations :any[]= [];
+  Applications :any[]= [];
+  Roles :any[]= [];
+  RolesTemp :any[]= [];
+  Users: IUser[]= [];
   filteredOptions: Observable<IUser[]>;
   RoleUserList: IRoleUsers[];
   dataSource: MatTableDataSource<IRoleUsers>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm = this.fb.group({
     searchUserName: [''],
     searchRoleId: [0]
@@ -88,15 +88,15 @@ export class roleuserdashboardComponent implements OnInit {
     //     }
     //   })
     // })
-    this.filteredOptions = this.searchForm.get("searchUserName").valueChanges
+    this.filteredOptions = this.searchForm.get("searchUserName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.UserName),
         map(UserName => UserName ? this._filter(UserName) : this.Users.slice())
-      );
+      )!;
     //this.shareddata.CurrentSelectedBatchId.subscribe(s => this.SelectedBatchId = s);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.PageLoad();
   }
   private _filter(name: string): IUser[] {
@@ -118,8 +118,8 @@ export class roleuserdashboardComponent implements OnInit {
       this.nav.navigate(['/auth/login']);
     }
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.CONTROL.ROLEUSER);
@@ -151,8 +151,8 @@ export class roleuserdashboardComponent implements OnInit {
   addnew() {
     var newdata = {
       RoleUserId: 0,
-      UserId: this.searchForm.get("searchUserName").value.Id,
-      User: this.searchForm.get("searchUserName").value.UserName,
+      UserId: this.searchForm.get("searchUserName")?.value.Id,
+      User: this.searchForm.get("searchUserName")?.value.UserName,
       RoleId: 0,
       Role: '',
       Active: 0
@@ -167,12 +167,12 @@ export class roleuserdashboardComponent implements OnInit {
     this.dataSource = new MatTableDataSource<IRoleUsers>(this.RoleUserList);
   }
   // removeadmin() {
-  //   this.RolesTemp = this.Roles.filter(f => f.MasterDataName != 'Admin');
+  //   this.RolesTemp = this.Roles.filter((f:any) => f.MasterDataName != 'Admin');
 
   // }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
     this.RolesTemp = [...this.Roles];
     this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.DEPARTMENT);
@@ -228,10 +228,10 @@ export class roleuserdashboardComponent implements OnInit {
   GetRoleUser() {
 
     var filterstr = '';
-    if (this.searchForm.get("searchUserName").value.Id != undefined)
-      filterstr = " and UserId eq '" + this.searchForm.get("searchUserName").value.Id + "'"
-    if (this.searchForm.get("searchRoleId").value > 0)
-      filterstr = " and RoleId eq " + this.searchForm.get("searchRoleId").value
+    if (this.searchForm.get("searchUserName")?.value.Id != undefined)
+      filterstr = " and UserId eq '" + this.searchForm.get("searchUserName")?.value.Id + "'"
+    if (this.searchForm.get("searchRoleId")?.value > 0)
+      filterstr = " and RoleId eq " + this.searchForm.get("searchRoleId")?.value
 
     this.loading = true;
     let list: List = new List();
@@ -249,7 +249,7 @@ export class roleuserdashboardComponent implements OnInit {
       .subscribe((data: any) => {
         debugger;
         //  //console.log('data.value', data.value);
-        //var filteredUsers = data.value.filter(d => d.UserId == this.searchForm.get("searchUserName").value.ApplicationUserId)
+        //var filteredUsers = data.value.filter(d => d.UserId == this.searchForm.get("searchUserName")?.value.ApplicationUserId)
         if (data.value.length > 0) {
 
           data.value.forEach(item => {
@@ -272,11 +272,11 @@ export class roleuserdashboardComponent implements OnInit {
             })
           });
         }
-        else if (this.searchForm.get("searchUserName").value.Id != undefined) {
+        else if (this.searchForm.get("searchUserName")?.value.Id != undefined) {
           this.RoleUserList.push({
             RoleUserId: 0,
-            UserId: this.searchForm.get("searchUserName").value.Id,
-            User: this.searchForm.get("searchUserName").value.UserName,
+            UserId: this.searchForm.get("searchUserName")?.value.Id,
+            User: this.searchForm.get("searchUserName")?.value.UserName,
             RoleId: 0,
             Role: '',
             Active: 0
@@ -300,7 +300,7 @@ export class roleuserdashboardComponent implements OnInit {
   }
   onBlur(row) {
 
-    var _selectedRoleObj = this.Roles.filter(f => f.MasterDataId == row.RoleId);
+    var _selectedRoleObj = this.Roles.filter((f:any) => f.MasterDataId == row.RoleId);
 
     if (_selectedRoleObj.length > 0) {
       if (_selectedRoleObj[0].MasterDataName == 'Admin')

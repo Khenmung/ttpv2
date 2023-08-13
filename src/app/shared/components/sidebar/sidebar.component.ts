@@ -1,6 +1,6 @@
 import { Component, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { NaomitsuService } from '../../databaseService';
 import { List } from '../../interface';
 import { SharedataService } from '../../sharedata.service';
@@ -14,11 +14,11 @@ export class SidebarComponent implements OnInit {
     PageLoading = true;
   //@Output() openLeftMenu1:new EventEmitter();
   SelectedBatchId = 0; SubOrgId = 0;
-  LoginUserDetail = [];
-  sideMenu = [];
+  LoginUserDetail :any[]= [];
+  sideMenu :any[]= [];
   collapse = false;
   SelectedApplicationId = 0;
-  MenuData = [];
+  MenuData :any[]= [];
   constructor(
     private dataservice: NaomitsuService,
     private shareddata: SharedataService,
@@ -27,10 +27,10 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     debugger;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
     // this.shareddata.CurrentPagesData.subscribe((data:any)=>{
     //   this.MenuData =[...data];
     // })

@@ -3,12 +3,12 @@ import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { SwUpdate } from '@angular/service-worker';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-receipt',
@@ -26,27 +26,27 @@ export class ReceiptComponent implements OnInit {
 
   loading = false;
   CancelReceiptMode = false;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   BillStatus = 0;
   CurrentBatchId = 0;
-  ReceiptHeading = [];
+  ReceiptHeading :any[]= [];
   NewReceipt = true;
   Saved = false;
-  PaymentIds = [];
-  Sections = [];
-  FeeDefinitions = [];
-  Classes = [];
-  Batches = [];
-  Locations = [];
-  clickPaymentDetails = [];
+  PaymentIds :any[]= [];
+  Sections :any[]= [];
+  FeeDefinitions :any[]= [];
+  Classes :any[]= [];
+  Batches :any[]= [];
+  Locations :any[]= [];
+  clickPaymentDetails :any[]= [];
   ELEMENT_DATA: IStudentFeePaymentReceipt[];
   StudentFeeReceiptListName = 'StudentFeeReceipts';
-  FeeReceipt = [];
+  FeeReceipt :any[]= [];
   StudentFeePaymentList: any[];
   Students: string[];
   dataSource: MatTableDataSource<any>;
   dataReceiptSource: MatTableDataSource<IReceipt>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   SelectedBatchId = 0;
   SubOrgId = 0;
   searchForm = new UntypedFormGroup({
@@ -129,19 +129,19 @@ export class ReceiptComponent implements OnInit {
       this.FilterOrgSubOrg = "OrgId eq 1 and SubOrgId eq " + globalconstants.globalAdminBillingSubOrgId;
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         this.Classes = [...data.value];
-        var obj = this.Classes.filter(f => f.ClassId == this.studentInfoTodisplay.ClassId)
+        var obj = this.Classes.filter((f:any) => f.ClassId == this.studentInfoTodisplay.ClassId)
         if (obj.length > 0)
           this.studentInfoTodisplay.StudentClassName = obj[0].ClassName;
       })
       //this.shareddata.CurrentBatch.subscribe(lo => (this.Batches = lo));
-      this.Batches = this.tokenStorage.getBatches();
+      this.Batches = this.tokenStorage.getBatches()!;;
       this.shareddata.CurrentSection.subscribe(pr => (this.Sections = pr));
 
-      //this.studentInfoTodisplay.AdmissionNo = this.tokenStorage.getStudentId();
-      //this.studentInfoTodisplay.StudentId = this.tokenStorage.getStudentId();
-      //this.SubOrgId = this.tokenStorage.getSubOrgId();
-      //this.studentInfoTodisplay.StudentClassId = this.tokenStorage.getStudentClassId();
-      //this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+      //this.studentInfoTodisplay.AdmissionNo = this.tokenStorage.getStudentId()!;;
+      //this.studentInfoTodisplay.StudentId = this.tokenStorage.getStudentId()!;;
+      //this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      //this.studentInfoTodisplay.StudentClassId = this.tokenStorage.getStudentClassId()!;
+      //this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
       //this.studentInfoTodisplay.OffLineReceiptNo = this.OffLineReceiptNo;
       //this.studentInfoTodisplay.currentbatchId = this.SelectedBatchId;
      
@@ -162,7 +162,7 @@ export class ReceiptComponent implements OnInit {
   viewDetail(row) {
     debugger;
     this.ReceivedBy = row.ReceivedBy;
-    this.clickPaymentDetails = this.StudentFeePaymentList.filter(f => f.FeeReceiptId == row.StudentFeeReceiptId);
+    this.clickPaymentDetails = this.StudentFeePaymentList.filter((f:any) => f.FeeReceiptId == row.StudentFeeReceiptId);
     this.studentInfoTodisplay.StudentFeeReceiptId = row.StudentFeeReceiptId;
     this.studentInfoTodisplay.ReceiptNo = row.ReceiptNo;
     this.studentInfoTodisplay.OffLineReceiptNo = row.OffLineReceiptNo;
@@ -221,7 +221,7 @@ export class ReceiptComponent implements OnInit {
       })
 
   }
-  Employees = [];
+  Employees :any[]= [];
   PaymentType = '';
   GetBills() {
     this.loading = true;
@@ -260,7 +260,7 @@ export class ReceiptComponent implements OnInit {
           f.AccountingVouchers.forEach(k => {
             var _ShortText = '';
 
-            var feeObj = this.StudentClassFees.filter(f => f.ClassFeeId == k.ClassFeeId);
+            var feeObj = this.StudentClassFees.filter((f:any) => f.ClassFeeId == k.ClassFeeId);
             if (feeObj.length > 0) {
               if (k.ShortText && k.ShortText.length > 0 && feeObj[0].AmountEditable) {
                 _ShortText = " (" + k.ShortText + ")"
@@ -296,8 +296,8 @@ export class ReceiptComponent implements OnInit {
 
       })
   }
-  PaymentTypes = [];
-  FeeCategories = [];
+  PaymentTypes :any[]= [];
+  FeeCategories :any[]= [];
   GetMasterData() {
     this.loading = true;
     // let list: List = new List();

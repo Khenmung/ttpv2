@@ -5,13 +5,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -22,25 +22,25 @@ import { MatDialog } from '@angular/material/dialog';
 export class ClassgroupmappingComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  ClassGroupTypes = [];
-  ClassGroups = [];
-  LoginUserDetail: any[] = [];
+  ClassGroupTypes :any[]= [];
+  ClassGroups :any[]= [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   ClassGroupMappingListName = 'ClassGroupMappings';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  ClassGroupMappingList: IClassGroupMapping[] = [];
+  ClassGroupMappingList: IClassGroupMapping[]= [];
   filteredOptions: Observable<IClassGroupMapping[]>;
   dataSource: MatTableDataSource<IClassGroupMapping>;
-  allMasterData = [];
-  ClassGroupMapping = [];
+  allMasterData :any[]= [];
+  ClassGroupMapping :any[]= [];
   Permission = 'deny';
-  Classes = [];
-  Semesters = [];
-  Sections = [];
+  Classes :any[]= [];
+  Semesters :any[]= [];
+  Sections :any[]= [];
   ClassGroupMappingData = {
     ClassGroupMappingId: 0,
     ClassId: 0,
@@ -93,13 +93,13 @@ export class ClassgroupmappingComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    //this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.CLASSCOURSE.CLASSGROUPING);
@@ -129,7 +129,7 @@ export class ClassgroupmappingComponent implements OnInit {
       Active: 0,
       Action: false
     };
-    this.ClassGroupMappingList = [];
+    this.ClassGroupMappingList= [];
     this.ClassGroupMappingList.push(newdata);
     this.dataSource = new MatTableDataSource<IClassGroupMapping>(this.ClassGroupMappingList);
     this.dataSource.paginator = this.paging;
@@ -292,7 +292,7 @@ export class ClassgroupmappingComponent implements OnInit {
           this.loadingFalse();
         });
   }
-  classgroupList = [];
+  classgroupList :any[]= [];
   Getclassgroups() {
     this.loading = true;
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
@@ -312,7 +312,7 @@ export class ClassgroupmappingComponent implements OnInit {
 
     // list.PageName = "ClassGroups";
     // list.filter = [filterStr];
-    // this.ClassGroups = [];
+    // this.ClassGroups :any[]= [];
     // this.dataservice.get(list)
     //   .subscribe((data: any) => {
     //     if (data.value.length > 0) {
@@ -332,7 +332,7 @@ export class ClassgroupmappingComponent implements OnInit {
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"]
     //  " and BatchId eq " + this.SelectedBatchId;
 
-    var _ClassGroupId = this.searchForm.get("searchClassGroupId").value;
+    var _ClassGroupId = this.searchForm.get("searchClassGroupId")?.value;
     if (_ClassGroupId == 0) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please select class group.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -346,7 +346,7 @@ export class ClassgroupmappingComponent implements OnInit {
     list.fields = ["ClassGroupMappingId,ClassId,SectionId,SemesterId,ClassGroupId,Active"];
     list.PageName = this.ClassGroupMappingListName;
     list.filter = [filterStr];
-    this.ClassGroupMappingList = [];
+    this.ClassGroupMappingList= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -362,10 +362,10 @@ export class ClassgroupmappingComponent implements OnInit {
       });
 
   }
-  ClassCategory = [];
+  ClassCategory :any[]= [];
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ClassGroupTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUPTYPE);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);

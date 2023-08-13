@@ -6,12 +6,12 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -23,22 +23,22 @@ export class ClassdetailComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   ClassMasterListName = 'ClassMasters';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedApplicationId = 0;
   SelectedBatchId = 0;SubOrgId = 0;
-  ClassMasterList: IClassMaster[] = [];
+  ClassMasterList: IClassMaster[]= [];
   filteredOptions: Observable<IClassMaster[]>;
   dataSource: MatTableDataSource<IClassMaster>;
-  allMasterData = [];
-  ClassMasters = [];
-  ClassCategory=[];
-  Durations = [];
-  StudyArea = [];
-  StudyMode = [];
+  allMasterData :any[]= [];
+  ClassMasters :any[]= [];
+  ClassCategory:any[]=[];
+  Durations :any[]= [];
+  StudyArea :any[]= [];
+  StudyMode :any[]= [];
   Permission = 'deny';
   ExamId = 0;
   ClassMasterData = {
@@ -108,12 +108,12 @@ export class ClassdetailComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.CLASSCOURSE.CLASSDETAIL)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
@@ -302,7 +302,7 @@ export class ClassdetailComponent implements OnInit {
     let filterStr = '';
     filterStr =this.FilterOrgSubOrg;
 
-    var _searchClassName = this.searchForm.get("searchClassName").value;
+    var _searchClassName = this.searchForm.get("searchClassName")?.value;
     if (_searchClassName > 0) {
       filterStr += ' and ClassId eq ' + _searchClassName;
     }
@@ -350,7 +350,7 @@ export class ClassdetailComponent implements OnInit {
 
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.Durations = this.getDropDownData(globalconstants.MasterDefinitions.school.DURATION);
     this.StudyArea = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDYAREA);

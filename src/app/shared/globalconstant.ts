@@ -1,16 +1,16 @@
 //import { ListItemComponent } from "ng-material-multilevel-menu/lib/list-item/list-item.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { environment } from "src/environments/environment";
+import { environment } from "../../environments/environment";
 import { TokenStorageService } from "../_services/token-storage.service";
 import { NaomitsuService } from "./databaseService";
 import { List } from "./interface";
 
 export class globalconstants {
     //////"https://api.ttpsolutions.in";"https://ettest.ttpsolutions.in"; environment.apiU+++.*-=-0983`9556'nb656RL
-    public static apiUrl: string = "http://localhost:5000"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
+    public static apiUrl: string = "https://ettest.ttpsolutions.in"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
     public static fileUrl: string = '';
-    public static CompanyParentId = 31850;//31850;// 27762; //536870912; 
-    public static PremiumPlusId = 2;//4;//2 
+    public static CompanyParentId = 31850;// 31850-production;// 27762;test site; 
+    public static PremiumPlusId = 4;//4;//2 
     public static globalAdminBillingSubOrgId = 30880;//5;//2 
 
     //public static BloodGroupParentId = 27762; //536870912;
@@ -35,6 +35,7 @@ export class globalconstants {
     public static CategoryHighSchool = 'high school';
     public static ExamGrading = 'Grading';
     public static ExamMarkingNGrading = 'MarkingNGrading';
+    public static ServeCommand ="node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve"
     public static BuildCommand = "ng build --configuration production --aot=true --build-optimizer=true --output-Hashing=all";
     public static AppAndMenuAndFeatures =
         {
@@ -594,7 +595,7 @@ export class globalconstants {
     }
     public static getOrgSubOrgFilter(tokenService: TokenStorageService) {
         var loginUserdetail = tokenService.getUserDetail();
-        var _subOrgId = +tokenService.getSubOrgId();
+        var _subOrgId = +tokenService.getSubOrgId()!;
         var filterstr = 'OrgId eq ' + loginUserdetail[0]["orgId"] + " and SubOrgId eq " + _subOrgId;
         return filterstr;
 
@@ -630,7 +631,7 @@ export class globalconstants {
     public static getPermission(tokenservice: TokenStorageService, feature: any) {
         var IsInCurrentBatch = 0;
         var LoginUserDetail = tokenservice.getUserDetail();
-        IsInCurrentBatch = +tokenservice.getInCurrentBatch();
+        IsInCurrentBatch = +tokenservice.getInCurrentBatch()!;
         var selectedAppId = tokenservice.getSelectedAPPId();
         //return ['readonly'];
         // else {
@@ -744,7 +745,7 @@ export class globalconstants {
             'RoleId',
             'PermissionId'
         ];
-        var _UserDetail = [];
+        var _UserDetail :any[]= [];
         var _RoleFilter = tokenservice.getRoleFilter();
         list.PageName = "ApplicationFeatureRolesPerms";
         list.lookupFields = ["PlanFeature($filter=Active eq 1;$select=PageId;$expand=Page($select=PageTitle,label,link,faIcon,ApplicationId,ParentId))"]
@@ -756,12 +757,12 @@ export class globalconstants {
                 if (data.value.length > 0) {
                     var _applicationName = '';
                     var _appShortName = '';
-                    _UserDetail["applicationRolePermission"] = [];
+                    _UserDetail["applicationRolePermission"]= [];
                     data.value.forEach(item => {
                         _applicationName = '';
                         _appShortName = '';
-                        _applicationName = Applications.filter(f => f.MasterDataId == item.PlanFeature.Page.ApplicationId)[0].Description;
-                        _appShortName = Applications.filter(f => f.MasterDataId == item.PlanFeature.Page.ApplicationId)[0].MasterDataName
+                        _applicationName = Applications.filter((f:any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId)[0].Description;
+                        _appShortName = Applications.filter((f:any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId)[0].MasterDataName
 
                         var _permission = '';
                         if (item.PermissionId != null)

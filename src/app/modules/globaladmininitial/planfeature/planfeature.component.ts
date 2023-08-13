@@ -5,11 +5,11 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 @Component({
   selector: 'app-PlanFeature',
@@ -21,7 +21,7 @@ export class PlanFeatureComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SubOrgId = 0;
   PlanFeatureListName = 'PlanFeatures';
@@ -29,17 +29,17 @@ export class PlanFeatureComponent implements OnInit {
   SelectedBatchId = 0;
   SelectedApplicationId = 0;
   RowToUpdateCount = -1;
-  Topfeatures = [];
-  Plans = [];
-  Features = [];
-  SelectedFeatures = [];
-  PlanFeatureList: IPlanFeature[] = [];
+  Topfeatures :any[]= [];
+  Plans :any[]= [];
+  Features :any[]= [];
+  SelectedFeatures :any[]= [];
+  PlanFeatureList: IPlanFeature[]= [];
   filteredOptions: Observable<IPlanFeature[]>;
   dataSource: MatTableDataSource<IPlanFeature>;
-  allMasterData = [];
-  PlanFeatures = [];
-  Applications = [];
-  FeeCategories = [];
+  allMasterData :any[]= [];
+  PlanFeatures :any[]= [];
+  Applications :any[]= [];
+  FeeCategories :any[]= [];
   Permission = 'deny';
   PlanFeatureData = {
     PlanFeatureId: 0,
@@ -88,9 +88,9 @@ export class PlanFeatureComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -104,7 +104,7 @@ export class PlanFeatureComponent implements OnInit {
         //this.nav.navigate(['/edu'])
       }
       else {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.GetPlans();
         this.GetMasterData();
 
@@ -151,7 +151,7 @@ export class PlanFeatureComponent implements OnInit {
   }
   SaveAll() {
 
-    var toUpdate = this.PlanFeatureList.filter(f => f.Action);
+    var toUpdate = this.PlanFeatureList.filter((f:any) => f.Action);
     this.RowToUpdateCount = toUpdate.length;
     this.loading = true;
     toUpdate.forEach(element => {
@@ -179,7 +179,7 @@ export class PlanFeatureComponent implements OnInit {
       return;
     }
     let checkFilterString = "PageId eq " + row.PageId +
-      " and PlanId eq " + this.searchForm.get("searchPlanId").value +
+      " and PlanId eq " + this.searchForm.get("searchPlanId")?.value +
       " and ApplicationId eq " + row.ApplicationId +
       " and Active eq 1"
 
@@ -281,10 +281,10 @@ export class PlanFeatureComponent implements OnInit {
       })
   }
   GetTopFeature() {
-    var ApplicationId = this.searchForm.get("searchApplicationId").value;
+    var ApplicationId = this.searchForm.get("searchApplicationId")?.value;
     this.GetFeatures(ApplicationId).subscribe((d: any) => {
       this.Features = [...d.value];
-      this.Topfeatures = this.Features.filter(f => f.ParentId == 0);
+      this.Topfeatures = this.Features.filter((f:any) => f.ParentId == 0);
       this.loading = false; this.PageLoading = false;
     });
   }
@@ -307,13 +307,13 @@ export class PlanFeatureComponent implements OnInit {
   GetPlanFeature() {
 
     debugger;
-    var _PlanId = this.searchForm.get("searchPlanId").value;
+    var _PlanId = this.searchForm.get("searchPlanId")?.value;
 
     if (_PlanId == 0) {
       this.contentservice.openSnackBar("Please select plan.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _applicationId = this.searchForm.get("searchApplicationId").value;
+    var _applicationId = this.searchForm.get("searchApplicationId")?.value;
     if (_applicationId == 0) {
       this.contentservice.openSnackBar("Please select application.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -337,10 +337,10 @@ export class PlanFeatureComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         var _ParentId = 0;
-        if (this.searchForm.get("searchTopfeatureId").value > 0)
-          _ParentId = this.searchForm.get("searchTopfeatureId").value;
+        if (this.searchForm.get("searchTopfeatureId")?.value > 0)
+          _ParentId = this.searchForm.get("searchTopfeatureId")?.value;
 
-        this.SelectedFeatures = this.Features.filter(f => f.ParentId == _ParentId);
+        this.SelectedFeatures = this.Features.filter((f:any) => f.ParentId == _ParentId);
         this.SelectedFeatures.forEach(f => {
 
           var existing = data.value.filter(d => d.PageId == f.PageId);
@@ -360,7 +360,7 @@ export class PlanFeatureComponent implements OnInit {
                 PageId: f.PageId,
                 //ParentId: _ParentId,
                 FeatureName: f.PageTitle,
-                ApplicationId: this.searchForm.get("searchApplicationId").value,
+                ApplicationId: this.searchForm.get("searchApplicationId")?.value,
                 Active: 0,
                 Action: false
               });
@@ -385,7 +385,7 @@ export class PlanFeatureComponent implements OnInit {
       .subscribe((data: any) => {
         this.allMasterData = [...data.value];
         //this.Applications = this.getDropDownData(globalconstants.MasterDefinitions.ttpapps.bang);
-        var _ParentId = this.allMasterData.filter(f => f.MasterDataName.toLowerCase() == 'application')[0].MasterDataId;
+        var _ParentId = this.allMasterData.filter((f:any) => f.MasterDataName.toLowerCase() == 'application')[0].MasterDataId;
         //this.Applications = this.getDropDownData(globalconstants.MasterDefinitions.ttpapps.bang);
         var FilterOrgSubOrg = "OrgId eq 0 and SubOrgId eq 0";
         this.contentservice.GetDropDownDataFromDB(_ParentId, FilterOrgSubOrg, 0, 1)

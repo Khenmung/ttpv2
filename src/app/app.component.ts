@@ -10,7 +10,7 @@ import { ConnectionService } from 'ng-connection-service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'school';
-  private roles: string[] = [];
+  private roles: string[]= [];
   isLoggedIn = false;
   showAdminBoard = false;
   showModeratorBoard = false;

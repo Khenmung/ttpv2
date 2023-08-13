@@ -4,11 +4,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import {SwUpdate} from '@angular/service-worker';
 
 @Component({
@@ -32,7 +32,7 @@ export class UserReportConfigColumnsComponent implements OnInit {
     "Active",
     "Action"
   ];
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -42,19 +42,19 @@ export class UserReportConfigColumnsComponent implements OnInit {
     autoClose: true,
     keepAfterRouteChange: true
   };
-  ColumnsOfAvailableReports = [];
+  ColumnsOfAvailableReports :any[]= [];
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
   ToUpateCount = -1;
-  AvailableReportNames = [];
-  AppReportNames = [];
-  Applications = [];
-  ReportNames = [];
+  AvailableReportNames :any[]= [];
+  AppReportNames :any[]= [];
+  Applications :any[]= [];
+  ReportNames :any[]= [];
   ReportConfigItemListName = "ReportConfigItems";
-  ReportConfigItemList = [];
+  ReportConfigItemList :any[]= [];
   dataSource: MatTableDataSource<IReportConfigItem>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   PagePermission = '';
   SubOrgId=0;
   ReportConfigItemData = {
@@ -107,7 +107,7 @@ export class UserReportConfigColumnsComponent implements OnInit {
     });
     //this.dataSource = new MatTableDataSource<IReportConfigItem>([]);
     this.Applications = this.tokenStorage.getPermittedApplications();
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
     this.PageLoad()
   }
 
@@ -116,7 +116,7 @@ export class UserReportConfigColumnsComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     this.ApplicationName = this.LoginUserDetail[0]["org"];
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.FilterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.FilterOrgSubOrgBatchId= globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
     this.GetBaseReportId();
@@ -166,7 +166,7 @@ export class UserReportConfigColumnsComponent implements OnInit {
     })
   }
   SaveAll() {
-    var edited = this.ReportConfigItemList.filter(f => f.Action || f.ReportConfigItemId == 0);
+    var edited = this.ReportConfigItemList.filter((f:any) => f.Action || f.ReportConfigItemId == 0);
     this.ToUpateCount = edited.length;
     edited.forEach(f => {
       this.ToUpateCount--;
@@ -180,9 +180,9 @@ export class UserReportConfigColumnsComponent implements OnInit {
   UpdateOrSave(row) {
 
     debugger;
-    var AvailableReportId = this.searchForm.get("searchAvailableReportName").value;
+    var AvailableReportId = this.searchForm.get("searchAvailableReportName")?.value;
     //var ApplicationId = this.SelectedApplicationId;
-    var MyReportNameId = this.searchForm.get("searchReportName").value;
+    var MyReportNameId = this.searchForm.get("searchReportName")?.value;
     // if (ApplicationId == 0) {
     //   this.contentservice.openSnackBar("Please select application name", globalconstants.ActionText,globalconstants.RedBackground);
     //   return;
@@ -333,8 +333,8 @@ export class UserReportConfigColumnsComponent implements OnInit {
     var filterstr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
     var ApplicationId = this.SelectedApplicationId;  //this.SelectedApplicationId;
-    var AvailableReportId = this.searchForm.get("searchAvailableReportName").value;
-    var MyReportNameId = this.searchForm.get("searchReportName").value;
+    var AvailableReportId = this.searchForm.get("searchAvailableReportName")?.value;
+    var MyReportNameId = this.searchForm.get("searchReportName")?.value;
     
     if (ApplicationId == 0) {
       this.contentservice.openSnackBar("Please select application name", globalconstants.ActionText, globalconstants.RedBackground);
@@ -372,9 +372,9 @@ export class UserReportConfigColumnsComponent implements OnInit {
     list.filter = [filterstr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var MyReportNameId = this.searchForm.get("searchReportName").value;
+        var MyReportNameId = this.searchForm.get("searchReportName")?.value;
         this.ReportConfigItemList = [];
-        var applicationAvailableReportCol = this.ColumnsOfAvailableReports.filter(f => f.ParentId == this.searchForm.get("searchAvailableReportName").value);
+        var applicationAvailableReportCol = this.ColumnsOfAvailableReports.filter((f:any) => f.ParentId == this.searchForm.get("searchAvailableReportName")?.value);
         applicationAvailableReportCol.forEach(a => {
           var existing = data.value.filter(d => d.ReportName == a.ReportName);
           if (existing.length > 0) {
@@ -477,13 +477,13 @@ export class UserReportConfigColumnsComponent implements OnInit {
   }
   GetMyReportNames() {
     this.ReportConfigItemList = [];
-    var AvailableReportId = this.searchForm.get("searchAvailableReportName").value;
+    var AvailableReportId = this.searchForm.get("searchAvailableReportName")?.value;
     this.AppReportNames = this.ReportNames.filter(a => a.ApplicationId == this.SelectedApplicationId
       && a.ParentId == AvailableReportId);
     this.dataSource = new MatTableDataSource(this.ReportConfigItemList);
     this.boolEnableButton = true;
     
-    this.ModuleName = this.AvailableReportNames.filter(f => f.ReportConfigItemId == AvailableReportId)[0].ReportName;
+    this.ModuleName = this.AvailableReportNames.filter((f:any) => f.ReportConfigItemId == AvailableReportId)[0].ReportName;
     this.getAvailableReportColumn();
   }
   getAvailableReportColumn() {
@@ -500,7 +500,7 @@ export class UserReportConfigColumnsComponent implements OnInit {
       "UserId",
       "Active"]
     list.PageName = this.ReportConfigItemListName;
-    list.filter = ["OrgId eq 0 and Active eq 1 and ParentId eq " + this.searchForm.get("searchAvailableReportName").value];
+    list.filter = ["OrgId eq 0 and Active eq 1 and ParentId eq " + this.searchForm.get("searchAvailableReportName")?.value];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {

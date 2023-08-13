@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { AuthService } from 'src/app/_services/auth.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { AuthService } from '../../../_services/auth.service';
 
 @Component({
   selector: 'app-confirmemail',
@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/_services/auth.service';
 })
 export class ConfirmemailComponent implements OnInit { PageLoading=true;
   userId = '';
-  code = '';
+  code:string = '';
   loading = false;
   constructor(private servicework: SwUpdate,
     private route: Router,
@@ -35,8 +35,8 @@ export class ConfirmemailComponent implements OnInit { PageLoading=true;
     this.loading = true;
 
     this.aroute.paramMap.subscribe(params => {
-      this.code =  params.get("code");
-      this.userId = params.get("id");
+      this.code =  params.get("code")!;
+      this.userId = params.get("id")!;
       var payload = { "code": this.code, "userId": this.userId };
       this.authservice.CallAPI(payload, 'ConfirmEmail').subscribe((data: any) => {
         console.log("confirmemail data",data)

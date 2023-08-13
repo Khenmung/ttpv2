@@ -7,11 +7,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import alasql from 'alasql';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { IAccountingVoucher } from '../JournalEntry/JournalEntry.component';
 import { IGeneralLedger } from '../ledgeraccount/ledgeraccount.component';
 
@@ -29,28 +29,28 @@ export class BalancesheetComponent implements OnInit {
 
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
   AccountingVoucherListName = 'AccountingVouchers';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   filteredOptions: Observable<IGeneralLedger[]>;
-  AccountingPeriod = [];
+  AccountingPeriod :any[]= [];
   SelectedApplicationId = 0;
   Permission = '';
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  GLAccounts = [];
-  GeneralLedgers = [];
+  GLAccounts :any[]= [];
+  GeneralLedgers :any[]= [];
   CurrentBatchId = 0;
   SelectedBatchId = 0;SubOrgId = 0;
-  AccountingVoucherList: IAccountingVoucher[] = [];
+  AccountingVoucherList: IAccountingVoucher[]= [];
   AssetDataSource: MatTableDataSource<IAccountingVoucher>;
   LiabilityDataSource: MatTableDataSource<IAccountingVoucher>;
   TrialBalanceDatasource: MatTableDataSource<IAccountingVoucher>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm: UntypedFormGroup;
-  Asset = [];
-  Liability = [];
+  Asset :any[]= [];
+  Liability :any[]= [];
   TotalAsset = 0;
   TotalLiability = 0;
   NetIncome = 0;
@@ -96,13 +96,13 @@ export class BalancesheetComponent implements OnInit {
     //     }
     //   })
     // })
-    var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd());
+    var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
     this.MinDate = FinancialStartEnd.StartDate;
     this.searchForm = this.fb.group({
       searchFromDate: [new Date()],
       searchToDate: [new Date()]
     });
-    // this.filteredOptions = this.searchForm.get("searchGeneralLedgerId").valueChanges
+    // this.filteredOptions = this.searchForm.get("searchGeneralLedgerId")?.valueChanges
     //   .pipe(
     //     startWith(''),
     //     map(value => typeof value === 'string' ? value : value.TeacherName),
@@ -137,10 +137,10 @@ export class BalancesheetComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
-      this.AccountingPeriod = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd());
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.AccountingPeriod = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
 
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.accounting.BALANCESHEET);
       if (perObj.length > 0) {
@@ -163,16 +163,16 @@ export class BalancesheetComponent implements OnInit {
     row.Action = true;
   }
 
-  TrialBalance = [];
+  TrialBalance :any[]= [];
   TotalDr = 0;
   TotalCr = 0;
   GetAccountingVoucher() {
     let filterStr = this.FilterOrgSubOrg + " and FeeReceiptId eq 0 and Active eq 1";
     debugger;
     this.loading = true;
-    var toDate = new Date(this.searchForm.get("searchToDate").value);
+    var toDate = new Date(this.searchForm.get("searchToDate")?.value);
     toDate.setDate(toDate.getDate() + 1);
-    filterStr += " and PostingDate ge " + this.datepipe.transform(this.searchForm.get("searchFromDate").value, 'yyyy-MM-dd') + //T00:00:00.000Z
+    filterStr += " and PostingDate ge " + this.datepipe.transform(this.searchForm.get("searchFromDate")?.value, 'yyyy-MM-dd') + //T00:00:00.000Z
       " and PostingDate lt " + this.datepipe.transform(toDate, 'yyyy-MM-dd');//T00:00:00.000Z
 
     let list: List = new List();
@@ -191,13 +191,13 @@ export class BalancesheetComponent implements OnInit {
     list.PageName = this.AccountingVoucherListName;
     //list.lookupFields = ["GeneralLedger($select=GeneralLedgerName,IncomeStatementSequence,IncomeStatementPlus,BalanceSheetSequence,BalanceSheetPlus"];
     list.filter = [filterStr];
-    this.AccountingVoucherList = [];
+    this.AccountingVoucherList :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        this.Asset = [];
-        this.Liability = [];
-        this.TrialBalance=[];
-        //var tuitionFee= data.value.filter(f=>f.GeneralLedgerAccountId==)
+        this.Asset :any[]= [];
+        this.Liability :any[]= [];
+        this.TrialBalance:any[]=[];
+        //var tuitionFee= data.value.filter((f:any)=>f.GeneralLedgerAccountId==)
         data.value.forEach(f => {
           var _generalaccount = this.GLAccounts.filter(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
 
@@ -267,7 +267,7 @@ export class BalancesheetComponent implements OnInit {
      var groupbyDebitCredit = alasql(sql,[pdata]);
     
       groupbyDebitCredit = groupbyDebitCredit.sort((a, b) => a.AccountName - b.AccountName);
-    var result = [];
+    var result :any[]= [];
     groupbyDebitCredit.forEach(f => {
 
       var existing = result.filter(r => r.AccountName == f.AccountName);
@@ -303,7 +303,7 @@ export class BalancesheetComponent implements OnInit {
     })
     //console.log("groupbyDebitCredit", groupbyDebitCredit)
 
-    result = result.filter(f => f.Dr!=undefined)
+    result = result.filter((f:any) => f.Dr!=undefined)
     result.forEach(row => {
       if (row.Dr > row.Cr) {
         row.Balance = row.Dr - row.Cr;
@@ -315,7 +315,7 @@ export class BalancesheetComponent implements OnInit {
       }
     })
     return result;
-    // this.Expense = this.Expense.filter(f => f.Dr != undefined)
+    // this.Expense = this.Expense.filter((f:any) => f.Dr != undefined)
     // this.Expense.forEach(expense => {
     //   expense.Balance = expense.Dr - expense.Cr;
     // })
@@ -340,7 +340,7 @@ export class BalancesheetComponent implements OnInit {
 
     list.PageName = "GeneralLedgers";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts = [];
+    this.GLAccounts :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.GeneralLedgers = [...data.value];
@@ -432,15 +432,15 @@ export class BalancesheetComponent implements OnInit {
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
       !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
-  AccountNatureList = [];
+  AccountNatureList :any[]= [];
   GetAccountNature() {
 
     let filterStr = '(OrgId eq 0 or (' + this.FilterOrgSubOrg +"))";
     debugger;
     this.loading = true;
 
-    // var _searchAccountId = this.searchForm.get("searchAccountName").value.AccountNatureId;
-    // //var _searchParentId = this.searchForm.get("searchParentId").value;
+    // var _searchAccountId = this.searchForm.get("searchAccountName")?.value.AccountNatureId;
+    // //var _searchParentId = this.searchForm.get("searchParentId")?.value;
     // if (_searchAccountId == undefined) {
     //   filterStr += " and ParentId eq 0"
     // }
@@ -459,7 +459,7 @@ export class BalancesheetComponent implements OnInit {
 
     list.PageName = "AccountNatures";
     list.filter = [filterStr];
-    this.AccountNatureList = [];
+    this.AccountNatureList :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountNatureList = [...data.value];
@@ -488,7 +488,7 @@ export class BalancesheetComponent implements OnInit {
     list.PageName = "GeneralLedgers";
     //list.lookupFields = ["AccountNature($select=Active,AccountNatureId,DebitType)"];
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts = [];
+    this.GLAccounts :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -518,7 +518,7 @@ export class BalancesheetComponent implements OnInit {
 
     list.PageName = "AccountingPeriods";
     list.filter = [this.FilterOrgSubOrg + " and CurrentPeriod eq 1 and Active eq 1"];
-    this.GLAccounts = [];
+    this.GLAccounts :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountingPeriod = data.value.map(f => {
@@ -534,7 +534,7 @@ export class BalancesheetComponent implements OnInit {
 
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {

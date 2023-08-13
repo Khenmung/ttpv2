@@ -3,11 +3,11 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import {SwUpdate} from '@angular/service-worker';
 @Component({
   selector: 'app-organizationpayment',
@@ -16,7 +16,7 @@ import {SwUpdate} from '@angular/service-worker';
 })
 export class OrganizationpaymentComponent implements OnInit { PageLoading=true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -29,16 +29,16 @@ export class OrganizationpaymentComponent implements OnInit { PageLoading=true;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  Applications = [];
-  Organizations = [];
-  Currencies = [];
-  PaymentModes = [];
+  Applications :any[]= [];
+  Organizations :any[]= [];
+  Currencies :any[]= [];
+  PaymentModes :any[]= [];
   OrganizationPaymentListName = "OrganizationPayments";
-  OrganizationPaymentList = [];
-  Plans = [];
-  CustomerPlans = [];
+  OrganizationPaymentList :any[]= [];
+  Plans :any[]= [];
+  CustomerPlans :any[]= [];
   dataSource: MatTableDataSource<IOrganizationPayment>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   PagePermission = '';
   SubOrgId=0;
   OrganizationPaymentData = {
@@ -99,14 +99,14 @@ export class OrganizationpaymentComponent implements OnInit { PageLoading=true;
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     if (this.LoginUserDetail.length == 0) {
-      this.UserId = localStorage.getItem("userId");
-      this.OrgId = +localStorage.getItem("orgId");
+      this.UserId = localStorage.getItem("userId")!;
+      this.OrgId = +localStorage.getItem("orgId")!;
     }
     else {
      
       this.UserId = this.LoginUserDetail[0]["userId"];
       this.OrgId = this.LoginUserDetail[0]["orgId"];
-      this.SubOrgId= this.tokenStorage.getSubOrgId();
+      this.SubOrgId= this.tokenStorage.getSubOrgId()!;
 
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.globaladmin.ORGANIZATIONPAYMENT);
       if (perObj.length > 0)
@@ -136,13 +136,13 @@ export class OrganizationpaymentComponent implements OnInit { PageLoading=true;
     this.nav.navigate(['auth/login']);
   }
   AddNew() {
-    var orgId = this.searchForm.get("searchCustomerId").value
+    var orgId = this.searchForm.get("searchCustomerId")?.value
     if (orgId == 0) {
       this.loading = false; this.PageLoading=false;
       this.contentservice.openSnackBar("Please select customer.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var customDetail = this.CustomerPlans.filter(f => f.OrgId == orgId);
+    var customDetail = this.CustomerPlans.filter((f:any) => f.OrgId == orgId);
     var AmountPerMonth = 0;
     var PlanId = 0;
     var PlanName = '';
@@ -183,7 +183,7 @@ export class OrganizationpaymentComponent implements OnInit { PageLoading=true;
       row.Action = true;
       return;
     }
-    var _searchCustomerId = this.searchForm.get("searchCustomerId").value;
+    var _searchCustomerId = this.searchForm.get("searchCustomerId")?.value;
     this.OrganizationPaymentData.OrganizationPaymentId = row.OrganizationPaymentId;
     this.OrganizationPaymentData.OrganizationPlanId = row.OrganizationPlanId;
     this.OrganizationPaymentData.PaidMonths = row.PaidMonths;
@@ -238,8 +238,8 @@ export class OrganizationpaymentComponent implements OnInit { PageLoading=true;
       .subscribe((data: any) => {
         this.allMasterData = [...data.value];
         this.Applications = this.tokenStorage.getPermittedApplications();
-        var globalAdminId = this.Applications.filter(f => f.appShortName.toLowerCase() == 'globaladmin')[0].applicationId;
-        var PaymentModeParentId = this.allMasterData.filter(f => f.MasterDataName.toLowerCase() == globalconstants.MasterDefinitions.schoolapps.PAYMENTSTATUS)[0].MasterDataId;
+        var globalAdminId = this.Applications.filter((f:any) => f.appShortName.toLowerCase() == 'globaladmin')[0].applicationId;
+        var PaymentModeParentId = this.allMasterData.filter((f:any) => f.MasterDataName.toLowerCase() == globalconstants.MasterDefinitions.schoolapps.PAYMENTSTATUS)[0].MasterDataId;
         
         this.contentservice.GetDropDownDataFromDB(PaymentModeParentId, this.FilterOrgSubOrg, globalAdminId, 1)
           .subscribe((data: any) => {
@@ -297,14 +297,14 @@ export class OrganizationpaymentComponent implements OnInit { PageLoading=true;
     this.OrganizationPaymentList = [];
     //var orgIdSearchstr = ' and OrgId eq ' + localStorage.getItem("orgId");// + ' and BatchId eq ' + this.SelectedBatchId;
     var filterstr = 'Active eq 1 ';
-    if (this.searchForm.get("searchCustomerId").value == 0) {
+    if (this.searchForm.get("searchCustomerId")?.value == 0) {
       this.contentservice.openSnackBar("Please select organization", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
 
     this.loading = true;
 
-    var _searchCustomerId = this.searchForm.get("searchCustomerId").value;
+    var _searchCustomerId = this.searchForm.get("searchCustomerId")?.value;
 
     if (_searchCustomerId > 0)
       filterstr += " and OrgId eq " + _searchCustomerId;
@@ -323,17 +323,17 @@ export class OrganizationpaymentComponent implements OnInit { PageLoading=true;
     ];
     list.PageName = this.OrganizationPaymentListName;
     list.orderBy = "OrganizationPaymentId desc"
-    //list.lookupFields = [];
+    //list.lookupFields :any[]= [];
     list.filter = [filterstr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //var customerapp;
         this.OrganizationPaymentList = data.value.map(x => {
-          var customerplanobj = this.CustomerPlans.filter(f => f.CustomerPlanId == x.OrganizationPlanId);
+          var customerplanobj = this.CustomerPlans.filter((f:any) => f.CustomerPlanId == x.OrganizationPlanId);
           if (customerplanobj.length > 0) {
             x.PlanName = customerplanobj[0].PlanName;
             //x.AmountPerMonth = //customerplanobj[0].AmountPerMonth;
-            x.PaymentStatus = this.PaymentModes.filter(f => f.MasterDataId == x.PaymentMode)[0].MasterDataName;
+            x.PaymentStatus = this.PaymentModes.filter((f:any) => f.MasterDataId == x.PaymentMode)[0].MasterDataName;
           }
           return x;
         });

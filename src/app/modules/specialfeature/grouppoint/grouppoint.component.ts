@@ -6,11 +6,11 @@ import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import alasql from 'alasql';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-grouppoint',
@@ -23,8 +23,8 @@ export class GrouppointComponent implements OnInit {
   RowsToUpdate = -1;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
-  LoginUserDetail: any[] = [];
-  StudentClasses = [];
+  LoginUserDetail:any[]= [];
+  StudentClasses :any[]= [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   ClassId = 0;
@@ -32,21 +32,21 @@ export class GrouppointComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  ActivityCategory = [];
-  RelevantEvaluationListForSelectedStudent = [];
-  SportsResultList: any[] = [];
+  ActivityCategory :any[]= [];
+  RelevantEvaluationListForSelectedStudent :any[]= [];
+  SportsResultList:any[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  Sections = [];
-  Classes = [];
-  AchievementAndPoints = [];
+  Sections :any[]= [];
+  Classes :any[]= [];
+  AchievementAndPoints :any[]= [];
   dataSource: MatTableDataSource<any>;
-  allMasterData = [];
-  SelectedClassSubjects = [];
-  PointCategory = [];
-  Groups = [];
-  Students = [];
-  ActivityNames = [];
-  ActivitySessions = [];
+  allMasterData :any[]= [];
+  SelectedClassSubjects :any[]= [];
+  PointCategory :any[]= [];
+  Groups :any[]= [];
+  Students :any[]= [];
+  ActivityNames :any[]= [];
+  ActivitySessions :any[]= [];
   filteredStudents: Observable<IStudent[]>;
   SportsResultData = {
     SportResultId: 0,
@@ -61,7 +61,7 @@ export class GrouppointComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: 0
   };
-  SportsResultForUpdate = [];
+  SportsResultForUpdate :any[]= [];
   displayedColumns = [
     "GroupName",
     // "Category",
@@ -90,7 +90,7 @@ export class GrouppointComponent implements OnInit {
     this.searchForm = this.fb.group({
       searchSessionId: [0]
     });
-    this.ClassId = this.tokenStorage.getClassId();
+    this.ClassId = this.tokenStorage.getClassId()!;
     this.PageLoad();
 
   }
@@ -103,9 +103,9 @@ export class GrouppointComponent implements OnInit {
   displayFn(user: IStudent): string {
     return user && user.Name ? user.Name : '';
   }
-  StudentGroups = [];
-  StudentClubs = [];
-  StudentHouses = [];
+  StudentGroups :any[]= [];
+  StudentClubs :any[]= [];
+  StudentHouses :any[]= [];
   PageLoad() {
     debugger;
     this.loading = true;
@@ -120,8 +120,8 @@ export class GrouppointComponent implements OnInit {
       if (this.Permission != 'deny') {
         //this.GroupId = this.tokenStorage.getGroupId();
 
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetMasterData();
@@ -160,7 +160,7 @@ export class GrouppointComponent implements OnInit {
   GetSportsResult() {
     debugger;
     var filterStr = this.FilterOrgSubOrgBatchId + " and Active eq 1";
-    var _SessionId = this.searchForm.get("searchSessionId").value;
+    var _SessionId = this.searchForm.get("searchSessionId")?.value;
     if (_SessionId > 0) {
       filterStr += " and SessionId eq " + _SessionId;
     }
@@ -192,7 +192,7 @@ export class GrouppointComponent implements OnInit {
         this.SportsResultList = [];
         data.value.forEach(m => {
           // if (m.StudentClassId > 0) {
-          //   var obj = this.Students.filter(s => s.StudentClassId == m.StudentClassId);
+          //   var obj = this.Students.filter((s:any) => s.StudentClassId == m.StudentClassId);
           //   if (obj.length > 0)
           //     m.GroupId = obj[0].HouseId;
           // }
@@ -204,18 +204,18 @@ export class GrouppointComponent implements OnInit {
             else
               m.GroupName = '';
 
-            var obj = this.ActivityNames.filter(f => f.MasterDataId == m.SportsNameId);
+            var obj = this.ActivityNames.filter((f:any) => f.MasterDataId == m.SportsNameId);
             if (obj.length > 0)
               m.SportsName = obj[0].MasterDataName;
             else
               m.SportsName = '';
             if (m.CategoryId > 0) {
-              var obj = this.allMasterData.filter(f => f.MasterDataId == m.CategoryId);
+              var obj = this.allMasterData.filter((f:any) => f.MasterDataId == m.CategoryId);
               if (obj.length > 0)
                 m.Category = obj[0].MasterDataName.toLowerCase();
             }
             if (m.SubCategoryId > 0)
-              m.SubCategory = this.allMasterData.filter(f => f.MasterDataId == m.SubCategoryId)[0].MasterDataName;
+              m.SubCategory = this.allMasterData.filter((f:any) => f.MasterDataId == m.SubCategoryId)[0].MasterDataName;
             m.Points = m.Rank.Points;
             m.PointCategory = this.PointCategory.filter(c => c.MasterDataId == m.Rank.CategoryId)[0].MasterDataName;
             this.SportsResultList.push(m);
@@ -266,7 +266,7 @@ export class GrouppointComponent implements OnInit {
     //   .subscribe((data: any) => {
     debugger;
     this.Students = [];
-    var _students: any = this.tokenStorage.getStudents();
+    var _students: any = this.tokenStorage.getStudents()!;
     if (_students.length > 0) {
 
       _students.forEach(student => {
@@ -276,14 +276,14 @@ export class GrouppointComponent implements OnInit {
         var _classId = '';
         var _section = '';
         var _studentClassId = 0;
-        var studentclassobj = this.StudentClasses.filter(f => f.StudentId == student.StudentId);
+        var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
         if (studentclassobj.length > 0) {
           _studentClassId = studentclassobj[0].StudentClassId;
           var _classNameobj = this.Classes.filter(c => c.ClassId == studentclassobj[0].ClassId);
           _classId = studentclassobj[0].ClassId;
           if (_classNameobj.length > 0)
             _className = _classNameobj[0].ClassName;
-          var _SectionObj = this.Sections.filter(f => f.MasterDataId == studentclassobj[0].SectionId)
+          var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclassobj[0].SectionId)
 
           if (_SectionObj.length > 0)
             _section = _SectionObj[0].MasterDataName;
@@ -307,14 +307,14 @@ export class GrouppointComponent implements OnInit {
   }
   SelectSubCategory(row, event) {
     if (row.CategoryId > 0)
-      row.SubCategories = this.allMasterData.filter(f => f.ParentId == row.CategoryId);
+      row.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
     else
       row.SubCategories = [];
     this.onBlur(row);
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ActivityNames = this.getDropDownData(globalconstants.MasterDefinitions.common.ACTIVITYNAME);
     this.StudentClubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
     this.StudentHouses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
@@ -342,9 +342,9 @@ export class GrouppointComponent implements OnInit {
     this.GetPoints();
   }
   SetCategory() {
-    var _activityId = this.searchForm.get("searchActivityId").value;
+    var _activityId = this.searchForm.get("searchActivityId")?.value;
     if (_activityId > 0)
-      this.ActivityCategory = this.allMasterData.filter(f => f.ParentId == _activityId);
+      this.ActivityCategory = this.allMasterData.filter((f:any) => f.ParentId == _activityId);
     else
       this.ActivityCategory = [];
   }
@@ -355,9 +355,9 @@ export class GrouppointComponent implements OnInit {
   CategoryChanged(row) {
     debugger;
     row.Action = true;
-    var item = this.SportsResultList.filter(f => f.SportResultId == row.SportResultId);
+    var item = this.SportsResultList.filter((f:any) => f.SportResultId == row.SportResultId);
     if (row.CategoryId > 0)
-      item[0].SubCategories = this.allMasterData.filter(f => f.ParentId == row.CategoryId);
+      item[0].SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
     else
       item[0].SubCategories = [];
     this.dataSource = new MatTableDataSource(this.SportsResultList);

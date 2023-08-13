@@ -5,8 +5,8 @@ import { AssetRoutingModule, AssetsComponents } from './asset-routing.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPrintModule } from 'ngx-print';
-import { MaterialModule } from 'src/app/shared/material/material.module';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { MaterialModule } from '../../../shared/material/material.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { SharedhomepageModule } from '../sharedhomepage.module';
 
 

@@ -5,11 +5,11 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -23,7 +23,7 @@ export class FeeDefinitionComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -35,17 +35,17 @@ export class FeeDefinitionComponent implements OnInit {
   };
   SelectedApplicationId = 0;
   FeeDefinitionListName = 'FeeDefinitions';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0;SubOrgId = 0;
   FilterOrgSubOrgBatchId='';
   FilterOrgSubOrg='';
-  FeeDefinitionList: IFeeDefinition[] = [];
+  FeeDefinitionList: IFeeDefinition[]= [];
   filteredOptions: Observable<IFeeDefinition[]>;
   dataSource: MatTableDataSource<IFeeDefinition>;
-  allMasterData = [];
-  FeeDefinitions = [];
-  FeeCategories = [];
+  allMasterData :any[]= [];
+  FeeDefinitions :any[]= [];
+  FeeCategories :any[]= [];
   Permission = 'deny';
   ExamId = 0;
   FeeDefinitionData = {
@@ -99,12 +99,12 @@ export class FeeDefinitionComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.CLASSCOURSE.FEEDEFINITION)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
@@ -140,7 +140,7 @@ export class FeeDefinitionComponent implements OnInit {
       Active: 0,
       Action: true
     };
-    this.FeeDefinitionList = [];
+    this.FeeDefinitionList= [];
     this.FeeDefinitionList.push(newdata);
     this.dataSource = new MatTableDataSource<IFeeDefinition>(this.FeeDefinitionList);
     this.dataSource.paginator = this.paginator;
@@ -242,7 +242,7 @@ export class FeeDefinitionComponent implements OnInit {
     this.loading = false; this.PageLoading = false;
   }
   GetSubCategory(row) {
-    row.FeeSubCategories = this.allMasterData.filter(f => f.ParentId == row.FeeCategoryId);
+    row.FeeSubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.FeeCategoryId);
     row.Action = true;
   }
   insert(row) {
@@ -272,7 +272,7 @@ export class FeeDefinitionComponent implements OnInit {
 
     this.loading = true;
     let filterStr = this.FilterOrgSubOrg;
-    // var _searchClassName = this.searchForm.get("searchClassName").value;
+    // var _searchClassName = this.searchForm.get("searchClassName")?.value;
     // if (_searchClassName > 0) {
     //   filterStr += ' and FeeDefinitionId eq ' + _searchClassName;
     // }
@@ -291,13 +291,13 @@ export class FeeDefinitionComponent implements OnInit {
 
     list.PageName = this.FeeDefinitionListName;
     list.filter = [filterStr];
-    this.FeeDefinitionList = [];
+    this.FeeDefinitionList= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
         if (data.value.length > 0) {
           this.FeeDefinitionList = data.value.map(m => {
-            m.FeeSubCategories = this.allMasterData.filter(f => f.ParentId == m.FeeCategoryId);
+            m.FeeSubCategories = this.allMasterData.filter((f:any) => f.ParentId == m.FeeCategoryId);
             return m;
           });
 
@@ -313,7 +313,7 @@ export class FeeDefinitionComponent implements OnInit {
 
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
 
     //this.Applications = this.getDropDownData(globalconstants.MasterDefinitions.ttpapps.bang);
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);

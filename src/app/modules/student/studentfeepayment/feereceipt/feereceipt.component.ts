@@ -2,8 +2,8 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ContentService } from 'src/app/shared/content.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../../shared/content.service';
+import { TokenStorageService } from '../../../../_services/token-storage.service';
 import { NaomitsuService } from '../../../../shared/databaseService';
 import { globalconstants } from '../../../../shared/globalconstant';
 import { List } from '../../../../shared/interface';
@@ -25,27 +25,27 @@ export class FeereceiptComponent implements OnInit {
 
   loading = false;
   CancelReceiptMode = false;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   BillStatus = 0;
   CurrentBatchId = 0;
-  ReceiptHeading = [];
+  ReceiptHeading :any[]= [];
   NewReceipt = true;
   Saved = false;
-  PaymentIds = [];
-  Sections = [];
-  FeeDefinitions = [];
-  Classes = [];
-  Batches = [];
-  Locations = [];
-  clickPaymentDetails = [];
+  PaymentIds :any[]= [];
+  Sections :any[]= [];
+  FeeDefinitions :any[]= [];
+  Classes :any[]= [];
+  Batches :any[]= [];
+  Locations :any[]= [];
+  clickPaymentDetails :any[]= [];
   ELEMENT_DATA: IStudentFeePaymentReceipt[];
   StudentFeeReceiptListName = 'StudentFeeReceipts';
-  FeeReceipt = [];
+  FeeReceipt :any[]= [];
   StudentFeePaymentList: any[];
   Students: string[];
   dataSource: MatTableDataSource<any>;
   dataReceiptSource: MatTableDataSource<IReceipt>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   SelectedBatchId = 0;
   SubOrgId = 0;
   searchForm = new UntypedFormGroup({
@@ -125,24 +125,24 @@ export class FeereceiptComponent implements OnInit {
     if (this.Permission != 'deny') {
       this.TotalAmount = 0;
       this.Balance = 0;
-      this.CompanyName = this.tokenStorage.getCompanyName();
+      this.CompanyName = this.tokenStorage.getCompanyName()!;
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         this.Classes = [...data.value];
-        var obj = this.Classes.filter(f => f.ClassId == this.studentInfoTodisplay.ClassId)
+        var obj = this.Classes.filter((f:any) => f.ClassId == this.studentInfoTodisplay.ClassId)
         if (obj.length > 0)
           this.studentInfoTodisplay.StudentClassName = obj[0].ClassName;
       })
       //this.shareddata.CurrentBatch.subscribe(lo => (this.Batches = lo));
-      this.Batches = this.tokenStorage.getBatches();
+      this.Batches = this.tokenStorage.getBatches()!;;
       this.shareddata.CurrentSection.subscribe(pr => (this.Sections = pr));
 
-      //this.studentInfoTodisplay.AdmissionNo = this.tokenStorage.getStudentId();
-      this.studentInfoTodisplay.StudentId = this.tokenStorage.getStudentId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
-      this.studentInfoTodisplay.StudentClassId = this.tokenStorage.getStudentClassId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+      //this.studentInfoTodisplay.AdmissionNo = this.tokenStorage.getStudentId()!;;
+      this.studentInfoTodisplay.StudentId = this.tokenStorage.getStudentId()!;;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.studentInfoTodisplay.StudentClassId = this.tokenStorage.getStudentClassId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
       this.studentInfoTodisplay.OffLineReceiptNo = this.OffLineReceiptNo;
       this.studentInfoTodisplay.currentbatchId = this.SelectedBatchId;
 
@@ -161,7 +161,7 @@ export class FeereceiptComponent implements OnInit {
   viewDetail(row) {
     debugger;
     this.ReceivedBy = row.ReceivedBy;
-    this.clickPaymentDetails = this.StudentFeePaymentList.filter(f => f.FeeReceiptId == row.StudentFeeReceiptId)
+    this.clickPaymentDetails = this.StudentFeePaymentList.filter((f:any) => f.FeeReceiptId == row.StudentFeeReceiptId)
       .sort((a, b) => a.PaymentOrder - b.PaymentOrder);
     //console.log("PaymentOrder", this.clickPaymentDetails)
     this.studentInfoTodisplay.StudentFeeReceiptId = row.StudentFeeReceiptId;
@@ -215,7 +215,7 @@ export class FeereceiptComponent implements OnInit {
 
         this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, pStudentClassId, 0)
           .subscribe((data: any) => {
-            var studentfeedetail = [];
+            var studentfeedetail :any[]= [];
             data.value.forEach(studcls => {
               var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
@@ -228,11 +228,11 @@ export class FeereceiptComponent implements OnInit {
                 var _category = '';
                 var _subCategory = '';
 
-                var objcat = this.FeeCategories.filter(f => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                var objcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat.length > 0)
                   _category = objcat[0].MasterDataName;
 
-                var objsubcat = this.FeeCategories.filter(f => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                var objsubcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
@@ -307,7 +307,7 @@ export class FeereceiptComponent implements OnInit {
       })
 
   }
-  Employees = [];
+  Employees :any[]= [];
   PaymentType = '';
   GetBills() {
     this.loading = true;
@@ -346,7 +346,7 @@ export class FeereceiptComponent implements OnInit {
           f.AccountingVouchers.forEach(k => {
             var _ShortText = '';
 
-            var feeObj = this.StudentClassFees.filter(f => f.ClassFeeId == k.ClassFeeId);
+            var feeObj = this.StudentClassFees.filter((f:any) => f.ClassFeeId == k.ClassFeeId);
             if (feeObj.length > 0) {
               if (k.ShortText && k.ShortText.length > 0 && feeObj[0].AmountEditable) {
                 _ShortText = " (" + k.ShortText + ")"
@@ -383,8 +383,8 @@ export class FeereceiptComponent implements OnInit {
 
       })
   }
-  PaymentTypes = [];
-  FeeCategories = [];
+  PaymentTypes :any[]= [];
+  FeeCategories :any[]= [];
   GetMasterData() {
     this.loading = true;
     // let list: List = new List();
@@ -400,7 +400,7 @@ export class FeereceiptComponent implements OnInit {
     // this.dataservice.get(list)
     //   .subscribe((data: any) => {
     //debugger;
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);
     this.ReceiptHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.RECEIPTHEADING);
 

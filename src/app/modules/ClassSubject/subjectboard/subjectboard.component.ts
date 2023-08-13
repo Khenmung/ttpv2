@@ -3,10 +3,10 @@ import { ClassSubjectDetailComponent } from '../classsubjectdetail/classsubjectd
 import { StudentSubjectMarkCompComponent } from '../student-subject-mark-comp/student-subject-mark-comp.component';
 import { studentsubjectdashboardComponent } from '../studentsubjectdashboard/studentsubjectdashboard.component';
 import { SubjectTypesComponent } from '../subject-types/subject-types.component';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
-import { ContentService } from 'src/app/shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
 import { StudentSubjectReportComponent } from '../studentsubjectreport/studentsubjectreport.component';
 import { SubjectcomponentComponent } from '../subjectcomponent/subjectcomponent.component';
 

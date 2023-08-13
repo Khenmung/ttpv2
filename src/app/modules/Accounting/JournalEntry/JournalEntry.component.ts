@@ -5,11 +5,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { IGeneralLedger } from '../ledgeraccount/ledgeraccount.component';
 import { SwUpdate } from '@angular/service-worker';
 import { MatPaginator } from '@angular/material/paginator';
@@ -25,9 +25,9 @@ export class JournalEntryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   PageLoading = true;
   @ViewChild("table") mattable;
-  GeneralLedgers = [];
+  GeneralLedgers :any[]= [];
   AccountingVoucherListName = 'AccountingVouchers';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   DummyMasterItemId = 4579;
@@ -41,13 +41,13 @@ export class JournalEntryComponent implements OnInit {
   FilterOrgSubOrg = '';
   SelectedApplicationId = 0;
   loading = false;
-  GLAccounts = [];
+  GLAccounts :any[]= [];
   CurrentBatchId = 0;
   SelectedBatchId = 0;
   SubOrgId = 0;
-  AccountingVoucherList: IAccountingVoucher[] = [];
+  AccountingVoucherList: IAccountingVoucher[]= [];
   dataSource: MatTableDataSource<IAccountingVoucher>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm: UntypedFormGroup;
   AccountingVoucherData = {
     AccountingVoucherId: 0,
@@ -116,7 +116,7 @@ export class JournalEntryComponent implements OnInit {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
 
-    this.filteredOptions = this.searchForm.get("searchGeneralLedgerId").valueChanges
+    this.filteredOptions = this.searchForm.get("searchGeneralLedgerId")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.GeneralLedgerName),
@@ -126,9 +126,9 @@ export class JournalEntryComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.accounting.JOURNALENTRY);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
@@ -155,7 +155,7 @@ export class JournalEntryComponent implements OnInit {
   addnew(mode) {
     //this.TransactionMode = mode;
     if (mode) {
-      this.AccountingVoucherList = [];
+      this.AccountingVoucherList :any[]= [];
       this.reference = ''
       this.TranParentId = 0;
     }
@@ -172,7 +172,7 @@ export class JournalEntryComponent implements OnInit {
         ClassFeeId: 0,
         LedgerId: 0,
         GeneralLedgerName: '',
-        GeneralLedgerAccountId: this.searchForm.get("searchGeneralLedgerId").value.GeneralLedgerId,
+        GeneralLedgerAccountId: this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId,
         Debit: false,
         BaseAmount: 0,
         Amount: 0,
@@ -192,22 +192,22 @@ export class JournalEntryComponent implements OnInit {
       var matches = row.ShortText.replaceAll(' ', '').substr(0, 10) //.match(/\b(\w)/g);
       this.reference = matches + moment(new Date()).format('YYYYMMDDHHmmss');
       row.Reference = this.reference;
-      this.TranParentId = this.searchForm.get("searchGeneralLedgerId").value.GeneralLedgerId;
+      this.TranParentId = this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId;
     }
   }
-  FilteredGeneralLedger = [];
+  FilteredGeneralLedger :any[]= [];
   BindReference() {
     debugger;
-    this.FilteredGeneralLedger = [];
-    var GeneralLedgerId = this.searchForm.get("searchGeneralLedgerId").value.GeneralLedgerId;
-    this.FilteredGeneralLedger = this.AllAccountingVouchers.filter(f => f.GeneralLedgerAccountId == GeneralLedgerId);
+    this.FilteredGeneralLedger :any[]= [];
+    var GeneralLedgerId = this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId;
+    this.FilteredGeneralLedger = this.AllAccountingVouchers.filter((f:any) => f.GeneralLedgerAccountId == GeneralLedgerId);
   }
-  AllAccountingVouchers = [];
+  AllAccountingVouchers :any[]= [];
   GetAllAccountingVoucher() {
     let filterStr = this.FilterOrgSubOrg + ' and LedgerId eq 0 and Active eq 1';
     debugger;
     this.loading = true;
-    var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd());
+    var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
     filterStr += " and PostingDate ge " + this.datepipe.transform(FinancialStartEnd.StartDate, 'yyyy-MM-dd') + //T00:00:00.000Z
       " and  PostingDate le " + this.datepipe.transform(FinancialStartEnd.EndDate, 'yyyy-MM-dd');//T00:00:00.000Z
 
@@ -222,7 +222,7 @@ export class JournalEntryComponent implements OnInit {
     //list.orderBy = "ShortText";
     //list.lookupFields = ["AccountingLedgerTrialBalance"];
     list.filter = [filterStr + " and GeneralLedgerAccountId ne null"];
-    this.AllAccountingVouchers = [];
+    this.AllAccountingVouchers :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AllAccountingVouchers = alasql("select distinct GeneralLedgerAccountId,Reference from ?", [data.value]);
@@ -234,11 +234,11 @@ export class JournalEntryComponent implements OnInit {
     let filterStr = this.FilterOrgSubOrg + ' and LedgerId eq 0 and Active eq 1';
     debugger;
     this.loading = true;
-    var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd());
+    var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
     filterStr += " and PostingDate ge " + this.datepipe.transform(FinancialStartEnd.StartDate, 'yyyy-MM-dd') + //T00:00:00.000Z
       " and  PostingDate le " + this.datepipe.transform(FinancialStartEnd.EndDate, 'yyyy-MM-dd');//T00:00:00.000Z
 
-    var searchReference = this.searchForm.get("searchReference").value;
+    var searchReference = this.searchForm.get("searchReference")?.value;
     if (searchReference != "") {
       this.reference = searchReference;
       filterStr += " and Reference eq '" + searchReference + "'"
@@ -267,12 +267,12 @@ export class JournalEntryComponent implements OnInit {
     //list.orderBy = "ShortText";
     //list.lookupFields = ["AccountingLedgerTrialBalance"];
     list.filter = [filterStr + " and GeneralLedgerAccountId ne null"];
-    this.AccountingVoucherList = [];
+    this.AccountingVoucherList :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountingVoucherList = data.value.map(m => {
 
-          var obj = this.GeneralLedgers.filter(f => f.GeneralLedgerId == m.GeneralLedgerAccountId)
+          var obj = this.GeneralLedgers.filter((f:any) => f.GeneralLedgerId == m.GeneralLedgerAccountId)
           if (obj.length > 0) {
             m.GeneralLedgerAccountId = obj[0];
           }
@@ -466,7 +466,7 @@ export class JournalEntryComponent implements OnInit {
 
     list.PageName = "GeneralLedgers";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts = [];
+    this.GLAccounts :any[]= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.GeneralLedgers = [...data.value];
@@ -475,7 +475,7 @@ export class JournalEntryComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {

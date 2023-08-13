@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { ClassEvaluationComponent } from './classevaluation/classevaluation.component';
 import { ClassEvaluationOptionComponent } from './classevaluationoption/classevaluationoption.component';
 import { EvaluationExamMapComponent } from './evaluationexammap/EvaluationExamMap.component';

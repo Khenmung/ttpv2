@@ -3,13 +3,13 @@ import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgxFileDropEntry } from 'ngx-file-drop';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { FileUploadService } from 'src/app/shared/upload.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { FileUploadService } from '../../../shared/upload.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-employeedocuments',
@@ -34,15 +34,15 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
   selectedFile: any;
   EmployeeId: number = 0;
   SubOrgId: number = 0;
-  StudentDocuments = [];
+  StudentDocuments :any[]= [];
   Edit: boolean;
   SelectedBatchId = 0;
-  allMasterData = [];
-  DocumentTypes = [];
-  Batches = [];
-  LoginUserDetail = [];
+  allMasterData :any[]= [];
+  DocumentTypes :any[]= [];
+  Batches :any[]= [];
+  LoginUserDetail :any[]= [];
   uploadForm: UntypedFormGroup;
-  public files: NgxFileDropEntry[] = [];
+  public files: NgxFileDropEntry[]= [];
   UploadDisplayedColumns = [
     //"FileId",
     "UpdatedFileFolderName",
@@ -73,8 +73,8 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
       DocTypeId: [0, Validators.required]
     })
     debugger;
-    this.EmployeeId = this.tokenStorage.getEmployeeId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.EmployeeId = this.tokenStorage.getEmployeeId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
 
     if (this.EmployeeId == 0) {
       
@@ -86,11 +86,11 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
-        //this.StudentId = this.tokenStorage.getStudentId();
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        //this.StudentId = this.tokenStorage.getStudentId()!;;
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.LoginUserDetail = this.tokenStorage.getUserDetail();
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgnBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgIdOnly = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.PageLoad();
@@ -115,7 +115,7 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
       this.contentservice.openSnackBar('Please select a file!', globalconstants.ActionText,globalconstants.RedBackground);
       return;
     }
-    if (this.uploadForm.get("DocTypeId").value == 0) {
+    if (this.uploadForm.get("DocTypeId")?.value == 0) {
       this.contentservice.openSnackBar('Please select document type!', globalconstants.ActionText,globalconstants.RedBackground);
       return;
     }
@@ -133,7 +133,7 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
     this.formdata.append("pageId", "0");
     this.formdata.append("studentId", "0");
     this.formdata.append("employeeId", this.EmployeeId.toString());
-    this.formdata.append("docTypeId", this.uploadForm.get("DocTypeId").value);
+    this.formdata.append("docTypeId", this.uploadForm.get("DocTypeId")?.value);
     this.formdata.append("image", this.selectedFile, this.selectedFile.name);
     this.uploadImage();
   }
@@ -195,7 +195,7 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
         this.DocumentTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.DOCUMENTTYPE);
         //this.Batches = this.getDropDownData(globalconstants.MasterDefinitions.school.BATCH);
         //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-        this.Batches = this.tokenStorage.getBatches();
+        this.Batches = this.tokenStorage.getBatches()!;;
         this.GetDocuments();
       });
 

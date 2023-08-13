@@ -6,11 +6,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { TableUtil } from '../../../shared/TableUtil';
 import { SwUpdate } from '@angular/service-worker';
 
@@ -34,50 +34,50 @@ export class GetreportComponent implements OnInit {
     this.dataSource.sort = value;
   }
 
-  private searchedItems: Array<any> = [];
+  private searchedItems :any[]= [];
   SelectedReport = '';
   NestedColumnSearch = false;
-  SearchDropdownValue = [];
+  SearchDropdownValue :any[]= [];
   BaseReportId = 0;
   ParentId = 0;
   Permission = '';
-  DisplayColumns = [];
-  FeeTypes = [];
-  LoginUserDetail: any[] = [];
+  DisplayColumns :any[]= [];
+  FeeTypes :any[]= [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
-  ColumnsOfSelectedReports = [];
+  ColumnsOfSelectedReports :any[]= [];
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
   ReportName = '';
   BaseReportName = '';
   searchCondition1;
-  searchConditionText = [];
-  AvailableReportNames = [];
-  MyAppReportNames = [];
-  Applications = [];
-  ReportNames = [];
-  Classes = [];
-  Sections = [];
-  Students = [];
-  Semesters=[];
-  SchoolGenders = [];
-  ActivityCategory = [];
+  searchConditionText :any[]= [];
+  AvailableReportNames :any[]= [];
+  MyAppReportNames :any[]= [];
+  Applications :any[]= [];
+  ReportNames :any[]= [];
+  Classes :any[]= [];
+  Sections :any[]= [];
+  Students :any[]= [];
+  Semesters:any[]=[];
+  SchoolGenders :any[]= [];
+  ActivityCategory :any[]= [];
   SelectedBatchId = 0;SubOrgId = 0;
   ReportConfigItemListName = "ReportConfigItems";
 
   SelectedApplicationId = 0;
-  ReportConfigItemList = [];
-  dataSource: MatTableDataSource<IReportConfigItem>;
-  NestedfilterKeyValue = [];
-  filterKeyValue = [];
-  AllMasterData = [];
+  ReportConfigItemList :any[]= [];
+  dataSource: MatTableDataSource<IReportConfigItem>=new MatTableDataSource();
+  NestedfilterKeyValue :any[]= [];
+  filterKeyValue :any[]= [];
+  AllMasterData :any[]= [];
   PagePermission = '';
-  FilterColumns = [];
-  FilterConditions = [];
+  FilterColumns :any[]= [];
+  FilterConditions :any[]= [];
 
-  FilterCriteria = [];
-  DropdownData = [];
+  FilterCriteria :any[]= [];
+  DropdownData :any[]= [];
   ReportConfigItemData = {
     ReportConfigItemId: 0,
     ReportName: '',
@@ -130,9 +130,9 @@ export class GetreportComponent implements OnInit {
       { "text": "less than n equal", "val": "le" },
       { "text": "like", "val": "substringof" }
     ];
-    this.dataSource = new MatTableDataSource([]);
+    //this.dataSource = new MatTableDataSource([]);
     this.Applications = this.tokenStorage.getPermittedApplications();
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
 
     this.PageLoad();
     //this.cdr.detectChanges();
@@ -150,8 +150,8 @@ export class GetreportComponent implements OnInit {
 
 
   PageLoad() {
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
@@ -183,8 +183,8 @@ export class GetreportComponent implements OnInit {
   UpdateOrSave(row) {
 
     //debugger;
-    var AvailableReportId = this.searchForm.get("searchAvailableReportName").value;
-    var MyReportNameId = this.searchForm.get("searchReportName").value;
+    var AvailableReportId = this.searchForm.get("searchAvailableReportName")?.value;
+    var MyReportNameId = this.searchForm.get("searchReportName")?.value;
 
     if (AvailableReportId == 0) {
       this.contentservice.openSnackBar("Please select available report name", globalconstants.ActionText, globalconstants.RedBackground);
@@ -281,7 +281,7 @@ export class GetreportComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.AllMasterData = this.tokenStorage.getMasterData();
+    this.AllMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.SchoolGenders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
@@ -383,10 +383,10 @@ export class GetreportComponent implements OnInit {
   }
   GetMyReportNames() {
     debugger;
-    this.ReportConfigItemList = [];
+    this.ReportConfigItemList= [];
     this.AvailableReportNames = this.ReportNames.filter(a => a.ParentId == this.BaseReportId);
     //console.log("this.AvailableReportNames", this.AvailableReportNames);
-    //this.SelectedReportBase =this.AvailableReportNames.filter(f=>f.ReportName.toLowerCase()=='student report')
+    //this.SelectedReportBase =this.AvailableReportNames.filter((f:any)=>f.ReportName.toLowerCase()=='student report')
     this.AvailableReportNames.forEach(r => {
       var temp = this.ReportNames.filter(p => p.ParentId == r.ReportConfigItemId && p.OrgId != 0)
       if (temp.length > 0) {
@@ -399,12 +399,12 @@ export class GetreportComponent implements OnInit {
 
   GetFilterColumn() {
     debugger;
-    this.FilterColumns = this.ReportNames.filter(f => f.ParentId == this.searchForm.get("searchReportName").value);
-    //var selectedObj = this.MyAppReportNames.filter(f => f.ReportConfigItemId == this.searchForm.get("searchReportName").value);
-    var obj = this.ReportNames.filter(f => f.ReportConfigItemId == this.searchForm.get("searchReportName").value)
+    this.FilterColumns = this.ReportNames.filter((f:any) => f.ParentId == this.searchForm.get("searchReportName")?.value);
+    //var selectedObj = this.MyAppReportNames.filter((f:any) => f.ReportConfigItemId == this.searchForm.get("searchReportName")?.value);
+    var obj = this.ReportNames.filter((f:any) => f.ReportConfigItemId == this.searchForm.get("searchReportName")?.value)
     if (obj.length > 0) {
       var _parentId = obj[0].ParentId
-      this.BaseReportName = this.ReportNames.filter(f => f.ReportConfigItemId == _parentId)[0].ReportName;
+      this.BaseReportName = this.ReportNames.filter((f:any) => f.ReportConfigItemId == _parentId)[0].ReportName;
       switch (this.BaseReportName) {
         case "Student Activity":
           this.IfStudentActivityMethods();
@@ -415,12 +415,12 @@ export class GetreportComponent implements OnInit {
   FillDropDown() {
     var _ParentId = 0;
 
-    this.DropdownData = this.AllMasterData.filter(f => f.ParentId == _ParentId);
+    this.DropdownData = this.AllMasterData.filter((f:any) => f.ParentId == _ParentId);
   }
   getSelectedReportColumn() {
 
     debugger;
-    var MyReportNameId = this.searchForm.get("searchReportName").value;
+    var MyReportNameId = this.searchForm.get("searchReportName")?.value;
 
     if (MyReportNameId == 0) {
       this.contentservice.openSnackBar("Please select report name", globalconstants.ActionText, globalconstants.RedBackground);
@@ -443,7 +443,7 @@ export class GetreportComponent implements OnInit {
     list.PageName = this.ReportConfigItemListName;
     list.filter = ["Active eq 1 and ParentId eq " + MyReportNameId];
     this.searchedItems = [];
-    this.ReportConfigItemList = [];
+    this.ReportConfigItemList= [];
     this.dataSource = new MatTableDataSource(this.ReportConfigItemList);
 
     this.dataservice.get(list)
@@ -456,12 +456,12 @@ export class GetreportComponent implements OnInit {
           // to get table name of parent report;
           _ParentId = SelectedReport[0].ParentId;
         }
-        var baseReportColumns = this.ReportNames.filter(f => f.ParentId == _ParentId && f.OrgId == 0);
+        var baseReportColumns = this.ReportNames.filter((f:any) => f.ParentId == _ParentId && f.OrgId == 0);
         //console.log("baseReportColumns", baseReportColumns)
         var _tableNames = this.AvailableReportNames.filter(m => m.ReportConfigItemId == _ParentId)[0].TableNames.split(',');
-        //var _baseColumns = this.ReportNames.filter(f=>f.ParentId == _ParentId && f.OrgId ==0)
+        //var _baseColumns = this.ReportNames.filter((f:any)=>f.ParentId == _ParentId && f.OrgId ==0)
         this.ColumnsOfSelectedReports = data.value.map(m => {
-          var obj = baseReportColumns.filter(f => f.ReportName == m.ReportName);
+          var obj = baseReportColumns.filter((f:any) => f.ReportName == m.ReportName);
           if (obj.length > 0)
             m.TableNames = obj[0].TableNames;
           return m;
@@ -483,15 +483,15 @@ export class GetreportComponent implements OnInit {
         }
         //console.log("ColumnsOfSelectedReports", this.ColumnsOfSelectedReports)
         // filter whose tablenames column are empty
-        var fitleredNotNestedColumns = this.ColumnsOfSelectedReports.filter(f => f.TableNames == '');
-        var filteredNestedColumns = this.ColumnsOfSelectedReports.filter(f => f.TableNames != '');
+        var fitleredNotNestedColumns = this.ColumnsOfSelectedReports.filter((f:any) => f.TableNames == '');
+        var filteredNestedColumns = this.ColumnsOfSelectedReports.filter((f:any) => f.TableNames != '');
 
         list.fields = fitleredNotNestedColumns.map(m => {
           return m.ReportName;
         });
 
         //if filter contains nested column remove it
-        var nestedColumnFilterList = [];
+        var nestedColumnFilterList :any[]= [];
         filteredNestedColumns.forEach(f => {
           var filterOnNestedcolumn = this.FilterCriteria.filter(g => g.includes(f.ReportName))
           if (filterOnNestedcolumn.length > 0) {
@@ -513,14 +513,14 @@ export class GetreportComponent implements OnInit {
           .subscribe((data: any) => {
             var result = [...data.value];
             // data.value.map(res=>{
-            //       res.StudentClasses = res.StudentClasses.filter(f=>f.BatchId == this.SelectedBatchId);
+            //       res.StudentClasses = res.StudentClasses.filter((f:any)=>f.BatchId == this.SelectedBatchId);
             //       return res;
             // });
             //console.log("result",result)
             //debugger;
-            //var whereDisplayNameNotEmpty = this.ColumnsOfSelectedReports.filter(f => f.DisplayName.length > 0)
-            var colTem = [];
-            var formatedResult = [];
+            //var whereDisplayNameNotEmpty = this.ColumnsOfSelectedReports.filter((f:any) => f.DisplayName.length > 0)
+            var colTem :any[]= [];
+            var formatedResult :any[]= [];
             this.ColumnsOfSelectedReports.forEach(c => {
               if (c.DisplayName == null || c.DisplayName.length == 0)
                 c.DisplayName = c.ReportName;
@@ -582,27 +582,27 @@ export class GetreportComponent implements OnInit {
       case "Student Report":
         switch (colName) {
           case "StudentId":
-            var obj = this.Students.filter(s => s.StudentId == IdValue)
+            var obj = this.Students.filter((s:any) => s.StudentId == IdValue)
             if (obj.length > 0)
               returnvalue = obj[0].Name;
             break;
           case "ClassId":
-            var obj = this.Classes.filter(s => s.ClassId == IdValue)
+            var obj = this.Classes.filter((s:any) => s.ClassId == IdValue)
             if (obj.length > 0)
               returnvalue = obj[0].ClassName;
             break;
           case "GenderId":
-            var obj = this.SchoolGenders.filter(s => s.MasterDataId == IdValue)
+            var obj = this.SchoolGenders.filter((s:any) => s.MasterDataId == IdValue)
             if (obj.length > 0)
               returnvalue = obj[0].MasterDataName;
             break;
           case "SectionId":
-            var obj = this.Sections.filter(s => s.MasterDataId == IdValue)
+            var obj = this.Sections.filter((s:any) => s.MasterDataId == IdValue)
             if (obj.length > 0)
               returnvalue = obj[0].MasterDataName;
             break;
           case "FeeTypeId":
-            var obj = this.FeeTypes.filter(s => s.FeeTypeId == IdValue)
+            var obj = this.FeeTypes.filter((s:any) => s.FeeTypeId == IdValue)
             if (obj.length > 0)
               returnvalue = obj[0].FeeTypeName;
             break;
@@ -624,27 +624,27 @@ export class GetreportComponent implements OnInit {
       case "Student Report":
         switch (colName) {
           case "StudentId":
-            var obj = this.Students.filter(s => s.Name.toLowerCase() == TextValue.toLowerCase())
+            var obj = this.Students.filter((s:any) => s.Name.toLowerCase() == TextValue.toLowerCase())
             if (obj.length > 0)
               returnvalue = obj[0].StudentId;
             break;
           case "ClassId":
-            var obj = this.Classes.filter(s => s.ClassName.toLowerCase() == TextValue.toLowerCase())
+            var obj = this.Classes.filter((s:any) => s.ClassName.toLowerCase() == TextValue.toLowerCase())
             if (obj.length > 0)
               returnvalue = obj[0].ClassId;
             break;
           case "GenderId":
-            var obj = this.SchoolGenders.filter(s => s.MasterDataName.toLowerCase() == TextValue.toLowerCase())
+            var obj = this.SchoolGenders.filter((s:any) => s.MasterDataName.toLowerCase() == TextValue.toLowerCase())
             if (obj.length > 0)
               returnvalue = obj[0].MasterDataId;
             break;
           case "SectionId":
-            var obj = this.Sections.filter(s => s.MasterDataName.toLowerCase() == TextValue.toLowerCase())
+            var obj = this.Sections.filter((s:any) => s.MasterDataName.toLowerCase() == TextValue.toLowerCase())
             if (obj.length > 0)
               returnvalue = obj[0].MasterDataId;
             break;
           case "FeeTypeId":
-            var obj = this.FeeTypes.filter(s => s.FeeTypeName.toLowerCase() == TextValue.toLowerCase())
+            var obj = this.FeeTypes.filter((s:any) => s.FeeTypeName.toLowerCase() == TextValue.toLowerCase())
             if (obj.length > 0)
               returnvalue = obj[0].FeeTypeId;
             break;
@@ -775,7 +775,7 @@ export class GetreportComponent implements OnInit {
     });
   }
   checkIfNestedColumnSearch(columnName) {
-    var nestedcolumn = this.FilterColumns.filter(f => f.ReportName == columnName && f.TableNames.length > 0)
+    var nestedcolumn = this.FilterColumns.filter((f:any) => f.ReportName == columnName && f.TableNames.length > 0)
     if (nestedcolumn.length > 0) {
       {
         switch (columnName) {
@@ -820,7 +820,7 @@ export class GetreportComponent implements OnInit {
         debugger;
         //  //console.log('data.value', data.value);
         if (data.value.length > 0) {
-          var _students: any = this.tokenStorage.getStudents();
+          var _students: any = this.tokenStorage.getStudents()!;
           _students = _students.filter(stud => data.value.findIndex(fi => fi.StudentId == stud.StudentId) > -1)
 
           this.Students = _students.map(student => {
@@ -838,11 +838,11 @@ export class GetreportComponent implements OnInit {
               if (_classNameobj.length > 0)
                 _className = _classNameobj[0].ClassName;
              
-                var _SectionObj = this.Sections.filter(f => f.MasterDataId == matchstudentcls[0].SectionId)
+                var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == matchstudentcls[0].SectionId)
               if (_SectionObj.length > 0)
                 _section = "-"+_SectionObj[0].MasterDataName;
                 
-                var _SemesterObj = this.Semesters.filter(f => f.MasterDataId == matchstudentcls[0].SemesterId)
+                var _SemesterObj = this.Semesters.filter((f:any) => f.MasterDataId == matchstudentcls[0].SemesterId)
               if (_SemesterObj.length > 0)
                 _section += "-"+ _SemesterObj[0].MasterDataName;
 
@@ -865,14 +865,14 @@ export class GetreportComponent implements OnInit {
   }
   AddSearchFilter() {
     debugger;
-    var columnName = this.searchForm.get("searchFilterColumn").value;
-    var condition = this.searchForm.get("searchCondition").value;
-    var value = this.searchForm.get("searchCriteria").value;
+    var columnName = this.searchForm.get("searchFilterColumn")?.value;
+    var condition = this.searchForm.get("searchCondition")?.value;
+    var value = this.searchForm.get("searchCriteria")?.value;
 
     var filtertext = '';
 
     //if the selected column is a nested column
-    var nestedcolumn = this.FilterColumns.filter(f => f.ReportName == columnName && f.TableNames.length > 0)
+    var nestedcolumn = this.FilterColumns.filter((f:any) => f.ReportName == columnName && f.TableNames.length > 0)
     if (nestedcolumn.length > 0 || columnName.substr(columnName.length - 2) == 'Id') {
       var _Id = this.GetDropDownId(columnName, value);
       filtertext = columnName + " " + condition + " " + _Id;

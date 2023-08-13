@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { ClassEvaluationComponent } from '../classevaluation/classevaluation.component';
 import { EvaluationExamMapComponent } from '../evaluationexammap/EvaluationExamMap.component';
 import { EvaluationMasterComponent } from '../evaluationmaster/evaluationmaster.component';
@@ -42,7 +42,7 @@ export class EvaluationboardComponent implements AfterViewInit {
       // EvaluationOptionPermission: '',
       // EvaluationExamPermission: '',
     };
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
   Loaded = false;

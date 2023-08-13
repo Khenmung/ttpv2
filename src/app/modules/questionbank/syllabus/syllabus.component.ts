@@ -6,12 +6,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { FileUploadService } from 'src/app/shared/upload.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { FileUploadService } from '../../../shared/upload.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-syllabus',
@@ -23,13 +23,13 @@ export class SyllabusComponent implements OnInit {
   @ViewChild("table") mattable;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  LoginUserDetail: any[] = [];
-  ClassGroups = [];
+  LoginUserDetail:any[]= [];
+  ClassGroups :any[]= [];
   CurrentRow: any = {};
   selectedIndex = 0;
   selectedRowIndex = -1;
   RowToUpdate = -1;
-  EvaluationNames = [];
+  EvaluationNames :any[]= [];
   SyllabusIdTopass = 0;
   SelectedApplicationId = 0;
   StudentClassId = 0;
@@ -37,20 +37,20 @@ export class SyllabusComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  SyllabusOptionList = [];
-  SyllabusList: ISyllabus[] = [];
+  SyllabusOptionList :any[]= [];
+  SyllabusList: ISyllabus[]= [];
   //EvaluationMasterId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
-  QuestionnaireTypes = [];
-  SubContentUnits = [];
-  Classes = [];
-  ClassSubjects = [];
-  //Exams = [];
-  //ExamNames = [];
-  SelectedClassSubjects = [];
+  QuestionnaireTypes :any[]= [];
+  SubContentUnits :any[]= [];
+  Classes :any[]= [];
+  ClassSubjects :any[]= [];
+  //Exams :any[]= [];
+  //ExamNames :any[]= [];
+  SelectedClassSubjects :any[]= [];
   filteredOptions: Observable<ISyllabus[]>;
   dataSource: MatTableDataSource<ISyllabus>;
-  allMasterData = [];
+  allMasterData :any[]= [];
 
   SyllabusData = {
     SyllabusId: 0,
@@ -62,8 +62,8 @@ export class SyllabusComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: false
   };
-  EvaluationMasterForClassGroup = [];
-  SyllabusForUpdate = [];
+  EvaluationMasterForClassGroup :any[]= [];
+  SyllabusForUpdate :any[]= [];
   displayedColumns = [
     'SyllabusId',
     'ContentUnitId',
@@ -93,7 +93,7 @@ export class SyllabusComponent implements OnInit {
     // })
     debugger;
     this.imgURL = '';
-    this.StudentClassId = this.tokenStorage.getStudentClassId();
+    this.StudentClassId = this.tokenStorage.getStudentClassId()!;
     this.searchForm = this.fb.group({
       searchClassId: [0],
       searchSubjectId: [0],
@@ -120,8 +120,8 @@ export class SyllabusComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         //this.GetEvaluationNames();
@@ -159,26 +159,26 @@ export class SyllabusComponent implements OnInit {
     return str.replace(format, function (m) { return map[m]; });
     //return str.replace(/[&<>"']/g, function(m) { return map[m]; });
   }
-  SelectedLessons = [];
-  SelectContentUnit = [];
-  SelectedSubContentUnit = [];
+  SelectedLessons :any[]= [];
+  SelectContentUnit :any[]= [];
+  SelectedSubContentUnit :any[]= [];
   SelectSubject() {
     debugger;
-    var _searchClassId = this.searchForm.get("searchClassId").value;
+    var _searchClassId = this.searchForm.get("searchClassId")?.value;
     if (_searchClassId > 0)
       this.SelectedClassSubjects = this.ClassSubjects.filter(d => d.ClassId == _searchClassId);
     this.cleardata();
   }
   SelectContentUnitChanged() {
     debugger;
-    var _searchContentUnitId = this.searchForm.get("searchContentUnitId").value;
+    var _searchContentUnitId = this.searchForm.get("searchContentUnitId")?.value;
     if (_searchContentUnitId > 0)
       this.SelectedSubContentUnit = this.allMasterData.filter(d => d.ParentId == _searchContentUnitId);
     this.cleardata();
   }
   SelectSubContentUnitChanged() {
     debugger;
-    var _searchSubContentUnitId = this.searchForm.get("searchSubContentUnitId").value;
+    var _searchSubContentUnitId = this.searchForm.get("searchSubContentUnitId")?.value;
     if (_searchSubContentUnitId > 0)
       this.SelectedLessons = this.allMasterData.filter(d => d.ParentId == _searchSubContentUnitId);
     else
@@ -272,7 +272,7 @@ export class SyllabusComponent implements OnInit {
   //     })
   // }
   SelectSubContentUnit(pContentUnitId) {
-    this.SubContentUnits = this.allMasterData.filter(f => f.ParentId == pContentUnitId.value);
+    this.SubContentUnits = this.allMasterData.filter((f:any) => f.ParentId == pContentUnitId.value);
   }
   delete(element) {
     let toupdate = {
@@ -308,24 +308,24 @@ export class SyllabusComponent implements OnInit {
       this.selectedRowIndex = rowId
   }
   AddNew() {
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId == 0) {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
 
-    var _SubjectId = this.searchForm.get("searchSubjectId").value;
+    var _SubjectId = this.searchForm.get("searchSubjectId")?.value;
     if (_SubjectId == 0) {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _searchContentUnitId = this.searchForm.get("searchContentUnitId").value;
-    var _searchSubContentUnitId = this.searchForm.get("searchSubContentUnitId").value;
+    var _searchContentUnitId = this.searchForm.get("searchContentUnitId")?.value;
+    var _searchSubContentUnitId = this.searchForm.get("searchSubContentUnitId")?.value;
 
     debugger;
-    var Sub = [];
+    var Sub :any[]= [];
     if (_searchContentUnitId > 0) {
-      Sub = this.allMasterData.filter(f => f.ParentId == _searchContentUnitId)
+      Sub = this.allMasterData.filter((f:any) => f.ParentId == _searchContentUnitId)
     }
     var newItem = {
       SyllabusId: 0,
@@ -343,7 +343,7 @@ export class SyllabusComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.SyllabusList);
   }
   SaveAll() {
-    var _toUpdate = this.SyllabusList.filter(f => f.Action);
+    var _toUpdate = this.SyllabusList.filter((f:any) => f.Action);
     this.RowToUpdate = _toUpdate.length;
     _toUpdate.forEach(question => {
       this.RowToUpdate--;
@@ -368,7 +368,7 @@ export class SyllabusComponent implements OnInit {
     else
       checkFilterString += " and Lesson eq '" + globalconstants.encodeSpecialChars(row.Lesson) + "'";
 
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId == 0) {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -376,7 +376,7 @@ export class SyllabusComponent implements OnInit {
     else
       checkFilterString += " and ClassId eq " + _classId;
 
-    var _SubjectId = this.searchForm.get("searchSubjectId").value;
+    var _SubjectId = this.searchForm.get("searchSubjectId")?.value;
     if (_SubjectId == 0) {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -410,9 +410,9 @@ export class SyllabusComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-          this.SubOrgId = this.tokenStorage.getSubOrgId();
-          this.SyllabusForUpdate = [];;
+          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+          this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+          this.SyllabusForUpdate = [];
           this.SyllabusData.SyllabusId = row.SyllabusId;
           this.SyllabusData.ContentUnitId = row.ContentUnitId;
           this.SyllabusData.SubContentUnitId = row.SubContentUnitId;
@@ -445,7 +445,7 @@ export class SyllabusComponent implements OnInit {
         }
       });
   }
-  RandomArr = [];
+  RandomArr :any[]= [];
   GetRandomNumber(NoOfRandom) {
     this.RandomArr = [];
     while (this.RandomArr.length < NoOfRandom) {
@@ -488,18 +488,18 @@ export class SyllabusComponent implements OnInit {
     this.SyllabusList = [];
     this.dataSource = new MatTableDataSource<ISyllabus>(this.SyllabusList);
   }
-  Lessons = [];
-  ContentUnit = [];
-  SubContentUnit = [];
-  DifficultyLevels = [];
+  Lessons :any[]= [];
+  ContentUnit :any[]= [];
+  SubContentUnit :any[]= [];
+  DifficultyLevels :any[]= [];
   GetSyllabus() {
     debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg //'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId > 0)
       filterStr += " and ClassId eq " + _classId
     else {
@@ -508,7 +508,7 @@ export class SyllabusComponent implements OnInit {
       return;
     }
 
-    var _SubjectId = this.searchForm.get("searchSubjectId").value;
+    var _SubjectId = this.searchForm.get("searchSubjectId")?.value;
     if (_SubjectId > 0)
       filterStr += " and SubjectId eq " + _SubjectId
     else {
@@ -516,11 +516,11 @@ export class SyllabusComponent implements OnInit {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _ContentUnitId = this.searchForm.get("searchContentUnitId").value;
+    var _ContentUnitId = this.searchForm.get("searchContentUnitId")?.value;
     if (_ContentUnitId > 0)
       filterStr += " and ContentUnitId eq " + _ContentUnitId
 
-    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId").value;
+    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId")?.value;
     if (_SubContentUnitId > 0)
       filterStr += " and SubContentUnitId eq " + _SubContentUnitId
 
@@ -546,7 +546,7 @@ export class SyllabusComponent implements OnInit {
         if (data.value.length > 0) {
           data.value.forEach(item => {
             if (item.ContentUnitId > 0) {
-              item.SubContentUnits = this.allMasterData.filter(f => f.ParentId == item.ContentUnitId);
+              item.SubContentUnits = this.allMasterData.filter((f:any) => f.ParentId == item.ContentUnitId);
 
             }
             else {
@@ -571,8 +571,8 @@ export class SyllabusComponent implements OnInit {
   GetEvaluationNames() {
     //debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";// and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
     let list: List = new List();
@@ -608,8 +608,8 @@ export class SyllabusComponent implements OnInit {
   GetSyllabusOption() {
     //debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and ParentId eq 0";// and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
     let list: List = new List();
@@ -648,7 +648,7 @@ export class SyllabusComponent implements OnInit {
       .subscribe((data: any) => {
         this.ClassSubjects = data.value.map(m => {
           var _subjectname = "";
-          var subjectobj = this.allMasterData.filter(f => f.MasterDataId == m.SubjectId);
+          var subjectobj = this.allMasterData.filter((f:any) => f.MasterDataId == m.SubjectId);
           if (subjectobj.length > 0)
             _subjectname = subjectobj[0].MasterDataName;
           m.SubjectName = _subjectname;
@@ -660,13 +660,13 @@ export class SyllabusComponent implements OnInit {
   }
   GetSelectedClassSubject() {
     debugger;
-    this.SelectedClassSubjects = this.ClassSubjects.filter(f => f.ClassId == this.searchForm.get("searchClassId").value)
+    this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value)
   }
 
   GetMasterData() {
     debugger;
-    this.allMasterData = this.tokenStorage.getMasterData();
-    //var result = this.allMasterData.filter(f=>f.MasterDataName =='Question Bank ContentUnit')
+    this.allMasterData = this.tokenStorage.getMasterData()!;
+    //var result = this.allMasterData.filter((f:any)=>f.MasterDataName =='Question Bank ContentUnit')
     //console.log("result",result)
     //this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.ContentUnit = this.getDropDownData(globalconstants.MasterDefinitions.school.BOOKCONTENTUNIT);
@@ -695,14 +695,14 @@ export class SyllabusComponent implements OnInit {
     debugger;
     row.Action = true;
     if (row.ContentUnitId > 0)
-      row.SubContentUnits = this.allMasterData.filter(f => f.ParentId == row.ContentUnitId);
+      row.SubContentUnits = this.allMasterData.filter((f:any) => f.ParentId == row.ContentUnitId);
     else
       row.SubContentUnits = [];
   }
   SubContentUnitChanged(row) {
     row.Action = true;
     if (row.SubContentUnitId > 0)
-      row.Lessons = this.allMasterData.filter(f => f.ParentId == row.SubContentUnitId);
+      row.Lessons = this.allMasterData.filter((f:any) => f.ParentId == row.SubContentUnitId);
     else
       row.Lessons = [];
   }

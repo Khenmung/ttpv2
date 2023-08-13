@@ -4,11 +4,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -19,24 +19,24 @@ import { SwUpdate } from '@angular/service-worker';
 export class ExamncalculateComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  ClassGroups = [];
-  //SubjectCategory = [];
-  LoginUserDetail: any[] = [];
+  ClassGroups :any[]= [];
+  //SubjectCategory :any[]= [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   ExamNCalculateListName = 'ExamNCalculates';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0;SubOrgId = 0;
   FilterOrgSubOrg='';
   FilterOrgSubOrgBatchId='';
-  ExamNCalculateList: IExamNCalculate[] = [];
+  ExamNCalculateList: IExamNCalculate[]= [];
   filteredOptions: Observable<IExamNCalculate[]>;
   dataSource: MatTableDataSource<IExamNCalculate>;
-  allMasterData = [];
-  ExamNCalculate = [];
+  allMasterData :any[]= [];
+  ExamNCalculate :any[]= [];
   Permission = 'deny';
-  Classes = [];
-  ExamStatus = [];
+  Classes :any[]= [];
+  ExamStatus :any[]= [];
   ExamNCalculateData = {
     ExamNCalculateId: 0,
     ExamId: 0,
@@ -44,7 +44,7 @@ export class ExamncalculateComponent implements OnInit {
     OrgId: 0,SubOrgId: 0,
     Active: false
   };
-  MonthYears = [];
+  MonthYears :any[]= [];
   displayedColumns = [
     "ExamNCalculateId",
     "PropertyName",
@@ -75,21 +75,21 @@ export class ExamncalculateComponent implements OnInit {
     });
     this.PageLoad();
   }
-  Exams = [];
-  ExamNames = [];
+  Exams :any[]= [];
+  ExamNames :any[]= [];
   PageLoad() {
 
     debugger;
     this.loading = true;
     this.MonthYears = this.contentservice.GetSessionFormattedMonths();
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    //this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EXAM.EXAMNCALCULATE);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
@@ -158,7 +158,7 @@ export class ExamncalculateComponent implements OnInit {
 
           this.ExamNCalculateData.ExamNCalculateId = row.ExamNCalculateId;
           this.ExamNCalculateData.Active = row.Active;
-          this.ExamNCalculateData.ExamId = this.searchForm.get("searchExamId").value;
+          this.ExamNCalculateData.ExamId = this.searchForm.get("searchExamId")?.value;
           this.ExamNCalculateData.CalculateResultPropertyId = row.CalculateResultPropertyId;
           this.ExamNCalculateData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ExamNCalculateData.SubOrgId = this.SubOrgId;
@@ -228,7 +228,7 @@ export class ExamncalculateComponent implements OnInit {
     this.loading = true;
     let filterStr = this.FilterOrgSubOrg;
 
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
 
     if (_examId > 0) {
       filterStr += " and ExamId eq " + _examId;
@@ -239,7 +239,7 @@ export class ExamncalculateComponent implements OnInit {
       return;
     }
     //var ExamReleaseResult =true; 
-    var examObj = this.Exams.filter(f => f.ExamId == _examId);
+    var examObj = this.Exams.filter((f:any) => f.ExamId == _examId);
     if (examObj.length > 0) {
       this.ExamReleaseResult = examObj[0].ReleaseResult == 1 ? true : false;
     }
@@ -286,12 +286,12 @@ export class ExamncalculateComponent implements OnInit {
   }
   ClearData()
   {
-    this.ExamNCalculateList =[];
+    this.ExamNCalculateList=[];
     this.dataSource = new MatTableDataSource<IExamNCalculate>(this.ExamNCalculateList);
   }
   RowsToUpdate = 0;
   SaveAll() {
-    var toupdate = this.ExamNCalculateList.filter(f => f.Action);
+    var toupdate = this.ExamNCalculateList.filter((f:any) => f.Action);
     this.RowsToUpdate = toupdate.length;
     toupdate.forEach(f => {
       this.RowsToUpdate--;
@@ -305,10 +305,10 @@ export class ExamncalculateComponent implements OnInit {
       f.Action = true;
     })
   }
-  ExamResultProperties = [];
+  ExamResultProperties :any[]= [];
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ExamStatus = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSTATUS)
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME)
     this.ExamResultProperties = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMRESULTPROPERTY)

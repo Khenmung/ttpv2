@@ -6,12 +6,12 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import alasql from 'alasql';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -25,7 +25,7 @@ export class SchooltimetableComponent implements OnInit {
   PageLoading = true;
   //weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   SelectedApplicationId = 0;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
@@ -33,24 +33,24 @@ export class SchooltimetableComponent implements OnInit {
   rowCount = -1;
   DataToSave = 0;
   SelectedBatchId = 0; SubOrgId = 0;
-  StoredForUpdate = [];
-  PeriodTypes = [];
-  Classes = [];
-  Sections = [];
-  Subjects = [];
-  WeekDays = [];
-  Periods = [];
-  Batches = [];
-  ClassSubjects = [];
-  ClassWiseSubjects = [];
-  AllClassPeriods = [];
-  AllTimeTable = [];
+  StoredForUpdate :any[]= [];
+  PeriodTypes :any[]= [];
+  Classes :any[]= [];
+  Sections :any[]= [];
+  Subjects :any[]= [];
+  WeekDays :any[]= [];
+  Periods :any[]= [];
+  Batches :any[]= [];
+  ClassSubjects :any[]= [];
+  ClassWiseSubjects :any[]= [];
+  AllClassPeriods :any[]= [];
+  AllTimeTable :any[]= [];
   SchoolTimeTableListName = "SchoolTimeTables";
-  SchoolTimeTableList = [];
+  SchoolTimeTableList :any[]= [];
   dataSource: MatTableDataSource<any[]>;
   dataSourceDayStatistic: MatTableDataSource<any[]>;
   dataSourcePeriodStatistic: MatTableDataSource<any[]>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   Permission = '';
   SchoolTimeTableData = {
     TimeTableId: 0,
@@ -64,8 +64,8 @@ export class SchooltimetableComponent implements OnInit {
     BatchId: 0,
     Active: 0
   };
-  displayedColumns: any[] = [];
-  DataForAllClasses = [];
+  displayedColumns:any[]= [];
+  DataForAllClasses :any[]= [];
   searchForm: UntypedFormGroup;
   constructor(
     private servicework: SwUpdate,
@@ -96,17 +96,17 @@ export class SchooltimetableComponent implements OnInit {
     this.dataSource = new MatTableDataSource<any[]>([]);
     this.PageLoad();
   }
-  ClassCategory = [];
+  ClassCategory :any[]= [];
   PageLoad() {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.TIMETABLE.CLASSTIMETABLE)
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
@@ -121,7 +121,7 @@ export class SchooltimetableComponent implements OnInit {
         this.GetMasterData();
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
           data.value.forEach(m => {
-            let obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId);
+            let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
             if (obj.length > 0) {
               m.Category = obj[0].MasterDataName.toLowerCase();
               this.Classes.push(m);
@@ -135,13 +135,13 @@ export class SchooltimetableComponent implements OnInit {
 
     row.Action = true;
     row.Active = value.checked ? 1 : 0;
-    var updateActive = this.StoredForUpdate.filter(s => s.DayId == row.DayId);
+    var updateActive = this.StoredForUpdate.filter((s:any) => s.DayId == row.DayId);
     updateActive.forEach(u => u.Active = 1)
   }
   UpdateOrSave(element, row) {
 
     debugger;
-    //this.StoredForUpdate.filter(f=>f.TeacherId == row.)
+    //this.StoredForUpdate.filter((f:any)=>f.TeacherId == row.)
     this.loading = true;
     let checkFilterString =
       "DayId eq " + row.DayId +
@@ -156,7 +156,7 @@ export class SchooltimetableComponent implements OnInit {
     //if (duplicateCheck.length > 1) {
     //console.log("duplicateCheck",duplicateCheck);
     var _detail = '';
-    var _dupdetail = this.DataForAllClasses.filter(f => f.DayId == row.DayId
+    var _dupdetail = this.DataForAllClasses.filter((f:any) => f.DayId == row.DayId
       && f.PeriodId == row.PeriodId
       && row.TeacherId == row.TeacherId);
 
@@ -167,14 +167,14 @@ export class SchooltimetableComponent implements OnInit {
     //     if (objclass.length > 0)
     //       _className = objclass[0].ClassName;
     //     var _sectionName = '';
-    //     var objSection = this.Sections.filter(f => f.MasterDataId == d.SectionId);
+    //     var objSection = this.Sections.filter((f:any) => f.MasterDataId == d.SectionId);
     //     if (objSection.length > 0)
     //       _sectionName = objSection[0].MasterDataName;
 
     //     _detail += "Class: " + _className + ", Section: " + _sectionName + ", Period: " + d.Period + "\n";
 
     //   })
-    //   var _teacherobj = this.TeacherSubjectList.filter(f => f.EmployeeId == row.TeacherId)
+    //   var _teacherobj = this.TeacherSubjectList.filter((f:any) => f.EmployeeId == row.TeacherId)
     //   this.contentservice.openSnackBar("Teacher " + _teacherobj[0].TeacherName + " already exists in the same period in another class.\n" + _detail, globalconstants.ActionText, globalconstants.RedBackground);
     //   this.loading = false;
     //   element.Action = true;
@@ -249,7 +249,7 @@ export class SchooltimetableComponent implements OnInit {
           //this.contentservice.openSnackBar(globalconstants.UpdatedMessage,globalconstants.ActionText,globalconstants.BlueBackground);
         });
   }
-  // AllSchoolTable = [];
+  // AllSchoolTable :any[]= [];
   // GetAllSchoolTable() {
   //   var orgIdSearchstr = 'Active eq 1 and OrgId eq ' + this.LoginUserDetail[0]["orgId"] +
   //     ' and BatchId eq ' + this.SelectedBatchId;
@@ -272,15 +272,15 @@ export class SchooltimetableComponent implements OnInit {
   //         d.Day = this.WeekDays.filter(w => w.MasterDataId == d.DayId)[0].MasterDataName;
   //         d.TeacherId = d.TeacherSubject!=null?d.TeacherSubject.EmployeeId:0;
   //         d.PeriodId = d.SchoolClassPeriod.PeriodId;
-  //         d.Period = this.AllClassPeriods.filter(f=>f.PeriodId == d.SchoolClassPeriod.PeriodId)[0].Period;
+  //         d.Period = this.AllClassPeriods.filter((f:any)=>f.PeriodId == d.SchoolClassPeriod.PeriodId)[0].Period;
   //         return d;
   //       }))
   //     });
   // }
   DayStatisticDisplay = ["TeacherName"];
   PeriodStatisticDisplay = ["TeacherName", "Day"];
-  DayStatistics = [];
-  PeriodStatistics = [];
+  DayStatistics :any[]= [];
+  PeriodStatistics :any[]= [];
   GetSchoolTimeTable() {
     //debugger;
     this.ErrorMessage = '';
@@ -289,13 +289,13 @@ export class SchooltimetableComponent implements OnInit {
     this.dataSourceDayStatistic = new MatTableDataSource<any>(this.DayStatistics);
     this.dataSourcePeriodStatistic = new MatTableDataSource<any>(this.PeriodStatistics);
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.SchoolTimeTableList = [];
 
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
 
 
     if (_classId == 0) {
@@ -324,23 +324,23 @@ export class SchooltimetableComponent implements OnInit {
   }
   FormatData(pClassId, pSectionId, pSemesterId) {
 
-    var dbTimeTable = [];
+    var dbTimeTable :any[]= [];
     this.StoredForUpdate = [];
     if (pClassId > 0 && pSectionId > 0)
-      dbTimeTable = this.AllTimeTable.filter(f => f.ClassId == pClassId
+      dbTimeTable = this.AllTimeTable.filter((f:any) => f.ClassId == pClassId
         && f.SectionId == pSectionId
         && f.SemesterId == pSemesterId);
     else
       dbTimeTable = [...this.AllTimeTable]
 
     this.SchoolTimeTableList = [];
-    var forDisplay: any[] = [];
+    var forDisplay:any[]= [];
     var distinctClass = alasql("select distinct ClassId from ?", [dbTimeTable]);
     if (distinctClass.length == 0)
       distinctClass.push({ ClassId: pClassId, SectionId: pSectionId, SemesterId: pSemesterId });
 
     distinctClass.forEach(distinctcls => {
-      this.ClassWiseSubjects = this.TeacherSubjectList.filter(f => f.ClassId == distinctcls.ClassId);
+      this.ClassWiseSubjects = this.TeacherSubjectList.filter((f:any) => f.ClassId == distinctcls.ClassId);
       if (this.ClassWiseSubjects.length == 0 && pClassId > 0) {
         this.contentservice.openSnackBar("Subject Teacher not defined for this class!", globalconstants.ActionText, globalconstants.RedBackground);
       }
@@ -348,7 +348,7 @@ export class SchooltimetableComponent implements OnInit {
         //iterrate through class
         //iterrate through weekdays
         // iterate through class periods
-        var filterPeriodsForAClass = [];
+        var filterPeriodsForAClass :any[]= [];
         filterPeriodsForAClass = this.AllClassPeriods.filter(a => a.ClassId == distinctcls.ClassId).sort((a, b) => a.Sequence - b.Sequence);
 
         if (filterPeriodsForAClass.length == 0) {
@@ -391,7 +391,7 @@ export class SchooltimetableComponent implements OnInit {
                   alreadyassignedclassperiod.TeacherId = alreadyassignedclassperiod.TeacherSubject == null ? 0 : alreadyassignedclassperiod.TeacherSubject.EmployeeId;
                   alreadyassignedclassperiod.Sequence = clsperiod.Sequence;
                   this.StoredForUpdate.push(alreadyassignedclassperiod);
-                  forDisplay[clsperiod.Period] = alreadyassignedclassperiod.TeacherSubjectId;//this.ClassSubjects.filter(s => s.TeacherSubjectId == )[0].SubjectName
+                  forDisplay[clsperiod.Period] = alreadyassignedclassperiod.TeacherSubjectId;//this.ClassSubjects.filter((s:any) => s.TeacherSubjectId == )[0].SubjectName
                   forDisplay["Active"] = alreadyassignedclassperiod.Active;
                 })
               }
@@ -438,7 +438,7 @@ export class SchooltimetableComponent implements OnInit {
       this.DayStatisticDisplay.forEach(col => {
         var daymatch = _eachDay.filter(d => d.Day == col);
         daymatch.forEach(d => {
-          var row = this.DayStatistics.filter(s => s.TeacherName.trim() == teacherobj.TeacherName.trim());
+          var row = this.DayStatistics.filter((s:any) => s.TeacherName.trim() == teacherobj.TeacherName.trim());
           if (row.length > 0)
             row[0][col] = d.NoOfClasses;
           else {
@@ -468,15 +468,15 @@ export class SchooltimetableComponent implements OnInit {
   GetPeriodStatistic(TeacherId, dayName) {
     debugger;
     this.PeriodStatistics = [];
-    var _DistinctTeacher = this.ClassWiseSubjects.filter(f => f.EmployeeId == TeacherId);
+    var _DistinctTeacher = this.ClassWiseSubjects.filter((f:any) => f.EmployeeId == TeacherId);
     var _forCurrentTeacher = this.DataForAllClasses.filter(assigned => assigned.TeacherId == TeacherId
       && assigned.Day == dayName);
     var _eachPeriod = alasql("select Period,Count(1) NoOfClasses from ? group by Period", [_forCurrentTeacher]);
     console.log('_eachPeriod', _eachPeriod);
     this.PeriodStatisticDisplay.forEach(col => {
-      var periodmatch = _eachPeriod.filter(f => f.Period == col);
+      var periodmatch = _eachPeriod.filter((f:any) => f.Period == col);
       if (periodmatch.length > 0) {
-        var row = this.PeriodStatistics.filter(s => s.TeacherName.trim() == _DistinctTeacher[0].TeacherName.trim());
+        var row = this.PeriodStatistics.filter((s:any) => s.TeacherName.trim() == _DistinctTeacher[0].TeacherName.trim());
         if (row.length > 0)
           row[0][col] = periodmatch[0].NoOfClasses;
         else {
@@ -493,8 +493,8 @@ export class SchooltimetableComponent implements OnInit {
   }
   GetAllSchoolTimeTable() {
     debugger;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     //var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and BatchId eq ' + this.SelectedBatchId;
     var filterstr = this.FilterOrgSubOrgBatchId + ' and Active eq 1';
 
@@ -535,7 +535,7 @@ export class SchooltimetableComponent implements OnInit {
         this.StoredForUpdate = [];
       })
   }
-  TeacherSubjectList = [];
+  TeacherSubjectList :any[]= [];
   GetTeacherSubject() {
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     //debugger;
@@ -577,8 +577,8 @@ export class SchooltimetableComponent implements OnInit {
       });
   }
   GetAllClassPeriods() {
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.SchoolTimeTableList = [];
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId + ' and Active eq 1';
 
@@ -670,7 +670,7 @@ export class SchooltimetableComponent implements OnInit {
   }
   ReplicateToClasses() {
 
-    if (this.searchForm.get("searchClassIdApplyAll").value == 0) {
+    if (this.searchForm.get("searchClassIdApplyAll")?.value == 0) {
       this.contentservice.openSnackBar("Please select classes to replicate to!", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
@@ -678,11 +678,11 @@ export class SchooltimetableComponent implements OnInit {
     this.rowCount = 0;
 
     //not action means data has been saved.
-    var filteredAction = this.SchoolTimeTableList.filter(s => !s.Action);
-    var selectedClassIds = this.searchForm.get("searchClassIdApplyAll").value;
-    delete selectedClassIds[this.searchForm.get("searchClassId").value];
+    var filteredAction = this.SchoolTimeTableList.filter((s:any) => !s.Action);
+    var selectedClassIds = this.searchForm.get("searchClassIdApplyAll")?.value;
+    delete selectedClassIds[this.searchForm.get("searchClassId")?.value];
     this.DataToSave = filteredAction.length * selectedClassIds.length;
-    var existInDB = [];
+    var existInDB :any[]= [];
 
     filteredAction.forEach(toReplicate => {
       selectedClassIds.forEach(toSelectedClassId => {
@@ -715,7 +715,7 @@ export class SchooltimetableComponent implements OnInit {
     this.loading = true;
     this.rowCount = 0;
 
-    var _toUpdate = this.StoredForUpdate.filter(s => s.Day == element.Day && s.Action);
+    var _toUpdate = this.StoredForUpdate.filter((s:any) => s.Day == element.Day && s.Action);
 
     var validated = _toUpdate.filter(t => t.TeacherSubjectId == 0 && !t.Period.includes('f_'));
     if (validated.length > 0) {
@@ -732,7 +732,7 @@ export class SchooltimetableComponent implements OnInit {
 
   }
   SaveAll() {
-    var _toUpdate = this.StoredForUpdate.filter(s => s.Action);
+    var _toUpdate = this.StoredForUpdate.filter((s:any) => s.Action);
 
     var validated = _toUpdate.filter(t => t.TeacherSubjectId == 0 && !t.Period.includes('f_'));
     if (validated.length > 0) {
@@ -760,27 +760,27 @@ export class SchooltimetableComponent implements OnInit {
   onBlur(element, event, columnName) {
     debugger;
     var groupbySubjects = alasql("select ClassSubjectId,Count(1) TeacherCount from ? group by ClassSubjectId", [this.TeacherSubjectList]);
-    var filterSubjectMorethanOneTeacher = groupbySubjects.filter(s => s.TeacherCount > 1);
+    var filterSubjectMorethanOneTeacher = groupbySubjects.filter((s:any) => s.TeacherCount > 1);
     var ClassSubjectIdWithTeacherId = this.TeacherSubjectList.filter(t => filterSubjectMorethanOneTeacher.findIndex(s => s.ClassSubjectId == t.ClassSubjectId) > -1)
 
 
-    var obj = this.ClassWiseSubjects.filter(f => f.TeacherSubjectId == event.value);
+    var obj = this.ClassWiseSubjects.filter((f:any) => f.TeacherSubjectId == event.value);
     var _teacherId = 0;
     this.DayStatistics = [];
     this.PeriodStatistics = [];
-    //this.DataForAllClasses=[];
+    //this.DataForAllClasses:any[]=[];
     if (obj.length > 0) {
       _teacherId = obj[0].EmployeeId;
       var engagedInOneSubjMoreThanOneTeacher = ClassSubjectIdWithTeacherId.filter(morethanone => morethanone.EmployeeId == _teacherId);
 
 
-      var _classId = this.searchForm.get("searchClassId").value;
-      var _sectionId = this.searchForm.get("searchSectionId").value;
-      var _semesterId = this.searchForm.get("searchSemesterId").value;
+      var _classId = this.searchForm.get("searchClassId")?.value;
+      var _sectionId = this.searchForm.get("searchSectionId")?.value;
+      var _semesterId = this.searchForm.get("searchSemesterId")?.value;
       var currentTimeTableId = 0;
 
       //finding current selected day,period Id
-      var rowDataForAllClasses = this.DataForAllClasses.filter(s => {
+      var rowDataForAllClasses = this.DataForAllClasses.filter((s:any) => {
         return s.Period == columnName
           && s.Day == element.Day
           //&& s.TeacherId == _teacherId
@@ -791,9 +791,9 @@ export class SchooltimetableComponent implements OnInit {
         currentTimeTableId = rowDataForAllClasses[0].TimeTableId;
 
       //checking if the selected subject teacher has another engagement apart from the selected day,period id
-      var IsTeacherAlreadyEngagedInAnotherClass = [];
+      var IsTeacherAlreadyEngagedInAnotherClass :any[]= [];
       if (currentTimeTableId > 0) {
-        IsTeacherAlreadyEngagedInAnotherClass = this.DataForAllClasses.filter(s => {
+        IsTeacherAlreadyEngagedInAnotherClass = this.DataForAllClasses.filter((s:any) => {
           return s.Period == columnName
             && s.Day == element.Day
             && s.TeacherId == _teacherId
@@ -802,7 +802,7 @@ export class SchooltimetableComponent implements OnInit {
         });
       }
       else {
-        IsTeacherAlreadyEngagedInAnotherClass = this.DataForAllClasses.filter(s => {
+        IsTeacherAlreadyEngagedInAnotherClass = this.DataForAllClasses.filter((s:any) => {
           return s.Period == columnName
             && s.Day == element.Day
             && s.TeacherId == _teacherId
@@ -828,7 +828,7 @@ export class SchooltimetableComponent implements OnInit {
         //checking whether engaged in one subject multiple teacher.
         if (engagedInOneSubjMoreThanOneTeacher.length > 0) {
           if (currentTimeTableId > 0) {
-            IsTeacherAlreadyEngagedInAnotherClass = this.DataForAllClasses.filter(s => {
+            IsTeacherAlreadyEngagedInAnotherClass = this.DataForAllClasses.filter((s:any) => {
               return s.Period == columnName
                 && s.Day == element.Day
                 && currentTimeTableId > 0
@@ -837,7 +837,7 @@ export class SchooltimetableComponent implements OnInit {
             });
           }
           else {
-            IsTeacherAlreadyEngagedInAnotherClass = this.DataForAllClasses.filter(s => {
+            IsTeacherAlreadyEngagedInAnotherClass = this.DataForAllClasses.filter((s:any) => {
               return s.Period == columnName
                 && s.Day == element.Day
                 && engagedInOneSubjMoreThanOneTeacher.findIndex(f => f.ClassSubjectId == s.ClassSubjectId) > -1
@@ -858,7 +858,7 @@ export class SchooltimetableComponent implements OnInit {
         }//end checking whether engaged in one subject multiple teacher.
         else {
           this.ErrorMessage = "";
-          var rowStoredForUpdate = this.StoredForUpdate.filter(s => s.TimeTableId == currentTimeTableId);
+          var rowStoredForUpdate = this.StoredForUpdate.filter((s:any) => s.TimeTableId == currentTimeTableId);
           if (rowStoredForUpdate.length > 0) {
             rowStoredForUpdate[0]["TeacherSubjectId"] = event.value;
             rowStoredForUpdate[0]["Action"] = true;
@@ -903,7 +903,7 @@ export class SchooltimetableComponent implements OnInit {
       }
     }
   }
-  Semesters = [];
+  Semesters :any[]= [];
   Defaultvalue = 0;
   SelectedClassCategory = '';
   ClearData() {
@@ -913,7 +913,7 @@ export class SchooltimetableComponent implements OnInit {
     this.dataSourcePeriodStatistic = new MatTableDataSource<any>(this.PeriodStatistics);
   }
   BindSectionSemester() {
-    let _classId = this.searchForm.get("searchClassId").value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
     let obj = this.Classes.filter(c => c.ClassId == _classId);
     if (obj.length > 0) {
       this.SelectedClassCategory = obj[0].Category.toLowerCase();
@@ -928,7 +928,7 @@ export class SchooltimetableComponent implements OnInit {
     return globalconstants.CategoryHighSchool;
   }
   GetMasterData() {
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Periods = this.getDropDownData(globalconstants.MasterDefinitions.school.PERIOD);
     this.Periods.sort((a, b) => a.Sequence - b.Sequence);
 
@@ -939,7 +939,7 @@ export class SchooltimetableComponent implements OnInit {
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
-    this.Batches = this.tokenStorage.getBatches()
+    this.Batches = this.tokenStorage.getBatches()!;
 
     this.GetAllClassPeriods();
     this.GetClassSubject();

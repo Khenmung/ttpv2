@@ -4,11 +4,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -19,22 +19,22 @@ import { SwUpdate } from '@angular/service-worker';
 export class ClassEvaluationOptionComponent implements OnInit {
   PageLoading = true;
   @Input() ClassEvaluationId: number;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   StudentClassId = 0;
   Permission = '';
   FilterOrgSubOrg = '';
   loading = false;
-  ClassEvaluationOptionList: IClassEvaluationOption[] = [];
+  ClassEvaluationOptionList: IClassEvaluationOption[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  QuestionnaireTypes = [];
-  EvaluationOptionAutoComplete = [];
-  Classes = [];
-  RatingOptions = [];
+  QuestionnaireTypes :any[]= [];
+  EvaluationOptionAutoComplete :any[]= [];
+  Classes :any[]= [];
+  RatingOptions :any[]= [];
   filteredOptions: Observable<IClassEvaluationOption[]>;
   dataSource: MatTableDataSource<IClassEvaluationOption>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   AnswerOptionsId = 0;
   ClassEvaluationOptionData = {
     ClassEvaluationAnswerOptionsId: 0,
@@ -46,7 +46,7 @@ export class ClassEvaluationOptionComponent implements OnInit {
     ParentId: 0,
     Active: 0
   };
-  ClassEvaluationOptionForUpdate = [];
+  ClassEvaluationOptionForUpdate :any[]= [];
   displayedColumns = [
     'ClassEvaluationAnswerOptionsId',
     'Title',
@@ -74,7 +74,7 @@ export class ClassEvaluationOptionComponent implements OnInit {
     //     }
     //   })
     // })
-    this.StudentClassId = this.tokenStorage.getStudentClassId();
+    this.StudentClassId = this.tokenStorage.getStudentClassId()!;
     this.PageLoad();
   }
 
@@ -93,19 +93,19 @@ export class ClassEvaluationOptionComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.searchForm = this.fb.group({
           searchParent: ['']
         })
         this.GetEvaluationOptionAutoComplete();
-        this.filteredOptions = this.searchForm.get("searchParent").valueChanges
+        this.filteredOptions = this.searchForm.get("searchParent")?.valueChanges
           .pipe(
             startWith(''),
             map(value => typeof value === 'string' ? value : value.Title),
             map(Title => Title ? this._filter(Title) : this.EvaluationOptionAutoComplete.slice())
-          );
+          )!;
         
         this.loading = false; this.PageLoading = false;
 
@@ -119,7 +119,7 @@ export class ClassEvaluationOptionComponent implements OnInit {
 
   }
   // SelectSubCategory(pCategoryId) {
-  //   this.SubCategories = this.allMasterData.filter(f => f.ParentId == pCategoryId.value);
+  //   this.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == pCategoryId.value);
   // }
   delete(element) {
     let toupdate = {
@@ -135,7 +135,7 @@ export class ClassEvaluationOptionComponent implements OnInit {
   }
   AddParent() {
     debugger;
-    var _title = this.searchForm.get("searchParent").value.Title;
+    var _title = this.searchForm.get("searchParent")?.value.Title;
     var parentItem = {
       ClassEvaluationAnswerOptionsId: 0,
       Title: _title,
@@ -149,7 +149,7 @@ export class ClassEvaluationOptionComponent implements OnInit {
     this.UpdateOrSave(parentItem);
   }
   AddNew() {
-    var _AnswerOptionId = this.searchForm.get("searchParent").value.ClassEvaluationAnswerOptionsId;
+    var _AnswerOptionId = this.searchForm.get("searchParent")?.value.ClassEvaluationAnswerOptionsId;
     // if (_AnswerOptionId == undefined) {
     //   this.loading = false; this.PageLoading=false;
     //   this.contentservice.openSnackBar("Please select parent", globalconstants.ActionText, globalconstants.RedBackground);
@@ -207,8 +207,8 @@ export class ClassEvaluationOptionComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-          this.SubOrgId = this.tokenStorage.getSubOrgId();
+          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+          this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
           this.ClassEvaluationOptionForUpdate = [];
           this.ClassEvaluationOptionForUpdate.push(
             {
@@ -270,7 +270,7 @@ export class ClassEvaluationOptionComponent implements OnInit {
   }
   SearchAnswerOptions() {
     debugger;
-    this.AnswerOptionsId = this.searchForm.get("searchParent").value.ClassEvaluationAnswerOptionsId;
+    this.AnswerOptionsId = this.searchForm.get("searchParent")?.value.ClassEvaluationAnswerOptionsId;
     if (this.AnswerOptionsId == undefined)
       this.AnswerOptionsId = 0;
     this.GetClassEvaluationOption(0, this.AnswerOptionsId);
@@ -358,7 +358,7 @@ export class ClassEvaluationOptionComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
     //this.RatingOptions = this.getDropDownData(globalconstants.MasterDefinitions.school.RATINGOPTION);
     this.loading = false; this.PageLoading = false;

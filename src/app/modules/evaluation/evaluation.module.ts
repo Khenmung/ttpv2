@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 
 import { EvaluationComponents, EvaluationRoutingModule } from './evaluation-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MaterialModule } from 'src/app/shared/material/material.module';
+import { MaterialModule } from '../../shared/material/material.module';
 import { SharedhomepageModule } from '../sharedhomepage.module';
 import { NgxPrintModule } from 'ngx-print';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { EvaluationresultlistComponent } from './evaluationresultlist/evaluationresultlist.component';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 

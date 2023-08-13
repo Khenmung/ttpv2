@@ -4,12 +4,12 @@ import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-classperiod',
@@ -21,7 +21,7 @@ export class ClassperiodComponent implements OnInit {
   PageLoading = true;
 
   SelectedClassCategory = '';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
@@ -30,16 +30,16 @@ export class ClassperiodComponent implements OnInit {
   DataToSave = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  StoredForUpdate = [];
-  Classes = [];
-  Periods = [];
-  PeriodTypes = [];
-  Batches = [];
-  AllClassPeriods = [];
+  StoredForUpdate :any[]= [];
+  Classes :any[]= [];
+  Periods :any[]= [];
+  PeriodTypes :any[]= [];
+  Batches :any[]= [];
+  AllClassPeriods :any[]= [];
   SchoolClassPeriodListName = "SchoolClassPeriods";
-  SchoolClassPeriodList = [];
+  SchoolClassPeriodList :any[]= [];
   dataSource: MatTableDataSource<ISchoolClassPeriod>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   Permission = '';
   SchoolClassPeriodData = {
     SchoolClassPeriodId: 0,
@@ -55,10 +55,10 @@ export class ClassperiodComponent implements OnInit {
     Active: 0
   };
   Defaultvalue = 0;
-  Semesters = [];
-  ClassCategory = [];
-  Sections = [];
-  displayedColumns = [];
+  Semesters :any[]= [];
+  ClassCategory :any[]= [];
+  Sections :any[]= [];
+  displayedColumns :any[]= [];
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
     private datepipe: DatePipe,
@@ -93,18 +93,18 @@ export class ClassperiodComponent implements OnInit {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
 
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.TIMETABLE.CLASSPERIOD);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         // var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -113,7 +113,7 @@ export class ClassperiodComponent implements OnInit {
         // });
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
           data.value.forEach(m => {
-            let obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId);
+            let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
             if (obj.length > 0) {
               m.Category = obj[0].MasterDataName.toLowerCase();
               this.Classes.push(m);
@@ -127,7 +127,7 @@ export class ClassperiodComponent implements OnInit {
     }
   }
   BindSectionSemester() {
-    let _classId = this.searchForm.get("searchClassId").value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
     let obj = this.Classes.filter(c => c.ClassId == _classId);
     if (obj.length > 0) {
       this.SelectedClassCategory = obj[0].Category.toLowerCase();
@@ -279,14 +279,14 @@ export class ClassperiodComponent implements OnInit {
   GetSchoolClassPeriods() {
 
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    //    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    //    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.SchoolClassPeriodList = [];
 
     var filterstr = this.FilterOrgSubOrgBatchId + ' and Active eq 1';
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     if (_classId == 0) {
       this.contentservice.openSnackBar("Please select class", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -349,9 +349,9 @@ export class ClassperiodComponent implements OnInit {
           else {
             this.SchoolClassPeriodList.push({
               "SchoolClassPeriodId": 0,
-              "ClassId": this.searchForm.get("searchClassId").value,
-              "SectionId": this.searchForm.get("searchSectionId").value,
-              "SemesterId": this.searchForm.get("searchSemesterId").value,
+              "ClassId": this.searchForm.get("searchClassId")?.value,
+              "SectionId": this.searchForm.get("searchSectionId")?.value,
+              "SemesterId": this.searchForm.get("searchSemesterId")?.value,
               "PeriodId": p.MasterDataId,
               "PeriodTypeId": 0,
               "PeriodName": p.MasterDataName,
@@ -381,8 +381,8 @@ export class ClassperiodComponent implements OnInit {
     element.Action = true;
   }
   GetAllClassPeriods() {
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.SchoolClassPeriodList = [];
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId;
     //var filterstr = '';// 'Active eq 1 ';
@@ -411,7 +411,7 @@ export class ClassperiodComponent implements OnInit {
   }
   ReplicateToClasses() {
 
-    if (this.searchForm.get("searchClassIdApplyAll").value == 0) {
+    if (this.searchForm.get("searchClassIdApplyAll")?.value == 0) {
       this.contentservice.openSnackBar("Please select classes to replicate to!", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
@@ -419,11 +419,11 @@ export class ClassperiodComponent implements OnInit {
     this.rowCount = 0;
 
     //not action means data has been saved.
-    var filteredAction = this.SchoolClassPeriodList.filter(s => !s.Action);
-    var selectedClassIds = this.searchForm.get("searchClassIdApplyAll").value;
-    delete selectedClassIds[this.searchForm.get("searchClassId").value];
+    var filteredAction = this.SchoolClassPeriodList.filter((s:any) => !s.Action);
+    var selectedClassIds = this.searchForm.get("searchClassIdApplyAll")?.value;
+    delete selectedClassIds[this.searchForm.get("searchClassId")?.value];
     this.DataToSave = filteredAction.length * selectedClassIds.length;
-    var existInDB = [];
+    var existInDB :any[]= [];
 
     //this.DataToSave = filteredAction.length;
     filteredAction.forEach(toReplicate => {
@@ -455,7 +455,7 @@ export class ClassperiodComponent implements OnInit {
 
     this.loading = true;
     this.rowCount = 0;
-    var checkedRows = this.SchoolClassPeriodList.filter(f => f.Action);
+    var checkedRows = this.SchoolClassPeriodList.filter((f:any) => f.Action);
     this.DataToSave = checkedRows.length;
 
     checkedRows.forEach(record => {
@@ -474,7 +474,7 @@ export class ClassperiodComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Periods = this.getDropDownData(globalconstants.MasterDefinitions.school.PERIOD);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
@@ -484,7 +484,7 @@ export class ClassperiodComponent implements OnInit {
 
     this.PeriodTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.PERIODTYPE);
     //this.shareddata.ChangeBatch(this.Batches);
-    this.Batches = this.tokenStorage.getBatches()
+    this.Batches = this.tokenStorage.getBatches()!;
     this.loading = false;
     this.PageLoading = false;
   }

@@ -9,9 +9,9 @@ import { Router } from '@angular/router';
 import alasql from 'alasql';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
@@ -39,18 +39,18 @@ export class TodayCollectionComponent implements OnInit {
   isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
 
   loading = false;
-  allMasterData = [];
-  FeeDefinitions = [];
-  FeeCategories = [];
-  Classes = [];
-  Batches = [];
-  Sections = [];
-  Students = [];
-  GroupByPaymentType = [];
-  ELEMENT_DATA = [];
+  allMasterData :any[]= [];
+  FeeDefinitions :any[]= [];
+  FeeCategories :any[]= [];
+  Classes :any[]= [];
+  Batches :any[]= [];
+  Sections :any[]= [];
+  Students :any[]= [];
+  GroupByPaymentType :any[]= [];
+  ELEMENT_DATA :any[]= [];
   GrandTotalAmount = 0;
   CancelledAmount = 0;
-  PaymentTypes = [];
+  PaymentTypes :any[]= [];
   DisplayColumns = [
     "ReceiptNo",
     "ReceiptDate",
@@ -65,9 +65,9 @@ export class TodayCollectionComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   SelectedApplicationId = 0;
   Permission = 'deny';
-  DateWiseCollection = [];
-  HeadsWiseCollection = [];
-  LoginUserDetail = [];
+  DateWiseCollection :any[]= [];
+  HeadsWiseCollection :any[]= [];
+  LoginUserDetail :any[]= [];
   dataSource: MatTableDataSource<ITodayReceipt>;
   SearchForm: UntypedFormGroup;
   ErrorMessage: string = '';
@@ -98,18 +98,18 @@ export class TodayCollectionComponent implements OnInit {
       ToDate: [new Date(), Validators.required],
       searchReportType: ['', Validators.required],
     })
-    this.filteredOptions = this.SearchForm.get("searchStudentName").valueChanges
+    this.filteredOptions = this.SearchForm.get("searchStudentName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.Students.slice())
-      );
+      )!;
     this.PageLoad();
   }
   PageLoad() {
     debugger;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -128,7 +128,7 @@ export class TodayCollectionComponent implements OnInit {
       }
     }
   }
-  Employees = [];
+  Employees :any[]= [];
   GetEmployees() {
     this.loading = true;
     let list: List = new List();
@@ -165,9 +165,9 @@ export class TodayCollectionComponent implements OnInit {
   GetStudentFeePaymentDetails() {
     debugger;
     this.ErrorMessage = '';
-    let fromDate = this.SearchForm.get("FromDate").value;
-    let toDate = this.SearchForm.get("ToDate").value;
-    let _classId = this.SearchForm.get("searchClassId").value;
+    let fromDate = this.SearchForm.get("FromDate")?.value;
+    let toDate = this.SearchForm.get("ToDate")?.value;
+    let _classId = this.SearchForm.get("searchClassId")?.value;
     let filterstring = this.FilterOrgSubOrg;
     this.loading = true;
     //filterstring = " eq 1" 
@@ -177,8 +177,8 @@ export class TodayCollectionComponent implements OnInit {
 
 
 
-    if (this.SearchForm.get("searchStudentName").value.StudentClassId > 0)
-      filterstring += " and StudentClassId eq " + this.SearchForm.get("searchStudentName").value.StudentClassId;
+    if (this.SearchForm.get("searchStudentName")?.value.StudentClassId > 0)
+      filterstring += " and StudentClassId eq " + this.SearchForm.get("searchStudentName")?.value.StudentClassId;
     if (_classId > 0) {
       filterstring += " and ClassId eq " + _classId;
     }
@@ -205,10 +205,10 @@ export class TodayCollectionComponent implements OnInit {
       .subscribe((data: any) => {
         //debugger;
         //console.log('paymentd ata', data.value);
-        var result = [];
-        var _students = [];
+        var result :any[]= [];
+        var _students :any[]= [];
         if (_classId > 0)
-          _students = this.Students.filter(s => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.ClassId == _classId) > -1);
+          _students = this.Students.filter((s:any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.ClassId == _classId) > -1);
         else
           _students = [...this.Students];
 
@@ -216,7 +216,7 @@ export class TodayCollectionComponent implements OnInit {
           var obj = this.Employees.filter(e => e.UserId == db.CreatedBy);
           if (obj.length > 0)
             db.ReceivedBy = obj[0].ShortName;
-          var studcls = _students.filter(s => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.StudentClassId == db.StudentClassId) > -1);
+          var studcls = _students.filter((s:any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.StudentClassId == db.StudentClassId) > -1);
           if (studcls.length > 0) {
             db.StudentClasses = studcls;
             result.push(db);
@@ -225,10 +225,10 @@ export class TodayCollectionComponent implements OnInit {
         });
 
 
-        var activebill = result.filter(f => f.Active == 1);
+        var activebill = result.filter((f:any) => f.Active == 1);
         this.GrandTotalAmount = activebill.reduce((acc, current) => acc + current.TotalAmount, 0);
 
-        var cancelledBill = result.filter(f => f.Active == 0)
+        var cancelledBill = result.filter((f:any) => f.Active == 0)
         this.CancelledAmount = cancelledBill.reduce((acc, current) => acc + current.TotalAmount, 0);
 
         this.DateWiseCollection = result.map(d => {
@@ -242,7 +242,7 @@ export class TodayCollectionComponent implements OnInit {
           d.PaymentType = _paymentType;
           d.Status = d.Active == 0 ? 'Cancelled' : 'Active';
           //d.ReceiptDate = this.datepipe.transform(d.ReceiptDate,'dd/MM/yyyy') 
-          //d.FeeName = this.FeeDefinitions.filter(f=>f.FeeDefinitionId == d.AccountingVouchers[0].ClassFeeId)[0].FeeName;
+          //d.FeeName = this.FeeDefinitions.filter((f:any)=>f.FeeDefinitionId == d.AccountingVouchers[0].ClassFeeId)[0].FeeName;
           return d;
         })
 
@@ -253,7 +253,7 @@ export class TodayCollectionComponent implements OnInit {
             var _feeCategoryName = '';
             if (v.ClassFee != null) {
               var _feeCategoryId = v.ClassFee.FeeDefinition.FeeCategoryId;
-              var objCategory = this.FeeCategories.filter(f => f.MasterDataId == _feeCategoryId)
+              var objCategory = this.FeeCategories.filter((f:any) => f.MasterDataId == _feeCategoryId)
               if (objCategory.length > 0)
                 _feeCategoryName = objCategory[0].MasterDataName;
               //var _lastname = d.StudentClass.Student.LastName == null ? '' : " " + d.StudentClass.Student.LastName;
@@ -279,7 +279,7 @@ export class TodayCollectionComponent implements OnInit {
         if (this.DateWiseCollection.length == 0)
           this.contentservice.openSnackBar("No collection found.", globalconstants.ActionText, globalconstants.RedBackground);
 
-        const rows = [];
+        const rows :any[]= [];
         this.DateWiseCollection.forEach(element => rows.push(element, { detailRow: true, element }));
         //console.log("rows", rows)
         this.dataSource = new MatTableDataSource(rows);
@@ -289,9 +289,9 @@ export class TodayCollectionComponent implements OnInit {
       })
   }
   GetMasterData() {
-    this.allMasterData = this.tokenStorage.getMasterData();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.shareddata.CurrentFeeDefinitions.subscribe((f: any) => {
       this.FeeDefinitions = [...f];
       if (this.FeeDefinitions.length == 0) {
@@ -305,7 +305,7 @@ export class TodayCollectionComponent implements OnInit {
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);
 
     //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-    this.Batches = this.tokenStorage.getBatches()
+    this.Batches = this.tokenStorage.getBatches()!;
     this.GetStudents();
 
   }
@@ -328,9 +328,9 @@ export class TodayCollectionComponent implements OnInit {
     //   .subscribe((data: any) => {
     //debugger;
     //  //console.log('data.value', data.value);
-    var _students: any = this.tokenStorage.getStudents();
+    var _students: any = this.tokenStorage.getStudents()!;
     this.Students = [..._students];
-    // var _filteredStudents = _students.filter(s => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
+    // var _filteredStudents = _students.filter((s:any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
     // if (data.value.length > 0) {
     //   this.Students = data.value.map(studentcls => {
     //     var matchstudent = _filteredStudents.filter(stud => stud.StudentId == studentcls.StudentId)
@@ -340,7 +340,7 @@ export class TodayCollectionComponent implements OnInit {
     //       _className = _classNameobj[0].ClassName;
 
     //     var _Section = '';
-    //     var _sectionobj = this.Sections.filter(f => f.MasterDataId == studentcls.SectionId);
+    //     var _sectionobj = this.Sections.filter((f:any) => f.MasterDataId == studentcls.SectionId);
     //     if (_sectionobj.length > 0)
     //       _Section = _sectionobj[0].MasterDataName;
     //     var _lastname = matchstudent[0].LastName == null ? '' : " " + matchstudent[0].LastName;

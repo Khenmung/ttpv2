@@ -4,11 +4,11 @@ import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-customerinvoicecomponents',
@@ -16,18 +16,18 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
   styleUrls: ['./customerinvoicecomponents.component.scss']
 })
 export class CustomerinvoicecomponentsComponent implements OnInit { PageLoading=true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SubOrgId=0;
   StandardFilterWithBatchId = '';
   loading = false;
-  Organizations = [];
-  Applications = [];
-  InvoiceComponents = [];
+  Organizations :any[]= [];
+  Applications :any[]= [];
+  InvoiceComponents :any[]= [];
   CustomerInvoiceComponentListName = "CustomerInvoiceComponents";
-  CustomerInvoiceComponentList = [];
+  CustomerInvoiceComponentList :any[]= [];
   dataSource: MatTableDataSource<ICustomerInvoiceComponent>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   PagePermission = '';
   CustomerInvoiceComponentData = {
     CustomerInvoiceComponentId: 0,
@@ -81,8 +81,8 @@ export class CustomerinvoicecomponentsComponent implements OnInit { PageLoading=
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.GetMasterData();
       this.GetOrganizations();
     }
@@ -162,12 +162,12 @@ export class CustomerinvoicecomponentsComponent implements OnInit { PageLoading=
 
     var _searchApplicationId = 0;
 
-    if (this.searchForm.get("searchApplicationId").value > 0) {
-      _searchApplicationId = this.searchForm.get("searchApplicationId").value;
+    if (this.searchForm.get("searchApplicationId")?.value > 0) {
+      _searchApplicationId = this.searchForm.get("searchApplicationId")?.value;
       filterstr += " and ApplicationId eq " + _searchApplicationId;
     }
 
-    var _searchOrgId = this.searchForm.get("searchOrgId").value;
+    var _searchOrgId = this.searchForm.get("searchOrgId")?.value;
 
 
 
@@ -188,14 +188,14 @@ export class CustomerinvoicecomponentsComponent implements OnInit { PageLoading=
       .subscribe((data: any) => {
         var _appName = '';
         if (_searchApplicationId > 0)
-          _appName = this.Applications.filter(f => f.MasterDataId == _searchApplicationId)[0].MasterDataName;
+          _appName = this.Applications.filter((f:any) => f.MasterDataId == _searchApplicationId)[0].MasterDataName;
 
         this.InvoiceComponents.forEach(a => {
-          var existing = data.value.filter(f => f.InvoiceComponentId == a.MasterDataId);
+          var existing = data.value.filter((f:any) => f.InvoiceComponentId == a.MasterDataId);
           if (existing.length > 0) {
             var _existingAppName = '';
             if (existing[0].ApplicationId > 0)
-              _existingAppName = this.Applications.filter(f => f.MasterDataId == existing[0].ApplicationId)[0].MasterDataName;
+              _existingAppName = this.Applications.filter((f:any) => f.MasterDataId == existing[0].ApplicationId)[0].MasterDataName;
 
             existing[0].Action = false;
             existing[0].Logic = a.Logic;

@@ -5,14 +5,14 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { ClassEvaluationOptionComponent } from '../classevaluationoption/classevaluationoption.component';
 import { SwUpdate } from '@angular/service-worker';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -26,13 +26,13 @@ export class ClassEvaluationComponent implements OnInit {
   @ViewChild(ClassEvaluationOptionComponent) option: ClassEvaluationOptionComponent;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  LoginUserDetail: any[] = [];
-  ClassGroups = [];
+  LoginUserDetail:any[]= [];
+  ClassGroups :any[]= [];
   CurrentRow: any = {};
   selectedIndex = 0;
   selectedRowIndex = -1;
   RowToUpdate = -1;
-  EvaluationNames = [];
+  EvaluationNames :any[]= [];
   ClassEvaluationIdTopass = 0;
   SelectedApplicationId = 0;
   StudentClassId = 0;
@@ -40,20 +40,20 @@ export class ClassEvaluationComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  ClassEvaluationOptionList = [];
-  ClassEvaluationList: IClassEvaluation[] = [];
+  ClassEvaluationOptionList :any[]= [];
+  ClassEvaluationList: IClassEvaluation[]= [];
   //EvaluationMasterId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
-  QuestionnaireTypes = [];
-  SubCategories = [];
-  Classes = [];
-  ClassSubjects = [];
-  Exams = [];
-  ExamNames = [];
-  //SelectedClassSubjects = [];
+  QuestionnaireTypes :any[]= [];
+  SubCategories :any[]= [];
+  Classes :any[]= [];
+  ClassSubjects :any[]= [];
+  Exams :any[]= [];
+  ExamNames :any[]= [];
+  //SelectedClassSubjects :any[]= [];
   filteredOptions: Observable<IClassEvaluation[]>;
   dataSource: MatTableDataSource<IClassEvaluation>;
-  allMasterData = [];
+  allMasterData :any[]= [];
 
   ClassEvaluationData = {
     ClassEvaluationId: 0,
@@ -68,8 +68,8 @@ export class ClassEvaluationComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
-  EvaluationMasterForClassGroup = [];
-  ClassEvaluationForUpdate = [];
+  EvaluationMasterForClassGroup :any[]= [];
+  ClassEvaluationForUpdate :any[]= [];
   displayedColumns = [
     'ClassEvaluationId',
     'Description',
@@ -102,7 +102,7 @@ export class ClassEvaluationComponent implements OnInit {
     //   })
     // })
     debugger;
-    this.StudentClassId = this.tokenStorage.getStudentClassId();
+    this.StudentClassId = this.tokenStorage.getStudentClassId()!;
     this.searchForm = this.fb.group({
       searchClassGroupId: [0],
       searchEvaluationMasterId: [0],
@@ -112,7 +112,7 @@ export class ClassEvaluationComponent implements OnInit {
   displayFn(user: IStudent): string {
     return user && user.Name ? user.Name : '';
   }
-  ExamClassGroups = [];
+  ExamClassGroups :any[]= [];
   PageLoad() {
     debugger;
     this.loading = true;
@@ -125,8 +125,8 @@ export class ClassEvaluationComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetEvaluationNames();
@@ -168,10 +168,10 @@ export class ClassEvaluationComponent implements OnInit {
     return str.replace(format, function (m) { return map[m]; });
     //return str.replace(/[&<>"']/g, function(m) { return map[m]; });
   }
-  FilteredExam = [];
+  FilteredExam :any[]= [];
   SelectEvaluation() {
     debugger;
-    var _searchClassGroupId = this.searchForm.get("searchClassGroupId").value;
+    var _searchClassGroupId = this.searchForm.get("searchClassGroupId")?.value;
     this.EvaluationMasterForClassGroup = this.EvaluationNames.filter(d => d.ClassGroupId == _searchClassGroupId);
     var examsOfSelectGroup = this.ExamClassGroups.filter(exgroup => exgroup.ClassGroupId == _searchClassGroupId)
 
@@ -200,7 +200,7 @@ ClearData(){
       })
   }
   SelectSubCategory(pCategoryId) {
-    this.SubCategories = this.allMasterData.filter(f => f.ParentId == pCategoryId.value);
+    this.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == pCategoryId.value);
   }
   delete(element) {
     this.openDialog(element);
@@ -275,7 +275,7 @@ ClearData(){
       this.selectedRowIndex = rowId
   }
   AddNew() {
-    var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId").value;
+    var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
 
     var newItem = {
       ClassEvaluationId: 0,
@@ -295,7 +295,7 @@ ClearData(){
     this.dataSource = new MatTableDataSource(this.ClassEvaluationList);
   }
   SaveAll() {
-    var _toUpdate = this.ClassEvaluationList.filter(f => f.Action);
+    var _toUpdate = this.ClassEvaluationList.filter((f:any) => f.Action);
     this.RowToUpdate = _toUpdate.length;
     _toUpdate.forEach(question => {
       this.RowToUpdate--;
@@ -315,7 +315,7 @@ ClearData(){
       this.contentservice.openSnackBar("Please enter description", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    //this.EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId").value
+    //this.EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value
     if (row.EvaluationMasterId == 0) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("No Evaluation type Id selected.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -357,8 +357,8 @@ ClearData(){
     //     }
     //     else {
     //this.shareddata.CurrentSelectedBatchId.subscribe(c => this.SelectedBatchId = c);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.ClassEvaluationForUpdate = [];;
     ////console.log("inserting-1",this.ClassEvaluationForUpdate);
     this.ClassEvaluationForUpdate.push(
@@ -440,11 +440,11 @@ ClearData(){
   GetClassEvaluation() {
     debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId").value;
+    var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
 
     // if (this.EvaluationMasterId > 0)
     //   filterStr += " and EvaluationMasterId eq " + this.EvaluationMasterId;
@@ -481,7 +481,7 @@ ClearData(){
         if (data.value.length > 0) {
           data.value.forEach(item => {
             var _updatable = false;
-            var obj = this.EvaluationNames.filter(f => f.EvaluationMasterId == item.EvaluationMasterId);
+            var obj = this.EvaluationNames.filter((f:any) => f.EvaluationMasterId == item.EvaluationMasterId);
             if (obj.length > 0) {
               _updatable = obj[0].AppendAnswer;
               item.Action = false;
@@ -507,8 +507,8 @@ ClearData(){
   GetEvaluationNames() {
     //debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";// and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
     let list: List = new List();
@@ -543,8 +543,8 @@ ClearData(){
   GetClassEvaluationOption() {
     //debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and ParentId eq 0";// and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
     let list: List = new List();
@@ -583,7 +583,7 @@ ClearData(){
       .subscribe((data: any) => {
         this.ClassSubjects = data.value.map(m => {
           var _subjectname = "";
-          var subjectobj = this.allMasterData.filter(f => f.MasterDataId == m.SubjectId);
+          var subjectobj = this.allMasterData.filter((f:any) => f.MasterDataId == m.SubjectId);
           if (subjectobj.length > 0)
             _subjectname = subjectobj[0].MasterDataName;
           m.SubjectName = _subjectname;
@@ -595,16 +595,16 @@ ClearData(){
   }
   GetSelectedClassSubject() {
     debugger;
-    //this.SelectedClassSubjects = this.ClassSubjects.filter(f => f.ClassId == this.searchForm.get("searchClassId").value)
-    // var _classId = this.searchForm.get("searchClassId").value;
-    // var _sectionId = this.searchForm.get("searchSectionId").value;
-    // var _semesterId = this.searchForm.get("searchSemesterId").value;
+    //this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value)
+    // var _classId = this.searchForm.get("searchClassId")?.value;
+    // var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    // var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     // this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects,_classId,_sectionId,_semesterId);
   }
 
   GetMasterData() {
     debugger;
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
     this.GetExams();
@@ -631,7 +631,7 @@ ClearData(){
   CategoryChanged(row) {
     debugger;
     row.Action = true;
-    row.SubCategories = this.allMasterData.filter(f => f.ParentId == row.ClassEvalCategoryId);
+    row.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.ClassEvalCategoryId);
   }
   UpdateMultiAnswer(row, event) {
     row.MultipleAnswer = event.checked ? 1 : 0;

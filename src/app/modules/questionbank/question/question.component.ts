@@ -6,12 +6,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { FileUploadService } from 'src/app/shared/upload.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { FileUploadService } from '../../../shared/upload.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { ISyllabus } from '../syllabus/syllabus.component';
 //import { QuestionBankOptionComponent } from '../QuestionBankoption/QuestionBankoption.component';
 
@@ -25,14 +25,14 @@ export class QuestionComponent implements OnInit {
   @ViewChild("table") mattable;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  LoginUserDetail: any[] = [];
-  ClassGroups = [];
-  Sections=[];
+  LoginUserDetail:any[]= [];
+  ClassGroups :any[]= [];
+  Sections:any[]=[];
   CurrentRow: any = {};
   selectedIndex = 0;
   selectedRowIndex = -1;
   RowToUpdate = -1;
-  EvaluationNames = [];
+  EvaluationNames :any[]= [];
   QuestionBankIdTopass = 0;
   SelectedApplicationId = 0;
   StudentClassId = 0;
@@ -40,21 +40,21 @@ export class QuestionComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  QuestionBankOptionList = [];
-  QuestionBankList: IQuestionBank[] = [];
+  QuestionBankOptionList :any[]= [];
+  QuestionBankList: IQuestionBank[]= [];
   //EvaluationMasterId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
-  QuestionnaireTypes = [];
-  SubCategories = [];
-  Classes = [];
-  ClassSubjects = [];
-  Exams = [];
-  ExamNames = [];
-  SelectedClassSubjects = [];
+  QuestionnaireTypes :any[]= [];
+  SubCategories :any[]= [];
+  Classes :any[]= [];
+  ClassSubjects :any[]= [];
+  Exams :any[]= [];
+  ExamNames :any[]= [];
+  SelectedClassSubjects :any[]= [];
   filteredOptions: Observable<IQuestionBank[]>;
   dataSource: MatTableDataSource<IQuestionBank>;
   SyllabusDataSource: MatTableDataSource<ISyllabus>;
-  allMasterData = [];
+  allMasterData :any[]= [];
 
   QuestionBankData = {
     QuestionBankId: 0,
@@ -65,8 +65,8 @@ export class QuestionComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: false
   };
-  EvaluationMasterForClassGroup = [];
-  QuestionBankForUpdate = [];
+  EvaluationMasterForClassGroup :any[]= [];
+  QuestionBankForUpdate :any[]= [];
   displayedColumns = [
     'QuestionBankId',
     'Question',
@@ -100,7 +100,7 @@ export class QuestionComponent implements OnInit {
     // })
     debugger;
     this.imgURL = '';
-    this.StudentClassId = this.tokenStorage.getStudentClassId();
+    this.StudentClassId = this.tokenStorage.getStudentClassId()!;
     this.searchForm = this.fb.group({
       searchClassId: [0],
       searchSectionId: [0],
@@ -130,8 +130,8 @@ export class QuestionComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
 
@@ -159,7 +159,7 @@ export class QuestionComponent implements OnInit {
         // }
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
           data.value.forEach(m => {
-            let obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId);
+            let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
             if (obj.length > 0) {
               m.Category = obj[0].MasterDataName.toLowerCase();
               this.Classes.push(m);
@@ -191,12 +191,12 @@ export class QuestionComponent implements OnInit {
     return str.replace(format, function (m) { return map[m]; });
     //return str.replace(/[&<>"']/g, function(m) { return map[m]; });
   }
-  SelectedLessons = [];
-  SelectContentUnit = [];
-  SelectedSubContentUnit = [];
+  SelectedLessons :any[]= [];
+  SelectContentUnit :any[]= [];
+  SelectedSubContentUnit :any[]= [];
   SelectSubject() {
     debugger;
-    let _classId = this.searchForm.get("searchClassId").value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
     let obj = this.Classes.filter(c => c.ClassId == _classId);
     if (obj.length > 0) {
       this.SelectedClassCategory = obj[0].Category.toLowerCase();
@@ -207,8 +207,8 @@ export class QuestionComponent implements OnInit {
   }
   Defaultvalue = 0;
   SelectedClassCategory = '';
-  Semesters = [];
-  ClassCategory = [];
+  Semesters :any[]= [];
+  ClassCategory :any[]= [];
   getCollegeCategory() {
     return globalconstants.CategoryCollege;
   }
@@ -217,14 +217,14 @@ export class QuestionComponent implements OnInit {
   }
   SelectContentUnitChanged() {
     debugger;
-    var _searchContentUnitId = this.searchForm.get("searchContentUnitId").value;
+    var _searchContentUnitId = this.searchForm.get("searchContentUnitId")?.value;
     if (_searchContentUnitId > 0)
       this.SelectedSubContentUnit = this.allMasterData.filter(d => d.ParentId == _searchContentUnitId);
     this.cleardata();
   }
   SelectSubContentUnitChanged() {
     debugger;
-    var _searchSubContentUnitId = this.searchForm.get("searchSubContentUnitId").value;
+    var _searchSubContentUnitId = this.searchForm.get("searchSubContentUnitId")?.value;
     if (_searchSubContentUnitId > 0)
       this.SelectedLessons = this.allMasterData.filter(d => d.ParentId == _searchSubContentUnitId);
     else
@@ -319,7 +319,7 @@ export class QuestionComponent implements OnInit {
       })
   }
   SelectSubContentUnit(pContentUnitId) {
-    this.SelectedSubContentUnit = this.allMasterData.filter(f => f.ParentId == pContentUnitId.value);
+    this.SelectedSubContentUnit = this.allMasterData.filter((f:any) => f.ParentId == pContentUnitId.value);
   }
   delete(element) {
     let toupdate = {
@@ -356,7 +356,7 @@ export class QuestionComponent implements OnInit {
   }
   AddNew() {
     debugger;
-    var _syllabusId = this.searchForm.get("searchUnitDetailId").value;
+    var _syllabusId = this.searchForm.get("searchUnitDetailId")?.value;
     if (_syllabusId == 0) {
       this.contentservice.openSnackBar("Please select unit detail", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -375,7 +375,7 @@ export class QuestionComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.QuestionBankList);
   }
   SaveAll() {
-    var _toUpdate = this.QuestionBankList.filter(f => f.Action);
+    var _toUpdate = this.QuestionBankList.filter((f:any) => f.Action);
     this.RowToUpdate = _toUpdate.length;
     _toUpdate.forEach(question => {
       this.RowToUpdate--;
@@ -401,9 +401,9 @@ export class QuestionComponent implements OnInit {
     if (row.DifficultyLevelId > 0)
       checkFilterString += " and DifficultyLevelId eq " + row.DifficultyLevelId
 
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
-    this.QuestionBankForUpdate = [];;
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.QuestionBankForUpdate = [];
     this.QuestionBankData.QuestionBankId = row.QuestionBankId;
     this.QuestionBankData.SyllabusId = row.SyllabusId;
     this.QuestionBankData.Diagram = row.Diagram;
@@ -431,7 +431,7 @@ export class QuestionComponent implements OnInit {
       this.update(row);
     }
   }
-  RandomArr = [];
+  RandomArr :any[]= [];
   GetRandomNumber(NoOfRandom) {
     this.RandomArr = [];
     while (this.RandomArr.length < NoOfRandom) {
@@ -477,25 +477,25 @@ export class QuestionComponent implements OnInit {
     this.searchForm.patchValue({ 'searchUnitDetailId': 0 });
     this.QuestionBankList = [];
     this.dataSource = new MatTableDataSource<IQuestionBank>(this.QuestionBankList);
-    var _searchClassId = this.searchForm.get("searchClassId").value;
-    var _searchSectionId = this.searchForm.get("searchSectionId").value;
-    var _searchSemesterId = this.searchForm.get("searchSemesterId").value;
+    var _searchClassId = this.searchForm.get("searchClassId")?.value;
+    var _searchSectionId = this.searchForm.get("searchSectionId")?.value;
+    var _searchSemesterId = this.searchForm.get("searchSemesterId")?.value;
     this.SelectedClassSubjects = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects, _searchClassId, _searchSectionId, _searchSemesterId);
 
   }
-  Lessons = [];
-  ContentUnit = [];
-  SubContentUnit = [];
-  DifficultyLevels = [];
-  UnitDetails = [];
+  Lessons :any[]= [];
+  ContentUnit :any[]= [];
+  SubContentUnit :any[]= [];
+  DifficultyLevels :any[]= [];
+  UnitDetails :any[]= [];
   GetSyllabusDetailForDropDown() {
     debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";// and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId > 0)
       filterStr += " and ClassId eq " + _classId
     else {
@@ -504,7 +504,7 @@ export class QuestionComponent implements OnInit {
       return;
     }
 
-    var _classSubjectId = this.searchForm.get("searchSubjectId").value;
+    var _classSubjectId = this.searchForm.get("searchSubjectId")?.value;
     if (_classSubjectId > 0)
       filterStr += " and SubjectId eq " + _classSubjectId
     else {
@@ -512,11 +512,11 @@ export class QuestionComponent implements OnInit {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _ContentUnitId = this.searchForm.get("searchContentUnitId").value;
+    var _ContentUnitId = this.searchForm.get("searchContentUnitId")?.value;
     if (_ContentUnitId > 0)
       filterStr += " and ContentUnitId eq " + _ContentUnitId
 
-    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId").value;
+    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId")?.value;
     if (_SubContentUnitId > 0)
       filterStr += " and SubContentUnitId eq " + _SubContentUnitId
 
@@ -542,7 +542,7 @@ export class QuestionComponent implements OnInit {
             f.ClassName = clsObj[0].ClassName;
           else
             f.ClassName = '';
-          var subjObj = this.ClassSubjects.filter(s => s.SubjectId == f.SubjectId);
+          var subjObj = this.ClassSubjects.filter((s:any) => s.SubjectId == f.SubjectId);
           if (subjObj.length > 0)
             f.SubjectName = subjObj[0].SubjectName
           else
@@ -573,11 +573,11 @@ export class QuestionComponent implements OnInit {
   GetSyllabusDetail() {
     debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";// 'Active eq true and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId > 0)
       filterStr += " and ClassId eq " + _classId
     else {
@@ -586,7 +586,7 @@ export class QuestionComponent implements OnInit {
       return;
     }
 
-    var _classSubjectId = this.searchForm.get("searchSubjectId").value;
+    var _classSubjectId = this.searchForm.get("searchSubjectId")?.value;
     if (_classSubjectId > 0)
       filterStr += " and SubjectId eq " + _classSubjectId
     else {
@@ -594,11 +594,11 @@ export class QuestionComponent implements OnInit {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _ContentUnitId = this.searchForm.get("searchContentUnitId").value;
+    var _ContentUnitId = this.searchForm.get("searchContentUnitId")?.value;
     if (_ContentUnitId > 0)
       filterStr += " and ContentUnitId eq " + _ContentUnitId
 
-    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId").value;
+    var _SubContentUnitId = this.searchForm.get("searchSubContentUnitId")?.value;
     if (_SubContentUnitId > 0)
       filterStr += " and SubContentUnitId eq " + _SubContentUnitId
 
@@ -632,7 +632,7 @@ export class QuestionComponent implements OnInit {
             f.ClassName = clsObj[0].ClassName;
           else
             f.ClassName = '';
-          var subjObj = this.ClassSubjects.filter(s => s.SubjectId == f.SubjectId);
+          var subjObj = this.ClassSubjects.filter((s:any) => s.SubjectId == f.SubjectId);
           if (subjObj.length > 0)
             f.SubjectName = subjObj[0].SubjectName
           else
@@ -681,8 +681,8 @@ export class QuestionComponent implements OnInit {
   GetQuestionBank(row) {
     debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";// 'Active eq true and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
     if (row.SyllabusId > 0)
@@ -717,9 +717,9 @@ export class QuestionComponent implements OnInit {
         if (data.value.length > 0) {
           data.value.forEach(item => {
             if (item.ContentUnitId > 0) {
-              item.SubCategories = this.allMasterData.filter(f => f.ParentId == item.ContentUnitId);
+              item.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == item.ContentUnitId);
               if (item.LessonId > 0)
-                item.Lessons = this.allMasterData.filter(f => f.ParentId == item.LessonId);
+                item.Lessons = this.allMasterData.filter((f:any) => f.ParentId == item.LessonId);
               else
                 item.Lessons = [];
             }
@@ -758,7 +758,7 @@ export class QuestionComponent implements OnInit {
       .subscribe((data: any) => {
         this.ClassSubjects = data.value.map(m => {
           var _subjectname = "";
-          var subjectobj = this.allMasterData.filter(f => f.MasterDataId == m.SubjectId);
+          var subjectobj = this.allMasterData.filter((f:any) => f.MasterDataId == m.SubjectId);
           if (subjectobj.length > 0)
             _subjectname = subjectobj[0].MasterDataName;
           m.SubjectName = _subjectname;
@@ -771,17 +771,17 @@ export class QuestionComponent implements OnInit {
   }
   GetSelectedClassSubject() {
     debugger;
-    //this.SelectedClassSubjects = this.ClassSubjects.filter(f => f.ClassId == this.searchForm.get("searchClassId").value)
-    var _searchClassId = this.searchForm.get("searchClassId").value;
-    var _searchSectionId = this.searchForm.get("searchSectionId").value;
-    var _searchSemesterId = this.searchForm.get("searchSemesterId").value;
+    //this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value)
+    var _searchClassId = this.searchForm.get("searchClassId")?.value;
+    var _searchSectionId = this.searchForm.get("searchSectionId")?.value;
+    var _searchSemesterId = this.searchForm.get("searchSemesterId")?.value;
     this.SelectedClassSubjects = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects, _searchClassId, _searchSectionId, _searchSemesterId);
   }
 
   GetMasterData() {
     debugger;
-    this.allMasterData = this.tokenStorage.getMasterData();
-    //var result = this.allMasterData.filter(f=>f.MasterDataName =='Question Bank ContentUnit')
+    this.allMasterData = this.tokenStorage.getMasterData()!;
+    //var result = this.allMasterData.filter((f:any)=>f.MasterDataName =='Question Bank ContentUnit')
     //console.log("result",result)
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.ContentUnit = this.getDropDownData(globalconstants.MasterDefinitions.school.BOOKCONTENTUNIT);
@@ -814,14 +814,14 @@ export class QuestionComponent implements OnInit {
     debugger;
     row.Action = true;
     if (row.ContentUnitId > 0)
-      row.SubCategories = this.allMasterData.filter(f => f.ParentId == row.ContentUnitId);
+      row.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.ContentUnitId);
     else
       row.SubCategories = [];
   }
   SubContentUnitChanged(row) {
     row.Action = true;
     if (row.SubContentUnitId > 0)
-      row.Lessons = this.allMasterData.filter(f => f.ParentId == row.SubContentUnitId);
+      row.Lessons = this.allMasterData.filter((f:any) => f.ParentId == row.SubContentUnitId);
     else
       row.Lessons = [];
   }

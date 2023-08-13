@@ -4,11 +4,11 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../..//shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
@@ -19,20 +19,20 @@ import { MatPaginator } from '@angular/material/paginator';
 export class SchoolFeeTypesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   PageLoading = true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   FeeTypeListName = 'SchoolFeeTypes';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
-  FeeTypeList: IFeeType[] = [];
+  FeeTypeList: IFeeType[]= [];
   filteredOptions: Observable<IFeeType[]>;
   dataSource: MatTableDataSource<IFeeType>;
   Permission = 'deny';
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  allMasterData = [];
-  FeeCategories = [];
+  allMasterData:any[]= [];
+  FeeCategories :any[]= [];
   FeeTypeData = {
     FeeTypeId: 0,
     FeeTypeName: '',
@@ -54,8 +54,8 @@ export class SchoolFeeTypesComponent implements OnInit {
     'Active',
     'Action'
   ];
-  Classes = [];
-  Students = [];
+  Classes:any[]= [];
+  Students:any[]= [];
   SelectedApplicationId = 0;
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
@@ -95,9 +95,9 @@ export class SchoolFeeTypesComponent implements OnInit {
         //this.nav.navigate(['/edu']);
       }
       else {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
 
@@ -130,7 +130,7 @@ export class SchoolFeeTypesComponent implements OnInit {
   }
   GetStudents() {
 
-    var _students: any = this.tokenStorage.getStudents();
+    var _students: any = this.tokenStorage.getStudents()!;
     _students = _students.filter(a => a.Active == 1);
     this.Students = _students.map(student => {
       var _lastName = student.LastName == '' ? '' : '-' + student.LastName;
@@ -255,10 +255,10 @@ export class SchoolFeeTypesComponent implements OnInit {
 
         this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, 0, this.FeeTypeData.FeeTypeId)
           .subscribe((data: any) => {
-            var studentfeedetail = [];
+            var studentfeedetail:any[]= [];
             data.value.forEach(studcls => {
               var _className = ''
-              var clsObj = this.Classes.filter(f => f.ClassId == studcls.ClassId);
+              var clsObj = this.Classes.filter((f:any) => f.ClassId == studcls.ClassId);
               if (clsObj.length > 0)
                 _className = clsObj[0].ClassName;
 
@@ -268,11 +268,11 @@ export class SchoolFeeTypesComponent implements OnInit {
                 var _category = '';
                 var _subCategory = '';
 
-                var objcat = this.FeeCategories.filter(f => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                var objcat:any[] = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat.length > 0)
                   _category = objcat[0].MasterDataName;
 
-                var objsubcat = this.FeeCategories.filter(f => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                var objsubcat:any[] = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
@@ -314,7 +314,7 @@ export class SchoolFeeTypesComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY)
     this.loading = false; this.PageLoading = false;
   }
@@ -323,15 +323,15 @@ export class SchoolFeeTypesComponent implements OnInit {
   }
   GetFeeTypes() {
     //debugger;
-    // if (this.searchForm.get("searchFeeTypeName").value.length < 3)
+    // if (this.searchForm.get("searchFeeTypeName")?.value.length < 3)
     // {
     //   this.contentservice.openSnackBar("Please enter atleast 3 characters.",this.optionAutoClose);
     //   return;
     // }  
     this.loading = true;
     let filterStr = this.FilterOrgSubOrg;// 'BatchId eq '+ this.SelectedBatchId;
-    if (this.searchForm.get("searchFeeTypeName").value.length != 0)
-      filterStr += " and contains(FeeTypeName,'" + this.searchForm.get("searchFeeTypeName").value + "')";
+    if (this.searchForm.get("searchFeeTypeName")!.value.length != 0)
+      filterStr += " and contains(FeeTypeName,'" + this.searchForm.get("searchFeeTypeName")!.value + "')";
 
 
     let list: List = new List();

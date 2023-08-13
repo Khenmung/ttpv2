@@ -3,11 +3,11 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import alasql from 'alasql';
 import { ChartType, ChartOptions, LabelItem, DatasetChartOptions, PieDataPoint } from 'chart.js';
 import { BaseChartDirective,NgChartsConfiguration,NgChartsModule } from 'ng2-charts';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 import { MatLabel } from '@angular/material/form-field';
 import { ArrayDataSource } from '@angular/cdk/collections';
@@ -20,7 +20,7 @@ import { ArrayDataSource } from '@angular/cdk/collections';
 export class ChartReportComponent {
   PageLoading = true;
   ClickedReport = false;
-  VariableObjList = [];
+  VariableObjList :any[]= [];
   ExpectedAmount = 0.0;
   ReceiptAmount = 0.0;
   optionsNoAutoClose = {
@@ -33,10 +33,10 @@ export class ChartReportComponent {
   };
   loading = false;
   SearchForm: UntypedFormGroup;
-  Months = [];
-  MonthlyPayments = [];
-  StudentClasses = [];
-  ClassFees = [];
+  Months :any[]= [];
+  MonthlyPayments :any[]= [];
+  StudentClasses :any[]= [];
+  ClassFees :any[]= [];
   FilterOrgSubOrg='';
   FilterOrgSubOrgBatchId='';
   public pieChartOptions: ChartOptions = {
@@ -47,8 +47,8 @@ export class ChartReportComponent {
   public pieChartData:any = [0, 0];
   public pieChartType: ChartType = 'pie';
   public pieChartLegend = true;
-  public pieChartPlugins = [];
-  LoginUserDetail = [];
+  public pieChartPlugins :any[]= [];
+  LoginUserDetail :any[]= [];
   SelectedApplicationId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   Permission = '';
@@ -75,9 +75,9 @@ export class ChartReportComponent {
       this.Permission = perObj[0].permission;
     }
     if (this.Permission != 'deny') {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.FilterOrgSubOrg =globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.FilterOrgSubOrgBatchId =globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.Months = this.contentservice.GetSessionFormattedMonths();
@@ -148,17 +148,17 @@ export class ChartReportComponent {
 
   GetReport() {
     debugger;
-    var selectedmonthId = this.SearchForm.get("searchMonth").value;
+    var selectedmonthId = this.SearchForm.get("searchMonth")?.value;
     if (selectedmonthId == 0) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar('Please select payment month', globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     this.loading = true;
-    this.SelectedMonth = this.Months.filter(f => f.val == selectedmonthId)[0].MonthName;
+    this.SelectedMonth = this.Months.filter((f:any) => f.val == selectedmonthId)[0].MonthName;
     var studentCount = this.StudentClasses.length;
 
-    //var paymentObj = this.MonthlyPayments.filter(f => f.Month == selectedmonthId);
+    //var paymentObj = this.MonthlyPayments.filter((f:any) => f.Month == selectedmonthId);
     this.GetMonthlyPayments(selectedmonthId)
       .subscribe((data: any) => {
         debugger;

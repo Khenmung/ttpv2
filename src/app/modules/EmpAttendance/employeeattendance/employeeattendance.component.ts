@@ -5,13 +5,13 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
-import { SharedataService } from 'src/app/shared/sharedata.service';
+import { SharedataService } from '../../../shared/sharedata.service';
 
 @Component({
   selector: 'app-employeeattendance',
@@ -27,7 +27,7 @@ export class EmployeeAttendanceComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   EnableSave = true;
   Permission = 'deny';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   SaveAll = false;
@@ -38,13 +38,13 @@ export class EmployeeAttendanceComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   loading = false;
   SelectedBatchId = 0; SubOrgId = 0;
-  Batches = [];
-  AttendanceStatus = [];
-  FilteredClassSubjects = [];
-  EmployeeAttendanceList: IEmployeeAttendance[] = [];
+  Batches :any[]= [];
+  AttendanceStatus :any[]= [];
+  FilteredClassSubjects :any[]= [];
+  EmployeeAttendanceList: IEmployeeAttendance[]= [];
   dataSource: MatTableDataSource<IEmployeeAttendance>;
-  allMasterData = [];
-  Departments = [];
+  allMasterData :any[]= [];
+  Departments :any[]= [];
   searchForm = this.fb.group({
     searchAttendanceDate: [new Date()],
     searchDepartment: [0]
@@ -71,7 +71,7 @@ export class EmployeeAttendanceComponent implements OnInit {
     'Action'
   ];
   SelectedApplicationId = 0;
-  Employees = [];
+  Employees :any[]= [];
   constructor(
     private servicework: SwUpdate,
     private fb: UntypedFormBuilder,
@@ -96,7 +96,7 @@ export class EmployeeAttendanceComponent implements OnInit {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.StudentClassId = 0;
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -104,8 +104,8 @@ export class EmployeeAttendanceComponent implements OnInit {
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetMasterData();
@@ -167,8 +167,8 @@ export class EmployeeAttendanceComponent implements OnInit {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    var _AttendanceDate = new Date(this.searchForm.get("searchAttendanceDate").value)
-    var _DepartmentId = this.searchForm.get("searchDepartment").value
+    var _AttendanceDate = new Date(this.searchForm.get("searchAttendanceDate")?.value)
+    var _DepartmentId = this.searchForm.get("searchDepartment")?.value
     _AttendanceDate.setHours(0, 0, 0, 0);
     if (_AttendanceDate.getTime() > today.getTime()) {
       this.loading = false; this.PageLoading = false;
@@ -195,8 +195,8 @@ export class EmployeeAttendanceComponent implements OnInit {
     this.EmployeeAttendanceList = [];
     this.dataSource = new MatTableDataSource<IEmployeeAttendance>(this.EmployeeAttendanceList);
 
-    var datefilterStr = filterStr + ' and AttendanceDate ge ' + moment(this.searchForm.get("searchAttendanceDate").value).format('yyyy-MM-DD')
-    datefilterStr += ' and AttendanceDate lt ' + moment(this.searchForm.get("searchAttendanceDate").value).add(1, 'day').format('yyyy-MM-DD')
+    var datefilterStr = filterStr + ' and AttendanceDate ge ' + moment(this.searchForm.get("searchAttendanceDate")?.value).format('yyyy-MM-DD')
+    datefilterStr += ' and AttendanceDate lt ' + moment(this.searchForm.get("searchAttendanceDate")?.value).add(1, 'day').format('yyyy-MM-DD')
 
     let list: List = new List();
     list.fields = [
@@ -218,9 +218,9 @@ export class EmployeeAttendanceComponent implements OnInit {
 
     this.dataservice.get(list)
       .subscribe((employeeAttendance: any) => {
-        var _employeeDepartment = [];
+        var _employeeDepartment :any[]= [];
         if (_DepartmentId > 0)
-          _employeeDepartment = this.Employees.filter(f => f.DepartmentId == _DepartmentId)
+          _employeeDepartment = this.Employees.filter((f:any) => f.DepartmentId == _DepartmentId)
         else
           _employeeDepartment = [...this.Employees];
 
@@ -319,7 +319,7 @@ export class EmployeeAttendanceComponent implements OnInit {
   }
   saveall() {
     debugger;
-    //var toUpdateAttendance = this.EmployeeAttendanceList.filter(f => f.Action);
+    //var toUpdateAttendance = this.EmployeeAttendanceList.filter((f:any) => f.Action);
     //console.log("toUpdateAttendance",toUpdateAttendance);
     this.NoOfRecordToUpdate = this.EmployeeAttendanceList.length;
     this.loading = true;
@@ -338,7 +338,7 @@ export class EmployeeAttendanceComponent implements OnInit {
   UpdateOrSave(row) {
 
     //this.NoOfRecordToUpdate = 0;
-    var _AttendanceDate = this.searchForm.get("searchAttendanceDate").value;
+    var _AttendanceDate = this.searchForm.get("searchAttendanceDate")?.value;
 
     let checkFilterString = "EmployeeId eq " + row.EmployeeId +
       " and AttendanceDate ge " + moment(_AttendanceDate).format('YYYY-MM-DD') +
@@ -445,12 +445,12 @@ export class EmployeeAttendanceComponent implements OnInit {
   //       //  //console.log('data.value', data.value);
   //       this.ClassSubjects = data.value.map(item => {
   //         // var _classname = ''
-  //         // var objCls = this.Classes.filter(f => f.ClassId == item.ClassId)
+  //         // var objCls = this.Classes.filter((f:any) => f.ClassId == item.ClassId)
   //         // if (objCls.length > 0)
   //         //   _classname = objCls[0].ClassName;
 
   //         var _subjectName = '';
-  //         var objsubject = this.Subjects.filter(f => f.MasterDataId == item.SubjectId)
+  //         var objsubject = this.Subjects.filter((f:any) => f.MasterDataId == item.SubjectId)
   //         if (objsubject.length > 0)
   //           _subjectName = objsubject[0].MasterDataName;
 
@@ -466,10 +466,10 @@ export class EmployeeAttendanceComponent implements OnInit {
   AttendanceAbsentId = 0;
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
-    this.AttendancePresentId = this.AttendanceStatus.filter(f => f.MasterDataName.toLowerCase() == 'present')[0].MasterDataId;
-    this.AttendanceAbsentId = this.AttendanceStatus.filter(f => f.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
+    this.AttendancePresentId = this.AttendanceStatus.filter((f:any) => f.MasterDataName.toLowerCase() == 'present')[0].MasterDataId;
+    this.AttendanceAbsentId = this.AttendanceStatus.filter((f:any) => f.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
     this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.employee.DEPARTMENT);
     this.loading = false; this.PageLoading = false;
   }

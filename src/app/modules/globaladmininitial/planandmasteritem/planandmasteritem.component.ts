@@ -5,11 +5,11 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -22,7 +22,7 @@ export class PlanandmasteritemComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -37,17 +37,17 @@ export class PlanandmasteritemComponent implements OnInit {
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
   RowToUpdateCount = -1;
-  TopMasterItems = [];
-  Plans = [];
-  MasterItems = [];
-  SelectedMasterItems = [];
-  PlanAndMasterItemList: IPlanMasterItem[] = [];
+  TopMasterItems :any[]= [];
+  Plans :any[]= [];
+  MasterItems :any[]= [];
+  SelectedMasterItems :any[]= [];
+  PlanAndMasterItemList: IPlanMasterItem[]= [];
   filteredOptions: Observable<IPlanMasterItem[]>;
   dataSource: MatTableDataSource<IPlanMasterItem>;
-  allMasterData = [];
-  PlanAndMasterItems = [];
-  Applications = [];
-  FeeCategories = [];
+  allMasterData :any[]= [];
+  PlanAndMasterItems :any[]= [];
+  Applications :any[]= [];
+  FeeCategories :any[]= [];
   Permission = 'deny';
   PlanAndMasterItemData = {
     PlanAndMasterDataId: 0,
@@ -107,8 +107,8 @@ export class PlanandmasteritemComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail.length == 0)
       this.nav.navigate(['/auth/login']);
     else {
@@ -122,7 +122,7 @@ export class PlanandmasteritemComponent implements OnInit {
         //this.nav.navigate(['/edu'])
       }
       else {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.GetPlans();
         this.GetMasterData();
 
@@ -169,7 +169,7 @@ export class PlanandmasteritemComponent implements OnInit {
   }
   SaveAll() {
 
-    var toUpdate = this.PlanAndMasterItemList.filter(f => f.Action);
+    var toUpdate = this.PlanAndMasterItemList.filter((f:any) => f.Action);
     this.RowToUpdateCount = toUpdate.length;
     this.loading = true;
     toUpdate.forEach(element => {
@@ -295,11 +295,11 @@ export class PlanandmasteritemComponent implements OnInit {
   GetTopFeature() {
     debugger;
     this.ClearDisplay();
-    var ApplicationId = this.searchForm.get("searchApplicationId").value;
+    var ApplicationId = this.searchForm.get("searchApplicationId")?.value;
     this.GetMasterItems(ApplicationId).subscribe((d: any) => {
 
       this.MasterItems = [...d.value];
-      this.TopMasterItems = this.MasterItems.filter(f => f.ParentId == 0);
+      this.TopMasterItems = this.MasterItems.filter((f:any) => f.ParentId == 0);
       this.loading = false; this.PageLoading = false;
     }, error => console.error);
   }
@@ -323,13 +323,13 @@ export class PlanandmasteritemComponent implements OnInit {
   GetPlanAndMasterItem() {
     debugger;
 
-    var _PlanId = this.searchForm.get("searchPlanId").value;
+    var _PlanId = this.searchForm.get("searchPlanId")?.value;
 
     if (_PlanId == 0) {
       this.contentservice.openSnackBar("Please select plan.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _applicationId = this.searchForm.get("searchApplicationId").value;
+    var _applicationId = this.searchForm.get("searchApplicationId")?.value;
     if (_applicationId == 0) {
       this.contentservice.openSnackBar("Please select application.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -354,9 +354,9 @@ export class PlanandmasteritemComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         var _ParentId = 0;
-        // if (this.searchForm.get("searchTopfeatureId").value > 0)
-        //   _ParentId = this.searchForm.get("searchTopfeatureId").value;
-        this.SelectedMasterItems = this.MasterItems.filter(f => f.ParentId == _ParentId);
+        // if (this.searchForm.get("searchTopfeatureId")?.value > 0)
+        //   _ParentId = this.searchForm.get("searchTopfeatureId")?.value;
+        this.SelectedMasterItems = this.MasterItems.filter((f:any) => f.ParentId == _ParentId);
         this.SelectedMasterItems.forEach(f => {
 
           var existing = data.value.filter(d => d.MasterDataId == f.MasterDataId);

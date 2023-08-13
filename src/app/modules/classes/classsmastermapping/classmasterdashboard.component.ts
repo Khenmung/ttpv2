@@ -5,15 +5,15 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 //import { ClasssubjectComponent } from '../classsubject/classsubject.component';
 import { SwUpdate } from '@angular/service-worker';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -37,19 +37,19 @@ export class ClassmasterdashboardComponent implements OnInit {
   StandardFilterWithPreviousBatchId = '';
   loading = false;
   Permission = '';
-  Classes = [];
-  Subjects = [];
-  Sections = [];
-  ClassSubjects = [];
+  Classes: any[] = [];
+  Subjects: any[] = [];
+  Sections: any[] = [];
+  ClassSubjects: any[] = [];
   CurrentBatchId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   //CheckBatchIDForEdit = 1;
-  Batches = [];
-  WorkAccounts = [];
-  Teachers = [];
+  Batches: any[] = [];
+  WorkAccounts: any[] = [];
+  Teachers: any[] = [];
   ClassSubjectTeacherList: IClassTeacher[] = [];
   dataSource: MatTableDataSource<IClassTeacher>;
-  allMasterData = [];
+  allMasterData: any[] = [];
   searchForm: UntypedFormGroup;
   //ClassSubjectId = 0;
   ClassSubjectTeacherData = {
@@ -70,13 +70,13 @@ export class ClassmasterdashboardComponent implements OnInit {
     "Active",
     "Action",
   ];
-  Helpers = [];
+  Helpers: any[] = [];
   filteredOptions: Observable<ITeachers[]>;
   //Students: any;
   SelectedClassCategory = '';
   Defaultvalue = 0;
-  ClassCategory = [];
-  Semesters = [];
+  ClassCategory: any[] = [];
+  Semesters: any[] = [];
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
     private fb: UntypedFormBuilder,
@@ -119,8 +119,8 @@ export class ClassmasterdashboardComponent implements OnInit {
 
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-
-    this.filteredOptions = this.searchForm.get("searchTeacherId").valueChanges
+    let obj = this.searchForm.get("searchTeacherId")!;
+    this.filteredOptions = obj.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.TeacherName),
@@ -130,7 +130,7 @@ export class ClassmasterdashboardComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.CLASSCOURSE.CLASSTEACHER);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
@@ -143,8 +143,8 @@ export class ClassmasterdashboardComponent implements OnInit {
       else {
 
         //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         //this.CheckPermission = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages[0].SUBJECT.CLASSSUBJECTMAPPING);
         ////console.log(this.CheckPermission);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
@@ -189,14 +189,14 @@ export class ClassmasterdashboardComponent implements OnInit {
   }
   CopyFromPreviousBatch() {
     //console.log("here ", this.PreviousBatchId)
-    this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId();
+    this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
     if (this.PreviousBatchId == -1)
       this.contentservice.openSnackBar("Previous batch not defined.", globalconstants.ActionText, globalconstants.RedBackground);
     else
       this.GetClassTeacher(1)
   }
   addnew() {
-    let _classId = this.searchForm.get("searchClassId").value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId == 0) {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -206,14 +206,14 @@ export class ClassmasterdashboardComponent implements OnInit {
       "TeacherId": 0,
       "HelperId": 0,
       "ClassId": _classId,
-      "SectionId": this.searchForm.get("searchSectionId").value,
-      "SemesterId": this.searchForm.get("searchSemesterId").value,
+      "SectionId": this.searchForm.get("searchSectionId")?.value,
+      "SemesterId": this.searchForm.get("searchSemesterId")?.value,
       "Section": '',
       "Semester": '',
       "Active": 0,
       "Action": false
     }
-    this.ClassSubjectTeacherList = [];
+    this.ClassSubjectTeacherList  = [];
     this.ClassSubjectTeacherList.push(newItem);
     this.dataSource = new MatTableDataSource<IClassTeacher>(this.ClassSubjectTeacherList);
   }
@@ -221,10 +221,10 @@ export class ClassmasterdashboardComponent implements OnInit {
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     //debugger;
     this.loading = true;
-    var _teacherId = this.searchForm.get("searchTeacherId").value.TeacherId;
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    var _teacherId = this.searchForm.get("searchTeacherId")?.value.TeacherId;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     if (_teacherId == undefined && _classId == 0) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please select atleast one of the options", globalconstants.ActionText, globalconstants.RedBackground);
@@ -240,9 +240,9 @@ export class ClassmasterdashboardComponent implements OnInit {
       filterStr += " and TeacherId eq " + _teacherId;
     filterStr += " and ClassId eq " + _classId;
     if (_semesterId)
-      if(_semesterId) filterStr += " and SemesterId eq " + _semesterId;
+      if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
     if (_sectionId)
-      if(_sectionId) filterStr += " and SectionId eq " + _sectionId;
+      if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
 
 
     // else {
@@ -266,55 +266,55 @@ export class ClassmasterdashboardComponent implements OnInit {
 
     list.PageName = this.TeacherClassSubjectListName;
     list.filter = [filterStr];
-    this.ClassSubjectTeacherList = [];
+    this.ClassSubjectTeacherList  = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
         //  //console.log('data.value', data.value);
         //if (_classId != 0 && _teacherId) {
-          //if (data.value.length > 0)
-            data.value.forEach(element => {
-              let objSection=this.Sections.filter(f => f.MasterDataId == element.SectionId);
-              let _section='';
-              if(objSection.length>0)
-              _section = objSection[0].MasterDataName;
-              let objSemester=this.Semesters.filter(f => f.MasterDataId == element.SemesterId);
-              let _semester='';
-              if(objSemester.length>0)
-              _semester = objSemester[0].MasterDataName;
+        //if (data.value.length > 0)
+        data.value.forEach(element => {
+          let objSection = this.Sections.filter((f: any) => f.MasterDataId == element.SectionId);
+          let _section = '';
+          if (objSection.length > 0)
+            _section = objSection[0].MasterDataName;
+          let objSemester = this.Semesters.filter((f: any) => f.MasterDataId == element.SemesterId);
+          let _semester = '';
+          if (objSemester.length > 0)
+            _semester = objSemester[0].MasterDataName;
 
-              this.ClassSubjectTeacherList.push({
-                "TeacherClassMappingId": previousbatch == 1 ? 0 : element.TeacherClassMappingId,
-                "TeacherId": element.TeacherId,
-                "HelperId": element.HelperId,
-                "ClassId": element.ClassId,
-                "SectionId": element.SectionId,
-                "Section": _section,
-                "Semester": _semester,
-                "Active": previousbatch == 1 ? 0 : element.Active,
-                "Action": false
-              })
-            });
-          // else
-          //   this.Sections.forEach(s => {
-          //     this.ClassSubjectTeacherList.push({
-          //       "TeacherClassMappingId": 0,
-          //       "TeacherId": 0,
-          //       "ClassId": this.searchForm.get("searchClassId").value,
-          //       "HelperId": 0,
-          //       "SectionId": s.MasterDataId,
-          //       "Section": s.MasterDataName,
+          this.ClassSubjectTeacherList.push({
+            "TeacherClassMappingId": previousbatch == 1 ? 0 : element.TeacherClassMappingId,
+            "TeacherId": element.TeacherId,
+            "HelperId": element.HelperId,
+            "ClassId": element.ClassId,
+            "SectionId": element.SectionId,
+            "Section": _section,
+            "Semester": _semester,
+            "Active": previousbatch == 1 ? 0 : element.Active,
+            "Action": false
+          })
+        });
+        // else
+        //   this.Sections.forEach(s => {
+        //     this.ClassSubjectTeacherList.push({
+        //       "TeacherClassMappingId": 0,
+        //       "TeacherId": 0,
+        //       "ClassId": this.searchForm.get("searchClassId")?.value,
+        //       "HelperId": 0,
+        //       "SectionId": s.MasterDataId,
+        //       "Section": s.MasterDataName,
 
-          //       "Active": 0,
-          //       "Action": false
-          //     })
-          //   });
+        //       "Active": 0,
+        //       "Action": false
+        //     })
+        //   });
 
         //}
         // else {
         //   //var filteredClasses = ;
         //   this.Sections.forEach(s => {
-        //     var existing = data.value.filter(f => f.SectionId == s.MasterDataId);
+        //     var existing = data.value.filter((f:any) => f.SectionId == s.MasterDataId);
         //     if (existing.length > 0) {
         //       this.ClassSubjectTeacherList.push({
         //         "TeacherClassMappingId": previousbatch == 1 ? 0 : existing[0].TeacherClassMappingId,
@@ -322,7 +322,7 @@ export class ClassmasterdashboardComponent implements OnInit {
         //         "HelperId": existing[0].HelperId,
         //         "ClassId": existing[0].ClassId,
         //         "SectionId": existing[0].SectionId,
-        //         "Section": this.Sections.filter(s => s.MasterDataId == existing[0].SectionId)[0].MasterDataName,
+        //         "Section": this.Sections.filter((s:any) => s.MasterDataId == existing[0].SectionId)[0].MasterDataName,
         //         "Active": previousbatch == 1 ? 0 : existing[0].Active,
         //         "Action": false
         //       })
@@ -332,7 +332,7 @@ export class ClassmasterdashboardComponent implements OnInit {
         //         "TeacherClassMappingId": 0,
         //         "TeacherId": 0,
         //         "HelperId": 0,
-        //         "ClassId": this.searchForm.get("searchClassId").value,
+        //         "ClassId": this.searchForm.get("searchClassId")?.value,
         //         "SectionId": s.MasterDataId,
         //         "Section": s.MasterDataName,
         //         "Active": 0,
@@ -348,7 +348,7 @@ export class ClassmasterdashboardComponent implements OnInit {
       });
   }
   ClearData() {
-    this.ClassSubjectTeacherList = [];
+    this.ClassSubjectTeacherList  = [];
     this.dataSource = new MatTableDataSource<IClassTeacher>(this.ClassSubjectTeacherList);
   }
   onBlur(row) {
@@ -504,7 +504,7 @@ export class ClassmasterdashboardComponent implements OnInit {
   GetTeachers() {
 
     var orgIdSearchstr = this.FilterOrgSubOrg + " and IsCurrent eq 1 and Active eq 1";
-    var _WorkAccount = this.WorkAccounts.filter(f => f.MasterDataName.toLowerCase() == "teaching" || f.MasterDataName.toLowerCase() == "helper");
+    var _WorkAccount = this.WorkAccounts.filter((f: any) => f.MasterDataName.toLowerCase() == "teaching" || f.MasterDataName.toLowerCase() == "helper");
     var _workAccountIdFilter = '';
     if (_WorkAccount.length == 2) {
       _workAccountIdFilter += " and (WorkAccountId eq " + _WorkAccount[0].MasterDataId + " or WorkAccountId eq " + _WorkAccount[1].MasterDataId + ")"
@@ -526,7 +526,7 @@ export class ClassmasterdashboardComponent implements OnInit {
     this.Teachers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        data.value.filter(f => {
+        data.value.filter((f: any) => {
           var _lastname = f.Employee.LastName == null ? '' : " " + f.Employee.LastName;
           var _type = '';
           var obj = this.WorkAccounts.filter(g => g.MasterDataId == f.WorkAccountId);
@@ -564,7 +564,7 @@ export class ClassmasterdashboardComponent implements OnInit {
       .subscribe((data: any) => {
         this.ClassSubjects = [];
         data.value.forEach(item => {
-          var objsubject = this.Subjects.filter(f => f.MasterDataId == item.SubjectId)
+          var objsubject = this.Subjects.filter((f: any) => f.MasterDataId == item.SubjectId)
           if (objsubject.length > 0) {
             this.ClassSubjects.push({
               ClassSubjectId: item.ClassSubjectId,
@@ -577,15 +577,15 @@ export class ClassmasterdashboardComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-    this.Sections = this.Sections.filter(s => s.MasterDataName != 'N/A');
+    this.Sections = this.Sections.filter((s: any) => s.MasterDataName != 'N/A');
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.WorkAccounts = this.getDropDownData(globalconstants.MasterDefinitions.employee.WORKACCOUNT);
     //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-    this.Batches = this.tokenStorage.getBatches()
+    this.Batches = this.tokenStorage.getBatches()!;
 
     //this.shareddata.ChangeClasses(this.Classes);
     this.shareddata.ChangeSubjects(this.Subjects);

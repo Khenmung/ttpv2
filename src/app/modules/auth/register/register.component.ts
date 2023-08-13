@@ -5,11 +5,11 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
 import { AuthService } from '../../../_services/auth.service';
 
 @Component({
@@ -32,7 +32,7 @@ export class RegisterComponent implements OnInit { PageLoading=true;
     Email: null,
     Password: null
   };
-  CustomerPlan = [];
+  CustomerPlan :any[]= [];
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
@@ -256,7 +256,7 @@ export class RegisterComponent implements OnInit { PageLoading=true;
   }
   AddAppUsers() {
     let orgToUpdate = {
-      OrganizationName: this.RegistrationForm.get("OrganizationName").value,
+      OrganizationName: this.RegistrationForm.get("OrganizationName")?.value,
       Active: 1
     }
     this.dataservice.postPatch('Organizations', orgToUpdate, 0, 'post')
@@ -266,11 +266,11 @@ export class RegisterComponent implements OnInit { PageLoading=true;
           let list: List = new List();
           list.fields = ["EmailAddress"];
           list.PageName = "AppUsers";
-          list.filter = ["EmailAddress eq '" + this.RegistrationForm.get("Email").value + "' and Active eq 1"];
+          list.filter = ["EmailAddress eq '" + this.RegistrationForm.get("Email")?.value + "' and Active eq 1"];
           let AppUsersData = {
-            EmailAddress: this.RegistrationForm.get("Email").value,
-            ContactNo: this.RegistrationForm.get("ContactNo").value,
-            UserName: this.RegistrationForm.get("UserName").value,
+            EmailAddress: this.RegistrationForm.get("Email")?.value,
+            ContactNo: this.RegistrationForm.get("ContactNo")?.value,
+            UserName: this.RegistrationForm.get("UserName")?.value,
             OrgId: organization.OrganizationId,
             CreatedDate: today,
             ValidFrom: today,

@@ -4,10 +4,10 @@ import { roleuserdashboardComponent } from '../roleuser/roleuserdashboard/roleus
 import { AppuserdashboardComponent } from '../users/appuserdashboard/appuserdashboard.component';
 import { RoleAppPermissiondashboardComponent } from '../roleapppermission/RoleAppPermissiondashboard/RoleAppPermissiondashboard.component';
 import { BatchdashboardComponent } from '../batchdashboard/batchdashboard.component';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
-import { ContentService } from 'src/app/shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
 import { OrganizationComponent } from '../organization/organization.component';
 import { CustomerPlansComponent } from '../customerplans/customerplans.component';
 import { CustomfeaturerolepermissionComponent } from '../customfeaturerolepermission/customfeaturerolepermission.component';
@@ -41,7 +41,7 @@ export class settingboardComponent implements AfterViewInit {
     { "label": "Khat peuhpeuh", "faIcon": '' },
     { "label": "Khat peuhpeuh", "faIcon": '' },
   ];
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   Permissions =
     {
       ParentPermission: '',
@@ -65,7 +65,7 @@ export class settingboardComponent implements AfterViewInit {
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
     var SelectedApplicationId = this.tokenStorage.getSelectedAPPId();
-    var selectedApp = this.tokenStorage.getPermittedApplications().filter(f => f.applicationId == SelectedApplicationId);
+    var selectedApp = this.tokenStorage.getPermittedApplications().filter((f:any) => f.applicationId == SelectedApplicationId);
     if (selectedApp.length > 0)
       this.AppName = selectedApp[0].appShortName
     //this.AppName ='common'

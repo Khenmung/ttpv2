@@ -7,12 +7,12 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { globalconstants } from '../../../shared/globalconstant';
 import { MatTableDataSource } from '@angular/material/table';
-import { ContentService } from 'src/app/shared/content.service';
+import { ContentService } from '../../../shared/content.service';
 //import { environment } from 'src/environments/environment';
 import { SwUpdate } from '@angular/service-worker';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -21,7 +21,7 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./albums.component.scss']
 })
 export class AlbumsComponent implements OnInit {
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   PageLoading = true;
   @ViewChild('button') button: ElementRef;
   FileOrImage: number = 1;
@@ -40,7 +40,7 @@ export class AlbumsComponent implements OnInit {
   searchForm:UntypedFormGroup;
   
   images: any[];
-  Albums: any[] = [];
+  Albums:any[]= [];
   AllAlbums: any[]=[];
   unique: any[];
   selectedAlbum: string;
@@ -73,12 +73,12 @@ export class AlbumsComponent implements OnInit {
             parentId: [0]
           }
         );
-        this.filteredAlbum = this.searchForm.get("UpdatedFileFolderName").valueChanges
+        this.filteredAlbum = this.searchForm.get("UpdatedFileFolderName")?.valueChanges
           .pipe(
             startWith(''),
             map(value => typeof value === 'string' ? value : value.UpdatedFileFolderName),
             map(Name => Name ? this._filter(Name) : this.AllAlbums.slice())
-          );
+          )!;
         //this.checklogin();
         this.getAlbums();
       }
@@ -116,7 +116,7 @@ export class AlbumsComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FileId", "FileName", "UpdatedFileFolderName", "FileOrFolder", "UploadDate", "ParentId", "Active"];
     list.PageName = "StorageFnPs";
-    list.filter = ['FileOrFolder eq 1 and OrgId eq ' + this.LoginUserDetail[0]['orgId'] + ' and Active eq 1'];// and FileOrPhoto eq ' + this.searchForm.get("FilesNPhoto").value];
+    list.filter = ['FileOrFolder eq 1 and OrgId eq ' + this.LoginUserDetail[0]['orgId'] + ' and Active eq 1'];// and FileOrPhoto eq ' + this.searchForm.get("FilesNPhoto")?.value];
     list.orderBy = "UploadDate desc";
     //list.limitTo =10;
     this.dataservice.get(list)
@@ -143,7 +143,7 @@ export class AlbumsComponent implements OnInit {
   getFiles(album, mode) {
     debugger;
     let folderSearch = '';
-    var _folderName = this.searchForm.get("UpdatedFileFolderName").value.UpdatedFileFolderName;
+    var _folderName = this.searchForm.get("UpdatedFileFolderName")?.value.UpdatedFileFolderName;
     if (album != undefined) {
       if (album.FileOrFolder == 0 && mode == 'open') {
         //let folderHierarachy='Image/';

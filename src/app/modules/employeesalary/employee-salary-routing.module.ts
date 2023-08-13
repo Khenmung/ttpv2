@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { EmployeeSalaryComponentComponent } from './employee-salary-component/employee-salary-component.component';
 import { EmpComponentsComponent } from './emp-components/emp-components.component';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { EmpmanagementboardComponent } from './empmanagementboard/empmanagementboard.component';
 import { VariableConfigComponent } from './variable-config/variable-config.component';
 import { SalaryslipComponent } from './salaryslip/salaryslip.component';

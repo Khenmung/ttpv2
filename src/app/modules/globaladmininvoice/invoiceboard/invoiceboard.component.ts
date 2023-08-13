@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { AddMasterDataComponent } from '../../control/add-master-data/add-master-data.component';
 //import { CustomerinvoiceComponent } from '../customerinvoice/customerinvoice.component';
 import { CustomerinvoicecomponentsComponent } from '../customerinvoicecomponents/customerinvoicecomponents.component';
@@ -22,7 +22,7 @@ export class InvoiceboardComponent implements AfterViewInit {
     CustomerinvoicecomponentsComponent,
     AddMasterDataComponent
   ];
-  LoginUserDetail=[];
+  LoginUserDetail:any[]=[];
   tabNames = [
     { 'label': 'Plan', 'faIcon': '' },
     { 'label': 'Plan Feature', 'faIcon': '' },

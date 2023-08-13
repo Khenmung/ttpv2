@@ -19,7 +19,7 @@ export class CarouselComponent implements OnInit {
   selectedAlbum: string;
   selectedAlbumId: number;
   loading = true;
-  unique = [];
+  unique :any[]= [];
   Albums: any[];
   name = "Angular " + VERSION.major;
   error = "";
@@ -43,7 +43,7 @@ export class CarouselComponent implements OnInit {
     config.pauseOnHover = false;
     config.animation = true;
     this.route.paramMap.subscribe(item => {
-      this.selectedAlbumId = +this.route.snapshot.queryParamMap.get('fileId');//item.get('AlbumId')
+      this.selectedAlbumId = +this.route.snapshot.queryParamMap.get('fileId')!;//item.get('AlbumId')
       ////console.log('this.selectedAlbum',item);
     })
 
@@ -110,7 +110,7 @@ export class CarouselComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FileId", "FileName", "UpdatedFileFolderName", "FileOrFolder", "UploadDate", "ParentId", "Active"];
     list.PageName = "StorageFnPs";
-    list.filter = ['Active eq 1 and FileOrFolder eq 1 and FileOrPhoto eq 1'];// + this.searchForm.get("FilesNPhoto").value];
+    list.filter = ['Active eq 1 and FileOrFolder eq 1 and FileOrPhoto eq 1'];// + this.searchForm.get("FilesNPhoto")?.value];
     list.orderBy = "UploadDate desc";
     //list.limitTo =10;
     this.dataservice.get(list)

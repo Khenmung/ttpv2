@@ -1,17 +1,17 @@
 import { Injectable } from "@angular/core";
-import { ContentService } from "src/app/shared/content.service";
-import { NaomitsuService } from "src/app/shared/databaseService";
-import { globalconstants } from "src/app/shared/globalconstant";
-import { TokenStorageService } from "src/app/_services/token-storage.service";
+import { ContentService } from "../../../shared/content.service";
+import { NaomitsuService } from "../../../shared/databaseService";
+import { globalconstants } from "../../../shared/globalconstant";
+import { TokenStorageService } from "../../../_services/token-storage.service";
 //import {SwUpdate} from '@angular/service-worker';
 @Injectable({
     providedIn: 'root'
 })
 export class StudentActivity {
-    ELEMENT_DATA = [];
+    ELEMENT_DATA :any[]= [];
     PageLoading=true;
     loading = false;
-    LoginUserDetail = [];
+    LoginUserDetail :any[]= [];
     SelectedBatchId = 0;SubOrgId = 0;
     constructor(//private servicework: SwUpdate,
         private token: TokenStorageService,
@@ -20,11 +20,11 @@ export class StudentActivity {
 
     ) {
         this.LoginUserDetail = this.token.getUserDetail();
-        this.SelectedBatchId = +this.token.getSelectedBatchId();
+        this.SelectedBatchId = +this.token.getSelectedBatchId()!;
     }
 
     save(ELEMENT_DATA) {
-        var toInsert = [];
+        var toInsert :any[]= [];
         debugger;
         ELEMENT_DATA.forEach(row => {
             toInsert.push({

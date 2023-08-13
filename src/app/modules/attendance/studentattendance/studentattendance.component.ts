@@ -6,12 +6,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import * as moment from 'moment';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-studentattendance',
@@ -29,7 +29,7 @@ export class StudentAttendanceComponent implements OnInit {
   //AnyEnableSave =false;
   EnableSave = true;
   Permission = 'deny';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   SaveAll = false;
@@ -38,20 +38,20 @@ export class StudentAttendanceComponent implements OnInit {
   StudentClassId = 0;
   OrgSubOrgFilter = '';
   loading = false;
-  Sections = [];
-  Classes = [];
-  Subjects = [];
-  ClassSubjects = [];
+  Sections :any[]= [];
+  Classes :any[]= [];
+  Subjects :any[]= [];
+  ClassSubjects :any[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  Batches = [];
-  //AttendanceStatusId = [];
-  FilteredClassSubjects = [];
-  StudentAttendanceList: IStudentAttendance[] = [];
-  StudentClassList = [];
+  Batches :any[]= [];
+  //AttendanceStatusId :any[]= [];
+  FilteredClassSubjects :any[]= [];
+  StudentAttendanceList: IStudentAttendance[]= [];
+  StudentClassList :any[]= [];
   dataSource: MatTableDataSource<IStudentAttendance>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm = this.fb.group({
     searchClassId: [0],
     searchSectionId: [0],
@@ -86,7 +86,7 @@ export class StudentAttendanceComponent implements OnInit {
   AttendancePresentId=0;
   AttendanceAbsentId=0;
   SelectedApplicationId = 0;
-  Students = [];
+  Students :any[]= [];
   constructor(private servicework: SwUpdate,
 
     private fb: UntypedFormBuilder,
@@ -111,7 +111,7 @@ export class StudentAttendanceComponent implements OnInit {
     this.PageLoading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.StudentClassId = 0;
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -119,9 +119,9 @@ export class StudentAttendanceComponent implements OnInit {
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
-        this.Students = this.tokenStorage.getStudents();
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.Students = this.tokenStorage.getStudents()!;
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         //this.OrgSubOrgFilter = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
@@ -141,16 +141,16 @@ export class StudentAttendanceComponent implements OnInit {
   SelectedClassCategory = '';
   bindClassSubject() {
     debugger;
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     this.FilteredClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
 
 
     this.SelectedClassCategory = '';
 
     if (_classId > 0) {
-      let obj = this.Classes.filter(f => f.ClassId == _classId);
+      let obj = this.Classes.filter((f:any) => f.ClassId == _classId);
       if (obj.length > 0)
         this.SelectedClassCategory = obj[0].Category;
     }
@@ -173,11 +173,11 @@ export class StudentAttendanceComponent implements OnInit {
   AttendanceMsg = '';
   GetStudentAttendance() {
     debugger;
-    //this.StudentAttendanceList=[];
+    //this.StudentAttendanceList:any[]=[];
     //this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
-    var _subjectwise = this.searchForm.get("searchClassSubjectId").value;
+    var _subjectwise = this.searchForm.get("searchClassSubjectId")?.value;
     if (_subjectwise > 0) {
-      var obj = this.FilteredClassSubjects.filter(f => f.ClassSubjectId == _subjectwise);
+      var obj = this.FilteredClassSubjects.filter((f:any) => f.ClassSubjectId == _subjectwise);
       if (obj.length > 0) {
         this.AttendanceMsg = "Attendance for " + obj[0].ClassSubject;
       }
@@ -190,7 +190,7 @@ export class StudentAttendanceComponent implements OnInit {
 
     let filterStr = this.FilterOrgSubOrgBatchId;
     //' and StudentClassId eq ' + this.StudentClassId;
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId == 0) {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -199,9 +199,9 @@ export class StudentAttendanceComponent implements OnInit {
       filterStr += ' and ClassId eq ' + _classId;
     }
     var filterStrClsSub = '';
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _classSubjectId = this.searchForm.get("searchClassSubjectId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     if (_sectionId == 0 && this.SelectedClassCategory == globalconstants.CategoryHighSchool) {
       this.contentservice.openSnackBar("Please select either section.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -215,7 +215,7 @@ export class StudentAttendanceComponent implements OnInit {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    var _AttendanceDate = new Date(this.searchForm.get("searchAttendanceDate").value)
+    var _AttendanceDate = new Date(this.searchForm.get("searchAttendanceDate")?.value)
     _AttendanceDate.setHours(0, 0, 0, 0);
     if (_AttendanceDate.getTime() > today.getTime()) {
       this.loading = false; this.PageLoading = false;
@@ -239,8 +239,8 @@ export class StudentAttendanceComponent implements OnInit {
     this.StudentAttendanceList = [];
     this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
 
-    var datefilterStr = filterStr + ' and AttendanceDate ge ' + moment(this.searchForm.get("searchAttendanceDate").value).format('yyyy-MM-DD')
-    datefilterStr += ' and AttendanceDate lt ' + moment(this.searchForm.get("searchAttendanceDate").value).add(1, 'day').format('yyyy-MM-DD')
+    var datefilterStr = filterStr + ' and AttendanceDate ge ' + moment(this.searchForm.get("searchAttendanceDate")?.value).format('yyyy-MM-DD')
+    datefilterStr += ' and AttendanceDate lt ' + moment(this.searchForm.get("searchAttendanceDate")?.value).add(1, 'day').format('yyyy-MM-DD')
     datefilterStr += ' and StudentClassId gt 0'
 
     let list: List = new List();
@@ -263,7 +263,7 @@ export class StudentAttendanceComponent implements OnInit {
 
     this.dataservice.get(list)
       .subscribe((attendance: any) => {
-        var studentCls = this.Students.filter(f => f.StudentClasses
+        var studentCls = this.Students.filter((f:any) => f.StudentClasses
           && f.StudentClasses.length > 0
           && f.StudentClasses[0].ClassId == _classId
           && f.StudentClasses[0].SectionId == (_sectionId ? _sectionId : f.StudentClasses[0].SectionId)
@@ -338,18 +338,18 @@ export class StudentAttendanceComponent implements OnInit {
     //});
   }
   ClearData() {
-    this.StudentAttendanceList = [];
+    this.StudentAttendanceList= [];
     this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
 
   }
-  StudentClassSubjects = [];
+  StudentClassSubjects :any[]= [];
   GetExistingStudentClassSubjects() {
-    var clssubjectid = this.searchForm.get("searchClassSubjectId").value;
+    var clssubjectid = this.searchForm.get("searchClassSubjectId")?.value;
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId;
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
-    this.StudentAttendanceList = [];
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    this.StudentAttendanceList= [];
     this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
 
     if (_classId > 0 && clssubjectid > 0) {
@@ -410,7 +410,7 @@ export class StudentAttendanceComponent implements OnInit {
   }
   saveall() {
     debugger;
-    //var toUpdateAttendance = this.StudentAttendanceList.filter(f => f.Action);
+    //var toUpdateAttendance = this.StudentAttendanceList.filter((f:any) => f.Action);
     //console.log("toUpdateAttendance",toUpdateAttendance);
     this.NoOfRecordToUpdate = this.StudentAttendanceList.length;
     this.loading = true;
@@ -429,9 +429,9 @@ export class StudentAttendanceComponent implements OnInit {
   UpdateOrSave(row) {
 debugger;
     //this.NoOfRecordToUpdate = 0;
-    var _AttendanceDate = this.searchForm.get("searchAttendanceDate").value;
+    var _AttendanceDate = this.searchForm.get("searchAttendanceDate")?.value;
 
-    var clssubjectid = this.searchForm.get("searchClassSubjectId").value
+    var clssubjectid = this.searchForm.get("searchClassSubjectId")?.value
     if (clssubjectid == undefined)
       clssubjectid = 0;
 
@@ -541,14 +541,14 @@ debugger;
     list.filter = [this.FilterOrgSubOrgBatchId + " and Active eq 1"];
     //list.filter = ["Active eq 1 and BatchId eq " + this.SelectedBatchId + " and OrgId eq " + this.LoginUserDetail[0]["orgId"]];
     //list.filter = ["Active eq 1 and OrgId eq " + this.LoginUserDetail[0]["orgId"]];
-    this.ClassSubjects = [];
+    this.ClassSubjects= [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.ClassSubjects = [];
         data.value.forEach(item => {
-          var objsubject = this.Subjects.filter(f => f.MasterDataId == item.SubjectId)
+          var objsubject = this.Subjects.filter((f:any) => f.MasterDataId == item.SubjectId)
           if (objsubject.length > 0) {
-            var type = this.SubjectTypes.filter(s => s.SubjectTypeId == item.SubjectTypeId && s.SelectHowMany != 0);
+            var type = this.SubjectTypes.filter((s:any) => s.SubjectTypeId == item.SubjectTypeId && s.SelectHowMany != 0);
             if (type.length > 0) {
               this.ClassSubjects.push({
                 ClassSubjectId: item.ClassSubjectId,
@@ -582,21 +582,21 @@ debugger;
         this.GetClassSubject();
       })
   }
-  SubjectTypes = [];
-  Semesters = [];
-  ClassCategory = [];
-  AttendanceStatus=[];
+  SubjectTypes :any[]= [];
+  Semesters :any[]= [];
+  ClassCategory :any[]= [];
+  AttendanceStatus:any[]=[];
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
     //this.SubjectTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTTYPE);
-    this.AttendancePresentId = this.AttendanceStatus.filter(f=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
-    this.AttendanceAbsentId = this.AttendanceStatus.filter(f=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
+    this.AttendancePresentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
+    this.AttendanceAbsentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       this.Classes = data.value.map(m => {
         let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);

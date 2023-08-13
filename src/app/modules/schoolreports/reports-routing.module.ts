@@ -4,7 +4,7 @@ import { reportshomeComponent } from '../schoolreports/reportshome/reportshome.c
 import { TodayCollectionComponent } from '../schoolreports/today-collection/today-collection.component';
 import { FeecollectionreportComponent } from '../schoolreports/feecollectionreport/feecollectionreport.component';
 import { ReportboardComponent } from './reportboard/reportboard.component';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { ExamtimetableComponent } from '../schoolreports/examtimetable/examtimetable.component';
 import { ChartReportComponent } from './chartreport/chartreport.component';
 import { ResultComponent } from './result/result.component';

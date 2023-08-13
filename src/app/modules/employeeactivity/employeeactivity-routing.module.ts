@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { EmployeeactivityComponent } from './employeeactivity/employeeactivity.component';
 import { EmployeeactivityboardComponent } from './employeeactivityboard/employeeactivityboard.component';
 

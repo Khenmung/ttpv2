@@ -5,12 +5,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { Observable } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-subjectcomponent',
@@ -19,23 +19,23 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 })
 export class SubjectcomponentComponent implements OnInit {
   PageLoading = true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   //IscurrentBatchSelect = 1;
   SubjectComponentListName = 'SubjectComponents';
-  Applications = [];
+  Applications :any[]= [];
   Permission = '';
   loading = false;
   SelectedApplicationId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  SubjectComponentType = [];
+  SubjectComponentType :any[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  SubjectComponentList: ISubjectComponent[] = [];
+  SubjectComponentList: ISubjectComponent[]= [];
   filteredOptions: Observable<ISubjectComponent[]>;
   dataSource: MatTableDataSource<ISubjectComponent>;
-  allMasterData = [];
-  ClassMasters = [];
+  allMasterData :any[]= [];
+  ClassMasters :any[]= [];
   Defaultvalue=0;
   SubjectComponentData = {
     SubjectComponentId: 0,
@@ -88,13 +88,13 @@ export class SubjectcomponentComponent implements OnInit {
   PageLoad() {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
       //this.IscurrentBatchSelect = +this.tokenStorage.getCheckEqualBatchId();
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.SUBJECT.SUBJECTCOMPONENT);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
@@ -117,7 +117,7 @@ export class SubjectcomponentComponent implements OnInit {
   }
   AddNew() {
 
-    // if (this.searchForm.get("searchClassId").value == 0) {
+    // if (this.searchForm.get("searchClassId")?.value == 0) {
     //   this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText,globalconstants.RedBackground);
     //   return;
     // }
@@ -221,7 +221,7 @@ export class SubjectcomponentComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-          var objClassSubject = this.ClassSubjectList.filter(s => s.ClassSubjectId == row.ClassSubjectId);
+          var objClassSubject = this.ClassSubjectList.filter((s:any) => s.ClassSubjectId == row.ClassSubjectId);
 
           this.SubjectComponentData.SubjectComponentId = row.SubjectComponentId;
           this.SubjectComponentData.ComponentName = row.ComponentName;
@@ -278,10 +278,10 @@ export class SubjectcomponentComponent implements OnInit {
           this.loadingFalse();
         });
   }
-  SelectedClassSubjects = [];
+  SelectedClassSubjects :any[]= [];
   SelectClassSubject() {
     debugger;
-    this.SelectedClassSubjects = this.ClassSubjectList.filter(f => f.ClassId == this.searchForm.get("searchClassId").value
+    this.SelectedClassSubjects = this.ClassSubjectList.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value
       && f.SubjectType.SelectHowMany > 0);
       this.ClearData();
     //this.GetSpecificStudentGrades();
@@ -292,13 +292,13 @@ export class SubjectcomponentComponent implements OnInit {
   }
   RowSelectClassSubject(row) {
     debugger;
-    row.ClassSubjects = this.ClassSubjectList.filter(f => f.ClassId == row.ClassId && f.SubjectType.SelectHowMany > 0);
+    row.ClassSubjects = this.ClassSubjectList.filter((f:any) => f.ClassId == row.ClassId && f.SubjectType.SelectHowMany > 0);
     //this.GetSpecificStudentGrades();
   }
   GetSubjectComponents() {
     //debugger;
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _classSubjectId = this.searchForm.get("searchClassSubjectId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
 
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";// 'OrgId eq ' + this.LoginUserDetail[0]['orgId']; // BatchId eq  + this.SelectedBatchId
     if (_classId > 0)
@@ -328,7 +328,7 @@ export class SubjectcomponentComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.value.length > 0) {
           this.SubjectComponentList = data.value.map(r => {
-            r.ClassSubjects = this.ClassSubjectList.filter(f => f.ClassId == r.ClassId)
+            r.ClassSubjects = this.ClassSubjectList.filter((f:any) => f.ClassId == r.ClassId)
             return r;
           })
         }
@@ -340,7 +340,7 @@ export class SubjectcomponentComponent implements OnInit {
       });
 
   }
-  ClassSubjectList = [];
+  ClassSubjectList :any[]= [];
   GetClassSubject() {
     let list: List = new List();
     list.fields = [
@@ -367,11 +367,11 @@ export class SubjectcomponentComponent implements OnInit {
         })
       });
   }
-  Subjects = [];
-  Semesters=[];
+  Subjects :any[]= [];
+  Semesters:any[]=[];
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
 
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);

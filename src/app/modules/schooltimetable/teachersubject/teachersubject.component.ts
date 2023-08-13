@@ -4,14 +4,14 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -24,7 +24,7 @@ export class TeachersubjectComponent implements OnInit {
   @ViewChild("table") mattable;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   TeacherSubjectListName = "TeacherSubjects";
@@ -35,20 +35,20 @@ export class TeachersubjectComponent implements OnInit {
   StandardFilterWithPreviousBatchId = '';
   PreviousBatchId = 0;
   loading = false;
-  WorkAccounts = [];
-  Teachers = [];
-  Classes = [];
-  Subjects = [];
-  SubjectTypes = [];
+  WorkAccounts :any[]= [];
+  Teachers :any[]= [];
+  Classes :any[]= [];
+  Subjects :any[]= [];
+  SubjectTypes :any[]= [];
   CurrentBatchId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   CheckBatchIDForEdit = 1;
   DataCountToSave = -1;
-  Batches = [];
-  ClassSubjects = [];
-  TeacherSubjectList: ITeacherSubject[] = [];
+  Batches :any[]= [];
+  ClassSubjects :any[]= [];
+  TeacherSubjectList: ITeacherSubject[]= [];
   dataSource: MatTableDataSource<ITeacherSubject>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm = this.fb.group({
     searchClassId: [0],
     searchEmployeeId: [0],
@@ -57,9 +57,9 @@ export class TeachersubjectComponent implements OnInit {
   });
   SelectedClassCategory = '';
   Defaultvalue = 0;
-  Semesters = [];
-  ClassCategory = [];
-  Sections = [];
+  Semesters :any[]= [];
+  ClassCategory :any[]= [];
+  Sections :any[]= [];
   TeacherSubjectId = 0;
   TeacherSubjectData = {
     TeacherSubjectId: 0,
@@ -110,9 +110,9 @@ export class TeachersubjectComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.nameFilter.valueChanges
         .subscribe(
           name => {
@@ -163,7 +163,7 @@ export class TeachersubjectComponent implements OnInit {
       'Nov',
       'Dec'
     ]
-    var monthArray = [];
+    var monthArray :any[]= [];
     //setTimeout(() => {
 
     this.shareddata.CurrentSelectedBatchStartEnd$.subscribe((b: any) => {
@@ -190,9 +190,9 @@ export class TeachersubjectComponent implements OnInit {
   }
 
   ClearData() {
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     if (_classId > 0)
       this.TempClassSubject = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
     else
@@ -209,7 +209,7 @@ export class TeachersubjectComponent implements OnInit {
   }
   GetSelectedClassSubjects() {
     debugger;
-    let _classId = this.searchForm.get("searchClassId").value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
     let obj = this.Classes.filter(c => c.ClassId == _classId);
     if (obj.length > 0) {
       this.SelectedClassCategory = obj[0].Category.toLowerCase();
@@ -249,7 +249,7 @@ export class TeachersubjectComponent implements OnInit {
   }
   // CopyFromPreviousBatch() {
   //   //console.log("here ", this.PreviousBatchId)
-  //   this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId();
+  //   this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
   //   if (this.PreviousBatchId == -1)
   //     this.contentservice.openSnackBar("Previous batch not defined.",globalconstants.ActionText,globalconstants.RedBackground);
   //   else
@@ -260,10 +260,10 @@ export class TeachersubjectComponent implements OnInit {
     //debugger;
     this.loading = true;
 
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
-    var _employeeId = this.searchForm.get("searchEmployeeId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    var _employeeId = this.searchForm.get("searchEmployeeId")?.value;
     if (_classId == 0 && _employeeId == 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please select class/course or teacher", globalconstants.ActionText, globalconstants.RedBackground);
@@ -296,7 +296,7 @@ export class TeachersubjectComponent implements OnInit {
     this.TeacherSubjectList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var _classSubject = [];
+        var _classSubject :any[]= [];
         if (_classId > 0)
           _classSubject = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects,_classId,_sectionId,_semesterId);
         else
@@ -354,12 +354,12 @@ export class TeachersubjectComponent implements OnInit {
   }
   updateSelectHowMany(row) {
     //debugger;
-    row.SelectHowMany = this.SubjectTypes.filter(f => f.SubjectTypeId == row.SubjectTypeId)[0].SelectHowMany;
+    row.SelectHowMany = this.SubjectTypes.filter((f:any) => f.SubjectTypeId == row.SubjectTypeId)[0].SelectHowMany;
     row.Action = true;
   }
   SaveAll() {
     this.DataCountToSave = this.TeacherSubjectList.length;
-    var toUpdate = this.TeacherSubjectList.filter(f => f.Action);
+    var toUpdate = this.TeacherSubjectList.filter((f:any) => f.Action);
     toUpdate.forEach(row => {
       this.DataCountToSave--;
       this.UpdateOrSave(row);
@@ -502,8 +502,8 @@ export class TeachersubjectComponent implements OnInit {
         //this.ClassSubjects = [];
         data.value.forEach(item => {
           var _subjectName = '';
-          var _className = this.Classes.filter(f => f.ClassId == item.ClassId)[0].ClassName;
-          var objsubject = this.Subjects.filter(f => f.MasterDataId == item.SubjectId)
+          var _className = this.Classes.filter((f:any) => f.ClassId == item.ClassId)[0].ClassName;
+          var objsubject = this.Subjects.filter((f:any) => f.MasterDataId == item.SubjectId)
           if (objsubject.length > 0) {
             _subjectName = objsubject[0].MasterDataName;
 
@@ -520,11 +520,11 @@ export class TeachersubjectComponent implements OnInit {
         //console.log("this.ClassSubjects", this.ClassSubjects)
       })
   }
-  TempClassSubject = [];
+  TempClassSubject :any[]= [];
 
   GetTeachers() {
 
-    var _WorkAccount = this.WorkAccounts.filter(f => f.MasterDataName.toLowerCase() == "teaching");
+    var _WorkAccount = this.WorkAccounts.filter((f:any) => f.MasterDataName.toLowerCase() == "teaching");
     var _workAccountId = 0;
     if (_WorkAccount.length > 0)
       _workAccountId = _WorkAccount[0].MasterDataId;
@@ -539,7 +539,7 @@ export class TeachersubjectComponent implements OnInit {
     this.Teachers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        data.value.filter(f => {
+        data.value.filter((f:any) => {
           this.Teachers.push({
             TeacherId: f.Employee.EmpEmployeeId,
             TeacherName: f.Employee.FirstName + " " + f.Employee.LastName
@@ -548,10 +548,10 @@ export class TeachersubjectComponent implements OnInit {
 
       })
   }
-  TeachingEmployees = [];
+  TeachingEmployees :any[]= [];
   GetTeachingEmployees() {
 
-    var _WorkAccount = this.WorkAccounts.filter(f => f.MasterDataName.toLowerCase() == "teaching");
+    var _WorkAccount = this.WorkAccounts.filter((f:any) => f.MasterDataName.toLowerCase() == "teaching");
     var _workAccountId = 0;
     if (_WorkAccount.length > 0)
       _workAccountId = _WorkAccount[0].MasterDataId;
@@ -566,7 +566,7 @@ export class TeachersubjectComponent implements OnInit {
     this.Teachers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        data.value.filter(f => {
+        data.value.filter((f:any) => {
           this.TeachingEmployees.push({
             TeacherId: f.Employee.EmpEmployeeId,
             TeacherName: f.Employee.FirstName + " " + f.Employee.LastName
@@ -577,13 +577,13 @@ export class TeachersubjectComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.WorkAccounts = this.getDropDownData(globalconstants.MasterDefinitions.employee.WORKACCOUNT);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
-    this.Batches = this.tokenStorage.getBatches();
+    this.Batches = this.tokenStorage.getBatches()!;;
     this.shareddata.ChangeSubjects(this.Subjects);
     this.GetTeachers();
     //this.GetTeachingEmployees();
@@ -594,7 +594,7 @@ export class TeachersubjectComponent implements OnInit {
     // });
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
-        let obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
           this.Classes.push(m);

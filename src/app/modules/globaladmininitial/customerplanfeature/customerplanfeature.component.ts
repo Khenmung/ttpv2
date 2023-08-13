@@ -5,11 +5,11 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import {SwUpdate} from '@angular/service-worker';
 @Component({
   selector: 'app-customerCustomerPlanFeature',
@@ -20,7 +20,7 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -35,19 +35,19 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
   SelectedBatchId = 0;SubOrgId = 0;
   SelectedApplicationId = 0;
   RowToUpdateCount = -1;
-  Topfeatures = [];
-  Plans = [];
-  Features = [];
-  SelectedFeatures = [];
-  CustomerPlanFeatureList: ICustomerPlanFeature[] = [];
+  Topfeatures :any[]= [];
+  Plans :any[]= [];
+  Features :any[]= [];
+  SelectedFeatures :any[]= [];
+  CustomerPlanFeatureList: ICustomerPlanFeature[]= [];
   filteredOptions: Observable<ICustomerPlanFeature[]>;
   dataSource: MatTableDataSource<ICustomerPlanFeature>;
   FilterOrgSubOrg='';
   FilterOrgSubOrgBatchId='';
-  allMasterData = [];
-  CustomerPlanFeatures = [];
-  Applications = [];
-  FeeCategories = [];
+  allMasterData :any[]= [];
+  CustomerPlanFeatures :any[]= [];
+  Applications :any[]= [];
+  FeeCategories :any[]= [];
   Permission = 'deny';
   CustomerPlanFeatureData = {
     CustomerPlanFeatureId: 0,
@@ -85,9 +85,9 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
-    //this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    //this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -101,7 +101,7 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
         //this.nav.navigate(['/edu'])
       }
       else {
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetPlans();
@@ -147,7 +147,7 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
   }
   SaveAll() {
 
-    var toUpdate = this.CustomerPlanFeatureList.filter(f => f.Action);
+    var toUpdate = this.CustomerPlanFeatureList.filter((f:any) => f.Action);
     this.RowToUpdateCount = toUpdate.length;
     this.loading = true;
     toUpdate.forEach(element => {
@@ -171,7 +171,7 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
       row.Action = false;
       return;
     }
-    let checkFilterString = "FeatureName eq '" + row.FeatureName + "' and PlanId eq " + this.searchForm.get("searchPlanId").value
+    let checkFilterString = "FeatureName eq '" + row.FeatureName + "' and PlanId eq " + this.searchForm.get("searchPlanId")?.value
 
     if (row.CustomerPlanFeatureId > 0)
       checkFilterString += " and CustomerPlanFeatureId ne " + row.CustomerPlanFeatureId;
@@ -270,10 +270,10 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
       })
   }
   GetTopFeature() {
-    var ApplicationId = this.searchForm.get("searchApplicationId").value;
+    var ApplicationId = this.searchForm.get("searchApplicationId")?.value;
     this.GetFeatures(ApplicationId).subscribe((d: any) => {
       this.Features = [...d.value];
-      this.Topfeatures = this.Features.filter(f => f.ParentId == 0);
+      this.Topfeatures = this.Features.filter((f:any) => f.ParentId == 0);
       this.loading = false; this.PageLoading=false;
     });
   }
@@ -296,7 +296,7 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
   GetCustomerPlanFeature() {
 
     debugger;
-    var _PlanId = this.searchForm.get("searchPlanId").value;
+    var _PlanId = this.searchForm.get("searchPlanId")?.value;
     var _filter ="";//"Active eq 1";
     if (_PlanId > 0) {
       _filter += "PlanId eq " + _PlanId
@@ -321,7 +321,7 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
       .subscribe((data: any) => {
         
         this.CustomerPlanFeatureList = data.value.map(d=>{
-         var obj =this.Plans.filter(f=>f.PlanId == d.PlanId);
+         var obj =this.Plans.filter((f:any)=>f.PlanId == d.PlanId);
          if(obj.length>0)
           d.PlanName = obj[0].PlanName;
           return d;
@@ -346,7 +346,7 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
       .subscribe((data: any) => {
         this.allMasterData = [...data.value];
         //this.Applications = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.bang);
-        var _ParentId = this.allMasterData.filter(f => f.MasterDataName.toLowerCase() == 'application')[0].MasterDataId;
+        var _ParentId = this.allMasterData.filter((f:any) => f.MasterDataName.toLowerCase() == 'application')[0].MasterDataId;
         //this.Applications = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.bang);
         this.contentservice.GetDropDownDataFromDB(_ParentId, this.FilterOrgSubOrg, 0, 1)
           .subscribe((data: any) => {

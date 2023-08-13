@@ -4,10 +4,10 @@ import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { AuthService } from 'src/app/_services/auth.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { AuthService } from '../../../_services/auth.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-forgotpassword',
@@ -16,7 +16,7 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 })
 export class ForgotpasswordComponent implements OnInit { PageLoading=true;
   loading = false;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   forgotpwdForm: UntypedFormGroup;
   isSuccessful = false;
   isSignUpFailed = false;
@@ -67,7 +67,7 @@ export class ForgotpasswordComponent implements OnInit { PageLoading=true;
     return this.forgotpwdForm.controls;
   }
   onSubmit(): void {
-    var email = this.forgotpwdForm.get("email").value;    
+    var email = this.forgotpwdForm.get("email")?.value;    
     var payload = {
       'Email': email
     }

@@ -6,7 +6,7 @@ import { NaomitsuService } from '../../../shared/databaseService'
 import { globalconstants } from '../../../shared/globalconstant';
 import { Subscription } from 'rxjs';
 import { MediaObserver } from '@angular/flex-layout';
-import { ContentService } from 'src/app/shared/content.service';
+import { ContentService } from '../../../shared/content.service';
 import {SwUpdate} from '@angular/service-worker';
 
 @Component({
@@ -122,7 +122,7 @@ export class PhotobrowserComponent implements OnInit { PageLoading=true;
           var cols = 1;
           this.Albums.forEach(album => {
             album.photos =
-              data.value.filter(f => {
+              data.value.filter((f:any) => {
                 return f.ParentId == album.FileId
               })
           });

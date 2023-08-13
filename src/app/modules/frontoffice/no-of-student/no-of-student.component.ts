@@ -7,13 +7,13 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import alasql from 'alasql';
-import { ConfirmDialogComponent } from 'src/app/shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 @Component({
   selector: 'app-no-of-student',
@@ -31,7 +31,7 @@ export class NoOfStudentComponent implements OnInit {
   SubOrgId = 0;
   Permission = '';
   PromotePermission = '';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   FilterOrgSubOrgBatchId = '';
@@ -41,21 +41,21 @@ export class NoOfStudentComponent implements OnInit {
   PreviousClassPreviousBatch = "PreviousClassPreviousBatch";
   HeaderTitle = '';
   loading = false;
-  RollNoGeneration = [];
-  Genders = [];
-  Classes = [];
-  FeeTypes = [];
-  Sections = [];
-  Semesters = [];
-  StudentGrades = [];
+  RollNoGeneration :any[]= [];
+  Genders :any[]= [];
+  Classes :any[]= [];
+  FeeTypes :any[]= [];
+  Sections :any[]= [];
+  Semesters :any[]= [];
+  StudentGrades :any[]= [];
   CurrentBatchId = 0;
   SelectedBatchId = 0;
   PreviousBatchId = 0;
   NextBatchId = 0;
-  Batches = [];
-  StudentClassList: IStudentClass[] = [];
+  Batches :any[]= [];
+  StudentClassList: IStudentClass[]= [];
   dataSource: MatTableDataSource<IStudentClass>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm: UntypedFormGroup;
   SelectedApplicationId = 0;
   //checkBatchIdNSelectedIdEqual = 0;
@@ -107,17 +107,17 @@ export class NoOfStudentComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
         this.Classes = [...data.value.sort((a, b) => a.Sequence - b.Sequence)];
       })
       //this.shareddata.CurrentBatchId.subscribe(c => this.CurrentBatchId = c);
-      this.Batches = this.tokenStorage.getBatches()
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
-      this.NextBatchId = +this.tokenStorage.getNextBatchId();
-      this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId();
+      this.Batches = this.tokenStorage.getBatches()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.NextBatchId = +this.tokenStorage.getNextBatchId()!;
+      this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.StandardFilterWithPreviousBatchId = globalconstants.getOrgSubOrgFilterWithPreviousBatchId(this.tokenStorage);
@@ -128,11 +128,11 @@ export class NoOfStudentComponent implements OnInit {
       if (this.Permission != 'deny') {
 
         //this.checkBatchIdNSelectedIdEqual = +this.tokenStorage.getCheckEqualBatchId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
 
         this.shareddata.CurrentPreviousBatchIdOfSelecteBatchId.subscribe(p => this.PreviousBatchId = p);
         this.shareddata.CurrentSection.subscribe(b => this.Sections = b);
-        this.Batches = this.tokenStorage.getBatches()
+        this.Batches = this.tokenStorage.getBatches()!;
 
         if (this.Classes.length == 0 || this.FeeTypes.length == 0 || this.Sections.length == 0) {
           this.GetMasterData();
@@ -203,7 +203,7 @@ export class NoOfStudentComponent implements OnInit {
     this.TotalStudent = 0;
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     this.loading = true;
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     filterStr = this.FilterOrgSubOrgBatchId;
     if (_classId > 0)
       filterStr += " and ClassId eq " + _classId;
@@ -233,18 +233,18 @@ export class NoOfStudentComponent implements OnInit {
           var _semesterName = ''
           var _pid = 0
           var _gender = '';
-          var objStudent = this.Students.filter(s => s.StudentId == student.StudentId)
+          var objStudent = this.Students.filter((s:any) => s.StudentId == student.StudentId)
           if (objStudent.length > 0) {
             _gender = objStudent[0].Gender;
             _pid = objStudent[0].PID;
 
-            var sectionobj = this.Sections.filter(s => s.MasterDataId == student.SectionId)
+            var sectionobj = this.Sections.filter((s:any) => s.MasterDataId == student.SectionId)
             if (sectionobj.length > 0)
               _sectionname = sectionobj[0].MasterDataName
             else {
               errormsg += _pid + ",";
             }
-            var semesterobj = this.Semesters.filter(s => s.MasterDataId == student.SemesterId)
+            var semesterobj = this.Semesters.filter((s:any) => s.MasterDataId == student.SemesterId)
             if (semesterobj.length > 0)
               _semesterName = semesterobj[0].MasterDataName
             else {
@@ -267,7 +267,7 @@ export class NoOfStudentComponent implements OnInit {
         //   errormsg = "Section not defined for PID: " + errormsg;
         //   this.contentservice.openSnackBar(errormsg, globalconstants.ActionText, globalconstants.RedBackground);
         // }
-        var _classStudentCount = [];
+        var _classStudentCount :any[]= [];
         //if (errormsg.length == 0) {
         _classStudentCount = alasql("select ClassId,ClassName,Section,Semester,Gender,MaxStudent,count(StudentClassId) NoOfStudent from ? group by ClassId,ClassName,Section,Semester,Gender,MaxStudent",
           [this.StudentClassList])
@@ -276,16 +276,16 @@ export class NoOfStudentComponent implements OnInit {
         //   _classStudentCount = alasql("select ClassId,ClassName,Gender,MaxStudent,sum(1) NoOfStudent from ? group by ClassId,ClassName,Gender,MaxStudent",
         //     [this.StudentClassList])
         // }
-        var pivottedClass = [];
-        var _filteredClasses = [];
+        var pivottedClass :any[]= [];
+        var _filteredClasses :any[]= [];
         if (_classId > 0)
           _filteredClasses = this.Classes.filter(c => c.ClassId == _classId);
         else
           _filteredClasses = [...this.Classes]
 
-        var classNSection = [];
+        var classNSection :any[]= [];
         _filteredClasses.forEach((c, indx) => {
-          var currentCls = _classStudentCount.filter(s => s.ClassId == c.ClassId);
+          var currentCls = _classStudentCount.filter((s:any) => s.ClassId == c.ClassId);
           var _noOfSections = alasql("select distinct Section,ClassName,Semester from ?", [currentCls]);
           if (_noOfSections.length > 0) {
             _noOfSections.forEach(s => {
@@ -301,11 +301,11 @@ export class NoOfStudentComponent implements OnInit {
         var _classTotal = 0;
         classNSection.forEach((c, cindx) => {
 
-          var newClassRow = [];
+          var newClassRow :any[]= [];
           //this.Sections.forEach(s => {
 
           this.Genders.forEach(g => {
-            var sectionGenderRow = [];
+            var sectionGenderRow :any[]= [];
             //if (errormsg.length == 0) {
             sectionGenderRow = _classStudentCount.filter(cls =>
               cls.Section == c.Section
@@ -318,7 +318,7 @@ export class NoOfStudentComponent implements OnInit {
               sectionGenderRow[0].Sequence = c.Sequence;
             }
             else {
-              var sectionRow = []; //_classStudentCount.filter(cls =>cls.ClassId == c.ClassId)
+              var sectionRow :any[]= []; //_classStudentCount.filter(cls =>cls.ClassId == c.ClassId)
               sectionRow.push({
                 ClassName: c.ClassName,
                 MaxStudent: c.MaxStudent,
@@ -390,8 +390,8 @@ export class NoOfStudentComponent implements OnInit {
 
     //set current batch id back to the actual one.
     //this.shareddata.CurrentSelectedBatchId.subscribe(s => this.SelectedBatchId = s);
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
   }
   clear() {
     this.searchForm.patchValue({
@@ -406,7 +406,7 @@ export class NoOfStudentComponent implements OnInit {
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
       !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
-  Students = [];
+  Students :any[]= [];
   GetStudents() {
 
     // let list: List = new List();
@@ -423,7 +423,7 @@ export class NoOfStudentComponent implements OnInit {
     //   .subscribe((data: any) => {
     //debugger;
     //  //console.log('data.value', data.value);
-    var _students: any = this.tokenStorage.getStudents();
+    var _students: any = this.tokenStorage.getStudents()!;
     if (_students.length > 0) {
       _students.forEach(student => {
         var obj = this.Genders.filter(g => g.MasterDataId == student.GenderId);
@@ -453,7 +453,7 @@ export class NoOfStudentComponent implements OnInit {
         //this.ClassPromotion = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSPROMOTION);
         this.GetStudents();
         //this.shareddata.ChangeBatch(this.Batches);
-        this.RollNoGenerationSortBy = "Sort by: " + this.RollNoGeneration.filter(f => f.MasterDataName.toLowerCase() == 'sort by')[0].Logic;
+        this.RollNoGenerationSortBy = "Sort by: " + this.RollNoGeneration.filter((f:any) => f.MasterDataName.toLowerCase() == 'sort by')[0].Logic;
         this.loading = false; this.PageLoading = false;
       });
   }

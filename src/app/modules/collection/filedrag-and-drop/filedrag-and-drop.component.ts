@@ -3,7 +3,7 @@ import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
-import { ContentService } from 'src/app/shared/content.service';
+import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
@@ -31,7 +31,7 @@ export class FiledragAndDropComponent implements OnInit {
   });
   FilterOrgSubOrgBatchId='';
   FilterOrgSubOrg='';
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   constructor(private servicework: SwUpdate,
     private fileUploadService: FileUploadService,
     private naomitsuService: NaomitsuService,
@@ -70,7 +70,7 @@ export class FiledragAndDropComponent implements OnInit {
       this.route.navigate(['/home']);
     }
   }
-  public files: NgxFileDropEntry[] = [];
+  public files: NgxFileDropEntry[]= [];
 
   public dropped(files: NgxFileDropEntry[]) {
     this.files = files;
@@ -124,8 +124,8 @@ export class FiledragAndDropComponent implements OnInit {
     let error: boolean = false;
     //debugger;
 
-    let selectedAlbum = this.folderForm.get("folderName").value;
-    let selectedAlbumId = this.folderForm.get("parentId").value;
+    let selectedAlbum = this.folderForm.get("folderName")?.value;
+    let selectedAlbumId = this.folderForm.get("parentId")?.value;
     ////console.log(this.Albums);//alert(selectedAlbum);
     if (this.files.length < 1) {
       error = true;
@@ -145,10 +145,10 @@ export class FiledragAndDropComponent implements OnInit {
       this.formdata.append("folderName", selectedAlbum);
       this.formdata.append("FileId", selectedAlbumId);
       //if ()
-      this.formdata.append("parentId", this.folderForm.get("parentId") != null ? this.folderForm.get("parentId").value : "0");
+      this.formdata.append("parentId", this.folderForm.get("parentId") != null ? this.folderForm.get("parentId")?.value : "0");
       this.formdata.append("description", "");
       this.formdata.append("fileOrPhoto", "0");
-      let filteredAlbum: any[] = [];
+      let filteredAlbum:any[]= [];
       if (this.Albums.length > 0) {
         filteredAlbum = this.Albums.filter(item => {
           return item.UpdatableName == selectedAlbum
@@ -196,8 +196,8 @@ export class FiledragAndDropComponent implements OnInit {
       this.contentservice.openSnackBar("Please select a file.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _folderName = this.folderForm.get("folderName").value;
-    var _parentId = this.folderForm.get("parentId").value;
+    var _folderName = this.folderForm.get("folderName")?.value;
+    var _parentId = this.folderForm.get("parentId")?.value;
     var _existingFolder = '';
     if (_parentId > 0)
       _existingFolder = this.Albums.filter(a => a.FileId == _parentId)[0].UpdatedFileFolderName
@@ -248,7 +248,7 @@ export class FiledragAndDropComponent implements OnInit {
   //     ////console.log("Upload complete");
   //     this.contentservice.openSnackBar("Files Uploaded successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
   //     this.formdata = null;
-  //     this.files = [];
+  //     this.files :any[]= [];
   //     this.getAlbums();
   //     this.Processing = false;
   //     this.route.navigate(['/home/managefile']);

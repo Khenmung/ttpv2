@@ -3,13 +3,13 @@ import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms
 import { Router } from '@angular/router';
 import { NgxFileDropEntry } from 'ngx-file-drop';
 import { ImageCropperComponent } from 'ngx-image-cropper';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { FileUploadService } from 'src/app/shared/upload.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { FileUploadService } from '../../../shared/upload.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -24,7 +24,7 @@ export class EmployeeComponent implements OnInit {
   Edited = false;
   FilterOrgSubOrg='';
   SelectedApplicationId = 0;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   EmployeeLeaving = false;
   EmployeeName = '';
   selectedIndex: number = 0;
@@ -37,28 +37,28 @@ export class EmployeeComponent implements OnInit {
   formdata: FormData;
   EmployeeId = 0;
   loading = false;
-  WorkNature = [];
-  WorkAccounts = [];
-  Designations = [];
-  Departments = [];
-  MaritalStatus = [];
-  EmploymentStatus = [];
-  EmploymentTypes = [];
-  PresentState = [];
-  PresentCity = [];
-  PermanentState = [];
-  PermanentCity = [];
-  Grades = [];
-  Genders = [];
-  Category = [];
-  Country = [];
-  Bloodgroup = [];
-  Religion = [];
-  PrimaryContact = [];
-  Location = [];
-  allMasterData = [];
-  ReasonForLeaving = [];
-  EmployeeData = [];
+  WorkNature :any[]= [];
+  WorkAccounts :any[]= [];
+  Designations :any[]= [];
+  Departments :any[]= [];
+  MaritalStatus :any[]= [];
+  EmploymentStatus :any[]= [];
+  EmploymentTypes :any[]= [];
+  PresentState :any[]= [];
+  PresentCity :any[]= [];
+  PermanentState :any[]= [];
+  PermanentCity :any[]= [];
+  Grades :any[]= [];
+  Genders :any[]= [];
+  Category :any[]= [];
+  Country :any[]= [];
+  Bloodgroup :any[]= [];
+  Religion :any[]= [];
+  PrimaryContact :any[]= [];
+  Location :any[]= [];
+  allMasterData :any[]= [];
+  ReasonForLeaving :any[]= [];
+  EmployeeData :any[]= [];
   CountryId = 0;
   LocationId = 0;
   PrimaryContactDefaultId = 0;
@@ -67,7 +67,7 @@ export class EmployeeComponent implements OnInit {
   Permission = '';
   EmployeeForm: UntypedFormGroup;
 
-  public files: NgxFileDropEntry[] = [];
+  public files: NgxFileDropEntry[]= [];
   @ViewChild(ImageCropperComponent, { static: true }) imageCropper: ImageCropperComponent;
 
   preview(files) {
@@ -214,8 +214,8 @@ export class EmployeeComponent implements OnInit {
     // })
     debugger;
     this.LoginUserDetail = this.tokenService.getUserDetail();
-    this.EmployeeId = this.tokenService.getEmployeeId();
-    this.SelectedApplicationId = +this.tokenService.getSelectedAPPId();
+    this.EmployeeId = this.tokenService.getEmployeeId()!;
+    this.SelectedApplicationId = +this.tokenService.getSelectedAPPId()!;
 
     //if (this.EmployeeId > 0) {
     if (this.LoginUserDetail.length > 0) {
@@ -271,26 +271,26 @@ export class EmployeeComponent implements OnInit {
       this.EmployeeForm.patchValue({ ReasonForLeavingId: this.ReasonForLeaving.filter(r => r.MasterDataName.toLowerCase() == 'active')[0].MasterDataId });
     }
   }
-  ColumnsOfSelectedReports = [];
+  ColumnsOfSelectedReports :any[]= [];
   getFields(pModuleName) {
     this.contentservice.getSelectedReportColumn(this.FilterOrgSubOrg, this.SelectedApplicationId)
       .subscribe((data: any) => {
         var _baseReportId = 0;
         if (data.value.length > 0) {
-          _baseReportId = data.value.filter(f => f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
-          var _studentModuleObj = data.value.filter(f => f.ReportName == pModuleName && f.ParentId == _baseReportId)
+          _baseReportId = data.value.filter((f:any) => f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
+          var _studentModuleObj = data.value.filter((f:any) => f.ReportName == pModuleName && f.ParentId == _baseReportId)
           var _studentModuleId = 0;
           if (_studentModuleObj.length > 0) {
             _studentModuleId = _studentModuleObj[0].ReportConfigItemId;
           }
 
-          var _orgStudentModuleObj = data.value.filter(f => f.ParentId == _studentModuleId && f.OrgId > 0);
+          var _orgStudentModuleObj = data.value.filter((f:any) => f.ParentId == _studentModuleId && f.OrgId > 0);
           var _orgStudentModuleId = 0;
           if (_orgStudentModuleObj.length > 0) {
             _orgStudentModuleId = _orgStudentModuleObj[0].ReportConfigItemId;
           }
 
-          this.ColumnsOfSelectedReports = data.value.filter(f => f.ParentId == _orgStudentModuleId)
+          this.ColumnsOfSelectedReports = data.value.filter((f:any) => f.ParentId == _orgStudentModuleId)
 
         }
 
@@ -298,7 +298,7 @@ export class EmployeeComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenService.getMasterData();
+    this.allMasterData = this.tokenService.getMasterData()!;
     this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGENDER);
     this.Country = this.getDropDownData(globalconstants.MasterDefinitions.common.COUNTRY);
     this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
@@ -345,7 +345,7 @@ export class EmployeeComponent implements OnInit {
     this.loading = true;
     //setTimeout(()=>{
     var errorMessage = '';
-    var _MandatoryColumns = this.ColumnsOfSelectedReports.filter(f => f.Active == 1);
+    var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f:any) => f.Active == 1);
     if (_MandatoryColumns.length > 0) {
       for (var i = 0; i < _MandatoryColumns.length; i++) {
         const formControl = this.EmployeeForm.get(_MandatoryColumns[i].ReportName);
@@ -369,32 +369,32 @@ export class EmployeeComponent implements OnInit {
       return;
     }
 
-    // if (this.EmployeeForm.get("FirstName").value == '') {
+    // if (this.EmployeeForm.get("FirstName")?.value == '') {
     //   errorMessage += "First name is required.<br>";
     //   return;
     // }
-    // if (this.EmployeeForm.get("FatherName").value == '') {
+    // if (this.EmployeeForm.get("FatherName")?.value == '') {
     //   errorMessage += "Father name is required.<br>";
 
     // }
-    // if (this.EmployeeForm.get("DOB").value == '') {
+    // if (this.EmployeeForm.get("DOB")?.value == '') {
     //   errorMessage += "DOB is required.<br>";
     // }
-    // if (this.EmployeeForm.get("DOJ").value == '') {
+    // if (this.EmployeeForm.get("DOJ")?.value == '') {
     //   errorMessage += "DOJ is required.<br>";
     // }
-    // if (this.EmployeeForm.get("DepartmentId").value == 0) {
+    // if (this.EmployeeForm.get("DepartmentId")?.value == 0) {
     //   errorMessage += "Department is required.<br>";
     // }
-    // if (this.EmployeeForm.get("DesignationId").value == 0) {
+    // if (this.EmployeeForm.get("DesignationId")?.value == 0) {
     //   errorMessage += "Designation is required.<br>";
 
     // }
-    // if (this.EmployeeForm.get("EmpGradeId").value == 0) {
+    // if (this.EmployeeForm.get("EmpGradeId")?.value == 0) {
     //   errorMessage += "Grade is required.<br>";
 
     // }
-    // if (this.EmployeeForm.get("WorkAccountId").value == 0) {
+    // if (this.EmployeeForm.get("WorkAccountId")?.value == 0) {
     //   errorMessage += "Work Account is required.<br>";
     // }
     if (errorMessage.length > 0) {
@@ -403,8 +403,8 @@ export class EmployeeComponent implements OnInit {
       return;
     }
     this.loading = true;
-    var _active = this.EmployeeForm.get("Active").value;
-    var _email = this.EmployeeForm.get("EmailAddress").value;
+    var _active = this.EmployeeForm.get("Active")?.value;
+    var _email = this.EmployeeForm.get("EmailAddress")?.value;
     if (_email.length > 0) {
       var checkduppayload = { 'Id': this.EmployeeId, 'Email': _email }
       this.contentservice.CheckEmailDuplicate(checkduppayload)
@@ -418,58 +418,58 @@ export class EmployeeComponent implements OnInit {
     }
     this.EmployeeData = [{
       EmpEmployeeId: this.EmployeeId,
-      ShortName: this.EmployeeForm.get("ShortName").value,
-      FirstName: this.EmployeeForm.get("FirstName").value,
-      LastName: this.EmployeeForm.get("LastName").value,
-      FatherName: this.EmployeeForm.get("FatherName").value,
-      MotherName: this.EmployeeForm.get("MotherName").value,
-      GenderId: this.EmployeeForm.get("Gender").value,
-      DOB: new Date(this.EmployeeForm.get("DOB").value),
-      DOJ: new Date(this.EmployeeForm.get("DOJ").value),
-      BloodgroupId: this.EmployeeForm.get("Bloodgroup").value,
-      CategoryId: this.EmployeeForm.get("Category").value,
-      BankAccountNo: this.EmployeeForm.get("BankAccountNo").value,
-      IFSCcode: this.EmployeeForm.get("IFSCcode").value,
-      MICRNo: this.EmployeeForm.get("MICRNo").value,
-      AdhaarNo: this.EmployeeForm.get("AdhaarNo").value,
-      PhotoPath: this.EmployeeForm.get("PhotoPath").value,
-      ReligionId: this.EmployeeForm.get("Religion").value,
-      ContactNo: this.EmployeeForm.get("ContactNo").value,
-      WhatsappNo: this.EmployeeForm.get("WhatsappNo").value,
-      AlternateContactNo: this.EmployeeForm.get("AlternateContactNo").value,
-      EmailAddress: this.EmployeeForm.get("EmailAddress").value,
-      EmergencyContactNo: this.EmployeeForm.get("EmergencyContactNo").value,
-      EmploymentStatusId: this.EmployeeForm.get("EmploymentStatus").value,
-      EmploymentTypeId: this.EmployeeForm.get("EmploymentType").value,
-      ConfirmationDate: this.EmployeeForm.get("ConfirmationDate").value,
-      NoticePeriodDays: this.EmployeeForm.get("NoticePeriodDays").value,
-      ProbationPeriodDays: this.EmployeeForm.get("ProbationPeriodDays").value,
-      PAN: this.EmployeeForm.get("PAN").value,
-      PassportNo: this.EmployeeForm.get("PassportNo").value,
-      MaritalStatusId: this.EmployeeForm.get("MaritalStatus").value,
-      MarriedDate: new Date(this.EmployeeForm.get("MarriedDate").value),
-      PFAccountNo: this.EmployeeForm.get("PFAccountNo").value,
-      NatureId: this.EmployeeForm.get("Nature").value,
-      EmployeeCode: this.EmployeeForm.get("EmployeeCode").value,
+      ShortName: this.EmployeeForm.get("ShortName")?.value,
+      FirstName: this.EmployeeForm.get("FirstName")?.value,
+      LastName: this.EmployeeForm.get("LastName")?.value,
+      FatherName: this.EmployeeForm.get("FatherName")?.value,
+      MotherName: this.EmployeeForm.get("MotherName")?.value,
+      GenderId: this.EmployeeForm.get("Gender")?.value,
+      DOB: new Date(this.EmployeeForm.get("DOB")?.value),
+      DOJ: new Date(this.EmployeeForm.get("DOJ")?.value),
+      BloodgroupId: this.EmployeeForm.get("Bloodgroup")?.value,
+      CategoryId: this.EmployeeForm.get("Category")?.value,
+      BankAccountNo: this.EmployeeForm.get("BankAccountNo")?.value,
+      IFSCcode: this.EmployeeForm.get("IFSCcode")?.value,
+      MICRNo: this.EmployeeForm.get("MICRNo")?.value,
+      AdhaarNo: this.EmployeeForm.get("AdhaarNo")?.value,
+      PhotoPath: this.EmployeeForm.get("PhotoPath")?.value,
+      ReligionId: this.EmployeeForm.get("Religion")?.value,
+      ContactNo: this.EmployeeForm.get("ContactNo")?.value,
+      WhatsappNo: this.EmployeeForm.get("WhatsappNo")?.value,
+      AlternateContactNo: this.EmployeeForm.get("AlternateContactNo")?.value,
+      EmailAddress: this.EmployeeForm.get("EmailAddress")?.value,
+      EmergencyContactNo: this.EmployeeForm.get("EmergencyContactNo")?.value,
+      EmploymentStatusId: this.EmployeeForm.get("EmploymentStatus")?.value,
+      EmploymentTypeId: this.EmployeeForm.get("EmploymentType")?.value,
+      ConfirmationDate: this.EmployeeForm.get("ConfirmationDate")?.value,
+      NoticePeriodDays: this.EmployeeForm.get("NoticePeriodDays")?.value,
+      ProbationPeriodDays: this.EmployeeForm.get("ProbationPeriodDays")?.value,
+      PAN: this.EmployeeForm.get("PAN")?.value,
+      PassportNo: this.EmployeeForm.get("PassportNo")?.value,
+      MaritalStatusId: this.EmployeeForm.get("MaritalStatus")?.value,
+      MarriedDate: new Date(this.EmployeeForm.get("MarriedDate")?.value),
+      PFAccountNo: this.EmployeeForm.get("PFAccountNo")?.value,
+      NatureId: this.EmployeeForm.get("Nature")?.value,
+      EmployeeCode: this.EmployeeForm.get("EmployeeCode")?.value,
       Active: _active ? 1 : 0,
-      Remarks: this.EmployeeForm.get("Remarks").value,
-      PresentAddress: this.EmployeeForm.get("PresentAddress").value,
-      PresentAddressCityId: this.EmployeeForm.get("PresentAddressCity").value,
-      PresentAddressStateId: this.EmployeeForm.get("PresentAddressState").value,
-      PresentAddressCountryId: this.EmployeeForm.get("PresentAddressCountry").value,
-      PermanentAddressCityId: this.EmployeeForm.get("PermanentAddressCity").value,
-      PresentAddressPincode: this.EmployeeForm.get("PresentAddressPincode").value,
-      PermanentAddressPincode: this.EmployeeForm.get("PermanentAddressPincode").value,
-      PermanentAddressStateId: this.EmployeeForm.get("PermanentAddressState").value,
-      PermanentAddressCountryId: this.EmployeeForm.get("PermanentAddressCountry").value,
-      PermanentAddress: this.EmployeeForm.get("PermanentAddress").value,
-      DepartmentId: this.EmployeeForm.get("Department").value,
-      DesignationId: this.EmployeeForm.get("Designation").value,
-      WorkAccountId: this.EmployeeForm.get("WorkAccount").value,
-      EmpGradeId: this.EmployeeForm.get("EmpGrade").value,
+      Remarks: this.EmployeeForm.get("Remarks")?.value,
+      PresentAddress: this.EmployeeForm.get("PresentAddress")?.value,
+      PresentAddressCityId: this.EmployeeForm.get("PresentAddressCity")?.value,
+      PresentAddressStateId: this.EmployeeForm.get("PresentAddressState")?.value,
+      PresentAddressCountryId: this.EmployeeForm.get("PresentAddressCountry")?.value,
+      PermanentAddressCityId: this.EmployeeForm.get("PermanentAddressCity")?.value,
+      PresentAddressPincode: this.EmployeeForm.get("PresentAddressPincode")?.value,
+      PermanentAddressPincode: this.EmployeeForm.get("PermanentAddressPincode")?.value,
+      PermanentAddressStateId: this.EmployeeForm.get("PermanentAddressState")?.value,
+      PermanentAddressCountryId: this.EmployeeForm.get("PermanentAddressCountry")?.value,
+      PermanentAddress: this.EmployeeForm.get("PermanentAddress")?.value,
+      DepartmentId: this.EmployeeForm.get("Department")?.value,
+      DesignationId: this.EmployeeForm.get("Designation")?.value,
+      WorkAccountId: this.EmployeeForm.get("WorkAccount")?.value,
+      EmpGradeId: this.EmployeeForm.get("EmpGrade")?.value,
       OrgId: this.LoginUserDetail[0]["orgId"],
       SubOrgId: this.tokenService.getSubOrgId(),
-      IDMark: this.EmployeeForm.get("IDMark").value
+      IDMark: this.EmployeeForm.get("IDMark")?.value
     }]
 
     if (this.EmployeeData["MarriedDate"] == "") {
@@ -479,7 +479,7 @@ export class EmployeeComponent implements OnInit {
       delete this.EmployeeData["ConfirmationDate"];
     }
     var filterstr = this.FilterOrgSubOrg;// "OrgId eq " + this.LoginUserDetail[0]["orgId"];
-    var _employeeCode = this.EmployeeForm.get("EmployeeCode").value;
+    var _employeeCode = this.EmployeeForm.get("EmployeeCode")?.value;
 
     var _employeeCodefilter = '';
     if (_employeeCode.length > 0) {
@@ -490,7 +490,7 @@ export class EmployeeComponent implements OnInit {
       filterstr += " and EmpEmployeeId ne " + this.EmployeeId;
     }
 
-    var _shortName = this.EmployeeForm.get("ShortName").value;
+    var _shortName = this.EmployeeForm.get("ShortName")?.value;
     var _shortNamefilter = '';
     if (_shortName.length > 0)
       _shortNamefilter = "ShortName eq '" + _shortName + "'"
@@ -528,11 +528,11 @@ export class EmployeeComponent implements OnInit {
   CheckDuplicate(fieldName) {
     debugger;
     var filterstr = this.FilterOrgSubOrg;// "OrgId eq " + this.LoginUserDetail[0]["orgId"];
-    //var _employeeCode = this.EmployeeForm.get("EmployeeCode").value;
+    //var _employeeCode = this.EmployeeForm.get("EmployeeCode")?.value;
     if (this.EmployeeId > 0) {
       filterstr += " and EmpEmployeeId ne " + this.EmployeeId
     }
-    var _checkvalue = this.EmployeeForm.get(fieldName).value;
+    var _checkvalue = this.EmployeeForm.get(fieldName)?.value;
     if (_checkvalue.length == 0)
       return;
 
@@ -710,7 +710,7 @@ console.log("this.EmployeeData",this.EmployeeData)
               "WorkAccount": stud.WorkAccountId,
               "IDMark": stud.IDMark
             });
-            // if (this.EmployeeForm.get("EmailAddress").value != "") {
+            // if (this.EmployeeForm.get("EmailAddress")?.value != "") {
             //   this.EmployeeForm.get("EmailAddress").disable();
             // }
             if (stud.PrimaryContactFatherOrMother == this.PrimaryContactOtherId)

@@ -4,11 +4,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import {SwUpdate} from '@angular/service-worker';
 @Component({
   selector: 'app-ReportConfigItem',
@@ -30,7 +30,7 @@ export class ReportConfigItemComponent implements OnInit { PageLoading=true;
     "Active",
     "Action"
   ];
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   optionsNoAutoClose = {
     autoClose: false,
@@ -43,13 +43,13 @@ export class ReportConfigItemComponent implements OnInit { PageLoading=true;
   StandardFilterWithBatchId = '';
   loading = false;
   ToUpdateCount = -1;
-  AppReportNames = [];
-  Applications = [];
-  ReportNames = [];
+  AppReportNames :any[]= [];
+  Applications :any[]= [];
+  ReportNames :any[]= [];
   ReportConfigItemListName = "ReportConfigItems";
-  ReportConfigItemList = [];
+  ReportConfigItemList :any[]= [];
   dataSource: MatTableDataSource<IReportConfigItem>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   PagePermission = '';
   ReportConfigItemData = {
     ReportConfigItemId: 0,
@@ -112,7 +112,7 @@ export class ReportConfigItemComponent implements OnInit { PageLoading=true;
 
   addnew() {
     debugger;
-    var appId = this.searchForm.get("searchApplicationId").value;
+    var appId = this.searchForm.get("searchApplicationId")?.value;
     if (appId == 0) {
       this.contentservice.openSnackBar("Please select application", globalconstants.ActionText,globalconstants.RedBackground);
       return;
@@ -140,7 +140,7 @@ export class ReportConfigItemComponent implements OnInit { PageLoading=true;
 
   }
   SaveAll() {
-    var edited = this.ReportConfigItemList.filter(f => f.Action);
+    var edited = this.ReportConfigItemList.filter((f:any) => f.Action);
     this.ToUpdateCount = edited.length;
     edited.forEach(e => {
       this.ToUpdateCount--;
@@ -156,7 +156,7 @@ export class ReportConfigItemComponent implements OnInit { PageLoading=true;
     //debugger;
 
 
-    var ReportNameId = this.searchForm.get("searchReportName").value
+    var ReportNameId = this.searchForm.get("searchReportName")?.value
 
     if (this.ApplicationName.toLowerCase() != "ttp" && ReportNameId == 0) {
       this.contentservice.openSnackBar("Please select report name", globalconstants.ActionText,globalconstants.RedBackground);
@@ -296,7 +296,7 @@ export class ReportConfigItemComponent implements OnInit { PageLoading=true;
     this.ReportConfigItemList = [];
     var orgIdSearchstr = ' and OrgId eq 0';
     var filterstr = 'Active eq 1 ';
-    var searchApplicationId = this.searchForm.get("searchApplicationId").value;
+    var searchApplicationId = this.searchForm.get("searchApplicationId")?.value;
     if (searchApplicationId == 0) {
       this.contentservice.openSnackBar("Please select application", globalconstants.ActionText,globalconstants.RedBackground);
       return;
@@ -304,8 +304,8 @@ export class ReportConfigItemComponent implements OnInit { PageLoading=true;
 
     this.loading = true;
     filterstr = "ApplicationId eq " + searchApplicationId;
-    if (this.searchForm.get("searchReportName").value > 0)
-      filterstr += " and ParentId eq " + this.searchForm.get("searchReportName").value;
+    if (this.searchForm.get("searchReportName")?.value > 0)
+      filterstr += " and ParentId eq " + this.searchForm.get("searchReportName")?.value;
     else
       filterstr += " and ParentId eq " + this.BaseReportId;
 
@@ -390,7 +390,7 @@ export class ReportConfigItemComponent implements OnInit { PageLoading=true;
   GetAppReportNames() {
     debugger;
     this.ReportConfigItemList = [];
-    this.AppReportNames = this.ReportNames.filter(a => a.ApplicationId == this.searchForm.get("searchApplicationId").value
+    this.AppReportNames = this.ReportNames.filter(a => a.ApplicationId == this.searchForm.get("searchApplicationId")?.value
       && a.ParentId == this.BaseReportId);
     this.dataSource = new MatTableDataSource(this.ReportConfigItemList);
   }

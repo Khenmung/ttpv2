@@ -6,11 +6,11 @@ import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 //import { string } from 'mathjs';
 import { startWith, map } from 'rxjs/operators';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { IEmployee } from '../../employeesalary/employee-gradehistory/employee-gradehistory.component';
 import * as moment from 'moment';
 import alasql from 'alasql';
@@ -23,7 +23,7 @@ import { evaluate } from 'mathjs';
 })
 export class EmployeeLeaveComponent implements OnInit {
   PageLoading = true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   EmployeeLeaveListName = 'LeaveEmployeeLeaves';
   FilterOrgSubOrg = '';
@@ -31,37 +31,37 @@ export class EmployeeLeaveComponent implements OnInit {
   newitem = false;
   loading = false;
   rowCount = 0;
-  ApprovedEmployeeLeaves: IEmployeeLeave[] = [];
-  EmployeeLeaveList: IEmployeeLeave[] = [];
+  ApprovedEmployeeLeaves: IEmployeeLeave[]= [];
+  EmployeeLeaveList: IEmployeeLeave[]= [];
   SelectedBatchId = 0;
   SubOrgId = 0;
   ApprovePermission = '';
-  Grades = [];
-  Leaves = [];
-  LeaveStatus = [];
-  Employees = [];
+  Grades :any[]= [];
+  Leaves :any[]= [];
+  LeaveStatus :any[]= [];
+  Employees :any[]= [];
   dataSource: MatTableDataSource<IEmployeeLeave>;
   filteredOptions: Observable<IEmployee[]>;
-  allMasterData = [];
-  //LeaveStatuses = [];
-  Departments = [];
-  WorkAccounts = [];
-  Designations = [];
-  JobTitles = [];
-  Genders = [];
-  City = [];
-  Countries = [];
-  States = [];
-  BloodGroups = [];
-  Religions = [];
-  Categories = [];
-  Locations = [];
-  EmploymentStatus = [];
-  EmploymentTypes = [];
-  Natures = [];
-  MaritalStatus = [];
-  ComponentTypes = [];
-  VariableTypes = [];
+  allMasterData :any[]= [];
+  //LeaveStatuses :any[]= [];
+  Departments :any[]= [];
+  WorkAccounts :any[]= [];
+  Designations :any[]= [];
+  JobTitles :any[]= [];
+  Genders :any[]= [];
+  City :any[]= [];
+  Countries :any[]= [];
+  States :any[]= [];
+  BloodGroups :any[]= [];
+  Religions :any[]= [];
+  Categories :any[]= [];
+  Locations :any[]= [];
+  EmploymentStatus :any[]= [];
+  EmploymentTypes :any[]= [];
+  Natures :any[]= [];
+  MaritalStatus :any[]= [];
+  ComponentTypes :any[]= [];
+  VariableTypes :any[]= [];
   PreviousBatchId = 0;
   EmployeeLeaveData = {
     EmployeeLeaveId: 0,
@@ -82,9 +82,10 @@ export class EmployeeLeaveComponent implements OnInit {
     Active: 0,
   };
   LeaveManagement = {
-    LeaveBalance: [],
+    LeaveBalance:[],
     EmployeeLeave: {}
   }
+  //LeaveManagement["LeaveBalance"]:any[]=[];
   displayedColumns = [
     "EmployeeLeaveId",
     "LeaveTypeId",
@@ -121,12 +122,12 @@ export class EmployeeLeaveComponent implements OnInit {
       searchEmployee: [0],
     });
     this.PageLoad();
-    this.filteredOptions = this.searchForm.get("searchEmployee").valueChanges
+    this.filteredOptions = this.searchForm.get("searchEmployee")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.Employees.slice())
-      );
+      )!;
 
   }
   private _filter(name: string): IEmployee[] {
@@ -153,10 +154,10 @@ export class EmployeeLeaveComponent implements OnInit {
         var leaveObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.LEAVEAPPROVEPERMISSION);
         if (leaveObj.length > 0)
           this.ApprovePermission = leaveObj[0].permission;
-        this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId();
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
 
@@ -197,7 +198,7 @@ export class EmployeeLeaveComponent implements OnInit {
   }
   SetStatus(element) {
 
-    var statusobj = this.LeaveStatus.filter(f => f.MasterDataId == element.LeaveStatusId)
+    var statusobj = this.LeaveStatus.filter((f:any) => f.MasterDataId == element.LeaveStatusId)
     if (statusobj.length > 0) {
       element.LeaveStatus = statusobj[0].MasterDataName;
     }
@@ -215,7 +216,7 @@ export class EmployeeLeaveComponent implements OnInit {
     }
     this.loading = true;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    var _employeeId = this.searchForm.get("searchEmployee").value.EmployeeId;
+    var _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
     let checkFilterString = this.FilterOrgSubOrgBatchId + " and EmployeeId eq " + _employeeId +
       " and LeaveFrom eq " + moment(row.LeaveFrom).format('YYYY-MM-DD') +
       " and LeaveTo eq " + moment(row.LeaveTo).format('YYYY-MM-DD') +
@@ -257,7 +258,7 @@ export class EmployeeLeaveComponent implements OnInit {
                 var _leaveStatusId = 0;
                 var pendingStatusObj = this.LeaveStatus.filter(l => l.MasterDataName.toLowerCase() == "pending")
                 if (pendingStatusObj.length > 0 && row.LeaveStatusId == 0) {
-                  this.EmployeeLeaveData.ApproveRejectedDate = null;
+                  this.EmployeeLeaveData.ApproveRejectedDate = new Date();
                   _leaveStatusId = pendingStatusObj[0].MasterDataId;
                   this.EmployeeLeaveData.ApprovedBy = 0;
                 }
@@ -267,7 +268,7 @@ export class EmployeeLeaveComponent implements OnInit {
                   this.EmployeeLeaveData.ApprovedBy = +this.LoginUserDetail[0]["employeeId"];
                 }
                 this.EmployeeLeaveData.EmployeeLeaveId = row.EmployeeLeaveId;
-                this.EmployeeLeaveData.EmployeeId = this.searchForm.get("searchEmployee").value.EmployeeId;
+                this.EmployeeLeaveData.EmployeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
                 this.EmployeeLeaveData.Active = row.Active;
                 this.EmployeeLeaveData.LeaveTypeId = row.LeaveTypeId;
                 this.EmployeeLeaveData.LeaveFrom = row.LeaveFrom;
@@ -347,7 +348,7 @@ export class EmployeeLeaveComponent implements OnInit {
     //debugger;
     //var _colName = event.srcElement.name;
     //console.log("event", event);
-    //var row = this.StoredForUpdate.filter(s => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
+    //var row = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
     //row[0][_colName] = element[_colName];
   }
 
@@ -423,7 +424,7 @@ export class EmployeeLeaveComponent implements OnInit {
             Name: m.EmployeeCode + "-" + m.FirstName + " " + m.LastName
           }
         })
-        //console.log("employeeid",this.searchForm.get("searchEmployee").value.EmployeeId)
+        //console.log("employeeid",this.searchForm.get("searchEmployee")?.value.EmployeeId)
         //this.GetGradeComponents();
       })
 
@@ -438,7 +439,7 @@ export class EmployeeLeaveComponent implements OnInit {
   //     "NoOfDays",
   //     "LeaveStatusId",
   //   ];
-  //   var obj = this.LeaveStatus.filter(f => f.MasterDataName.toLowerCase() == "approved");
+  //   var obj = this.LeaveStatus.filter((f:any) => f.MasterDataName.toLowerCase() == "approved");
   //   var _ApprovedId = 0;
   //   if (obj.length > 0)
   //     _ApprovedId = obj[0].MasterDataId;
@@ -453,7 +454,7 @@ export class EmployeeLeaveComponent implements OnInit {
   GetEmployeeLeave() {
     debugger;
     //var orgIdSearchstr = this.FilterOrgSubOrg;// 'and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    var _EmployeeId = this.searchForm.get("searchEmployee").value.EmployeeId;
+    var _EmployeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
     if (!_EmployeeId) {
       this.contentservice.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
     }
@@ -547,7 +548,7 @@ export class EmployeeLeaveComponent implements OnInit {
     var _leaveStatusId = this.LeaveStatus.filter(l => l.MasterDataName.toLowerCase() == 'pending')[0].MasterDataId;
     var newdata = {
       EmployeeLeaveId: 0,
-      EmployeeId: this.searchForm.get("searchEmployee").value.EmployeeId,
+      EmployeeId: this.searchForm.get("searchEmployee")?.value.EmployeeId,
       LeaveTypeId: 0,
       LeaveFrom: new Date(),
       LeaveTo: new Date(),
@@ -567,9 +568,9 @@ export class EmployeeLeaveComponent implements OnInit {
     this.newitem = true;
     this.dataSource = new MatTableDataSource(this.EmployeeLeaveList);
   }
-  RawLeaveBalance = [];
-  StoredForUpdate = [];
-  LeavePolicies = [];
+  RawLeaveBalance :any[]= [];
+  StoredForUpdate :any[]= [];
+  LeavePolicies :any[]= [];
   GetLeavePolicy() {
     debugger;
     //var orgIdAndBatchSearchstr = 'BatchId eq ' + this.SelectedBatchId + ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
@@ -596,7 +597,7 @@ export class EmployeeLeaveComponent implements OnInit {
   RegularizeLeave(row) {
     debugger;
     this.loading = true;
-    var _EmployeeId = this.searchForm.get("searchEmployee").value.EmployeeId;
+    var _EmployeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
     if (!_EmployeeId) {
       this.contentservice.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
       this.loading = false;
@@ -621,7 +622,7 @@ export class EmployeeLeaveComponent implements OnInit {
         var _NoOfMonths = 0;
         var _NoOfYears = 0;
         var _Age = 0;
-        var _sessionStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd());
+        var _sessionStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!!);
         var startMonth = new Date(_sessionStartEnd["StartDate"]).getMonth();
         var _currentMonth = new Date().getMonth();
         var ConfirmationMonth = 0;
@@ -767,14 +768,14 @@ export class EmployeeLeaveComponent implements OnInit {
           }
         })
 
-        this.LeaveManagement.LeaveBalance = this.StoredForUpdate;
+        this.LeaveManagement.LeaveBalance = JSON.parse(JSON.stringify(this.StoredForUpdate));
         console.log("this.LeaveManagement", this.LeaveManagement);
         this.update(row);
       })
   }
   GetCurrentEmployeeVariableData() {
-    //var _DepartmentId = this.searchForm.get("searchDepartmentId").value;
-    var _employeeId = this.searchForm.get("searchEmployee").value.EmployeeId;
+    //var _DepartmentId = this.searchForm.get("searchDepartmentId")?.value;
+    var _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
 
     //var orgIdSearchstr = ' and OrgId eq ' + OrgId;
     var searchfilter = '';
@@ -793,7 +794,7 @@ export class EmployeeLeaveComponent implements OnInit {
     return this.dataservice.get(list);
   }
   getMasterText(arr, itemId) {
-    var filtered = arr.filter(f => f.MasterDataId == itemId);
+    var filtered = arr.filter((f:any) => f.MasterDataId == itemId);
     if (filtered.length > 0)
       return filtered[0].MasterDataName;
     else

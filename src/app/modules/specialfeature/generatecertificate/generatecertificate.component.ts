@@ -1,22 +1,22 @@
-import { DatePipe, DOCUMENT } from '@angular/common';
+//import { DatePipe, DOCUMENT } from '@angular/common';
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import alasql from 'alasql';
+//import alasql from 'alasql';
 import { evaluate } from 'mathjs';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { startWith } from 'rxjs/internal/operators/startWith';
 import { map } from 'rxjs/operators';
-import { IStudent } from 'src/app/modules/admission/AssignStudentClass/Assignstudentclassdashboard.component';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
-import { SwUpdate } from '@angular/service-worker';
+import { IStudent } from '../../../modules/admission/AssignStudentClass/Assignstudentclassdashboard.component';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+//import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+//import { SwUpdate } from '@angular/service-worker';
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
@@ -31,53 +31,53 @@ export class GenerateCertificateComponent implements OnInit {
   PageLoading = true;
   backgroundimage = '';
   loading = false;
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   Permission = '';
   rowCount = 0;
-  ExamStudentSubjectResult: IExamStudentSubjectResult[] = [];
+  ExamStudentSubjectResult: IExamStudentSubjectResult[]= [];
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   SelectedBatchId = 0; SubOrgId = 0;
-  DisplayColumn = [];
-  GeneratedCertificatelist = [];
-  AttendanceStatus = [];
-  SubjectMarkComponents = [];
-  MarkComponents = [];
-  StudentGrades = [];
-  StudentForVariables = [];
+  DisplayColumn :any[]= [];
+  GeneratedCertificatelist :any[]= [];
+  AttendanceStatus :any[]= [];
+  SubjectMarkComponents :any[]= [];
+  MarkComponents :any[]= [];
+  StudentGrades :any[]= [];
+  StudentForVariables :any[]= [];
   FeePaidLastMonth = 0;
-  AchievementAndPoints = [];
-  PointCategory = [];
-  Students = [];
-  Genders = [];
-  Classes = [];
-  ClassGroups = [];
-  Subjects = [];
-  Sections = [];
-  ExamStatuses = [];
-  ExamNames = [];
-  Exams = [];
-  Batches = [];
-  Houses = [];
-  City = [];
-  State = [];
-  Country = [];
-  BloodGroup = [];
-  Category = [];
-  Religion = [];
-  ReasonForLeaving = [];
-  CertificateElements = [];
-  CertificateTypes = [];
-  StudentSubjects = [];
-  CommonStyles = [];
-  CommonHeader = [];
-  CommonFooter = [];
-  Organization = [];
-  StudentAttendanceList = [];
-  StudentClasses = [];
+  AchievementAndPoints :any[]= [];
+  PointCategory :any[]= [];
+  Students :any[]= [];
+  Genders :any[]= [];
+  Classes :any[]= [];
+  ClassGroups :any[]= [];
+  Subjects :any[]= [];
+  Sections :any[]= [];
+  ExamStatuses :any[]= [];
+  ExamNames :any[]= [];
+  Exams :any[]= [];
+  Batches :any[]= [];
+  Houses :any[]= [];
+  City :any[]= [];
+  State :any[]= [];
+  Country :any[]= [];
+  BloodGroup :any[]= [];
+  Category :any[]= [];
+  Religion :any[]= [];
+  ReasonForLeaving :any[]= [];
+  CertificateElements :any[]= [];
+  CertificateTypes :any[]= [];
+  StudentSubjects :any[]= [];
+  CommonStyles :any[]= [];
+  CommonHeader :any[]= [];
+  CommonFooter :any[]= [];
+  Organization :any[]= [];
+  StudentAttendanceList :any[]= [];
+  StudentClasses :any[]= [];
   dataSource: MatTableDataSource<any>;
   ActivityResultDataSource: MatTableDataSource<any>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   //studentSearchForm: FormGroup;
   filteredStudents: Observable<IStudent[]>;
   //filteredOptions: Observable<IStudent[]>;
@@ -100,16 +100,16 @@ export class GenerateCertificateComponent implements OnInit {
     'Description',
   ];
   searchForm: UntypedFormGroup;
-  constructor(private servicework: SwUpdate,
-    @Inject(DOCUMENT) private document: Document,
+  constructor(
+    //private servicework: SwUpdate,
+    //@Inject(DOCUMENT) private document: Document,
     private contentservice: ContentService,
     private dataservice: NaomitsuService,
     private tokenStorage: TokenStorageService,
-
-    private route: ActivatedRoute,
+    //private route: ActivatedRoute,
     private nav: Router,
-    private shareddata: SharedataService,
-    private datepipe: DatePipe,
+    //private shareddata: SharedataService,
+    //private datepipe: DatePipe,
     private fb: UntypedFormBuilder
   ) { }
 
@@ -134,17 +134,19 @@ export class GenerateCertificateComponent implements OnInit {
       searchSessionId: [0],
       searchCertificateTypeId: [0]
     });
-    this.filteredStudents = this.searchForm.get("searchStudentName").valueChanges
+    this.filteredStudents = this.searchForm.get("searchStudentName")?.valueChanges
       .pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.Students.slice())
-      );
+      )!;
     this.PageLoad();
   }
   loadTheme(strStyle: string) {
-    const headEl = this.document.getElementsByTagName("head")[0];
-    const styleEl = this.document.createElement('style');
+    //const headEl = this.document.getElementsByTagName("head")[0];
+    //const headEl = this.document.getElementsByTagName("head")[0];
+    const headEl = window.document.getElementsByTagName("head")[0];
+    const styleEl = window.document.createElement('style');
     styleEl.innerText = strStyle;
     headEl.appendChild(styleEl);
     ////console.log('dd', styleEl)
@@ -163,13 +165,13 @@ export class GenerateCertificateComponent implements OnInit {
     debugger;
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.StudentClassId = +this.tokenStorage.getStudentClassId();
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.StudentClassId = +this.tokenStorage.getStudentClassId()!;
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.SPECIALFEATURE.GENERATECERTIFICATE);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
@@ -362,7 +364,7 @@ export class GenerateCertificateComponent implements OnInit {
         this.Organization[0].forEach(o => {
           this.StudentForVariables.push({ "name": o.name, val: o.val });
         })
-        var examId = this.searchForm.get("searchExamId").value;
+        var examId = this.searchForm.get("searchExamId")?.value;
         var examName = '';
         if (examId > 0)
           examName = this.Exams.filter(z => z.ExamId == examId)[0].ExamName;
@@ -422,14 +424,14 @@ export class GenerateCertificateComponent implements OnInit {
   //       this.Exams = this.Exams.sort((a, b) => a.Sequence - b.Sequence);
   //     })
   // }
-  ExamStudentResults = [];
+  ExamStudentResults :any[]= [];
   DisplayColumns = [
     "FirstCol"
   ];
   GetExamGrandTotal() {
     debugger;
     let filterStr = this.FilterOrgSubOrg + ' and Active eq 1';
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
 
     filterStr += ' and StudentClassId eq ' + this.StudentClassId;
     filterStr += ' and ExamId eq ' + _examId;
@@ -479,7 +481,7 @@ export class GenerateCertificateComponent implements OnInit {
             Object.keys(eachexam).forEach(col => {
               var objcolumn = ToInclude.filter(include => include.ColumnName == col);
               if (objcolumn.length > 0) {
-                var resultrow = this.ExamStudentResults.filter(f => f.FirstCol == objcolumn[0].Display)
+                var resultrow = this.ExamStudentResults.filter((f:any) => f.FirstCol == objcolumn[0].Display)
                 resultrow[0][_ExamName] = eachexam[objcolumn[0].ColumnName]
               }
             })
@@ -492,7 +494,7 @@ export class GenerateCertificateComponent implements OnInit {
   GenerateCertificate() {
     debugger;
     this.CertificateDescription = '';
-    var _certificateBody = JSON.parse(JSON.stringify(this.AllCertificateConfig.filter(a => a.ParentId == this.searchForm.get("searchCertificateTypeId").value)));
+    var _certificateBody = JSON.parse(JSON.stringify(this.AllCertificateConfig.filter(a => a.ParentId == this.searchForm.get("searchCertificateTypeId")?.value)));
     if (_certificateBody.length == 0) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Certificate not defined!", globalconstants.ActionText, globalconstants.RedBackground);
@@ -513,7 +515,7 @@ export class GenerateCertificateComponent implements OnInit {
     }
 
     var certificateavailable = true;
-    var _certificateFormula = JSON.parse(JSON.stringify(this.AllCertificateConfig.filter(a => a.CertificateConfigId == this.searchForm.get("searchCertificateTypeId").value)));
+    var _certificateFormula = JSON.parse(JSON.stringify(this.AllCertificateConfig.filter(a => a.CertificateConfigId == this.searchForm.get("searchCertificateTypeId")?.value)));
     if (_certificateFormula.length > 0) {
       for (var i = 0; i < _certificateFormula.length; i++) {
         if (_certificateFormula[i].Logic != undefined && _certificateFormula[i].Logic.length > 0) {
@@ -581,9 +583,9 @@ export class GenerateCertificateComponent implements OnInit {
   GetGeneratedCertificate() {
     debugger;
     var filterstr = this.FilterOrgSubOrg + ' and Active eq true';
-    var _studentId = this.searchForm.get("searchStudentName").value.StudentId;
-    var _studentClassId = this.searchForm.get("searchStudentName").value.StudentClassId;
-    var _certificationTypeId = this.searchForm.get("searchCertificateTypeId").value;
+    var _studentId = this.searchForm.get("searchStudentName")?.value.StudentId;
+    var _studentClassId = this.searchForm.get("searchStudentName")?.value.StudentClassId;
+    var _certificationTypeId = this.searchForm.get("searchCertificateTypeId")?.value;
 
     if (_certificationTypeId == undefined || _certificationTypeId == 0) {
       this.contentservice.openSnackBar("Please select certificate type.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -622,7 +624,7 @@ export class GenerateCertificateComponent implements OnInit {
       .subscribe((data: any) => {
         this.GeneratedCertificatelist = [];
         data.value.forEach(d => {
-          var _studentObj = this.Students.filter(s => s.StudentClassId == d.StudentClassId);
+          var _studentObj = this.Students.filter((s:any) => s.StudentClassId == d.StudentClassId);
           if (_studentObj.length > 0) {
             d.StudentName = _studentObj[0].Name;
           }
@@ -666,7 +668,7 @@ export class GenerateCertificateComponent implements OnInit {
       })
 
   }
-  SelectedActivity = [];
+  SelectedActivity :any[]= [];
   View(row) {
     row.Action = false;
     this.SelectedActivity = [];
@@ -677,14 +679,14 @@ export class GenerateCertificateComponent implements OnInit {
   }
   Save() {
     debugger;
-    //var _studentObj = this.searchForm.get("searchStudentName").value
+    //var _studentObj = this.searchForm.get("searchStudentName")?.value
     //var _studentclassId = this.SelectedActivity[0].StudentClassId;
     //var _studentId = this.SelectedActivity[0].StudentId;
-    var _studentId = this.searchForm.get("searchStudentName").value.StudentId;
-    var _studentclassId = this.searchForm.get("searchStudentName").value.StudentClassId;
+    var _studentId = this.searchForm.get("searchStudentName")?.value.StudentId;
+    var _studentclassId = this.searchForm.get("searchStudentName")?.value.StudentClassId;
 
-    //var _searchStudentGroupId = this.searchForm.get("searchStudentGroupId").value;
-    var _certificateTypeId = this.searchForm.get("searchCertificateTypeId").value;
+    //var _searchStudentGroupId = this.searchForm.get("searchStudentGroupId")?.value;
+    var _certificateTypeId = this.searchForm.get("searchCertificateTypeId")?.value;
     var _SportsNameId = this.SelectedActivity[0].SportsNameId;
     var _categoryId = this.SelectedActivity[0].CategoryId;
     var _subCategoryId = this.SelectedActivity[0].SubCategoryId;
@@ -772,8 +774,8 @@ export class GenerateCertificateComponent implements OnInit {
   SelectedCertificateType = '';
   CheckType() {
     debugger;
-    var _certificateId = this.searchForm.get("searchCertificateTypeId").value;
-    var obj = this.CertificateTypes.filter(f => f.CertificateConfigId == _certificateId);
+    var _certificateId = this.searchForm.get("searchCertificateTypeId")?.value;
+    var obj = this.CertificateTypes.filter((f:any) => f.CertificateConfigId == _certificateId);
     if (obj.length > 0)
       this.SelectedCertificateType = obj[0].Title.toLowerCase()
     if (obj.length > 0 && (obj[0].Title.toLowerCase() == 'sports certificate' || obj[0].Title.toLowerCase() == 'moments certificate')) {
@@ -784,34 +786,34 @@ export class GenerateCertificateComponent implements OnInit {
     this.ClearData();
   }
   SetCategory() {
-    var _activityId = this.searchForm.get("searchActivityId").value;
-    this.ActivityCategory = this.allMasterData.filter(f => f.ParentId == _activityId);
+    var _activityId = this.searchForm.get("searchActivityId")?.value;
+    this.ActivityCategory = this.allMasterData.filter((f:any) => f.ParentId == _activityId);
     this.ClearData();
   }
   SetSubCategory() {
-    var _categoryId = this.searchForm.get("searchCategoryId").value;
-    this.ActivitySubCategory = this.allMasterData.filter(f => f.ParentId == _categoryId);
+    var _categoryId = this.searchForm.get("searchCategoryId")?.value;
+    this.ActivitySubCategory = this.allMasterData.filter((f:any) => f.ParentId == _categoryId);
     this.ClearData();
   }
   SportsCertificate = false;
-  ActivitySubCategory = [];
-  ActivityCategory = [];
-  ActivityNames = [];
-  ActivitySessions = [];
-  StudentClubs = [];
-  StudentGroups = [];
-  Groups = [];
+  ActivitySubCategory :any[]= [];
+  ActivityCategory :any[]= [];
+  ActivityNames :any[]= [];
+  ActivitySessions :any[]= [];
+  StudentClubs :any[]= [];
+  StudentGroups :any[]= [];
+  Groups :any[]= [];
   AttendancePresentId=0;
   AttendanceAbsentId=0;
   GetMasterData() {
     debugger;
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Religion = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
     this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
     this.PointCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.POINTSCATEGORY);
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
-    this.AttendancePresentId = this.AttendanceStatus.filter(f=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
-    this.AttendanceAbsentId = this.AttendanceStatus.filter(f=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
+    this.AttendancePresentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
+    this.AttendanceAbsentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
     this.StudentClubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
     this.StudentGroups = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTGROUP);
     //this.StudentGroups = [...this.StudentClubs, ...this.Houses, ...this.StudentGroups];
@@ -856,7 +858,7 @@ export class GenerateCertificateComponent implements OnInit {
       .subscribe((data: any) => {
         this.ClassGroups = [...data.value];
       });
-    this.Batches = this.tokenStorage.getBatches()
+    this.Batches = this.tokenStorage.getBatches()!;
     //this.GetStudentClasses();
     this.GetOrganization();
     //this.GetTotalAttendance();
@@ -872,9 +874,9 @@ export class GenerateCertificateComponent implements OnInit {
     debugger;
     var filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
 
-    var _classId = this.searchForm.get("searchClassId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId > 0)
-      filterOrgIdNBatchId += " and ClassId eq " + this.searchForm.get("searchClassId").value;
+      filterOrgIdNBatchId += " and ClassId eq " + this.searchForm.get("searchClassId")?.value;
     else {
       this.loading = false;
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -897,14 +899,14 @@ export class GenerateCertificateComponent implements OnInit {
           var _className = '';
           var _section = '';
           //var _studentClassId = 0;
-          //var studentclassobj = this.StudentClasses.filter(f => f.StudentId == student.StudentId);
+          //var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
           //if (studentclassobj.length > 0) {
           //_studentClassId = studentclassobj[0].StudentClassId;
           var _classNameobj = this.Classes.filter(c => c.ClassId == _classId);
 
           if (_classNameobj.length > 0)
             _className = _classNameobj[0].ClassName;
-          var _SectionObj = this.Sections.filter(f => f.MasterDataId == student.SectionId)
+          var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == student.SectionId)
 
           if (_SectionObj.length > 0)
             _section = _SectionObj[0].MasterDataName;
@@ -952,7 +954,7 @@ export class GenerateCertificateComponent implements OnInit {
     //this.Students = [...data.value];
     //  //console.log('data.value', data.value);
     this.Students = [];
-    var _students: any = this.tokenStorage.getStudents();
+    var _students: any = this.tokenStorage.getStudents()!;
     if (_students.length > 0) {
 
       //var _students = [...data.value];
@@ -963,14 +965,14 @@ export class GenerateCertificateComponent implements OnInit {
         var _className = '';
         var _section = '';
         var _studentClassId = 0;
-        var studentclassobj = this.StudentClasses.filter(f => f.StudentId == student.StudentId);
+        var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
         if (studentclassobj.length > 0) {
           _studentClassId = studentclassobj[0].StudentClassId;
           var _classNameobj = this.Classes.filter(c => c.ClassId == studentclassobj[0].ClassId);
 
           if (_classNameobj.length > 0)
             _className = _classNameobj[0].ClassName;
-          var _SectionObj = this.Sections.filter(f => f.MasterDataId == studentclassobj[0].SectionId)
+          var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclassobj[0].SectionId)
 
           if (_SectionObj.length > 0)
             _section = _SectionObj[0].MasterDataName;
@@ -994,17 +996,17 @@ export class GenerateCertificateComponent implements OnInit {
     this.PageLoading = false;
     //})
   }
-  SportsResultList = [];
+  SportsResultList :any[]= [];
   ActivityDisplayColumn = ["GroupName", "SportsName", "Category", "SubCategory", "Session", "Action"];
   GetSportsResult() {
     debugger;
     var filterStr = this.FilterOrgSubOrg + " and Active eq 1";
-    var _searchStudentGroupId = this.searchForm.get("searchStudentGroupId").value;
-    var _studentclassId = this.searchForm.get("searchStudentName").value.StudentClassId;
-    var _SportsNameId = this.searchForm.get("searchActivityId").value;
-    var _categoryId = this.searchForm.get("searchCategoryId").value;
-    var _subCategoryId = this.searchForm.get("searchSubCategoryId").value;
-    var _SessionId = this.searchForm.get("searchSessionId").value;
+    var _searchStudentGroupId = this.searchForm.get("searchStudentGroupId")?.value;
+    var _studentclassId = this.searchForm.get("searchStudentName")?.value.StudentClassId;
+    var _SportsNameId = this.searchForm.get("searchActivityId")?.value;
+    var _categoryId = this.searchForm.get("searchCategoryId")?.value;
+    var _subCategoryId = this.searchForm.get("searchSubCategoryId")?.value;
+    var _SessionId = this.searchForm.get("searchSessionId")?.value;
 
     if (_studentclassId == undefined) {
       this.loading = false;
@@ -1086,24 +1088,24 @@ export class GenerateCertificateComponent implements OnInit {
             m.GroupName = '';
 
           //activitynames contains only active one. if not active then dont display it.
-          var obj = this.ActivityNames.filter(f => f.MasterDataId == m.SportsNameId);
+          var obj = this.ActivityNames.filter((f:any) => f.MasterDataId == m.SportsNameId);
           if (obj.length > 0) {
             m.SportsName = obj[0].MasterDataName;
 
-            var objCategory = this.allMasterData.filter(f => f.MasterDataId == m.CategoryId);
+            var objCategory = this.allMasterData.filter((f:any) => f.MasterDataId == m.CategoryId);
             if (objCategory.length > 0)
               m.Category = objCategory[0].MasterDataName;
             else
               m.Category = '';
 
-            var objSubCategory = this.allMasterData.filter(f => f.MasterDataId == m.SubCategoryId);
+            var objSubCategory = this.allMasterData.filter((f:any) => f.MasterDataId == m.SubCategoryId);
             if (objSubCategory.length > 0) {
               m.SubCategory = objSubCategory[0].MasterDataName;
             }
             else
               m.SubCategory = '';
 
-            var objSession = this.allMasterData.filter(f => f.MasterDataId == m.SessionId);
+            var objSession = this.allMasterData.filter((f:any) => f.MasterDataId == m.SessionId);
             if (objSession.length > 0) {
               m.Session = objSession[0].MasterDataName;
             }
@@ -1128,7 +1130,7 @@ export class GenerateCertificateComponent implements OnInit {
       });
 
   }
-  AllCertificateConfig = [];
+  AllCertificateConfig :any[]= [];
   GetAllCertificateConfig() {
     debugger;
     var filterStr = "Active eq true and (OrgId eq 0 or (" + this.FilterOrgSubOrg + "))";
@@ -1161,7 +1163,7 @@ export class GenerateCertificateComponent implements OnInit {
   }
   GetCertificates() {
     debugger;
-    var _studentClassId = this.searchForm.get("searchStudentName").value.StudentClassId;
+    var _studentClassId = this.searchForm.get("searchStudentName")?.value.StudentClassId;
     if (_studentClassId > 0) {
       this.StudentClassId = _studentClassId;
     }
@@ -1171,14 +1173,14 @@ export class GenerateCertificateComponent implements OnInit {
     }
 
     if (this.SelectedCertificateType.toLowerCase() == 'provisional certificate' || this.SelectedCertificateType.toLowerCase() == 'transfer certificate') {
-      var _examId = this.searchForm.get("searchExamId").value;
+      var _examId = this.searchForm.get("searchExamId")?.value;
       if (_examId == 0) {
         this.loading = false;
         this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
         return;
       }
     }
-    if (this.searchForm.get("searchCertificateTypeId").value == 0) {
+    if (this.searchForm.get("searchCertificateTypeId")?.value == 0) {
       this.contentservice.openSnackBar("Please select certificate type!", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
@@ -1220,15 +1222,15 @@ export class GenerateCertificateComponent implements OnInit {
       .subscribe((org: any) => {
         this.Organization = org.value.map(m => {
           //m.CountryName = '';
-          var countryObj = this.allMasterData.filter(f => f.MasterDataId == m.CountryId);
+          var countryObj = this.allMasterData.filter((f:any) => f.MasterDataId == m.CountryId);
           if (countryObj.length > 0)
             m.Country = countryObj[0].MasterDataName;
 
-          var stateObj = this.allMasterData.filter(f => f.MasterDataId == m.StateId);
+          var stateObj = this.allMasterData.filter((f:any) => f.MasterDataId == m.StateId);
           if (stateObj.length > 0)
             m.State = stateObj[0].MasterDataName;
 
-          var cityObj = this.allMasterData.filter(f => f.MasterDataId == m.CityId);
+          var cityObj = this.allMasterData.filter((f:any) => f.MasterDataId == m.CityId);
           if (cityObj.length > 0)
             m.City = cityObj[0].MasterDataName;
 
@@ -1331,7 +1333,7 @@ export class GenerateCertificateComponent implements OnInit {
         this.StudentAttendanceList = [...attendance.value]
         //var groupbyPresentAbsent = alasql("select count(1) from ? where AttendanceStatusId = "+this.AttendancePresentId+" group by AttendanceStatusId",
         //  [this.StudentAttendanceList])
-        var count = this.StudentAttendanceList.filter(f=>f.AttendanceStatusId ==this.AttendancePresentId);
+        var count = this.StudentAttendanceList.filter((f:any)=>f.AttendanceStatusId ==this.AttendancePresentId);
         //if (groupbyPresentAbsent.length > 0)
           this.AttendanceStatusSum = count.length;// groupbyPresentAbsent[0].Total;
 
@@ -1398,10 +1400,10 @@ export class GenerateCertificateComponent implements OnInit {
     //console.log("hi")
   }
   getCertificateDropDown(dropdowntype) {
-    var dropdownValues = [];
-    var drp = this.AllCertificateConfig.filter(f => f.Title.toLowerCase() == dropdowntype.toLowerCase())
+    var dropdownValues :any[]= [];
+    var drp = this.AllCertificateConfig.filter((f:any) => f.Title.toLowerCase() == dropdowntype.toLowerCase())
     if (drp.length > 0) {
-      dropdownValues = this.AllCertificateConfig.filter(f => f.ParentId == drp[0].CertificateConfigId)
+      dropdownValues = this.AllCertificateConfig.filter((f:any) => f.ParentId == drp[0].CertificateConfigId)
     }
     return dropdownValues;
 

@@ -5,11 +5,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-examclassgroup',
@@ -19,25 +19,25 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
 export class ExamclassgroupComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  ClassGroups = [];
-  //SubjectCategory = [];
-  LoginUserDetail: any[] = [];
+  ClassGroups :any[]= [];
+  //SubjectCategory :any[]= [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   ExamClassGroupMapListName = 'ExamClassGroupMaps';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  ExamClassGroupMapList: IExamClassGroupMap[] = [];
+  ExamClassGroupMapList: IExamClassGroupMap[]= [];
   filteredOptions: Observable<IExamClassGroupMap[]>;
   dataSource: MatTableDataSource<IExamClassGroupMap>;
-  allMasterData = [];
-  ExamClassGroupMap = [];
+  allMasterData :any[]= [];
+  ExamClassGroupMap :any[]= [];
   Permission = 'deny';
-  Classes = [];
-  //ExamStatus = [];
-  Exams = [];
+  Classes :any[]= [];
+  //ExamStatus :any[]= [];
+  Exams :any[]= [];
   ExamClassGroupMapData = {
     ExamClassGroupMapId: 0,
     ExamId: 0,
@@ -51,7 +51,7 @@ export class ExamclassgroupComponent implements OnInit {
     "Active",
     "Action"
   ];
-  ExamNames = [];
+  ExamNames :any[]= [];
   SelectedApplicationId = 0;
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
@@ -84,14 +84,14 @@ export class ExamclassgroupComponent implements OnInit {
     this.loading = true;
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //this.EmployeeId = +this.tokenStorage.getEmployeeId();
+    //this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
       //this.contentservice.GetOrgExpiry(this.LoginUserDetail);
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
-      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-      this.SubOrgId = +this.tokenStorage.getSubOrgId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EXAM.EXAMCLASSGROUPMAP);
@@ -114,7 +114,7 @@ export class ExamclassgroupComponent implements OnInit {
 
   //   var newdata = {
   //     ExamClassGroupMapId: 0,
-  //     ExamId: this.searchForm.get("searchExamId").value,
+  //     ExamId: this.searchForm.get("searchExamId")?.value,
   //     Active: 0,
   //     Action: false
   //   };
@@ -238,7 +238,7 @@ export class ExamclassgroupComponent implements OnInit {
           }
         });
   }
-  ClassGroupMappings = [];
+  ClassGroupMappings :any[]= [];
   GetclassgroupMappings() {
     this.contentservice.GetClassGroupMappings(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
@@ -270,8 +270,8 @@ export class ExamclassgroupComponent implements OnInit {
   DatafromotherexamMSG = '';
   CopyFromOtherExam() {
     debugger;
-    var _copyFromExamId = this.searchForm.get("searchCopyExamId").value;
-    var _examId = this.searchForm.get("searchExamId").value;
+    var _copyFromExamId = this.searchForm.get("searchCopyExamId")?.value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
     if (_copyFromExamId == 0) {
       this.contentservice.openSnackBar("Please select exam to copy from.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -289,8 +289,8 @@ export class ExamclassgroupComponent implements OnInit {
     let filterStr = this.FilterOrgSubOrg;
     //" and BatchId eq " + this.SelectedBatchId;
 
-    var _examId = this.searchForm.get("searchExamId").value;
-    //var _ClassGroupId = this.searchForm.get("searchClassGroupId").value;
+    var _examId = this.searchForm.get("searchExamId")?.value;
+    //var _ClassGroupId = this.searchForm.get("searchClassGroupId")?.value;
     if (_examId == 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -376,7 +376,7 @@ export class ExamclassgroupComponent implements OnInit {
   }
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {

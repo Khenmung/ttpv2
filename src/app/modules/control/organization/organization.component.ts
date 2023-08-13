@@ -4,12 +4,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { FileUploadService } from 'src/app/shared/upload.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { FileUploadService } from '../../../shared/upload.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import {SwUpdate} from '@angular/service-worker';
 
 @Component({
@@ -27,23 +27,23 @@ export class OrganizationComponent implements OnInit {
   imgURL: any;
   selectedFile: any;
   formdata: FormData;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
-  StorageFnPList = [];
+  StorageFnPList :any[]= [];
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  Applications = [];
-  Organizations = [];
+  Applications :any[]= [];
+  Organizations :any[]= [];
   OrganizationListName = "Organizations";
-  OrganizationList = [];
-  Country = [];
-  States = [];
-  City = [];
-  Plans = [];
-  CustomerPlans = [];
+  OrganizationList :any[]= [];
+  Country :any[]= [];
+  States :any[]= [];
+  City :any[]= [];
+  Plans :any[]= [];
+  CustomerPlans :any[]= [];
   dataSource: MatTableDataSource<IOrganization>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   Permission = '';
   OrganizationData = {
     OrganizationId: 0,
@@ -72,7 +72,7 @@ export class OrganizationComponent implements OnInit {
     "Active",
     "Action"
   ];
-  TopMasters = [];
+  TopMasters :any[]= [];
   SelectedApplicationId = 0;
   searchForm: UntypedFormGroup;
   LogoPath = '';
@@ -126,8 +126,8 @@ export class OrganizationComponent implements OnInit {
       //.SubOrgId = this.SubOrgId
     }
     else {
-      this.UserId = localStorage.getItem("userId");
-      this.OrgId = +localStorage.getItem("orgId");
+      this.UserId = localStorage.getItem("userId")!;
+      this.OrgId = +localStorage.getItem("orgId")!;
     }
 
     var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.CONTROL.ORGANIZATION)
@@ -138,12 +138,12 @@ export class OrganizationComponent implements OnInit {
       this.FilterOrgSubOrg =globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.FilterOrgSubOrgBatchId =globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.Applications = this.tokenStorage.getPermittedApplications();
-      var commonAppId = this.Applications.filter(f => f.appShortName == 'common')[0].applicationId;
-      //var TopMasters=[];
+      var commonAppId = this.Applications.filter((f:any) => f.appShortName == 'common')[0].applicationId;
+      //var TopMasters:any[]=[];
       this.contentservice.GetParentZeroMasters().subscribe((data: any) => {
         this.TopMasters = [...data.value];
         //console.log("this.TopMasters",this.TopMasters)
-        var countryparentId = this.TopMasters.filter(f => f.MasterDataName.toLowerCase() == 'country')[0].MasterDataId;
+        var countryparentId = this.TopMasters.filter((f:any) => f.MasterDataName.toLowerCase() == 'country')[0].MasterDataId;
         this.contentservice.GetDropDownDataFromDB(countryparentId, this.FilterOrgSubOrg, commonAppId)
           .subscribe((data: any) => {
             this.Country = [...data.value];
@@ -159,7 +159,7 @@ export class OrganizationComponent implements OnInit {
   }
   //}
   PopulateState(element) {
-    var commonAppId = this.Applications.filter(f => f.appShortName == 'common')[0].applicationId;
+    var commonAppId = this.Applications.filter((f:any) => f.appShortName == 'common')[0].applicationId;
     this.contentservice.GetDropDownDataFromDB(element.value,this.FilterOrgSubOrg, commonAppId)
       .subscribe((data: any) => {
         this.States = [...data.value];
@@ -167,7 +167,7 @@ export class OrganizationComponent implements OnInit {
       })
   }
   PopulateCity(element) {
-    var commonAppId = this.Applications.filter(f => f.appShortName == 'common')[0].applicationId;
+    var commonAppId = this.Applications.filter((f:any) => f.appShortName == 'common')[0].applicationId;
     this.contentservice.GetDropDownDataFromDB(element.value, this.FilterOrgSubOrg, commonAppId)
       .subscribe((data: any) => {
         this.City = [...data.value];
@@ -196,15 +196,15 @@ export class OrganizationComponent implements OnInit {
 
     this.OrganizationData.OrganizationId = this.OrganizationId;
     //this.OrganizationData.RegistrationNo = row.OrganizationName;
-    this.OrganizationData.Address = this.searchForm.get("Address").value;
-    this.OrganizationData.CityId = this.searchForm.get("CityId").value;
-    this.OrganizationData.StateId = this.searchForm.get("StateId").value;
-    this.OrganizationData.RegistrationNo = this.searchForm.get("RegistrationNo").value;
-    this.OrganizationData.Active = this.searchForm.get("Active").value;
-    this.OrganizationData.CountryId = this.searchForm.get("CountryId").value;
-    this.OrganizationData.Contact = this.searchForm.get("Contact").value;
-    this.OrganizationData.WebSite = this.searchForm.get("WebSite").value;
-    // this.OrganizationData.LogoPath = this.LogoPath// this.searchForm.get("LogoPath").value;
+    this.OrganizationData.Address = this.searchForm.get("Address")?.value;
+    this.OrganizationData.CityId = this.searchForm.get("CityId")?.value;
+    this.OrganizationData.StateId = this.searchForm.get("StateId")?.value;
+    this.OrganizationData.RegistrationNo = this.searchForm.get("RegistrationNo")?.value;
+    this.OrganizationData.Active = this.searchForm.get("Active")?.value;
+    this.OrganizationData.CountryId = this.searchForm.get("CountryId")?.value;
+    this.OrganizationData.Contact = this.searchForm.get("Contact")?.value;
+    this.OrganizationData.WebSite = this.searchForm.get("WebSite")?.value;
+    // this.OrganizationData.LogoPath = this.LogoPath// this.searchForm.get("LogoPath")?.value;
     //this.OrganizationData. = row.LogoPath;
 
     if (this.OrganizationData.OrganizationId == 0) {
@@ -215,7 +215,7 @@ export class OrganizationComponent implements OnInit {
       this.insert();
     }
     else {
-      delete this.OrganizationData["CreatedDate"];
+      //delete this.OrganizationData["CreatedDate"];
       delete this.OrganizationData["CreatedBy"];
       this.OrganizationData["UpdatedDate"] = new Date();
       this.OrganizationData["UpdatedBy"] = this.UserId;
@@ -259,7 +259,7 @@ export class OrganizationComponent implements OnInit {
         if (this.LoginUserDetail[0]['org'].toLowerCase() != 'ttp') {
           this.imgURL = this.LoginUserDetail[0].logoPath
           this.searchForm.patchValue({ "searchCustomerId": this.LoginUserDetail[0]['orgId'] });
-          var cntrl = this.searchForm.get("searchCustomerId");
+          var cntrl = this.searchForm.get("searchCustomerId")!;
           cntrl.disable();
           this.GetOrganizationDetail();
         }
@@ -273,7 +273,7 @@ export class OrganizationComponent implements OnInit {
 
     this.loading = true;
 
-    var _searchCustomerId = this.searchForm.get("searchCustomerId").value;
+    var _searchCustomerId = this.searchForm.get("searchCustomerId")?.value;
 
     if (_searchCustomerId > 0)
       filterstr += "OrganizationId eq " + _searchCustomerId;
@@ -296,7 +296,7 @@ export class OrganizationComponent implements OnInit {
       "CreatedDate"
     ];
     list.PageName = this.OrganizationListName;
-    //list.lookupFields = [];
+    //list.lookupFields :any[]= [];
     list.filter = [filterstr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -353,7 +353,7 @@ export class OrganizationComponent implements OnInit {
       this.contentservice.openSnackBar("Please select a file.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _parentId = this.StorageFnPList.filter(f => f.FileName.toLowerCase() == "organization logo")[0].FileId;
+    var _parentId = this.StorageFnPList.filter((f:any) => f.FileName.toLowerCase() == "organization logo")[0].FileId;
     this.formdata = new FormData();
     this.formdata.append("description", "organization logo");
     this.formdata.append("fileOrPhoto", "0");
@@ -379,7 +379,7 @@ export class OrganizationComponent implements OnInit {
     let list: List = new List();
     list.fields = ["*"];
     list.PageName = "StorageFnPs";
-    //list.lookupFields = [];
+    //list.lookupFields :any[]= [];
     list.filter = [filterstr];
     return this.dataservice.get(list);
   }
@@ -442,7 +442,8 @@ export interface IOrganization {
   ValidTo: Date;
   Active: number;
   ParentId: number;
-  MainOrgId: number;SubOrgId: number;
-  CreatedDate: Date;
+  MainOrgId: number;
+  SubOrgId: number;
+  CreatedDate?: Date;
 }
 

@@ -6,12 +6,12 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import alasql from 'alasql';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
 @Component({
@@ -27,11 +27,11 @@ export class StudentattendancereportComponent implements OnInit {
 
   @ViewChild("table") mattable;
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
-  AttendanceStatusSum = [];
+  AttendanceStatusSum :any[]= [];
   edited = false;
   EnableSave = true;
   Permission = 'deny';
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   
@@ -42,18 +42,18 @@ export class StudentattendancereportComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  Sections = [];
-  Classes = [];
-  Subjects = [];
-  ClassSubjects = [];
+  Sections :any[]= [];
+  Classes :any[]= [];
+  Subjects :any[]= [];
+  ClassSubjects :any[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  Batches = [];
-  //AttendanceStatus = [];
-  FilteredClassSubjects = [];
-  StudentAttendanceList: IStudentAttendance[] = [];
-  StudentClassList = [];
+  Batches :any[]= [];
+  //AttendanceStatus :any[]= [];
+  FilteredClassSubjects :any[]= [];
+  StudentAttendanceList: IStudentAttendance[]= [];
+  StudentClassList :any[]= [];
   dataSource: MatTableDataSource<IStudentAttendance>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   searchForm = this.fb.group({
     searchClassId: [0],
     searchSectionId: [0],
@@ -106,19 +106,19 @@ export class StudentattendancereportComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.ATTENDANCE.STUDENTATTENDANCERECORD)
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
-        this.StudentClassId = this.tokenStorage.getStudentClassId();
+        this.StudentClassId = this.tokenStorage.getStudentClassId()!;
         if (this.StudentClassId == 0) {
           this.loading = false; this.PageLoading = false;
           this.contentservice.openSnackBar("Student class not defined.", globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-          this.SubOrgId = this.tokenStorage.getSubOrgId();
+          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+          this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
           this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
           this.GetMasterData();
@@ -138,10 +138,10 @@ export class StudentattendancereportComponent implements OnInit {
   }
   bindClassSubject() {
     debugger;
-    var classId = this.searchForm.get("searchClassId").value;
-    // var semesterId = this.searchForm.get("searchSemesterId").value;
-    // var sectionId = this.searchForm.get("searchSectionId").value;
-    this.FilteredClassSubjects = this.ClassSubjects.filter(f => f.ClassId == classId);
+    var classId = this.searchForm.get("searchClassId")?.value;
+    // var semesterId = this.searchForm.get("searchSemesterId")?.value;
+    // var sectionId = this.searchForm.get("searchSectionId")?.value;
+    this.FilteredClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == classId);
 
   }
   // checkall(value) {
@@ -181,7 +181,7 @@ export class StudentattendancereportComponent implements OnInit {
             AttendanceId: att.AttendanceId,
             StudentClassId: att.StudentClassId,
             AttendanceStatusId: att.AttendanceStatusId,
-            AttendanceStatus: this.AttendanceStatus.filter(f=>f.MasterDataId== att.AttendanceStatusId)[0].MasterDataName,
+            AttendanceStatus: this.AttendanceStatus.filter((f:any)=>f.MasterDataId== att.AttendanceStatusId)[0].MasterDataName,
             AttendanceDate: att.AttendanceDate,
             ClassSubjectId: att.ClassSubjectId,
             Remarks: att.Remarks,
@@ -253,12 +253,12 @@ export class StudentattendancereportComponent implements OnInit {
         this.ClassSubjects = [];
         data.value.forEach(item => {
           var _classname = ''
-          var objCls = this.Classes.filter(f => f.ClassId == item.ClassId)
+          var objCls = this.Classes.filter((f:any) => f.ClassId == item.ClassId)
           if (objCls.length > 0) {
             _classname = objCls[0].ClassName;
 
             var _subjectName = '';
-            var objsubject = this.Subjects.filter(f => f.MasterDataId == item.SubjectId)
+            var objsubject = this.Subjects.filter((f:any) => f.MasterDataId == item.SubjectId)
             if (objsubject.length > 0) {
 
               _subjectName = objsubject[0].MasterDataName;
@@ -273,17 +273,17 @@ export class StudentattendancereportComponent implements OnInit {
         })
       })
   }
-  AttendanceStatus=[];
+  AttendanceStatus:any[]=[];
   AttendancePresentId=0;
   AttendanceAbsentId=0;
   GetMasterData() {
 
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
-    this.AttendancePresentId = this.AttendanceStatus.filter(f=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
-    this.AttendanceAbsentId = this.AttendanceStatus.filter(f=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
+    this.AttendancePresentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
+    this.AttendanceAbsentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
     this.shareddata.ChangeSubjects(this.Subjects);
     this.loading = false; 
     this.PageLoading = false;

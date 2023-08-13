@@ -5,7 +5,7 @@ import { StudentSubjectMarkCompComponent } from './student-subject-mark-comp/stu
 import { studentsubjectdashboardComponent } from './studentsubjectdashboard/studentsubjectdashboard.component';
 import { SubjectTypesComponent } from './subject-types/subject-types.component';
 import { SubjectBoardComponent } from './subjectboard/subjectboard.component';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { StudentSubjectReportComponent } from './studentsubjectreport/studentsubjectreport.component';
 import { SubjectcomponentComponent } from './subjectcomponent/subjectcomponent.component';
 

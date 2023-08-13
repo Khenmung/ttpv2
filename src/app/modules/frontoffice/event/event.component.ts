@@ -5,12 +5,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
 import { SwUpdate } from '@angular/service-worker';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import * as moment from 'moment';
 
 @Component({
@@ -22,19 +22,19 @@ export class EventComponent implements OnInit {
     PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
 
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   EventsListName = 'Events';
-  Applications = [];
+  Applications :any[]= [];
   loading = false;
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId='';
   FilterOrgSubOrg='';
-  EventsList: IEvent[] = [];
+  EventsList: IEvent[]= [];
   filteredOptions: Observable<IEvent[]>;
   dataSource: MatTableDataSource<IEvent>;
-  allMasterData = [];
-  Events = [];
+  allMasterData :any[]= [];
+  Events :any[]= [];
   Permission = 'deny';
   EmployeeId = 0;
   EventsData = {
@@ -89,15 +89,15 @@ export class EventComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.EmployeeId = +this.tokenStorage.getEmployeeId();
-    this.SubOrgId = this.tokenStorage.getSubOrgId();
+    this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.misc.EVENT);

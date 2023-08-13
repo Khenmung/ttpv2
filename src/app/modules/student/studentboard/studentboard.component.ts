@@ -1,15 +1,15 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
-import { ContentService } from 'src/app/shared/content.service';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { AddstudentclassComponent } from '../addstudentclass/addstudentclass.component';
 import { StudentattendancereportComponent } from '../studentattendancereport/studentattendancereport.component';
 import { studentprimaryinfoComponent } from '../studentprimaryinfo/studentprimaryinfo.component';
 import { StudentprogressreportComponent } from '../studentprogressreport/studentprogressreport.component';
 import { Router } from '@angular/router';
 import { StudentviewComponent } from '../studentview/studentview.component';
-import { SidenavService } from 'src/app/shared/sidenav.service';
+import { SidenavService } from '../../../shared/sidenav.service';
 import { ConnectionService } from 'ng-connection-service';
 
 @Component({
@@ -43,7 +43,7 @@ export class StudentboardComponent implements AfterViewInit {
     };
   StudentId = 0;
   StudentName = '';
-  LoginUserDetail = [];
+  LoginUserDetail :any[]= [];
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
   isConnected:boolean = true;
@@ -69,7 +69,7 @@ export class StudentboardComponent implements AfterViewInit {
        
       }
     })
-    this.StudentId = tokenStorage.getStudentId();
+    this.StudentId = tokenStorage.getStudentId()!;
   }
   toggleRightSidenav() {
     //console.log("this.sidenav",this.sidenav.)

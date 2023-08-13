@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from 'src/app/shared/components/home/home.component';
+import { HomeComponent } from '../../shared/components/home/home.component';
 import { ExamdashboardComponent } from './examdashboard/examdashboard.component';
 import { ExamhomeComponent } from './examhome/examhome.component';
 import { ExamsComponent } from './exams/exams.component';

@@ -9,8 +9,8 @@ import { IPage, List } from '../../../shared/interface';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { ContentService } from 'src/app/shared/content.service';
+import { globalconstants } from '../../../shared/globalconstant';
+import { ContentService } from '../../../shared/content.service';
 
 @Component({
   selector: 'app-menu-config',
@@ -23,15 +23,15 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
   SelectedAppId = 0;
   SubOrgId = 0;
   oldvalue: any;
-  TopMenu = [];
-  ParentDropDown = [];
-  AllData: any[] = [];
+  TopMenu :any[]= [];
+  ParentDropDown :any[]= [];
+  AllData:any[]= [];
   ParentPages: [{ PageId, PageTitle }];
-  PageList = [];
+  PageList :any[]= [];
   PageDetail: IPage;
   dataSource: MatTableDataSource<IMenuConfig>;
-  DATA: any[] = [];
-  LoginUserDetail = [];
+  DATA:any[]= [];
+  LoginUserDetail :any[]= [];
   columns: Array<any>;
   title: string;
   Id: number;
@@ -75,8 +75,8 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
   @ViewChild(MatSort) sort: MatSort;
   searchForm: UntypedFormGroup;
   //selection = new SelectionModel<IPage>(true, []);
-  Applications = [];
-  allMasterData = [];
+  Applications :any[]= [];
+  allMasterData :any[]= [];
   Permission = '';
   ngOnInit() {
     debugger;
@@ -85,7 +85,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
       searchTopMenuId: [0]
     })
     this.route.paramMap.subscribe(params => {
-      this.Id = +params.get("parentid");
+      this.Id = +params.get("parentid")!;
     })
     this.PageLoad();
     //this.GetParentPage(this.Id);
@@ -93,7 +93,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
   PageLoad() {
     this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.checklogin();
-    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+    this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
 
   }
   constructor(private servicework: SwUpdate,
@@ -123,8 +123,8 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SelectedAppId = +this.tokenStorage.getSelectedAPPId();
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SelectedAppId = +this.tokenStorage.getSelectedAPPId()!;
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.GetMasterData();
       }
     }
@@ -138,7 +138,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
     let list: List = new List();
     list.fields = ["PageId,PageTitle,label,ApplicationId,ParentId,DisplayOrder"];
     list.PageName = "Pages";
-    list.filter = ["Active eq 1 and ParentId eq 0 and ApplicationId eq " + this.searchForm.get("searchApplicationId").value];
+    list.filter = ["Active eq 1 and ParentId eq 0 and ApplicationId eq " + this.searchForm.get("searchApplicationId")?.value];
     this.EmptyData();
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -154,7 +154,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
     this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"],this.SubOrgId, globaladminId)
       .subscribe((data: any) => {
         this.allMasterData = [...data.value];
-        var _ParentId = this.allMasterData.filter(f => f.MasterDataName.toLowerCase() == 'application')[0].MasterDataId;
+        var _ParentId = this.allMasterData.filter((f:any) => f.MasterDataName.toLowerCase() == 'application')[0].MasterDataId;
         
         //this.Applications = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.bang);
         var _orgId ="OrgId eq 0";
@@ -192,10 +192,10 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
     this.dataservice
       .get(this.list)
       .subscribe({
-        next: (arrPage) => {
+        next: (arrPage:any) => {
           debugger;
           ////console.log('arrpage', arrPage);
-          let arr = [];
+          let arr :any[]= [];
           Object.keys(arrPage).map(function (key) {
             arr.push({ [key]: arrPage[key] })
             return arr;
@@ -295,7 +295,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
 
   }
   AddNew() {
-    if (this.searchForm.get("searchApplicationId").value == 0) {
+    if (this.searchForm.get("searchApplicationId")?.value == 0) {
       this.loading = false; this.PageLoading=false;
       this.contentservice.openSnackBar("Please select application.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -311,7 +311,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
       DisplayOrder: 0,
       HasSubmenu: 0,
       ParentPage: '',
-      ApplicationId: this.searchForm.get("searchApplicationId").value,
+      ApplicationId: this.searchForm.get("searchApplicationId")?.value,
       Active: 0,
       UpdateDate: new Date(),
       HomePage: 0,
@@ -330,7 +330,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
     debugger;
 
     let ErrorMessage = '';
-    // if (this.AppUsersForm.get("ContactNo").value == 0) {
+    // if (this.AppUsersForm.get("ContactNo")?.value == 0) {
     //   ErrorMessage += "Please select contact.<br>";
     // }
     if (row.PageTitle.length == 0) {
@@ -345,12 +345,12 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
       return;
     }
     // var _ParentId = 0;
-    // if (this.searchForm.get("searchTopMenuId").value > 0) {
-    //   _ParentId = this.searchForm.get("searchTopMenuId").value;
+    // if (this.searchForm.get("searchTopMenuId")?.value > 0) {
+    //   _ParentId = this.searchForm.get("searchTopMenuId")?.value;
     // }
     var duplicatecheck = this.FilterOrgSubOrg + " and ApplicationId eq " + this.SelectedAppId +
       " and PageTitle eq '" + row.PageTitle + "'" + 
-      " and ApplicationId eq " + this.searchForm.get("searchApplicationId").value;
+      " and ApplicationId eq " + this.searchForm.get("searchApplicationId")?.value;
     if (row.PageId > 0)
       duplicatecheck += " and PageId ne " + row.PageId;
 
@@ -440,18 +440,18 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
 
   GetPages() {
     var filterStr = '';
-    if (this.searchForm.get("searchApplicationId").value == 0) {
+    if (this.searchForm.get("searchApplicationId")?.value == 0) {
       this.contentservice.openSnackBar("Please select application.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     this.loading = true;
-    filterStr = "ApplicationId eq " + this.searchForm.get("searchApplicationId").value
+    filterStr = "ApplicationId eq " + this.searchForm.get("searchApplicationId")?.value
     var _ParentId = 0;
 
 
-    if (this.searchForm.get("searchTopMenuId").value > 0) {
+    if (this.searchForm.get("searchTopMenuId")?.value > 0) {
 
-      _ParentId = this.searchForm.get("searchTopMenuId").value
+      _ParentId = this.searchForm.get("searchTopMenuId")?.value
     }
 
 

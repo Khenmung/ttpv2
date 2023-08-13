@@ -7,12 +7,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import alasql from 'alasql';
 import { Observable } from 'rxjs';
 
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { SharedataService } from 'src/app/shared/sharedata.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { SharedataService } from '../../../shared/sharedata.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 //import { ClasssubjectComponent } from '../studentsubject/classsubject.component';
 
 @Component({
@@ -29,28 +29,28 @@ export class studentsubjectdashboardComponent implements OnInit {
   StudentDetail: any = {};
   rowCount = 0;
   edited = false;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
-  SelectedStudentSubjectCount = [];
+  SelectedStudentSubjectCount :any[]= [];
   StudentDetailToDisplay = '';
   SelectedApplicationId = 0;
   StudentClassId = 0;
   //StandardFilter = '';
   loading = false;
-  ClassSubjectList = [];
-  Sections = [];
-  Classes = [];
-  Subjects = [];
-  Semesters = [];
+  ClassSubjectList :any[]= [];
+  Sections :any[]= [];
+  Classes :any[]= [];
+  Subjects :any[]= [];
+  Semesters :any[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
-  Batches = [];
-  StudentClassSubjects = [];
+  Batches :any[]= [];
+  StudentClassSubjects :any[]= [];
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
-  StudentSubjectList: IStudentSubject[] = [];
+  StudentSubjectList: IStudentSubject[]= [];
   dataSource: MatTableDataSource<IStudentSubject>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   Defaultvalue = 0;
   searchForm = this.fb.group({
     searchSemesterId: [0],
@@ -58,7 +58,7 @@ export class studentsubjectdashboardComponent implements OnInit {
     searchSubjectId: [0],
     searchSectionId: [0],
   });
-  StoreForUpdate = [];
+  StoreForUpdate :any[]= [];
   StudentClassSubjectId = 0;
   StudentSubjectData = {
     StudentClassSubjectId: 0,
@@ -78,7 +78,7 @@ export class studentsubjectdashboardComponent implements OnInit {
   };
   filteredOptions: Observable<IStudentSubject[]>;
   Permission = '';
-  displayedColumns = [];
+  displayedColumns :any[]= [];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -110,16 +110,16 @@ export class studentsubjectdashboardComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.SUBJECT.STUDENTSUBJECT);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
 
 
         this.GetMasterData();
@@ -134,9 +134,9 @@ export class studentsubjectdashboardComponent implements OnInit {
 
   GetStudentClassSubject() {
     //debugger;
-    let _sectionId = this.searchForm.get("searchSectionId").value;
-    let _classId = this.searchForm.get("searchClassId").value;
-    let _semesterId = this.searchForm.get("searchSemesterId").value;
+    let _sectionId = this.searchForm.get("searchSectionId")?.value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
+    let _semesterId = this.searchForm.get("searchSemesterId")?.value;
     if (_classId == 0) {
       this.contentservice.openSnackBar("Please select class", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -149,7 +149,7 @@ export class studentsubjectdashboardComponent implements OnInit {
       this.contentservice.openSnackBar("Please select semester.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    // if (this.searchForm.get("searchSubjectId").value == 0) {
+    // if (this.searchForm.get("searchSubjectId")?.value == 0) {
     //   this.contentservice.openSnackBar("Please select subject", globalconstants.ActionText,globalconstants.RedBackground);
     //   return;
     // }
@@ -183,7 +183,7 @@ export class studentsubjectdashboardComponent implements OnInit {
     //     //debugger;
     //     //  //console.log('data.value', data.value);
     //     this.StudentSubjectList = [];
-    //     var _studentClassExisting = [];
+    //     var _studentClassExisting :any[]= [];
     //     //if (studentclassdb.value.length > 0) {
 
     //     studentclassdb.value.forEach(item => {
@@ -209,9 +209,9 @@ export class studentsubjectdashboardComponent implements OnInit {
   GetExistingStudentClassSubjects() {
 
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId; //"OrgId eq " + this.LoginUserDetail[0]["orgId"] + " and BatchId eq " + this.SelectedBatchId;
-    var _classId = this.searchForm.get("searchClassId").value;
-    var _sectionId = this.searchForm.get("searchSectionId").value;
-    var _semesterId = this.searchForm.get("searchSemesterId").value;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     orgIdSearchstr += ' and ClassId eq ' + _classId;
     if (_semesterId)
       orgIdSearchstr += ' and SemesterId eq ' + _semesterId;
@@ -283,8 +283,8 @@ export class studentsubjectdashboardComponent implements OnInit {
         //////////////
         //var _studentDetail: any = {};
         this.StoreForUpdate = [];
-        var _students: any = this.tokenStorage.getStudents();
-        var _filteredStudent = _students.filter(s => s.StudentClasses.length > 0 
+        var _students: any = this.tokenStorage.getStudents()!;
+        var _filteredStudent = _students.filter((s:any) => s.StudentClasses.length > 0 
           && s.StudentClasses[0].ClassId == _classId
           && s.StudentClasses[0].SectionId == _sectionId
           && s.StudentClasses[0].SemesterId == _semesterId
@@ -311,8 +311,8 @@ export class studentsubjectdashboardComponent implements OnInit {
                 Action: false
               }
 
-              var takensubjects = this.StudentClassSubjects.filter(f => f.StudentClassId == cs.StudentClasses[0].StudentClassId);
-              var specificclasssubjects = this.ClassSubjectList.filter(f => f.ClassId == this.searchForm.get("searchClassId").value && f.SelectHowMany > 0)
+              var takensubjects = this.StudentClassSubjects.filter((f:any) => f.StudentClassId == cs.StudentClasses[0].StudentClassId);
+              var specificclasssubjects = this.ClassSubjectList.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value && f.SelectHowMany > 0)
               //console.log("specificclasssubjects",specificclasssubjects)
               specificclasssubjects.forEach((subjectTypes, indx) => {
                 var clssubject = takensubjects.filter(c => c.ClassSubjectId == subjectTypes.ClassSubjectId)
@@ -346,7 +346,7 @@ export class studentsubjectdashboardComponent implements OnInit {
         }
         else {
           debugger;
-          var cls = this.Classes.filter(c => c.ClassId == this.searchForm.get("searchClassId").value)
+          var cls = this.Classes.filter(c => c.ClassId == this.searchForm.get("searchClassId")?.value)
           var _clsName = '';
           if (cls.length > 0)
             _clsName = cls[0].ClassName;
@@ -376,7 +376,7 @@ export class studentsubjectdashboardComponent implements OnInit {
       })
   }
   BindSemesterSection() {
-    let _classId = this.searchForm.get("searchClassId").value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
     let obj = this.Classes.filter(c => c.ClassId == _classId);
     if (obj.length > 0) {
       this.SelectedClassCategory = obj[0].Category.toLowerCase();
@@ -399,10 +399,10 @@ export class studentsubjectdashboardComponent implements OnInit {
   formatData(clssubject) {
     var _subjectName = '';
     var topush = {};
-    //var subjectTypes = [];
+    //var subjectTypes :any[]= [];
 
     topush = this.StudentDetail;
-    let obj = this.Subjects.filter(s => s.MasterDataId == clssubject.SubjectId)
+    let obj = this.Subjects.filter((s:any) => s.MasterDataId == clssubject.SubjectId)
     if (obj.length > 0)
       _subjectName = obj[0].MasterDataName;
     if (this.displayedColumns.indexOf(_subjectName) == -1)
@@ -501,7 +501,7 @@ export class studentsubjectdashboardComponent implements OnInit {
   SelectAllRowInColumn(event, colName) {
     debugger;
     this.StudentSubjectList.forEach(element => {
-      var currentrow = this.StoreForUpdate.filter(f => f.Subject == colName && f.StudentClassId == element.StudentClassId);
+      var currentrow = this.StoreForUpdate.filter((f:any) => f.Subject == colName && f.StudentClassId == element.StudentClassId);
       if (event.checked) {
         currentrow[colName] = 1;
         element[colName] = 1;
@@ -516,10 +516,10 @@ export class studentsubjectdashboardComponent implements OnInit {
   }
   SelectAllInRow(element, event, colName) {
     debugger;
-    var columnexist = [];
+    var columnexist :any[]= [];
     if (colName == 'Action') {
       for (var prop in element) {
-        columnexist = this.displayedColumns.filter(f => f == prop)
+        columnexist = this.displayedColumns.filter((f:any) => f == prop)
         if (columnexist.length > 0 && event.checked && prop != 'Student' && prop != 'Action') {
           element[prop] = 1;
         }
@@ -530,7 +530,7 @@ export class studentsubjectdashboardComponent implements OnInit {
       }
     }
     else {
-      var currentrow = this.StoreForUpdate.filter(f => f.Subject == colName && f.StudentClassId == element.StudentClassId);
+      var currentrow = this.StoreForUpdate.filter((f:any) => f.Subject == colName && f.StudentClassId == element.StudentClassId);
       if (event.checked) {
         currentrow[colName] = 1;
         element[colName] = 1;
@@ -550,13 +550,13 @@ export class studentsubjectdashboardComponent implements OnInit {
     this.SelectedStudentSubjectCount = [];
     ////////
     //console.log("this.StudentSubjectList", this.StudentSubjectList);
-    let StudentSubjects = this.StoreForUpdate.filter(s => s.StudentClassId == element.StudentClassId);
+    let StudentSubjects = this.StoreForUpdate.filter((s:any) => s.StudentClassId == element.StudentClassId);
     var groupbySubjectType = alasql("select distinct SubjectTypeId,SubjectType,SelectHowMany from ? ", [StudentSubjects])
     var matchrow;
     for (var prop in element) {
       matchrow = StudentSubjects.filter(x => x.Subject == prop)
       if (matchrow.length > 0) {
-        var resultarray = groupbySubjectType.filter(f => f.SubjectTypeId == matchrow[0].SubjectTypeId);
+        var resultarray = groupbySubjectType.filter((f:any) => f.SubjectTypeId == matchrow[0].SubjectTypeId);
         if (element[prop] == 1) {
           //assuming greater than 20 means compulsory subject types
           // if (resultarray[0].SelectHowMany > 30)
@@ -570,8 +570,8 @@ export class studentsubjectdashboardComponent implements OnInit {
         }
       }
     }
-    var _compulsory = groupbySubjectType.filter(f => f.SubjectType.toLowerCase() == 'compulsory')
-    var _otherThanCompulsory = groupbySubjectType.filter(f => f.SubjectType.toLowerCase() != 'compulsory')
+    var _compulsory = groupbySubjectType.filter((f:any) => f.SubjectType.toLowerCase() == 'compulsory')
+    var _otherThanCompulsory = groupbySubjectType.filter((f:any) => f.SubjectType.toLowerCase() != 'compulsory')
     var subjectCounterr = '';
     _otherThanCompulsory.forEach(noncompulsory => {
       //element.SelectHowMany =0 meeans optional
@@ -600,7 +600,7 @@ export class studentsubjectdashboardComponent implements OnInit {
       this.rowCount = Object.keys(element).length - 4;
       for (var prop in element) {
 
-        var row: any = StudentSubjects.filter(s => s.Subject == prop);
+        var row: any = StudentSubjects.filter((s:any) => s.Subject == prop);
 
         if (row.length > 0 && prop != 'Student' && prop != 'Action') {
           var data = {
@@ -731,18 +731,18 @@ export class studentsubjectdashboardComponent implements OnInit {
       !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
   SelectedClassCategory = '';
-  ClassCategory = [];
+  ClassCategory :any[]= [];
 
   GetMasterData() {
     debugger;
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
-        let obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
           this.Classes.push(m);

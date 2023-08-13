@@ -4,11 +4,11 @@ import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { evaluate } from 'mathjs';
-import { ContentService } from 'src/app/shared/content.service';
-import { NaomitsuService } from 'src/app/shared/databaseService';
-import { globalconstants } from 'src/app/shared/globalconstant';
-import { List } from 'src/app/shared/interface';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { NaomitsuService } from '../../../shared/databaseService';
+import { globalconstants } from '../../../shared/globalconstant';
+import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
   selector: 'app-customerplans',
@@ -16,21 +16,21 @@ import { TokenStorageService } from 'src/app/_services/token-storage.service';
   styleUrls: ['./customerplans.component.scss']
 })
 export class CustomerPlansComponent implements OnInit { PageLoading=true;
-  LoginUserDetail: any[] = [];
+  LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   StandardFilterWithBatchId = '';
   PlanSelected=false;
   loading = false;
-  Applications = [];
-  CustomerPlanFeatures = [];
-  Organizations = [];
-  Currencies = [];
+  Applications :any[]= [];
+  CustomerPlanFeatures :any[]= [];
+  Organizations :any[]= [];
+  Currencies :any[]= [];
   CustomerPlansListName = "CustomerPlans";
-  CustomerPlansList = [];
-  Plans = [];
+  CustomerPlansList :any[]= [];
+  Plans :any[]= [];
   SubOrgId=0;
   dataSource: MatTableDataSource<ICustomerPlans>;
-  allMasterData = [];
+  allMasterData :any[]= [];
   PagePermission = '';
   CustomerPlanId = 0;
   CustomerPlansData = {
@@ -91,7 +91,7 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
     if (this.LoginUserDetail.length != 0) {
       this.UserId = this.LoginUserDetail[0]["userId"];
       this.OrgId = this.LoginUserDetail[0]["orgId"];
-      this.SubOrgId = this.tokenStorage.getSubOrgId();
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       
       if (this.LoginUserDetail[0]['org'].toLowerCase() == 'ttp') {
         this.displayedColumns = [
@@ -110,9 +110,9 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
       }
     }
     else {
-      this.UserId = localStorage.getItem("userId");
-      this.OrgId = +localStorage.getItem("orgId");
-      this.SubOrgId = +localStorage.getItem("subOrgId");
+      this.UserId = localStorage.getItem("userId")!;
+      this.OrgId = +localStorage.getItem("orgId")!;
+      this.SubOrgId = +localStorage.getItem("subOrgId")!;
 
     }
     this.GetOrganizations();
@@ -239,7 +239,7 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
       .subscribe((data: any) => {
         this.Organizations = [...data.value];
         this.searchForm.patchValue({ "searchCustomerId": this.OrgId });
-        this.Org = this.Organizations.filter(f => f.OrganizationId == this.OrgId)[0].OrganizationName;
+        this.Org = this.Organizations.filter((f:any) => f.OrganizationId == this.OrgId)[0].OrganizationName;
         this.GetPlan();
       })
   }
@@ -284,15 +284,15 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
 
     this.CustomerPlansList = [];
     var filterstr = '';
-    if (this.searchForm.get("searchCustomerId").value == 0) {
+    if (this.searchForm.get("searchCustomerId")?.value == 0) {
       this.contentservice.openSnackBar("Please select organization", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
 
     this.loading = true;
 
-    var _searchCustomerId = this.searchForm.get("searchCustomerId").value;
-    this.SelectedCustomer = this.Organizations.filter(f => f.OrganizationId == _searchCustomerId)[0].OrganizationName;
+    var _searchCustomerId = this.searchForm.get("searchCustomerId")?.value;
+    this.SelectedCustomer = this.Organizations.filter((f:any) => f.OrganizationId == _searchCustomerId)[0].OrganizationName;
     if (_searchCustomerId > 0)
       filterstr += " OrgId eq " + _searchCustomerId;
 
@@ -308,7 +308,7 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
 
     ];
     list.PageName = this.CustomerPlansListName;
-    //list.lookupFields = [];
+    //list.lookupFields :any[]= [];
     list.filter = [filterstr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -332,7 +332,7 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
               "LoginUserCount": d[0].LoginUserCount,
               "PersonOrItemCount": d[0].PersonOrItemCount,
               "MinCount": p.MinCount,
-              "Features": this.CustomerPlanFeatures.filter(f => f.PlanId == p.PlanId),
+              "Features": this.CustomerPlanFeatures.filter((f:any) => f.PlanId == p.PlanId),
               "MinPrice": p.MinPrice,
               "PCPM": p.PCPM,
               "Description": p.Description,
@@ -355,14 +355,14 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
               "MinPrice": p.MinPrice,
               "PCPM": p.PCPM,
               "Description": p.Description,
-              "Features": this.CustomerPlanFeatures.filter(f => f.PlanId == p.PlanId),
+              "Features": this.CustomerPlanFeatures.filter((f:any) => f.PlanId == p.PlanId),
               "Active": 0,
               "Action":true
             });
           }
         })
         if (this.Org.toLowerCase() != 'ttp') {
-          this.CustomerPlansList = this.CustomerPlansList.filter(f => f.PlanName.toLowerCase() != 'delux');
+          this.CustomerPlansList = this.CustomerPlansList.filter((f:any) => f.PlanName.toLowerCase() != 'delux');
         }
         this.CustomerPlansList = this.CustomerPlansList.sort((a,b)=>a.Sequence - b.Sequence);
         //console.log("customer list", this.CustomerPlansList)

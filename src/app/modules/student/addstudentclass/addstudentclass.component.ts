@@ -3,8 +3,8 @@ import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
-import { ContentService } from 'src/app/shared/content.service';
-import { TokenStorageService } from 'src/app/_services/token-storage.service';
+import { ContentService } from '../../../shared/content.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
@@ -27,20 +27,20 @@ export class AddstudentclassComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   filterOrgSubOrg = '';
   invalidId = false;
-  allMasterData = [];
-  Students = [];
-  Classes = [];
-  Houses = [];
-  Sections = [];
-  FeeType = [];
+  allMasterData :any[]= [];
+  Students :any[]= [];
+  Classes :any[]= [];
+  Houses :any[]= [];
+  Sections :any[]= [];
+  FeeType :any[]= [];
   dataSource: MatTableDataSource<any>;
-  Semesters = [];
+  Semesters :any[]= [];
   NewItem = false;
   //studentclassForm: UntypedFormGroup;
   StudentName = '';
   SelectedApplicationId = 0;
-  LoginUserDetail = [];
-  FeeCategories = [];
+  LoginUserDetail :any[]= [];
+  FeeCategories :any[]= [];
   FeeTypePermission = '';
   studentclassData = {
     StudentClassId: 0,
@@ -128,22 +128,22 @@ export class AddstudentclassComponent implements OnInit {
         }
 
 
-        this.SubOrgId = this.tokenStorage.getSubOrgId();
+        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         
 
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId();
+        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
 
         this.shareddata.CurrentFeeType.subscribe(t => this.FeeType = t);
         //if (this.FeeType.length == 0)
         this.GetFeeTypes();
         this.shareddata.CurrentSection.subscribe(t => this.Sections = t);
         this.shareddata.CurrentHouse.subscribe(t => this.Houses = t);
-        this.StudentId = this.tokenStorage.getStudentId();
-        this.StudentClassId = this.tokenStorage.getStudentClassId()
+        this.StudentId = this.tokenStorage.getStudentId()!;;
+        this.StudentClassId = this.tokenStorage.getStudentClassId()!;
         this.shareddata.CurrentStudentName.subscribe(name => this.StudentName = name);
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId();
+        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
 
         this.GetMasterData();
         //this.GetStudentClass();
@@ -151,9 +151,9 @@ export class AddstudentclassComponent implements OnInit {
     }
   }
   //get f() { return this.studentclassForm.controls }
-  ClassCategory = [];
+  ClassCategory :any[]= [];
   GetMasterData() {
-    this.allMasterData = this.tokenStorage.getMasterData();
+    this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);
@@ -162,7 +162,7 @@ export class AddstudentclassComponent implements OnInit {
     this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
       this.Classes = data.value.map(m => {
         m.Category = '';
-        var obj = this.ClassCategory.filter(f => f.MasterDataId == m.CategoryId)
+        var obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId)
         if (obj.length > 0)
           m.Category = obj[0].MasterDataName.toLowerCase();
         return m;
@@ -201,7 +201,7 @@ export class AddstudentclassComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
-  StudentClassList = [];
+  StudentClassList :any[]= [];
   addnew() {
     this.NewItem = true;
     this.StudentClassList = [];
@@ -248,7 +248,7 @@ export class AddstudentclassComponent implements OnInit {
             });
             studentcls = studentcls.sort((a, b) => b.StudentClassId - a.StudentClassId);
             if (studentcls[0].ClassId > 0) {
-              let obj = this.Classes.filter(f => f.ClassId == studentcls[0].ClassId);
+              let obj = this.Classes.filter((f:any) => f.ClassId == studentcls[0].ClassId);
               if (obj.length > 0)
                 this.SelectedClassCategory = obj[0].Category.toLowerCase();
             }
@@ -279,10 +279,10 @@ export class AddstudentclassComponent implements OnInit {
     if (row.ClassId == 0) {
       ErrorMessage += "Please select class.<br>";
     }
-    // if (this.studentclassForm.get("RollNo").value == null) {
+    // if (this.studentclassForm.get("RollNo")?.value == null) {
     //   ErrorMessage += "Roll no. is required.<br>";
     // }
-    // if (this.studentclassForm.get("SectionId").value == 0) {
+    // if (this.studentclassForm.get("SectionId")?.value == 0) {
     //   ErrorMessage += "Please select Section.<br>";
     // }
     if (row.FeeTypeId == 0) {
@@ -296,14 +296,14 @@ export class AddstudentclassComponent implements OnInit {
       return;
     }
     else {
-      //var _classId = this.studentclassForm.get("ClassId").value;
+      //var _classId = this.studentclassForm.get("ClassId")?.value;
       var ClassStrength = 0;
       if (row.ClassId > 0) {
         this.contentservice.GetStudentClassCount(this.filterOrgSubOrg, 0, 0,0, this.SelectedBatchId)
           .subscribe((data: any) => {
             ClassStrength = data.value.length;
             ClassStrength += 1;
-            var _batchName = this.tokenStorage.getSelectedBatchName();
+            var _batchName = this.tokenStorage.getSelectedBatchName()!;
             var _admissionNo = row.AdmissionNo;
             var _year = _batchName.split('-')[0].trim();
             this.loading = true;
@@ -386,7 +386,7 @@ export class AddstudentclassComponent implements OnInit {
 
         this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, this.StudentClassId, 0)
           .subscribe((data: any) => {
-            var studentfeedetail = [];
+            var studentfeedetail :any[]= [];
             data.value.forEach(studcls => {
               var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId
@@ -397,11 +397,11 @@ export class AddstudentclassComponent implements OnInit {
                 var _category = '';
                 var _subCategory = '';
 
-                var objcat = this.FeeCategories.filter(f => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                var objcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat.length > 0)
                   _category = objcat[0].MasterDataName;
 
-                var objsubcat = this.FeeCategories.filter(f => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                var objsubcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
@@ -451,7 +451,7 @@ export class AddstudentclassComponent implements OnInit {
     debugger;
     this.SelectedClassCategory = '';
     if (row.ClassId > 0) {
-      let obj = this.Classes.filter(f => f.ClassId == row.ClassId);
+      let obj = this.Classes.filter((f:any) => f.ClassId == row.ClassId);
       if (obj.length > 0)
         this.SelectedClassCategory = obj[0].Category.toLowerCase();
     }
