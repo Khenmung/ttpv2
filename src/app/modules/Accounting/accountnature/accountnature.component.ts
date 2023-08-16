@@ -105,7 +105,7 @@ export class AccountNatureComponent implements OnInit {
         startWith(''),
         map(value => typeof value === 'string' ? value : value.AccountName),
         map(Name => Name ? this._filter(Name) : this.AccountNatures.slice())
-      );
+      )!;
     this.PageLoad();
   }
 
@@ -204,7 +204,7 @@ debugger;
 
     list.PageName = this.AccountNatureListName;
     list.filter = [filterStr];
-    this.AccountNatureList :any[]= [];
+    this.AccountNatureList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountNatureList = [...data.value];
@@ -236,7 +236,7 @@ debugger;
 
     list.PageName = this.AccountNatureListName;
     list.filter = [filterStr];
-    this.AccountNatureList :any[]= [];
+    this.AccountNatureList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountNatureList = [...data.value];

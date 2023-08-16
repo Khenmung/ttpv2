@@ -6,7 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import alasql from 'alasql';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
@@ -42,7 +42,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   StandardFilterWithPreviousBatchId = '';
-  SameClassPreviousBatch = "SameClassPreviousBatch";
+  SameClassPreviousBatch :string= "SameClassPreviousBatch";
   PreviousClassPreviousBatch = "PreviousClassPreviousBatch";
   SameClassPreviousBatchLabel = "";
   PreviousClassPreviousBatchLabel = "";
@@ -177,7 +177,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       this.Batches = this.tokenStorage.getBatches()!;
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
       this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
-      this.NextBatchId = +this.tokenStorage.getNextBatchId();
+      this.NextBatchId = +this.tokenStorage.getNextBatchId()!;
       this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -532,9 +532,9 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   }
   promotePreviousBatch() {
     //debugger;
-    var previousBatchId = +this.tokenStorage.getPreviousBatchId();
+    var previousBatchId = +this.tokenStorage.getPreviousBatchId()!;
     this.SelectedBatchId = previousBatchId;
-    this.GetStudentClasses(0);
+    this.GetStudentClasses('0');
   }
   onBlur(row) {
     row.Action = true;
@@ -745,7 +745,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   SetLabel() {
     debugger;
     let _classId = this.searchForm.get("searchClassId")?.value;
-    let _previousBathId = +this.tokenStorage.getPreviousBatchId();
+    let _previousBathId = +this.tokenStorage.getPreviousBatchId()!;
     let _currentClassIndex = this.Classes.findIndex(s => s.ClassId == _classId);
     let _previousClassName = '', _sameClassName;
     if (_currentClassIndex > 0)
@@ -823,7 +823,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       })
   }
   PreviousClassId = 0;
-  GetStudentClasses(previousbatch) {
+  GetStudentClasses(previousbatch:string) {
 
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     this.loading = true;
@@ -868,12 +868,12 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     if (classIdIndex == 0 && previousbatch == this.PreviousClassPreviousBatch) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Previous class not defined.", globalconstants.ActionText, globalconstants.RedBackground);
-      return null;
+      return EMPTY;
     }
     else if (filterStr.length == 0) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText, globalconstants.RedBackground);
-      return null;
+      return EMPTY;
     }
     else {
       filterStr += " and IsCurrent eq true";
@@ -1380,7 +1380,7 @@ export interface IStudentClass {
   FatherName: string;
   MotherName: string;
   RollNo: string;
-  SectionId: number;
+  SectionId?: number;
   Section: string;
   FeeTypeId: number;
   FeeType: string;

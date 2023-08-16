@@ -60,9 +60,9 @@ export class StudentboardComponent implements AfterViewInit {
     this.connectionService.monitor().subscribe(isConnected => {
       debugger;
       this.isConnected = isConnected.hasInternetAccess;
-      if (this.isConnected) {
+      if (!this.isConnected) {
         this.contentservice.openSnackBar("No internet connection.",globalconstants.ActionText,globalconstants.RedBackground);
-        //this.noInternetConnection = false;
+        this.noInternetConnection = false;
       }
       else {
         this.noInternetConnection = true;

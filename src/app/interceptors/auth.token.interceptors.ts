@@ -23,7 +23,7 @@ export class AuthTokenInterceptors implements HttpInterceptor {
     if (req.url.indexOf('/RefreshToken') > -1) {
       return next.handle(req);
     }
-    const access_token = JSON.parse(localStorage.getItem('access_token'));
+    const access_token = JSON.parse(localStorage.getItem('access_token')!);
     //debugger;
     if (access_token && access_token !='null') {
       const expiration = localStorage.getItem('expiration');

@@ -153,15 +153,12 @@ export class ImgDragAndDropComponent implements OnInit { PageLoading=true;
     }
   }
   uploadFile() {
-    let options = {
-      autoClose: true,
-      keepAfterRouteChange: true
-    };
+ 
     this.uploadService.postFiles(this.formData).subscribe(res => {
       ////console.log("Upload complete");
       this.contentservice.openSnackBar("Files Uploaded successfully.", globalconstants.ActionText,globalconstants.RedBackground);
-      this.formData = null;
-      this.files :any[]= [];
+      //this.formData = null;
+      this.files = [];
       this.getAlbums();
       this.route.navigate(['/home/managefile']);
       //this.messages.push("Upload complete");
@@ -189,7 +186,7 @@ export class ImgDragAndDropComponent implements OnInit { PageLoading=true;
           this.Albums = [...data.value];
         }
         else
-          this.Albums :any[]= [];
+          this.Albums = [];
       });
   }
 

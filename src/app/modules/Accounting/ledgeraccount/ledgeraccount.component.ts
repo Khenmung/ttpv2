@@ -212,7 +212,7 @@ export class LedgerAccountComponent implements OnInit {
       Active: 0,
       Action: false
     }
-    this.GeneralLedgerList :any[]= [];
+    this.GeneralLedgerList = [];
     this.GeneralLedgerList.push(newItem);
     this.dataSource = new MatTableDataSource(this.GeneralLedgerList);
   }
@@ -266,7 +266,7 @@ export class LedgerAccountComponent implements OnInit {
         }
         else {
           this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-          this.GeneralLedgerForUpdate :any[]= [];;
+          this.GeneralLedgerForUpdate = [];
           this.GeneralLedgerData.GeneralLedgerId = row.GeneralLedgerId;
           this.GeneralLedgerData.AccountNatureId = row.AccountNatureId;
           this.GeneralLedgerData.AccountGroupId = row.AccountGroupId;
@@ -378,7 +378,7 @@ export class LedgerAccountComponent implements OnInit {
 
     list.PageName = "GeneralLedgers";
     list.filter = [filterStr];
-    this.GeneralLedgerList :any[]= [];
+    this.GeneralLedgerList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
@@ -441,7 +441,7 @@ export class LedgerAccountComponent implements OnInit {
 
     list.PageName = "GeneralLedgers";
     list.filter = [filterStr];
-    this.GeneralLedgerList :any[]= [];
+    this.GeneralLedgerList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {

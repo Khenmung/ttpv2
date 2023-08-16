@@ -211,7 +211,7 @@ export class TrialBalanceComponent implements OnInit {
     list.PageName = this.AccountingVoucherListName;
     //list.lookupFields = ["AccountingTrialBalance"];
     list.filter = [filterStr];
-    this.AccountingVoucherList :any[]= [];
+    this.AccountingVoucherList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         data.value.forEach(f => {
@@ -286,7 +286,7 @@ export class TrialBalanceComponent implements OnInit {
 
     list.PageName = "GeneralLedgers";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts :any[]= [];
+    this.GLAccounts = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.GeneralLedgers = [...data.value];
@@ -316,7 +316,7 @@ export class TrialBalanceComponent implements OnInit {
     list.PageName = "GeneralLedgers";
     list.lookupFields = ["AccountNature($select=Active,AccountNatureId,DebitType)"];
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts :any[]= [];
+    this.GLAccounts = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -343,7 +343,7 @@ export class TrialBalanceComponent implements OnInit {
 
     list.PageName = "AccountingPeriods";
     list.filter = [this.FilterOrgSubOrg + " and CurrentPeriod eq 1 and Active eq 1"];
-    this.GLAccounts :any[]= [];
+    this.GLAccounts = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountingPeriod = data.value.map(f => {

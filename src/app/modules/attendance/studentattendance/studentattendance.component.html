@@ -4,28 +4,28 @@
 <form [formGroup]="searchForm">
     <div style="display:flex;justify-content: space-between;">
         <div style="margin-right: 15px;">
-            <mat-form-field appearance="outline" style="min-width: 130px;">
+            <mat-form-field appearance="outline" style="min-width: 130px;margin-right: 15px;">
                 <mat-label>Class</mat-label>
                 <mat-select formControlName="searchClassId" (selectionChange)="bindClassSubject()">
                     <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" style="min-width: 130px;" *ngIf="SelectedClassCategory=='college'">
+            <mat-form-field appearance="outline" style="min-width: 130px;margin-right: 15px;" *ngIf="SelectedClassCategory=='college'">
                 <mat-label>semester</mat-label>
                 <mat-select formControlName="searchSemesterId">
                     <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">{{item.MasterDataName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" style="min-width: 130px;" *ngIf="SelectedClassCategory=='high school'">
+            <mat-form-field appearance="outline" style="min-width: 130px;margin-right: 15px;" *ngIf="SelectedClassCategory=='high school'">
                 <mat-label>Section</mat-label>
                 <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
                     <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">{{item.MasterDataName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline"  style="min-width: 130px;">
+            <mat-form-field appearance="outline" style="min-width: 130px;margin-right: 15px;">
                 <mat-label>Date</mat-label>
                 <input formControlName="searchAttendanceDate" matInput [matDatepicker]="AttendanceDate"
                     autocomplete="off" (dateChange)="ClearData()">
@@ -55,7 +55,7 @@
         </div>
     </div>
 </form>
-<div style="display:flex;flex-direction: column; max-width: 600px;">
+<div style="display:flex;flex-direction: column; max-width: 900px;">
     <div style="font-style: italic;margin:15px 15px 0px 0px">{{AttendanceMsg}}</div>
     <mat-table #table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="StudentRollNo">
@@ -66,21 +66,37 @@
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="AttendanceStatusId">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Present All
-                <mat-checkbox *ngIf="StudentAttendanceList.length>0" matTooltip="check/uncheck all" mat-mini-fab
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="display: flex;flex-direction: column;">
+                <mat-form-field *ngIf="StudentAttendanceList.length>0">
+                    <mat-label>Select All</mat-label>
+                    <mat-select (selectionChange)="checkall($event)">
+                        <mat-option [value]="0">select</mat-option>
+                        <mat-option *ngFor="let item of AttendanceStatus"
+                            [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <!-- <mat-checkbox *ngIf="StudentAttendanceList.length>0" matTooltip="check/uncheck all" mat-mini-fab
                     (click)="$event.stopPropagation()" (change)="checkall($event)">
-                </mat-checkbox>
+                </mat-checkbox> -->
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateActive(element,$event)"
+                <mat-form-field>
+                    <mat-select (selectionChange)="checkall($event)" [(ngModel)]="element.AttendanceStatusId" 
+                    [value]="element.AttendanceStatusId">
+                        <mat-option [value]="0">select</mat-option>
+                        <mat-option *ngFor="let item of AttendanceStatus"
+                            [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <!-- <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateActive(element,$event)"
                     [checked]="element.AttendanceStatusId==AttendancePresentId?true:false">
-                </mat-checkbox>
+                </mat-checkbox> -->
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="Remarks">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Remarks </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <mat-form-field [style.width.px]="150">
+                <mat-form-field>
                     <textarea matInput [maxlength]="250" autocomplete="Off" (blur)="onChangeEvent(element,$event)"
                         [value]="element.Remarks" [(ngModel)]="element.Remarks"></textarea>
                 </mat-form-field>

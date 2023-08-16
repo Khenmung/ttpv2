@@ -29,7 +29,7 @@ export class StudentAttendanceComponent implements OnInit {
   //AnyEnableSave =false;
   EnableSave = true;
   Permission = 'deny';
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   SaveAll = false;
@@ -38,20 +38,20 @@ export class StudentAttendanceComponent implements OnInit {
   StudentClassId = 0;
   OrgSubOrgFilter = '';
   loading = false;
-  Sections :any[]= [];
-  Classes :any[]= [];
-  Subjects :any[]= [];
-  ClassSubjects :any[]= [];
+  Sections: any[] = [];
+  Classes: any[] = [];
+  Subjects: any[] = [];
+  ClassSubjects: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  Batches :any[]= [];
+  Batches: any[] = [];
   //AttendanceStatusId :any[]= [];
-  FilteredClassSubjects :any[]= [];
-  StudentAttendanceList: IStudentAttendance[]= [];
-  StudentClassList :any[]= [];
+  FilteredClassSubjects: any[] = [];
+  StudentAttendanceList: IStudentAttendance[] = [];
+  StudentClassList: any[] = [];
   dataSource: MatTableDataSource<IStudentAttendance>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   searchForm = this.fb.group({
     searchClassId: [0],
     searchSectionId: [0],
@@ -83,10 +83,10 @@ export class StudentAttendanceComponent implements OnInit {
     'Remarks',
     'Action'
   ];
-  AttendancePresentId=0;
-  AttendanceAbsentId=0;
+  AttendancePresentId = 0;
+  AttendanceAbsentId = 0;
   SelectedApplicationId = 0;
-  Students :any[]= [];
+  Students: any[] = [];
   constructor(private servicework: SwUpdate,
 
     private fb: UntypedFormBuilder,
@@ -125,11 +125,11 @@ export class StudentAttendanceComponent implements OnInit {
         //this.OrgSubOrgFilter = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-        
+
         this.GetMasterData();
         //this.GetSubjectTypes();
 
-        
+
 
       }
     }
@@ -150,22 +150,18 @@ export class StudentAttendanceComponent implements OnInit {
     this.SelectedClassCategory = '';
 
     if (_classId > 0) {
-      let obj = this.Classes.filter((f:any) => f.ClassId == _classId);
+      let obj = this.Classes.filter((f: any) => f.ClassId == _classId);
       if (obj.length > 0)
         this.SelectedClassCategory = obj[0].Category;
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
     this.ClearData();
   }
-  checkall(value) {
+  checkall(status) {
     debugger;
 
     this.StudentAttendanceList.forEach(record => {
-      if (value.checked) {
-        record.AttendanceStatusId = this.AttendancePresentId;
-      }
-      else
-        record.AttendanceStatusId = this.AttendanceAbsentId;
+      record.AttendanceStatusId = status.value;
       record.Action = true;
     })
     //this.AnyEnableSave=true;
@@ -177,7 +173,7 @@ export class StudentAttendanceComponent implements OnInit {
     //this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
     var _subjectwise = this.searchForm.get("searchClassSubjectId")?.value;
     if (_subjectwise > 0) {
-      var obj = this.FilteredClassSubjects.filter((f:any) => f.ClassSubjectId == _subjectwise);
+      var obj = this.FilteredClassSubjects.filter((f: any) => f.ClassSubjectId == _subjectwise);
       if (obj.length > 0) {
         this.AttendanceMsg = "Attendance for " + obj[0].ClassSubject;
       }
@@ -228,8 +224,8 @@ export class StudentAttendanceComponent implements OnInit {
     else
       this.EnableSave = true;
 
-    if(_semesterId) filterStr += " and SemesterId eq " + _semesterId;
-    if(_sectionId) filterStr += " and SectionId eq " + _sectionId;
+    if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
+    if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
     filterStr += " and ClassSubjectId eq " + _classSubjectId;
 
     if (filterStr.length == 0) {
@@ -263,7 +259,7 @@ export class StudentAttendanceComponent implements OnInit {
 
     this.dataservice.get(list)
       .subscribe((attendance: any) => {
-        var studentCls = this.Students.filter((f:any) => f.StudentClasses
+        var studentCls = this.Students.filter((f: any) => f.StudentClasses
           && f.StudentClasses.length > 0
           && f.StudentClasses[0].ClassId == _classId
           && f.StudentClasses[0].SectionId == (_sectionId ? _sectionId : f.StudentClasses[0].SectionId)
@@ -338,18 +334,18 @@ export class StudentAttendanceComponent implements OnInit {
     //});
   }
   ClearData() {
-    this.StudentAttendanceList= [];
+    this.StudentAttendanceList = [];
     this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
 
   }
-  StudentClassSubjects :any[]= [];
+  StudentClassSubjects: any[] = [];
   GetExistingStudentClassSubjects() {
     var clssubjectid = this.searchForm.get("searchClassSubjectId")?.value;
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId;
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
-    this.StudentAttendanceList= [];
+    this.StudentAttendanceList = [];
     this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
 
     if (_classId > 0 && clssubjectid > 0) {
@@ -427,7 +423,7 @@ export class StudentAttendanceComponent implements OnInit {
     this.UpdateOrSave(row);
   }
   UpdateOrSave(row) {
-debugger;
+    debugger;
     //this.NoOfRecordToUpdate = 0;
     var _AttendanceDate = this.searchForm.get("searchAttendanceDate")?.value;
 
@@ -493,7 +489,7 @@ debugger;
   }
 
   insert(row) {
-    console.log("this.StudentAttendanceData",this.StudentAttendanceData);
+    console.log("this.StudentAttendanceData", this.StudentAttendanceData);
     this.dataservice.postPatch('Attendances', this.StudentAttendanceData, 0, 'post')
       .subscribe(
         (data: any) => {
@@ -541,14 +537,14 @@ debugger;
     list.filter = [this.FilterOrgSubOrgBatchId + " and Active eq 1"];
     //list.filter = ["Active eq 1 and BatchId eq " + this.SelectedBatchId + " and OrgId eq " + this.LoginUserDetail[0]["orgId"]];
     //list.filter = ["Active eq 1 and OrgId eq " + this.LoginUserDetail[0]["orgId"]];
-    this.ClassSubjects= [];
+    this.ClassSubjects = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.ClassSubjects = [];
         data.value.forEach(item => {
-          var objsubject = this.Subjects.filter((f:any) => f.MasterDataId == item.SubjectId)
+          var objsubject = this.Subjects.filter((f: any) => f.MasterDataId == item.SubjectId)
           if (objsubject.length > 0) {
-            var type = this.SubjectTypes.filter((s:any) => s.SubjectTypeId == item.SubjectTypeId && s.SelectHowMany != 0);
+            var type = this.SubjectTypes.filter((s: any) => s.SubjectTypeId == item.SubjectTypeId && s.SelectHowMany != 0);
             if (type.length > 0) {
               this.ClassSubjects.push({
                 ClassSubjectId: item.ClassSubjectId,
@@ -582,10 +578,10 @@ debugger;
         this.GetClassSubject();
       })
   }
-  SubjectTypes :any[]= [];
-  Semesters :any[]= [];
-  ClassCategory :any[]= [];
-  AttendanceStatus:any[]=[];
+  SubjectTypes: any[] = [];
+  Semesters: any[] = [];
+  ClassCategory: any[] = [];
+  AttendanceStatus: any[] = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -595,8 +591,8 @@ debugger;
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
     //this.SubjectTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTTYPE);
-    this.AttendancePresentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
-    this.AttendanceAbsentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
+    this.AttendancePresentId = this.AttendanceStatus.filter((f: any) => f.MasterDataName.toLowerCase() == 'present')[0].MasterDataId;
+    this.AttendanceAbsentId = this.AttendanceStatus.filter((f: any) => f.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       this.Classes = data.value.map(m => {
         let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);

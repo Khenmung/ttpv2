@@ -22,7 +22,7 @@ export class HomeDashboardComponent implements OnInit {
   loading = false;
   searchForm: UntypedFormGroup;
   NewsNEventPageId = 0;
-  MenuData :any[]= [];
+  MenuData: any[] = [];
   toggle: boolean = false;
   userName: string = '';
   loggedIn: boolean;
@@ -33,10 +33,10 @@ export class HomeDashboardComponent implements OnInit {
   SelectedAppId = 0;
   filterOrgSubOrgBatchId = '';
   filterOrgSubOrg = '';
-  Batches :any[]= [];
-  PermittedApplications :any[]= [];
+  Batches: any[] = [];
+  PermittedApplications: any[] = [];
   SelectedAppName = '';
-  CustomFeatures :any[]= [];
+  CustomFeatures: any[] = [];
   constructor(private servicework: SwUpdate,
     private tokenStorage: TokenStorageService,
     private shareddata: SharedataService,
@@ -125,7 +125,7 @@ export class HomeDashboardComponent implements OnInit {
             else {
               var _UniquePermittedApplications = PermittedApps.filter((v, i, a) => a.findIndex(t => (t.applicationId === v.applicationId)) === i)
               if (_roleName.toLowerCase() != 'admin')
-                this.PermittedApplications = _UniquePermittedApplications.filter((f:any) => f.applicationName.toLowerCase() != 'common panel');
+                this.PermittedApplications = _UniquePermittedApplications.filter((f: any) => f.applicationName.toLowerCase() != 'common panel');
               else
                 this.PermittedApplications = [..._UniquePermittedApplications];
 
@@ -186,7 +186,7 @@ export class HomeDashboardComponent implements OnInit {
       console.log('Cookie where used'); // log
     }
   }
-  sideMenu :any[]= [];
+  sideMenu: any[] = [];
   GetMenuData(pSelectedAppId) {
     debugger;
     //let containAdmin = window.location.href.toLowerCase().indexOf('admin');
@@ -253,7 +253,7 @@ export class HomeDashboardComponent implements OnInit {
 
 
   }
-  CustomerPlansList :any[]= [];
+  CustomerPlansList: any[] = [];
   GetCustomerPlans() {
 
     this.CustomerPlansList = [];
@@ -328,9 +328,10 @@ export class HomeDashboardComponent implements OnInit {
   }
   ValueChanged = false;
   ChangeApplication() {
-    debugger;
+    //debugger;
+    this.loading = true;
     var SelectedAppId = this.searchForm.get("searchApplicationId")?.value;
-    this.SelectedAppName = this.PermittedApplications.filter((f:any) => f.applicationId == SelectedAppId)[0].applicationName
+    this.SelectedAppName = this.PermittedApplications.filter((f: any) => f.applicationId == SelectedAppId)[0].applicationName
     this.ValueChanged = true;
     if (SelectedAppId > 0) {
       this.tokenStorage.saveMenuData([]);
@@ -348,8 +349,9 @@ export class HomeDashboardComponent implements OnInit {
             else
               s.CustomerPlanId = 0;
           })
-          var _orgSubOrg = this.SubOrganization.filter((f:any) => f.MasterDataId == this.SubOrgId);
+          var _orgSubOrg = this.SubOrganization.filter((f: any) => f.MasterDataId == this.SubOrgId);
           this.searchForm.patchValue({ "searchSubOrgId": _orgSubOrg[0] });
+          this.loading=false;
         });
     }
 
@@ -388,7 +390,7 @@ export class HomeDashboardComponent implements OnInit {
 
       //this line is added because when batch is not defined for new user, selected batch name is null.
       if (this.Batches.length > 0) {
-        var _batchName = this.Batches.filter((f:any) => f.BatchId == this.SelectedBatchId)[0].BatchName;
+        var _batchName = this.Batches.filter((f: any) => f.BatchId == this.SelectedBatchId)[0].BatchName;
         this.tokenStorage.saveSelectedBatchName(_batchName)
       }
       else
@@ -423,10 +425,10 @@ export class HomeDashboardComponent implements OnInit {
   AppSelected() {
 
   }
-  allMasterData :any[]= [];
-  SubOrganization :any[]= [];
-  Sections :any[]= [];
-  Classes :any[]= [];
+  allMasterData: any[] = [];
+  SubOrganization: any[] = [];
+  Sections: any[] = [];
+  Classes: any[] = [];
   // GetMasterData(SelectedAppId) {
   //   return this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, SelectedAppId)
 
@@ -437,14 +439,14 @@ export class HomeDashboardComponent implements OnInit {
     this.contentservice.GetCustomFeature(SelectedAppId, this.LoginUserDetail[0]["RoleUsers"][0].roleId, this.SubOrgId, this.LoginUserDetail[0]['orgId'])
       .subscribe((data: any) => {
         data.value.forEach(item => {
-          var feature = this.LoginUserDetail[0]['applicationRolePermission'].filter((f:any) => f.applicationFeature == item.CustomFeature.CustomFeatureName)
+          var feature = this.LoginUserDetail[0]['applicationRolePermission'].filter((f: any) => f.applicationFeature == item.CustomFeature.CustomFeatureName)
           if (feature.length == 0) {
             this.LoginUserDetail[0]['applicationRolePermission'].push({
               'planFeatureId': 0,
               'applicationFeature': item.CustomFeature.CustomFeatureName,//_applicationFeature,
               'roleId': item.RoleId,
               'permissionId': item.PermissionId,
-              'permission': globalconstants.PERMISSIONTYPES.filter((f:any) => f.val == item.PermissionId)[0].type,
+              'permission': globalconstants.PERMISSIONTYPES.filter((f: any) => f.val == item.PermissionId)[0].type,
               'applicationName': selectedApp.applicationName,
               'applicationId': item.ApplicationId,
               'appShortName': selectedApp.appShortName,
@@ -576,9 +578,9 @@ export class HomeDashboardComponent implements OnInit {
             this.allMasterData = [...data.value];
             this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
             this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
-            var selectedItem = this.SubOrganization.filter((s:any) => s.MasterDataId == this.SubOrgId);
+            var selectedItem = this.SubOrganization.filter((s: any) => s.MasterDataId == this.SubOrgId);
             this.searchForm.patchValue({ "searchSubOrgId": selectedItem[0] });
-            
+
             if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
               this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
                 this.Classes = [...data.value];
@@ -613,8 +615,8 @@ export class HomeDashboardComponent implements OnInit {
   compareWith(option, value): boolean {
     return option.MasterDataId === value.MasterDataId;
   }
-  Students :any[]= [];
-  StudentClasses :any[]= [];
+  Students: any[] = [];
+  StudentClasses: any[] = [];
   GetClassJoinStudent(appShortName) {
     //var filterOrgSubOrgBatchId =globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
     //  this.FilterOrgSubOrg +
@@ -653,7 +655,7 @@ export class HomeDashboardComponent implements OnInit {
           })
           delete d.Student;
 
-          var _classNameobj :any[]= [];
+          var _classNameobj: any[] = [];
           var _className = '';
           var _studentClassId = 0;
           //if (d.StudentClasses.length > 0) {
@@ -662,7 +664,7 @@ export class HomeDashboardComponent implements OnInit {
             _className = _classNameobj[0].ClassName;
 
           var _Section = '';
-          var _sectionobj = this.Sections.filter((f:any) => f.MasterDataId == d.StudentClasses[0].SectionId);
+          var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == d.StudentClasses[0].SectionId);
           if (_sectionobj.length > 0)
             _Section = _sectionobj[0].MasterDataName;
           var _RollNo = d.StudentClasses[0].RollNo;
@@ -704,7 +706,7 @@ export class HomeDashboardComponent implements OnInit {
         var __studentClasses = data[1].value;
         //let _studentWithClass = _students.map((item, i) => Object.assign({}, item, __studentClasses[i]));
         //console.log("_studentWithClass",_studentWithClass)
-        var _classNameobj :any[]= [];
+        var _classNameobj: any[] = [];
         var _className = '';
         var _house = '';
         var _Section = '';
@@ -714,14 +716,14 @@ export class HomeDashboardComponent implements OnInit {
           _className = '';
           _studentClassId = 0;
           _house = '';
-          var studcls = __studentClasses.filter((f:any) => f.StudentId == d.StudentId);
+          var studcls = __studentClasses.filter((f: any) => f.StudentId == d.StudentId);
           if (studcls.length > 0) {
             _classNameobj = this.Classes.filter(c => c.ClassId == studcls[0].ClassId);
             if (_classNameobj.length > 0)
               _className = _classNameobj[0].ClassName;
 
-           
-            var _sectionobj = this.Sections.filter((f:any) => f.MasterDataId == studcls[0].SectionId);
+
+            var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studcls[0].SectionId);
             if (_sectionobj.length > 0)
               _Section = _sectionobj[0].MasterDataName;
             var _RollNo = studcls[0].RollNo;
@@ -761,7 +763,7 @@ export class HomeDashboardComponent implements OnInit {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }
     this.filterOrgSubOrgBatchId += " and IsCurrent eq true";
-    
+
     list.filter = [this.filterOrgSubOrgBatchId];
     this.loading = true;
     this.PageLoading = true;

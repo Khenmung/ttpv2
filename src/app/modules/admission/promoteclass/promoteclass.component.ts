@@ -144,7 +144,7 @@ export class PromoteclassComponent implements OnInit {
         startWith(''),
         map(value => typeof value === 'string' ? value : value.Name),
         map(Name => Name ? this._filter(Name) : this.PreviousBatchStudents.slice())
-      );
+      )!;
     this.nameFilter.valueChanges
       .subscribe(
         name => {
@@ -188,7 +188,7 @@ export class PromoteclassComponent implements OnInit {
       this.CurrentBatchStudents = this.tokenStorage.getStudents()!;
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
       this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
-      this.NextBatchId = +this.tokenStorage.getNextBatchId();
+      this.NextBatchId = +this.tokenStorage.getNextBatchId()!;
       this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -523,7 +523,7 @@ export class PromoteclassComponent implements OnInit {
 
   SetLabel() {
     let _classId = this.searchForm.get("searchClassId")?.value;
-    let _previousBathId = +this.tokenStorage.getPreviousBatchId();
+    let _previousBathId = +this.tokenStorage.getPreviousBatchId()!;
     let _currentClassIndex = this.Classes.findIndex(s => s.ClassId == _classId);
     let _previousClassName = '', _sameClassName;
     if (_currentClassIndex > 0)
@@ -1240,7 +1240,7 @@ export interface IStudentClass {
   StudentId: number;
   StudentName: string;
   RollNo: string;
-  SectionId: number;
+  SectionId?: number;
   Section: string;
   FeeTypeId: number;
   FeeType: string;

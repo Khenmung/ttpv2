@@ -19,14 +19,14 @@ button{
 .mat-column-CategoryId,.mat-column-DurationId,.mat-column-StudyAreaId,.mat-column-StudyModeId{
     flex: 1 0 125px;
 }
-.mat-column-MaxStudent,.mat-column-MinStudent
+.mat-column-Sequence,.mat-column-MaxStudent,.mat-column-MinStudent,.mat-column-Confidential
 {
     flex: 1 0 100px;
 }
 .mat-column-ClassId{
     flex: 1 0 40px;
 }
-.mat-column-Sequence,.mat-column-Active,.mat-column-Action,.mat-column-Confidential{
+.mat-column-Active,.mat-column-Action{
     justify-content: center;
     flex: 1 0 80px;
 }
@@ -39,4 +39,12 @@ button{
   ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-start {
     border-radius: 0px !important;
   }
-  
+  .blue-snackbar {
+    white-space: pre-wrap;
+    background : #2196F3;
+    color      : white;
+
+    .mat-simple-snackbar-action {
+        color: white !important;
+    }
+}

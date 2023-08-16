@@ -121,7 +121,7 @@ export class JournalEntryComponent implements OnInit {
         startWith(''),
         map(value => typeof value === 'string' ? value : value.GeneralLedgerName),
         map(GeneralLedgerName => GeneralLedgerName ? this._filter(GeneralLedgerName) : this.GeneralLedgers.slice())
-      );
+      )!;
 
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
@@ -155,7 +155,7 @@ export class JournalEntryComponent implements OnInit {
   addnew(mode) {
     //this.TransactionMode = mode;
     if (mode) {
-      this.AccountingVoucherList :any[]= [];
+      this.AccountingVoucherList = [];
       this.reference = ''
       this.TranParentId = 0;
     }
@@ -198,7 +198,7 @@ export class JournalEntryComponent implements OnInit {
   FilteredGeneralLedger :any[]= [];
   BindReference() {
     debugger;
-    this.FilteredGeneralLedger :any[]= [];
+    this.FilteredGeneralLedger = [];
     var GeneralLedgerId = this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId;
     this.FilteredGeneralLedger = this.AllAccountingVouchers.filter((f:any) => f.GeneralLedgerAccountId == GeneralLedgerId);
   }
@@ -222,7 +222,7 @@ export class JournalEntryComponent implements OnInit {
     //list.orderBy = "ShortText";
     //list.lookupFields = ["AccountingLedgerTrialBalance"];
     list.filter = [filterStr + " and GeneralLedgerAccountId ne null"];
-    this.AllAccountingVouchers :any[]= [];
+    this.AllAccountingVouchers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AllAccountingVouchers = alasql("select distinct GeneralLedgerAccountId,Reference from ?", [data.value]);
@@ -267,7 +267,7 @@ export class JournalEntryComponent implements OnInit {
     //list.orderBy = "ShortText";
     //list.lookupFields = ["AccountingLedgerTrialBalance"];
     list.filter = [filterStr + " and GeneralLedgerAccountId ne null"];
-    this.AccountingVoucherList :any[]= [];
+    this.AccountingVoucherList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountingVoucherList = data.value.map(m => {
@@ -466,7 +466,7 @@ export class JournalEntryComponent implements OnInit {
 
     list.PageName = "GeneralLedgers";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts :any[]= [];
+    this.GLAccounts = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.GeneralLedgers = [...data.value];

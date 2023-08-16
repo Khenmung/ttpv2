@@ -191,12 +191,12 @@ export class BalancesheetComponent implements OnInit {
     list.PageName = this.AccountingVoucherListName;
     //list.lookupFields = ["GeneralLedger($select=GeneralLedgerName,IncomeStatementSequence,IncomeStatementPlus,BalanceSheetSequence,BalanceSheetPlus"];
     list.filter = [filterStr];
-    this.AccountingVoucherList :any[]= [];
+    this.AccountingVoucherList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        this.Asset :any[]= [];
-        this.Liability :any[]= [];
-        this.TrialBalance:any[]=[];
+        this.Asset = [];
+        this.Liability = [];
+        this.TrialBalance=[];
         //var tuitionFee= data.value.filter((f:any)=>f.GeneralLedgerAccountId==)
         data.value.forEach(f => {
           var _generalaccount = this.GLAccounts.filter(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
@@ -340,7 +340,7 @@ export class BalancesheetComponent implements OnInit {
 
     list.PageName = "GeneralLedgers";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts :any[]= [];
+    this.GLAccounts = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.GeneralLedgers = [...data.value];
@@ -459,7 +459,7 @@ export class BalancesheetComponent implements OnInit {
 
     list.PageName = "AccountNatures";
     list.filter = [filterStr];
-    this.AccountNatureList :any[]= [];
+    this.AccountNatureList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountNatureList = [...data.value];
@@ -488,7 +488,7 @@ export class BalancesheetComponent implements OnInit {
     list.PageName = "GeneralLedgers";
     //list.lookupFields = ["AccountNature($select=Active,AccountNatureId,DebitType)"];
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts :any[]= [];
+    this.GLAccounts = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -518,7 +518,7 @@ export class BalancesheetComponent implements OnInit {
 
     list.PageName = "AccountingPeriods";
     list.filter = [this.FilterOrgSubOrg + " and CurrentPeriod eq 1 and Active eq 1"];
-    this.GLAccounts :any[]= [];
+    this.GLAccounts = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountingPeriod = data.value.map(f => {

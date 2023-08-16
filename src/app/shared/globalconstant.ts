@@ -18,9 +18,9 @@ export class globalconstants {
     public static CommonPanelID = 329; //536870912;    
     public static RowUploadLimit = 1000; //536870912;
     public static TrialPeriod = 3;
-    public static BlueBackground = { duration: 3000, panelClass: 'blue-snackbar' };
-    public static RedBackground = { duration: 10000, panelClass: 'red-snackbar' };
-    public static GreenBackground = { duration: 10000, panelClass: 'green-snackbar' };
+    public static BlueBackground = { duration: 3000, panelClass: ['blue-snackbar'] };
+    public static RedBackground = { duration: 10000, panelClass: ['red-snackbar'] };
+    public static GreenBackground = { duration: 10000, panelClass: ['green-snackbar'] };
     public static AddedMessage = 'Data saved successfully.';
     public static UpdatedMessage = 'Data updated successfully.';
     public static DeletedMessage = 'Data deleted successfully.';

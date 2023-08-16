@@ -1,0 +1,105 @@
+<div style="padding: 15px;"><strong>Organization Payment</strong></div>
+<!-- <alert></alert> -->
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<form [formGroup]="searchForm">
+    <div style="display:flex;justify-content: space-between;">
+        <div>
+            <mat-form-field appearance="outline" style="margin-right: 15px;width:200px;">
+                <mat-label>Organization</mat-label>
+                <mat-select formControlName="searchOrganization">
+                    <mat-option *ngFor="let item of Organizations"
+                        [value]="item.OrganizationId">{{item.OrganizationName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button [disabled]="loading" (click)="GetOrganizationPayment()" mat-raised-button color="accent">
+                <mat-icon>search</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </div>
+
+    </div>
+</form>
+<mat-table #table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="OrganizationPaymentId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Payment Id
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.OrganizationPaymentId}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="PlanName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Plan </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{element.PlanName}}
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="AmountPerMonth">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> AmountPerMonth </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <input type="number" matInput [(ngModel)]="element.AmountPerMonth" [value]="element.AmountPerMonth">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="PaidMonths">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> No. Of Months </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <input type="number" matInput [(ngModel)]="element.PaidMonths" [value]="element.PaidMonths" max="999" />
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="PaymentDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Payment Date</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field>
+                <input [value]="element.PaymentDate" [(ngModel)]="element.PaymentDate" matInput
+                    [matDatepicker]="PaymentDate" (dateChange)="onBlur(element)" autocomplete="off">
+                <mat-datepicker-toggle matSuffix [for]="PaymentDate"></mat-datepicker-toggle>
+                <mat-datepicker #PaymentDate></mat-datepicker>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Amount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field [style.width.px]="150">
+                <input type="number" matInput [(ngModel)]="element.Amount" [value]="element.Amount" max="9999999" />
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="PaymentMode">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Payment Mode </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field [style.width.px]="150">
+                <mat-select [(ngModel)]="element.PaymentMode" [value]="element.PaymentMode">
+                    <mat-option *ngFor="let item of PaymentModes" [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef>
+            <button [disabled]="loading" (click)="AddNew()" mat-raised-button color="accent">
+                <mat-icon>add</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+            <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="view/edit"
+                mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                <mat-icon>save</mat-icon>
+                <mat-icon *ngIf="loading">
+                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                </mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+</mat-table>
+<mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50,75]"></mat-paginator>

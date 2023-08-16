@@ -1,46 +1,55 @@
-mat-form-field{
+mat-form-field {
     //margin-right:15px;
     width: 100%;
 }
+
 // ::ng-deep .mat-form-field-infix{
 //     width: auto !important;
 // }
-button{
-    margin-right:15px;
+button {
+    margin-right: 15px;
 }
+
 mat-cell:first-of-type {
     padding-left: 0px;
 }
 
-.mat-column-Description{
-    flex:1 0 450px;
+.mat-column-Description {
+    flex: 1 0 450px;
 }
+
 .mat-column-ClassEvaluationAnswerOptionParentId,
-.mat-column-QuestionnaireTypeId
-{
-    flex:1 0 120px;
+.mat-column-QuestionnaireTypeId {
+    flex: 1 0 120px;
 }
-.mat-column-Action{   
-    flex:1 0 150px;
+
+.mat-column-Action {
+    flex: 1 0 150px;
 }
+
 .mat-column-ClassId,
-.mat-column-ExamId
-{   
-    flex:1 0 120px;
+.mat-column-ExamId {
+    flex: 1 0 120px;
 }
-.mat-column-DisplayOrder,.mat-column-Marks{
-    flex:1 0 80px;
+
+.mat-column-DisplayOrder,
+.mat-column-Marks {
+    flex: 1 0 80px;
 }
+
 .mat-column-MultipleAnswer,
 .mat-column-ClassEvaluationId,
-.mat-column-Active
-{   
+.mat-column-Active {
     justify-content: center;
-    flex:1 0 80px;
+    flex: 1 0 80px;
 }
-.highlight{
-    background-color: lightgray; /* green */
-  }
-  .mdc-data-table__cell, .mdc-data-table__header-cell{
-    padding:0px 15px 0px 0px;
-  }
+
+.highlight {
+    background-color: lightgray;
+    /* green */
+}
+
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+    padding: 0px 15px 0px 0px;
+}
