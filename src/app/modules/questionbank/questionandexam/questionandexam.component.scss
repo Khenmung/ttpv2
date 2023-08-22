@@ -1,10 +1,4 @@
-mat-form-field{
-    margin-right:15px;
-    width:98%;
-}
-// mat-cell{
-//     width: 98%;
-// }
+
 .mat-column-Id,
 .mat-column-QuestionBankId{
     justify-content: flex-start;
@@ -19,3 +13,6 @@ mat-form-field{
 .mat-column-Action{
     flex:1 0 150px;
 }
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

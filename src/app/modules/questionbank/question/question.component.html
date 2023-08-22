@@ -5,7 +5,7 @@
 <form [formGroup]="searchForm">
     <div style="padding: 15px;display:flex;flex-direction: column;">
         <div>
-            <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                 <mat-label>class</mat-label>
                 <mat-select formControlName="searchClassId" (selectionChange)="SelectSubject()">
                     <mat-option value="0">select</mat-option>
@@ -13,7 +13,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
+            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" style="width:200px;margin-right: 15px;">
                 <mat-label>semester</mat-label>
                 <mat-select formControlName="searchSemesterId" (selectionChange)="cleardata()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
@@ -22,7 +22,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" [style.width.px]="200">
+            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" style="width:200px;margin-right: 15px;">
                 <mat-label>section</mat-label>
                 <mat-select formControlName="searchSectionId" (selectionChange)="cleardata()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
@@ -31,7 +31,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>  
-            <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                 <mat-label>subject</mat-label>
                 <mat-select formControlName="searchSubjectId" (selectionChange)="cleardata()">
                     <mat-option *ngFor="let item of SelectedClassSubjects" [value]="item.SubjectId">
@@ -39,14 +39,14 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                 <mat-label>content unit</mat-label>
                 <mat-select formControlName="searchContentUnitId" (selectionChange)="SelectContentUnitChanged()">
                     <mat-option *ngFor="let item of ContentUnit" [value]="item.MasterDataId">{{item.MasterDataName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                 <mat-label>sub content unit</mat-label>
                 <mat-select formControlName="searchSubContentUnitId" (selectionChange)="cleardata()">
                     <mat-option value="0">select</mat-option>

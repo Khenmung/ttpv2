@@ -246,7 +246,7 @@ export class TrialBalanceComponent implements OnInit {
             }
             else
             {
-              var temprow ={"AccountName":f.AccountName, "Dr":0,"Cr":0};
+              var temprow:any ={"AccountName":f.AccountName, "Dr":0,"Cr":0};
               if (f.Debit) {
                 temprow.Dr = f.Amount;
                 temprow.Cr = 0;

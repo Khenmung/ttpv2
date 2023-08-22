@@ -4,6 +4,7 @@ import { environment } from "../../environments/environment";
 import { TokenStorageService } from "../_services/token-storage.service";
 import { NaomitsuService } from "./databaseService";
 import { List } from "./interface";
+import moment from "moment";
 
 export class globalconstants {
     //////"https://api.ttpsolutions.in";"https://ettest.ttpsolutions.in"; environment.apiU+++.*-=-0983`9556'nb656RL
@@ -24,6 +25,7 @@ export class globalconstants {
     public static AddedMessage = 'Data saved successfully.';
     public static UpdatedMessage = 'Data updated successfully.';
     public static DeletedMessage = 'Data deleted successfully.';
+    public static ReactivatedMessage = 'Re-activated successfully.';
     public static RecordAlreadyExistMessage = 'Record already exists!';
     public static NoRecordFoundMessage = 'No record found!';
     public static NoEvaluationRecordFoundMessage = 'No evaluation record found!';
@@ -148,16 +150,16 @@ export class globalconstants {
                 "employee": {
                     "EMPLOYEE": "employee",
                     "EMPLOYEEDETAIL": "employee detail",
-                    "SALARY": "salary",
-                    "SALARYSLIP": "salary slip",
-                    "SALARYCOMPONENTS": "salary components",
-                    "EMPSALARYCOMPONENTS": "employee salary components",
+                    //"SALARY": "salary",
+                    //"SALARYSLIP": "salary slip",
+                    //"SALARYCOMPONENTS": "salary components",
+                    //"EMPSALARYCOMPONENTS": "employee salary components",
                     "DOCUMENT": "employee document",
                     "EDUCATIONHISTORY": "education history",
                     "WORKHISTORY": "work history",
                     "EMPLOYEESKILL": "employee skill",
                     "FAMILY": "family",
-                    "ATTENDANCE": "attendance",
+                    //"ATTENDANCE": "attendance",
                     "EMPLOYMENTHISTORY": "employment history",
                     "EMPLOYEEPROFILE": "employee profile",
                     "LEAVEAPPROVEPERMISSION": "leave approve permission",
@@ -168,9 +170,17 @@ export class globalconstants {
                     "ACTIVITY": "activity"
                 },
                 "employeeleave": {
-                    "LEAVEPOLICY": "leave policy",
                     "EMPLOYEELEAVE": "employee leave",
+                    "LEAVEPOLICY": "leave policy",                   
+                    "LEAVE":"Leave",
                     "LEAVEBALANCE": "leave balance"
+                },
+                "employeesalary": {
+                    "EMPLOYEESALARY": "employee salary",
+                    "EMPCOMPONENT": "salary component",                   
+                    "VARIABLECONFIG":"variable config",
+                    "SALARYCOMPONENT": "employee salary component",
+                    "SALARYSLIP":"salary slip"
                 },
                 "employeeattendance": {
                     "EMPLOYEEATTENDANCE": "employee attendance",
@@ -181,7 +191,8 @@ export class globalconstants {
                 'Admission': {
                     'ADMISSION': 'Admission',
                     'PROMOTESTUDENT': 'Promote Student',
-                    'AssignClass': 'Assign Class'
+                    'AssignClass': 'Assign Class',
+                    'INACTIVESTUDENT': 'Inactive Student'
                 },
                 'STUDENT': {
                     'STUDENT': 'student',
@@ -543,6 +554,29 @@ export class globalconstants {
     ) {
 
     }
+    /**
+   * An example of custom validator on a date string.
+   * Valid date is a string, which is:
+   * 1, in the form of YYYY-MM-DD
+   * 2, later than today
+   * 3, not an invalid value like 2018-20-81
+   * @param date a date string
+   */
+  public static isMyDateFormat(date: string): string {
+    if (date.length !== 10) {
+      return 'Invalid input: Please input a string in the form of YYYY-MM-DD';
+    } else {
+      const da = date.split('-');
+      if (da.length !== 3 || da[0].length !== 4 || da[1].length !== 2 || da[2].length !== 2) {
+        return 'Invalid input: Please input a string in the form of YYYY-MM-DD';
+      } else if (moment(date).isValid()) {
+        return 'Invalid date: Please input a date no later than today';
+      } else if (!moment(date).isValid()) {
+        return 'Invalid date: Please input a date with a valid month and date.';
+      }
+    }
+    return 'Unknown error.';
+  }
     public static getCurrentTotalAmount(AmountDetail) {
         var withoutTaxOrDiscount = AmountDetail.filter(x => !x.FeeName.includes('%') && x.FeeName != 'Discount' && x.FeeCategory != 'Tax')
         var CurrentTotalAmount = withoutTaxOrDiscount.reduce((acc, current) => acc + current.Amount, 0);

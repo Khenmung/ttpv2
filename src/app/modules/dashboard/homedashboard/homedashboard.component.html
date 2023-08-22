@@ -8,7 +8,7 @@
             <!-- <div style="display:flex"> -->
             <mat-form-field [style.width.px]="250" appearance="outline">
                 <mat-label>Application</mat-label>
-                <mat-select formControlName="searchApplicationId" (selectionChange)="ChangeApplication()">
+                <mat-select id="ApplicationId" formControlName="searchApplicationId" (selectionChange)="ChangeApplication()">
                     <mat-option *ngFor="let item of PermittedApplications" [value]="item.applicationId">
                         {{item.applicationName}}</mat-option>
                 </mat-select>

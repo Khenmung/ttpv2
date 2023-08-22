@@ -49,7 +49,7 @@ export class LeaveboardComponent implements AfterViewInit {
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
 
-    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.EMPLOYEE)
+    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.EMPLOYEELEAVE)
     if (perObj.length > 0) {
       this.Permissions.ParentPermission = perObj[0].permission;
 

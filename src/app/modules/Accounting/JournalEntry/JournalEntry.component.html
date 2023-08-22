@@ -16,7 +16,7 @@
         <input type="text" matInput formControlName="searchReferenceId" [maxlength]="50" autocomplete="Off">
     </mat-form-field> -->
 
-    <mat-form-field appearance="outline" [style.width.px]="250">
+    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
         <mat-label>Account</mat-label>
         <input type="text" matInput formControlName="searchGeneralLedgerId" [matAutocomplete]="auto">
         <mat-autocomplete (optionSelected)="BindReference()" #auto="matAutocomplete" [displayWith]="displayFn">
@@ -25,7 +25,7 @@
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-    <mat-form-field appearance="outline" [style.width.px]="250">
+    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
         <mat-label>Reference</mat-label>
         <mat-select formControlName="searchReference">
             <mat-option *ngFor="let option of FilteredGeneralLedger" [value]="option.Reference">
@@ -40,8 +40,8 @@
             <mat-spinner diameter="20" color="Blue"></mat-spinner>
         </mat-icon>
     </button>
-    <button [disabled]="loading || Permission=='read'" matTooltip="new entry" mat-raised-button
-        (click)="addnew(true)" fxFlex="10">
+    <button [disabled]="loading || Permission=='read'" matTooltip="new entry" mat-raised-button (click)="addnew(true)"
+        fxFlex="10">
         <mat-icon>add</mat-icon>
     </button>
 </form>
@@ -53,7 +53,6 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <mat-label>Doc Date</mat-label>
                 <input [(ngModel)]="element.DocDate" [value]="element.DocDate" matInput [matDatepicker]="DocDate"
                     autocomplete="off">
                 <mat-datepicker-toggle matSuffix [for]="DocDate"></mat-datepicker-toggle>
@@ -65,8 +64,7 @@
         <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef>Posting Date
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <mat-form-field appearance="outline" [style.width.px]="130">
-                <mat-label>Posting Date</mat-label>
+            <mat-form-field appearance="outline">
                 <input [(ngModel)]="element.PostingDate" [value]="element.PostingDate" matInput
                     [matDatepicker]="PostingDate" autocomplete="off">
                 <mat-datepicker-toggle matSuffix [for]="PostingDate"></mat-datepicker-toggle>
@@ -78,7 +76,6 @@
         <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <mat-label>description</mat-label>
                 <input matInput [maxlength]="256" (blur)="SetReference(element)" autocomplete="Off"
                     [(ngModel)]="element.ShortText" [value]="element.ShortText">
             </mat-form-field>
@@ -88,17 +85,15 @@
         <mat-header-cell *matHeaderCellDef> Reference </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <mat-label>Reference</mat-label>
-                <input [disabled]="true" matInput [maxlength]="30" autocomplete="Off"
-                    [(ngModel)]="element.Reference" [value]="element.Reference">
+                <input [disabled]="true" matInput [maxlength]="30" autocomplete="Off" [(ngModel)]="element.Reference"
+                    [value]="element.Reference">
             </mat-form-field>
         </mat-cell>
     </ng-container>
     <ng-container matColumnDef="GeneralLedgerAccountId">
         <mat-header-cell *matHeaderCellDef> Account</mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <mat-form-field appearance="outline" [style.width.px]="150">
-                <mat-label>Account</mat-label>
+            <mat-form-field appearance="outline">
                 <input type="text" matInput [(ngModel)]="element.GeneralLedgerAccountId"
                     [value]="element.GeneralLedgerName" [matAutocomplete]="autoRow">
                 <mat-autocomplete #autoRow="matAutocomplete" [displayWith]="displayFn">
@@ -107,14 +102,6 @@
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
-
-            <!-- <mat-form-field appearance="outline">
-                <mat-select [(ngModel)]="element.GeneralLedgerAccountId" [value]="element.GeneralLedgerAccountId">
-                    <mat-option *ngFor="let item of GeneralLedgers" [value]="item.GeneralLedgerId">
-                        {{item.GeneralLedgerName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field> -->
         </mat-cell>
     </ng-container>
     <ng-container matColumnDef="Debit">
@@ -161,7 +148,7 @@
         </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" style="align-items: baseline;"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" style="margin-top: 7px;"></mat-row>
 </mat-table>
 <div style="display:flex;justify-content:center">
     <mat-paginator [pageSizeOptions]="[10,20,50]"></mat-paginator>

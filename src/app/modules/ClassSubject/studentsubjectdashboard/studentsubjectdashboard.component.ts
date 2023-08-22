@@ -265,18 +265,18 @@ export class studentsubjectdashboardComponent implements OnInit {
               })
             })
           }
-          // else {
-          //   this.StudentClassSubjects.push({
-          //     'StudentClassSubjectId': 0,
-          //     'StudentClassId': 0,
-          //     'ClassSubjectId': clssubj.ClassSubjectId,
-          //     'Active': 0,
-          //     'ClassId': clssubj.ClassId,
-          //     'SectionId': _sectionId,
-          //     'SemesterId': _semesterId,
-          //     'SubjectId': clssubj.SubjectId
-          //   })
-          // }
+          else {
+            this.StudentClassSubjects.push({
+              'StudentClassSubjectId': 0,
+              'StudentClassId': 0,
+              'ClassSubjectId': clssubj.ClassSubjectId,
+              'Active': 0,
+              'ClassId': clssubj.ClassId,
+              'SectionId': _sectionId,
+              'SemesterId': _semesterId,
+              'SubjectId': clssubj.SubjectId
+            })
+          }
         })
 
 

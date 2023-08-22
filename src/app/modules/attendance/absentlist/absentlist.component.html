@@ -33,16 +33,17 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" [style.width.px]="150">
+    <mat-form-field appearance="outline" [style.width.px]="160">
         <mat-label>From</mat-label>
-        <input formControlName="searchAttendanceFromDate" matInput [matDatepicker]="AttendanceFromDate" (dateChange)="ClearData()"
-            autocomplete="off">
+        <input formControlName="searchAttendanceFromDate" matInput [matDatepicker]="AttendanceFromDate"
+            (dateChange)="ClearData()" autocomplete="off">
         <mat-datepicker-toggle matSuffix [for]="AttendanceFromDate"></mat-datepicker-toggle>
         <mat-datepicker #AttendanceFromDate></mat-datepicker>
     </mat-form-field>
-    <mat-form-field appearance="outline" [style.width.px]="150">
+    <mat-form-field appearance="outline" [style.width.px]="160">
         <mat-label>To</mat-label>
-        <input formControlName="searchAttendanceDate" matInput (dateChange)="ClearData()" [matDatepicker]="AttendanceDate" autocomplete="off">
+        <input formControlName="searchAttendanceDate" matInput (dateChange)="ClearData()"
+            [matDatepicker]="AttendanceDate" autocomplete="off">
         <mat-datepicker-toggle matSuffix [for]="AttendanceDate"></mat-datepicker-toggle>
         <mat-datepicker #AttendanceDate></mat-datepicker>
     </mat-form-field>
@@ -62,11 +63,32 @@
                 {{element.ClassName}}
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="StudentRollNo">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Student-Rollno
+        <ng-container matColumnDef="Student">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Student
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                {{element.StudentRollNo}}
+                {{element.Student}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Section">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Section
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Section}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Semester">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Semester
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Semester}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="RollNo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Roll No
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.RollNo}}
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="AttendanceDate">
@@ -152,8 +174,15 @@
 </div>
 <mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50,75]"></mat-paginator>
 <div style="margin-top:15px;display:flex;justify-content: center;">
-    <button [disabled]="loading || Permission=='read'" *ngIf="StudentAttendanceList.length>0" matTooltip="print"
+    <button style="margin-right: 15px;" [disabled]="loading || Permission=='read'" *ngIf="StudentAttendanceList.length>0" matTooltip="print"
         printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
         <mat-icon>print</mat-icon>
+    </button>
+
+    <button *ngIf="StudentAttendanceList.length>0" (click)="exportArray()" matTooltip="excel download" mat-raised-button color="accent">
+        <mat-icon>download</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="25"></mat-spinner>
+        </mat-icon>
     </button>
 </div>

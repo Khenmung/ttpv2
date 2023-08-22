@@ -32,7 +32,7 @@ export class AccountNatureComponent implements OnInit {
   exceptionColumns: boolean;
   CurrentRow: any = {};
   DummyMasterItemId = 4579;
-  AccountingPeriod = {
+  AccountingPeriod:any = {
     StartDate: new Date(),
     EndDate: new Date()
   }
@@ -49,7 +49,7 @@ export class AccountNatureComponent implements OnInit {
   dataSource: MatTableDataSource<IAccountNature>;
   allMasterData :any[]= [];
   searchForm: UntypedFormGroup;
-  AccountNatureData = {
+  AccountNatureData :any= {
     AccountNatureId: 0,
     AccountName: '',
     ParentId: 0,

@@ -485,7 +485,7 @@ export class searchstudentComponent implements OnInit {
     XLSX.writeFile(wb, 'basicinfo.xlsx');
   }
   exportArray() {
-    const datatoExport: Partial<IStudentDownload>[] = this.ELEMENT_DATA.map(x => ({
+    const datatoExport: any[] = this.ELEMENT_DATA.map(x => ({
       StudentId: x.StudentId,
       Name: x.Name,
       FatherName: x.FatherName,

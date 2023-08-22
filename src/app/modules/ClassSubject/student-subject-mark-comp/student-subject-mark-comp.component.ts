@@ -415,10 +415,11 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       _subjectId = obj[0].SubjectId;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
-    // filterstr += " and SemesterId eq " + _semesterId;
-    // filterstr += " and SectionId eq " + _sectionId;
-
     var filterstr = this.FilterOrgSubOrgBatchId;
+    filterstr += " and SemesterId eq " + _semesterId;
+    filterstr += " and SectionId eq " + _sectionId;
+
+    
     if (_examId == 0) {
       this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -447,6 +448,8 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       "ClassSubjectMarkComponentId",
       "ClassSubjectId",
       "SubjectComponentId",
+      "SemesterId",
+      "SectionId",
       "ExamId",
       "FullMark",
       "PassMark",
@@ -536,6 +539,8 @@ export class StudentSubjectMarkCompComponent implements OnInit {
                   ClassSubjectMarkComponentId: 0,
                   ClassSubjectId: subj.ClassSubjectId,
                   ClassSubject: subj.ClassSubject,
+                  SemesterId:_semesterId,
+                  SectionId:_sectionId,
                   ExamId: _examId,
                   SubjectComponentId: component.MasterDataId,
                   SubjectComponent: this.MarkComponents.filter(m => m.MasterDataId == component.MasterDataId)[0].MasterDataName,

@@ -46,14 +46,14 @@ export class AddstudentfeepaymentComponent implements OnInit {
   TotalAmount = 0;
   exceptionColumns: boolean;
   //isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
-  PaymentTypes :any[]= [];
-  FeeCategories :any[]= [];
+  PaymentTypes: any[] = [];
+  FeeCategories: any[] = [];
   OffLineReceiptNo = '';
   CashAmount = 0;
   PaymentTypeId = 0;
   TuitionFeeLedgerId = 0;
   GeneralLedgerAccountId = 0;
-  GeneralLedgerAccounts :any[]= [];
+  GeneralLedgerAccounts: any[] = [];
   expandedElement: any;
   CurrentRow: any = {};
   FeePayable = true;
@@ -84,37 +84,41 @@ export class AddstudentfeepaymentComponent implements OnInit {
     ReceiptNo: 0,
     ReceiptDate: new Date()
   }
-  FeePayment : {
+  FeePayment: {
     StudentFeeReceipt: {},
-    LedgerAccount:any[],
+    LedgerAccount: any[],
     AccountingVoucher: any[]
-  };
-  ReceiptHeading :any[]= [];
+  } = {
+      StudentFeeReceipt: {},
+      LedgerAccount: [],
+      AccountingVoucher: []
+    };
+  ReceiptHeading: any[] = [];
   SelectedApplicationId = 0;
   OriginalAmountForCalc = 0;
-  VariableObjList:any[]= [];
-  Months :any[]= [];
+  VariableObjList: any[] = [];
+  Months: any[] = [];
   StudentName = '';
-  LoginUserDetail :any[]= [];
-  Sections :any[]= [];
-  FeeDefinitions :any[]= [];
-  Classes :any[]= [];
-  Batches :any[]= [];
-  Locations :any[]= [];
-  AccountNature :any[]= [];
-  AccountGroup :any[]= [];
-  StudentClassFees:any[]= [];
-  FeeTypes :any[]= [];
+  LoginUserDetail: any[] = [];
+  Sections: any[] = [];
+  FeeDefinitions: any[] = [];
+  Classes: any[] = [];
+  Batches: any[] = [];
+  Locations: any[] = [];
+  AccountNature: any[] = [];
+  AccountGroup: any[] = [];
+  StudentClassFees: any[] = [];
+  FeeTypes: any[] = [];
   //AccountingLedgerTrialBalanceListName = 'AccountingLedgerTrialBalances';
-  ELEMENT_DATA: ILedger[]= [];
-  ExistingStudentLedgerList :any[]= [];
+  ELEMENT_DATA: ILedger[] = [];
+  ExistingStudentLedgerList: any[] = [];
   StudentLedgerList: ILedger[];
   Students: any[];
   dataSource: MatTableDataSource<ILedger>;
   billdataSource: MatTableDataSource<any>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   PaymentName = '';
-  MonthlyDueDetail :any[]= [];
+  MonthlyDueDetail: any[] = [];
   CurrentTotalAmount = 0;
   StudentReceiptData = {
     StudentFeeReceiptId: 0,
@@ -155,7 +159,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     SubOrgId: 0,
     Active: 1
   }
-  StudentLedgerData:any = {
+  StudentLedgerData: any = {
     LedgerId: 0,
     StudentClassId: 0,
     Month: 0,
@@ -233,7 +237,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     debugger;
     //this.PaymentTypeId = this.paymentform.get("GeneralLedgerAccountId")?.value;
 
-    var obj = this.PaymentTypes.filter((f:any) => f.MasterDataId == this.PaymentTypeId)
+    var obj = this.PaymentTypes.filter((f: any) => f.MasterDataId == this.PaymentTypeId)
     if (obj.length > 0)
       this.PaymentName = obj[0].MasterDataName.toLowerCase();
 
@@ -243,7 +247,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
       this.nav.navigate(['/edu/addstudent/' + this.studentInfoTodisplay.StudentId]);
   }
   admission() {
-    this.nav.navigate(['/edu/Admission']);
+    this.nav.navigate(['/edu/admission']);
   }
   PageLoad() {
     debugger;
@@ -321,7 +325,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   public calculateTotal() {
     debugger;
     if (this.MonthlyDueDetail.length > 0) {
-      var _discountRemoved = this.MonthlyDueDetail.filter((f:any) => f.FeeName != this.DiscountText);
+      var _discountRemoved = this.MonthlyDueDetail.filter((f: any) => f.FeeName != this.DiscountText);
       this.TotalAmount = +_discountRemoved.reduce((accum, curr) => accum + +curr.Amount, 0).toFixed(2);
 
       this.Balance = _discountRemoved.reduce((accum, curr) => accum + +curr.Balance, 0);
@@ -350,7 +354,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   //     })
   // }
   logourl = '';
-  CustomerHeading :any[]= [];
+  CustomerHeading: any[] = [];
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
     //this.shareddata.CurrentFeeDefinitions.subscribe((f: any) => {
@@ -376,7 +380,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     this.PaymentTypeId = this.PaymentTypes.filter(p => p.MasterDataName.toLowerCase() == "cash")[0].MasterDataId;
     this.ReceiptHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.RECEIPTHEADING);
 
-    var imgobj = this.ReceiptHeading.filter((f:any) => f.MasterDataName == 'img');
+    var imgobj = this.ReceiptHeading.filter((f: any) => f.MasterDataName == 'img');
     if (imgobj.length > 0) {
       this.logourl = imgobj[0].Description;
     }
@@ -479,7 +483,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
                 this.studentInfoTodisplay.StudentClassName = clsObj[0].ClassName;
 
 
-              var feeObj = this.FeeTypes.filter((f:any) => {
+              var feeObj = this.FeeTypes.filter((f: any) => {
                 return f.FeeTypeId == this.studentInfoTodisplay.FeeTypeId
               })
               if (feeObj.length > 0)
@@ -569,9 +573,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
         debugger;
 
         if (data.value.length > 0) {
-          var result :any[]= [];
-          result = data.value.filter((f:any) => f.SectionId == this.studentInfoTodisplay.SectionId 
-                                    && f.SemesterId == this.studentInfoTodisplay.SemesterId);
+          var result: any[] = [];
+          result = data.value.filter((f: any) => f.SectionId == this.studentInfoTodisplay.SectionId
+            && f.SemesterId == this.studentInfoTodisplay.SemesterId);
           if (result.length == 0) {
             result = [...data.value];
           }
@@ -613,7 +617,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
           this.StudentClassFees.forEach((studentClassFee) => {
             let existing = this.ExistingStudentLedgerList.filter(fromdb => fromdb.Month == studentClassFee.Month)
             if (existing.length > 0) {
-              var alreadyAdded = this.StudentLedgerList.filter((f:any) => f.Month == studentClassFee.Month)
+              var alreadyAdded = this.StudentLedgerList.filter((f: any) => f.Month == studentClassFee.Month)
               if (alreadyAdded.length == 0)
                 existing.forEach(exitem => {
                   //itemcount += 1;
@@ -643,7 +647,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
           this.StudentLedgerList = [];
           this.contentservice.openSnackBar("Fees not defined for this class", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        this.StudentLedgerList = this.StudentLedgerList.filter((f:any) => f.MonthName != 'Discount')
+        this.StudentLedgerList = this.StudentLedgerList.filter((f: any) => f.MonthName != 'Discount')
         this.StudentLedgerList.forEach(d => {
           if (d.TotalDebit == 0) {
             d.TotalCredit = 0;
@@ -675,12 +679,12 @@ export class AddstudentfeepaymentComponent implements OnInit {
     debugger;
     var _newCount = 0;
     if (event.checked || row.BaseAmount1 == 0) {
-      var previousBalanceMonthObj = this.StudentLedgerList.filter((f:any) => f.Month < row.Month && +f.Balance1 > 0);
-      var MonthSelected :any[]= [];
+      var previousBalanceMonthObj = this.StudentLedgerList.filter((f: any) => f.Month < row.Month && +f.Balance1 > 0);
+      var MonthSelected: any[] = [];
 
       //checking if previous balance exist
       if (previousBalanceMonthObj.length > 0) {
-        MonthSelected = this.MonthlyDueDetail.filter((f:any) => f.Month == previousBalanceMonthObj[0].Month)
+        MonthSelected = this.MonthlyDueDetail.filter((f: any) => f.Month == previousBalanceMonthObj[0].Month)
         if (MonthSelected.length == 0 && this.MonthlyDueDetail.length > 0)//means not selected yet
         {
           row.Action = false;
@@ -694,7 +698,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
         this.MonthlyDueDetail.splice(DiscountrowIndxToDelete, 1);
 
       //var _generalAccountObj = this.GeneralLedgerAccounts.filter((f:any) => f.StudentClassId == this.studentInfoTodisplay.StudentClassId)
-      var _generalAccountObj = this.GeneralLedgerAccounts.filter((f:any) => f.GeneralLedgerName.toLowerCase() == "tuition fee")
+      var _generalAccountObj = this.GeneralLedgerAccounts.filter((f: any) => f.GeneralLedgerName.toLowerCase() == "tuition fee")
 
       if (_generalAccountObj.length > 0)
         this.TuitionFeeLedgerId = _generalAccountObj[0].GeneralLedgerId;
@@ -706,7 +710,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
           //console.log("data.value", data.value);
           data.value.forEach((accVoucher, indx) => {
             var _feeName = '';
-            var obj = this.StudentClassFees.filter((f:any) => f.ClassFeeId == accVoucher.ClassFeeId);
+            var obj = this.StudentClassFees.filter((f: any) => f.ClassFeeId == accVoucher.ClassFeeId);
             if (obj.length > 0) {
 
               _feeName = obj[0].FeeName;
@@ -748,11 +752,11 @@ export class AddstudentfeepaymentComponent implements OnInit {
         })//this.getAccountingVoucher(
       }
       else {
-        var SelectedMonthFees = this.StudentClassFees.filter((f:any) => f.Month == row.Month || f.Month == 0);
+        var SelectedMonthFees = this.StudentClassFees.filter((f: any) => f.Month == row.Month || f.Month == 0);
         //  debugger;
-        SelectedMonthFees = SelectedMonthFees.sort((a,b)=>b.Month - a.Month);
+        SelectedMonthFees = SelectedMonthFees.sort((a, b) => b.Month - a.Month);
         var AmountAfterFormulaApplied = 0;
-        
+
         SelectedMonthFees.forEach((f, indx) => {
           this.VariableObjList.push(f);
           // var withoutTaxOrDiscount = this.MonthlyDueDetail.filter(x => x.FeeName != 'Discount' && x.FeeCategory != 'Tax')
@@ -762,9 +766,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
           var formula = this.ApplyVariables(this.studentInfoTodisplay.Formula);
           this.VariableObjList.splice(this.VariableObjList.indexOf(f), 1);
           AmountAfterFormulaApplied = evaluate(formula).toFixed(2);
-          if(f.FeeName.includes('%'))
-          {
-            AmountAfterFormulaApplied = +(this.CurrentTotalAmount * (AmountAfterFormulaApplied/100)).toFixed(2);
+          if (f.FeeName.includes('%')) {
+            AmountAfterFormulaApplied = +(this.CurrentTotalAmount * (AmountAfterFormulaApplied / 100)).toFixed(2);
           }
           //AmountAfterFormulaApplied = +AmountAfterFormulaApplied.toFixed(2);
           //   f.Amount = AmountAfterFormulaApplied;
@@ -813,7 +816,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     else {
       //debugger;
       _newCount--;
-      var toDelete = this.MonthlyDueDetail.filter((f:any) => f.Month == row.Month && f.FeeName != 'Discount');
+      var toDelete = this.MonthlyDueDetail.filter((f: any) => f.Month == row.Month && f.FeeName != 'Discount');
       toDelete.forEach(d => {
         var indx = this.MonthlyDueDetail.indexOf(d);
         this.MonthlyDueDetail.splice(indx, 1);
@@ -826,7 +829,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
   remove(row) {
     debugger;
-    var toDelete = this.MonthlyDueDetail.filter((f:any) => f.SlNo == row.SlNo && f.FeeName != 'Discount');
+    var toDelete = this.MonthlyDueDetail.filter((f: any) => f.SlNo == row.SlNo && f.FeeName != 'Discount');
     toDelete.forEach(d => {
       var indx = this.MonthlyDueDetail.indexOf(d);
       this.MonthlyDueDetail.splice(indx, 1);
@@ -838,14 +841,14 @@ export class AddstudentfeepaymentComponent implements OnInit {
     this.calculateTotal();
   }
   miscelenous() {
-    var _rowWithoutDiscount = this.MonthlyDueDetail.filter((f:any) => f.FeeName != 'Discount');
+    var _rowWithoutDiscount = this.MonthlyDueDetail.filter((f: any) => f.FeeName != 'Discount');
     this.DiscountAmount = _rowWithoutDiscount.reduce((accum, curr) => accum + (curr.BaseAmount - +curr.Amount), 0);
     var _discountAccountId = 0;
-    var _obj = this.GeneralLedgerAccounts.filter((f:any) => f.GeneralLedgerName == this.DiscountText + " Allowed")
+    var _obj = this.GeneralLedgerAccounts.filter((f: any) => f.GeneralLedgerName == this.DiscountText + " Allowed")
     if (_obj.length > 0)
       _discountAccountId = _obj[0].GeneralLedgerId;
 
-    var DiscountRow = this.MonthlyDueDetail.filter((f:any) => f.FeeName == this.DiscountText);
+    var DiscountRow = this.MonthlyDueDetail.filter((f: any) => f.FeeName == this.DiscountText);
     // var _BalanceForACReceivable = JSON.parse(JSON.stringify(DiscountRow))
     if (DiscountRow.length == 0 && this.DiscountAmount > 0) {
       this.loading = false;
@@ -862,7 +865,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
         DiscountRow[0].GeneralLedgerAccountId = _discountAccountId;
       }
       else {
-        var discountRowToDelete = this.MonthlyDueDetail.filter((f:any) => f.FeeName == this.DiscountText);
+        var discountRowToDelete = this.MonthlyDueDetail.filter((f: any) => f.FeeName == this.DiscountText);
         for (let row = 0; row < discountRowToDelete.length; row++) {
           var indx = this.MonthlyDueDetail.findIndex(x => x.FeeName == this.DiscountText);
           this.MonthlyDueDetail.splice(indx, 1);
@@ -884,7 +887,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
   billpayment() {
     //debugger;
-    var error :any[]= [];
+    var error: any[] = [];
 
     //checking within selected items
     this.StudentLedgerData.LedgerId = 0;
@@ -895,7 +898,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
 
         //f.Amount != 0 means paying some amount
         //f.BaseAmount!=0 means, dont check which amount are not set ex. misc.
-        var Unpaid = sortedbyMonth.filter((f:any) => f.BaseAmount != 0 && f.Amount != 0 && f.SlNo > sortedbyMonth[i].SlNo)
+        var Unpaid = sortedbyMonth.filter((f: any) => f.BaseAmount != 0 && f.Amount != 0 && f.SlNo > sortedbyMonth[i].SlNo)
         if (Unpaid.length > 0) {
           error.push({ "FeeName": sortedbyMonth[i].FeeName, "Next": Unpaid[0].FeeName });
           break;
@@ -906,12 +909,12 @@ export class AddstudentfeepaymentComponent implements OnInit {
 
     //checking between months
     var maxMonth = Math.max.apply(Math, this.MonthlyDueDetail.map(function (o) { return o.Month; }));
-    var previousBalanceMonthObj :any[]= [];
-    previousBalanceMonthObj = this.StudentLedgerList.filter((f:any) => f.Month < maxMonth && +f.Balance1 > 0);
-    var MonthSelected :any[]= [];
+    var previousBalanceMonthObj: any[] = [];
+    previousBalanceMonthObj = this.StudentLedgerList.filter((f: any) => f.Month < maxMonth && +f.Balance1 > 0);
+    var MonthSelected: any[] = [];
     if (previousBalanceMonthObj.length > 0) {
       previousBalanceMonthObj.forEach(p => {
-        MonthSelected = this.MonthlyDueDetail.filter((f:any) => f.Month == p.Month)
+        MonthSelected = this.MonthlyDueDetail.filter((f: any) => f.Month == p.Month)
         if (MonthSelected.length == 0)//means not selected yet
           error.push({ "FeeName": p.MonthName, "Next": '' });
       })
@@ -988,13 +991,13 @@ export class AddstudentfeepaymentComponent implements OnInit {
     //this.StudentReceiptData.CreatedDate = new Date();
 
     this.FeePayment.StudentFeeReceipt = this.StudentReceiptData;
-    console.log("this.StudentReceiptData",this.StudentReceiptData)
-    var SelectedMonths = this.StudentLedgerList.filter((f:any) => f.Action)
+    console.log("this.StudentReceiptData", this.StudentReceiptData)
+    var SelectedMonths = this.StudentLedgerList.filter((f: any) => f.Action)
     //this.FeePayment.LedgerAccount["AccountingVoucher"] :any[]= [];
     this.FeePayment.AccountingVoucher = [];
     this.FeePayment.LedgerAccount = [];
     SelectedMonths.forEach(selectedMonthrowFromLedger => {
-      var monthPayAmount = this.MonthlyDueDetail.filter((f:any) => f.Month == selectedMonthrowFromLedger.Month)
+      var monthPayAmount = this.MonthlyDueDetail.filter((f: any) => f.Month == selectedMonthrowFromLedger.Month)
       var monthAmountFromClassFee = monthPayAmount.reduce((acc, item) => {
         return acc + item.Amount;
       }, 0)
@@ -1013,10 +1016,10 @@ export class AddstudentfeepaymentComponent implements OnInit {
 
       this.FeePayment.LedgerAccount.push(JSON.parse(JSON.stringify(this.StudentLedgerData)));
 
-      var monthPaydetail = this.MonthlyDueDetail.filter((f:any) => f.Month == selectedMonthrowFromLedger.Month)
+      var monthPaydetail = this.MonthlyDueDetail.filter((f: any) => f.Month == selectedMonthrowFromLedger.Month)
 
       var _AccountReceivableId = 0;
-      var _obj = this.GeneralLedgerAccounts.filter((f:any) => f.GeneralLedgerName == "Account Receivable");
+      var _obj = this.GeneralLedgerAccounts.filter((f: any) => f.GeneralLedgerName == "Account Receivable");
       if (_obj.length > 0)
         _AccountReceivableId = _obj[0].GeneralLedgerId;
       monthPaydetail.forEach((paydetail) => {

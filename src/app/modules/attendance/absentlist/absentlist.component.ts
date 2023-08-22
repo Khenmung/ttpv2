@@ -12,6 +12,7 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
+import { TableUtil } from '../../../shared/TableUtil';
 
 @Component({
   selector: 'app-absentlist',
@@ -68,7 +69,10 @@ export class AbsentListComponent implements OnInit {
   };
   displayedColumns = [
     'ClassName',
-    'StudentRollNo',
+    'Student',
+    'ClassName',
+    'Section',
+    'RollNo',
     'AttendanceDate',
     'PersonalNo',
     'ClassSubject',
@@ -152,7 +156,42 @@ export class AbsentListComponent implements OnInit {
         this.SelectedClassCategory = obj[0].Category;
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
-
+    if(this.SelectedClassCategory==this.getHighSchoolCategory())
+    {
+      this.displayedColumns = [
+        'ClassName',
+        'Student',
+        'ClassName',
+        'Section',
+        'RollNo',
+        'AttendanceDate',
+        'PersonalNo',
+        'ClassSubject',
+        'Remarks',
+        'ReportedTo',
+        'Approved',
+        'ApprovedByName',
+        'Action'
+      ];
+    }
+    else if(this.SelectedClassCategory==this.getCollegeCategory())
+    {
+      this.displayedColumns = [
+        'ClassName',
+        'Student',
+        'ClassName',
+        'Semester',
+        'RollNo',
+        'AttendanceDate',
+        'PersonalNo',
+        'ClassSubject',
+        'Remarks',
+        'ReportedTo',
+        'Approved',
+        'ApprovedByName',
+        'Action'
+      ];
+    }
     this.ClearData();
   }
   saveall() {
@@ -303,10 +342,15 @@ export class AbsentListComponent implements OnInit {
             if (_Classobj.length > 0) {
               _Class = _Classobj[0].ClassName;
 
+              var _semesterobj = this.Semesters.filter((s:any) => s.MasterDataId == sc.SemesterId);
+              var _semester = '';
+              if (_semesterobj.length > 0) {
+                _semester = _semesterobj[0].MasterDataName;
+              }
               var _sectionobj = this.Sections.filter((s:any) => s.MasterDataId == sc.SectionId);
               var _section = '';
               if (_sectionobj.length > 0) {
-                _section = "-" + _sectionobj[0].MasterDataName;
+                _section = _sectionobj[0].MasterDataName;
               }
               this.StudentAttendanceList.push({
                 AttendanceId: sc.AttendanceId,
@@ -322,7 +366,10 @@ export class AbsentListComponent implements OnInit {
                 ClassSubject: _subjName,
                 Remarks: sc.Remarks,
                 RollNo: _student[0].StudentClasses[0].RollNo,
-                StudentRollNo: _student[0].StudentClasses[0].RollNo + "-" + _student[0].FirstName + " " + (_student[0].LastName == null ? '' : _student[0].LastName) + _section,
+                Section:_section,
+                Semester:_semester,
+                //StudentRollNo: _student[0].StudentClasses[0].RollNo + "-" + _student[0].FirstName + " " + (_student[0].LastName == null ? '' : _student[0].LastName) + _section,
+                Student: _student[0].FirstName + " " + (_student[0].LastName == null ? '' : _student[0].LastName),
                 PersonalNo: _student[0].PersonalNo,
                 ClassSequence: sc.ClassSequence
               });
@@ -543,17 +590,24 @@ export class AbsentListComponent implements OnInit {
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
   }
-
+  exportArray() {
+    if (this.StudentAttendanceList.length > 0) {
+      const datatoExport: Partial<IStudentAttendance>[] = this.StudentAttendanceList;
+      TableUtil.exportArrayToExcel(datatoExport, "StudentInfoDump");
+    }
+  }
 }
 export interface IStudentAttendance {
   AttendanceId: number;
   RollNo: number;
+  Section:string;
+  Semester:string;
   StudentClassId: number;
   AttendanceStatusId: number;
   ClassSubjectId: number;
   ClassSubject: string;
   AttendanceDate: Date;
-  StudentRollNo: string;
+  Student: string;
   PersonalNo: string;
   ClassName: string;
   Approved: boolean;

@@ -12,14 +12,14 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field> -->
-            <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
                 <mat-label>class</mat-label>
                 <mat-select formControlName="searchClassId" (selectionChange)="SelectSubject()">
                     <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
+            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" style="margin-right: 15px;width:200px">
                 <mat-label>semester</mat-label>
                 <mat-select formControlName="searchSemesterId" (selectionChange)="cleardata()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
@@ -28,7 +28,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" [style.width.px]="200">
+            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" style="margin-right: 15px;width:200px">
                 <mat-label>section</mat-label>
                 <mat-select formControlName="searchSectionId" (selectionChange)="cleardata()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
@@ -37,7 +37,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field> 
-            <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
                 <mat-label>subject</mat-label>
                 <mat-select formControlName="searchSubjectId" (selectionChange)="cleardata()">
                     <mat-option *ngFor="let item of SelectedClassSubjects" [value]="item.SubjectId">
@@ -45,14 +45,14 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
                 <mat-label>content unit</mat-label>
                 <mat-select formControlName="searchContentUnitId" (selectionChange)="SelectContentUnitChanged()">
                     <mat-option *ngFor="let item of ContentUnit" [value]="item.MasterDataId">{{item.MasterDataName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
                 <mat-label>sub content unit</mat-label>
                 <mat-select formControlName="searchSubContentUnitId" (selectionChange)="cleardata()">
                     <mat-option value="0">select</mat-option>
@@ -68,11 +68,10 @@
                 </mat-icon>
             </button>
             <mat-divider></mat-divider>
-            <div style="margin-top:15px">
-                <mat-form-field appearance="outline" [style.width.px]="200">
+            <div style="margin-top:15px;">
+                <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
                     <mat-label>no. of random questions required</mat-label>
                     <input matInput type="number" max="100" autocomplete="Off" formControlName="searchNoOfRandom">
-
                 </mat-form-field>
                 <button [disabled]="loading" mat-raised-button color="accent" (click)="GetRandomNumber()">
                     <mat-icon>shuffle_on</mat-icon>

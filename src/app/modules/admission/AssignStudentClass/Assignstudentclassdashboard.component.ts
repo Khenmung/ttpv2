@@ -104,7 +104,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   ];
   nameFilter = new UntypedFormControl('');
   IdFilter = new UntypedFormControl('');
-  filterValues = {
+  filterValues:any = {
     AdmissionNo: 0,
     StudentId: 0,
     StudentName: ''

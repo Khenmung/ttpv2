@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import alasql from 'alasql';
 import { ChartType, ChartOptions, LabelItem, DatasetChartOptions, PieDataPoint } from 'chart.js';
-import { BaseChartDirective,NgChartsConfiguration,NgChartsModule } from 'ng2-charts';
+//import { BaseChartDirective,NgChartsConfiguration,NgChartsModule } from 'ng2-charts';
 import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
@@ -10,7 +10,7 @@ import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 import { MatLabel } from '@angular/material/form-field';
-import { ArrayDataSource } from '@angular/cdk/collections';
+//import { ArrayDataSource } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-chartreport',
@@ -20,35 +20,28 @@ import { ArrayDataSource } from '@angular/cdk/collections';
 export class ChartReportComponent {
   PageLoading = true;
   ClickedReport = false;
-  VariableObjList :any[]= [];
+  VariableObjList: any[] = [];
   ExpectedAmount = 0.0;
   ReceiptAmount = 0.0;
-  optionsNoAutoClose = {
-    autoClose: false,
-    keepAfterRouteChange: true
-  };
-  optionAutoClose = {
-    autoClose: true,
-    keepAfterRouteChange: true
-  };
+
   loading = false;
   SearchForm: UntypedFormGroup;
-  Months :any[]= [];
-  MonthlyPayments :any[]= [];
-  StudentClasses :any[]= [];
-  ClassFees :any[]= [];
-  FilterOrgSubOrg='';
-  FilterOrgSubOrgBatchId='';
+  Months: any[] = [];
+  MonthlyPayments: any[] = [];
+  StudentClasses: any[] = [];
+  ClassFees: any[] = [];
+  FilterOrgSubOrg = '';
+  FilterOrgSubOrgBatchId = '';
   public pieChartOptions: ChartOptions = {
     responsive: true,
   };
   SelectedMonth = '';
   public pieChartLabels: MatLabel[] = ['--', '---'];
-  public pieChartData:any = [0, 0];
+  public pieChartData: any = [0, 0];
   public pieChartType: ChartType = 'pie';
   public pieChartLegend = true;
-  public pieChartPlugins :any[]= [];
-  LoginUserDetail :any[]= [];
+  public pieChartPlugins: any[] = [];
+  LoginUserDetail: any[] = [];
   SelectedApplicationId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   Permission = '';
@@ -59,8 +52,8 @@ export class ChartReportComponent {
     private fb: UntypedFormBuilder
   ) {
 
-    // monkeyPatchChartJsTooltip();
-    // monkeyPatchChartJsLegend();
+    //  monkeyPatchChartJsTooltip();
+    //  monkeyPatchChartJsLegend();
   }
   ngOnInit() {
 
@@ -78,8 +71,8 @@ export class ChartReportComponent {
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
       this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
-      this.FilterOrgSubOrg =globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-      this.FilterOrgSubOrgBatchId =globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+      this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+      this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.Months = this.contentservice.GetSessionFormattedMonths();
 
       this.GetClassFees();
@@ -135,7 +128,7 @@ export class ChartReportComponent {
     list.filter = [this.FilterOrgSubOrgBatchId + " and IsCurrent eq true and Active eq 1"];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        console.log('data gg', data.value)
+        //console.log('data gg', data.value)
         this.StudentClasses = data.value.map(m => {
           m.Formula = m.FeeType != undefined ? m.FeeType.Formula : '';
           m.FirstName = m.Student.FirstName;
@@ -155,7 +148,7 @@ export class ChartReportComponent {
       return;
     }
     this.loading = true;
-    this.SelectedMonth = this.Months.filter((f:any) => f.val == selectedmonthId)[0].MonthName;
+    this.SelectedMonth = this.Months.filter((f: any) => f.val == selectedmonthId)[0].MonthName;
     var studentCount = this.StudentClasses.length;
 
     //var paymentObj = this.MonthlyPayments.filter((f:any) => f.Month == selectedmonthId);
@@ -184,8 +177,15 @@ export class ChartReportComponent {
         this.pieChartLabels = ['Non-payment %', 'Payment %']
         var PaymentPercent = ((paymentcount * 100) / studentCount).toFixed(2);
         var NonPaymentPercent = ((noofUnpaid * 100) / studentCount).toFixed(2);
-        console.log("paymentcount", paymentcount);
-        this.pieChartData = [+NonPaymentPercent, +PaymentPercent];
+        //console.log("NonPaymentPercent", NonPaymentPercent);
+        //console.log("PaymentPercent", PaymentPercent);
+        this.pieChartData = {
+          labels: ["Purple", "Green"],
+          data: [NonPaymentPercent, PaymentPercent],
+          backgroundColor: ["#878BB6",
+            "#4ACAB4",]
+        };
+        
         this.loading = false;
         this.PageLoading = false;
         this.ClickedReport = true;

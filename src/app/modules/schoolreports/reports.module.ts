@@ -31,7 +31,7 @@ import { NgChartsModule } from 'ng2-charts';
     SharedhomepageModule,
     MatTableModule,
     NgxPrintModule,    
-    NgChartsModule
+    NgChartsModule 
   ],
   providers:[
     { provide: ErrorStateMatcher, useClass: TouchedErrorStateMatcher },

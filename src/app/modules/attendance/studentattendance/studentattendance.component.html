@@ -41,7 +41,7 @@
         </div>
         <div
             style="min-width:200px;display:flex;flex-direction:column;padding:10px 10px 0px 10px; border:1px solid lightgray">
-            <b>Only for subject wise attendance.</b>
+            <b style="margin-bottom: 15px;">Only for subject wise attendance.</b>
             <mat-form-field appearance="outline">
                 <mat-label>Subject</mat-label>
                 <mat-select formControlName="searchClassSubjectId"
@@ -81,7 +81,7 @@
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field>
-                    <mat-select (selectionChange)="checkall($event)" [(ngModel)]="element.AttendanceStatusId" 
+                    <mat-select (selectionChange)="UpdateActive(element,$event)" [(ngModel)]="element.AttendanceStatusId" 
                     [value]="element.AttendanceStatusId">
                         <mat-option [value]="0">select</mat-option>
                         <mat-option *ngFor="let item of AttendanceStatus"

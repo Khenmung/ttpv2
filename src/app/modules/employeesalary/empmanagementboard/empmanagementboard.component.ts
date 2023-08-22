@@ -53,7 +53,7 @@ export class EmpmanagementboardComponent implements AfterViewInit {
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
 
-    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.EMPLOYEE)
+    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeesalary.EMPLOYEESALARY)
     if (perObj.length > 0) {
       this.Permissions.ParentPermission = perObj[0].permission;
 
@@ -62,14 +62,14 @@ export class EmpmanagementboardComponent implements AfterViewInit {
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.VARIABLECONFIG)
     var comindx = this.components.indexOf(VariableConfigComponent);
     this.AddRemoveComponent(perObj, comindx);
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.SALARYCOMPONENTS)
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeesalary.EMPCOMPONENT)
     var comindx = this.components.indexOf(EmpComponentsComponent);
     this.AddRemoveComponent(perObj, comindx);
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.EMPSALARYCOMPONENTS)
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeesalary.SALARYCOMPONENT)
     var comindx = this.components.indexOf(EmployeeSalaryComponentComponent);
     this.AddRemoveComponent(perObj, comindx);
     
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.SALARYSLIP)
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeesalary.SALARYSLIP)
     var comindx = this.components.indexOf(SalaryslipComponent);
     this.AddRemoveComponent(perObj, comindx);
 

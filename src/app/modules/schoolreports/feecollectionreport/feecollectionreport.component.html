@@ -13,7 +13,7 @@
             <mat-label>Month</mat-label>
             <mat-select formControlName="searchMonth">
                 <mat-option [value]="0">select</mat-option>
-                <mat-option *ngFor="let item of Months" [value]="item.val">{{item.MonthName}}</mat-option>
+                <mat-option *ngFor="let item of Months" [value]="item.Month">{{item.FeeName}}</mat-option>
             </mat-select>
         </mat-form-field>
         <!-- <mat-form-field [style.width.px]="250" appearance="outline">
@@ -83,4 +83,18 @@
         printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button>
         <mat-icon>print</mat-icon>
     </button>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>
+                <div>Inactive students' payments are included in report.
+                </div>
+            </li>
+        </ul>
+    </span>
 </div>

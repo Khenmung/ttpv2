@@ -1,0 +1,83 @@
+<div style="overflow: hidden;">
+    <div style="padding:15px 15px 10px 15px;">
+        <div><strong>In Active Student</strong></div>
+    </div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+   
+    <mat-table #table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="PID">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:flex ;">              
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+               {{element.PID}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FirstName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                <span style="display: flex;flex-direction: column;justify-content: start;">
+                    <span style="justify-content: start;display: flex;">Student</span>
+                    <mat-form-field style="width: 150px;">
+                        <mat-label>search name</mat-label>
+                        <input matInput [formControl]="nameFilter" autocomplete="Off">
+                    </mat-form-field>
+                </span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.FirstName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="LastName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.LastName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FatherName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Father </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.FatherName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="MotherName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Mother </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.MotherName}}
+            </mat-cell>
+        </ng-container>
+        
+        <ng-container matColumnDef="Active">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+             Active
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active==1?true:false">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Action">
+            <mat-header-cell *matHeaderCellDef>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                <button style="margin-right: 15px;" [disabled]="loading || !element.Action || Permission=='read'"
+                    matTooltip="save" mat-mini-fab color="accent" (click)="openDialog(element)">
+                    <mat-icon>save</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+    </mat-table>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,100]"></mat-paginator>
+    <!-- <div *ngIf="InActiveStudents.length>0">
+        <button (click)="exportArray()" mat-raised-button color="accent">
+            <mat-icon>download</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="25"></mat-spinner>
+            </mat-icon>
+        </button>
+    </div> -->
+    </div>

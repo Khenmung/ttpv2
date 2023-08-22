@@ -10,14 +10,15 @@
     </mat-select>
   </mat-form-field>
   <button [disabled]="loading || ClickedReport" mat-raised-button color="accent" (click)="GetReport()">
-     <mat-icon>search</mat-icon>
-                            <mat-icon *ngIf="loading">
-                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                            </mat-icon>
+    <mat-icon>search</mat-icon>
+    <mat-icon *ngIf="loading">
+      <mat-spinner diameter="20" color="Blue"></mat-spinner>
+    </mat-icon>
   </button>
   <!-- </div> -->
 </form>
 <div id="printSection">
+
   <div style="margin:15px 15px 15px 0px;display: flex;flex-direction: row;height: 300px;">
     <div style="display: flex;flex-direction: column;min-width: 300px;border:1px solid lightgray;margin-right: 15px;">
       <div style="display: flex;flex-direction: row;margin:25px 15px 0px 15px;justify-content: space-between;">
@@ -30,9 +31,12 @@
       </div>
     </div>
     <div style="padding:25px 0px 0px 15px; border: 1px solid lightgray;">
-      <!-- <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+      <!-- <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [type]="pieChartType"
         [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend">
-      </canvas> -->
+      </canvas> [datasets]="pieChartData"-->
+      <div><canvas baseChart [type]="'pie'" [data]="pieChartData" 
+        [plugins]="pieChartPlugins" [legend]="pieChartLegend">
+      </canvas></div>
     </div>
   </div>
   <!-- <span fxLayout="row" fxLayoutAlign="center center">

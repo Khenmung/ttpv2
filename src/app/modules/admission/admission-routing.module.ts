@@ -4,6 +4,7 @@ import { HomeComponent } from '../../shared/components/home/home.component';
 import { AdmissionboardComponent } from './admissionboard/admissionboard.component';
 import { AssignStudentclassdashboardComponent } from './AssignStudentClass/Assignstudentclassdashboard.component';
 import { PromoteclassComponent } from './promoteclass/promoteclass.component';
+import { InactivestudentComponent } from './inactivestudent/inactivestudent.component';
 
 const routes: Routes = [
   {
@@ -24,5 +25,6 @@ export class AdmissionRoutingModule { }
 export const AdmissionComponents = [
   PromoteclassComponent,
   AdmissionboardComponent,
-  AssignStudentclassdashboardComponent
+  AssignStudentclassdashboardComponent,
+  InactivestudentComponent
 ]

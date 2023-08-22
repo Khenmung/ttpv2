@@ -32,21 +32,21 @@ export class FeecollectionreportComponent implements OnInit {
   };
   SelectedApplicationId = 0;
   Permission = 'deny';
-  LoginUserDetail :any[]= [];
+  LoginUserDetail: any[] = [];
   TotalPaidStudentCount = 0;
   TotalUnPaidStudentCount = 0;
-  allMasterData :any[]= [];
-  DropdownFeeDefinitions :any[]= [];
-  FeeDefinitions :any[]= [];
-  Classes :any[]= [];
-  Batches :any[]= [];
-  Sections :any[]= [];
-  Months :any[]= [];
-  ELEMENT_DATA :any[]= [];
-  StudentDetail :any[]= [];
+  allMasterData: any[] = [];
+  DropdownFeeDefinitions: any[] = [];
+  FeeDefinitions: any[] = [];
+  Classes: any[] = [];
+  Batches: any[] = [];
+  Sections: any[] = [];
+  Months: any[] = [];
+  ELEMENT_DATA: any[] = [];
+  StudentDetail: any[] = [];
   TotalAmount = 0;
   CurrentBatch: string = '';
-  Students :any[]= [];
+  Students: any[] = [];
   DisplayColumns = [
     "Name",
     "ClassRollNoSection",
@@ -113,7 +113,14 @@ export class FeecollectionreportComponent implements OnInit {
         this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
           this.Classes = [...data.value];
         });
-
+        this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0)
+          .subscribe((data: any) => {
+            this.Months = [];
+            data.value.forEach((d: any) => {
+              this.Months.push({ Month: d.Month, FeeName: d.FeeDefinition.FeeName })
+              return d;
+            })
+          })
 
         this.SearchForm = this.fb.group({
           searchStudentName: [0],
@@ -181,8 +188,8 @@ export class FeecollectionreportComponent implements OnInit {
       filterstring += ' and ClassId eq ' + _selectedClassId;
     }
 
-    filterstring += " and IsCurrent eq true and Active eq 1"
-    
+    filterstring += " and IsCurrent eq true" // and Active eq 1"//report needed even though the student is deactivated.
+
     let list: List = new List();
     list.fields = [
       'ClassId,RollNo,SectionId,StudentClassId', 'SemesterId'
@@ -197,7 +204,7 @@ export class FeecollectionreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        var result :any[]= [];
+        var result: any[] = [];
         if (data.value.length > 0) {
           //this.TotalStudentCount = data.value.length;
           var _className = '';
@@ -209,7 +216,7 @@ export class FeecollectionreportComponent implements OnInit {
             var clsobj = this.Classes.filter(c => c.ClassId == item.ClassId)
             if (clsobj.length > 0) {
               _className = clsobj[0].ClassName
-              var sectionObj = this.Sections.filter((s:any) => s.MasterDataId == item.SectionId)
+              var sectionObj = this.Sections.filter((s: any) => s.MasterDataId == item.SectionId)
               if (sectionObj.length > 0)
                 _sectionName = sectionObj[0].MasterDataName
               var _lastname = item.Student.LastName == null ? '' : " " + item.Student.LastName;
@@ -227,9 +234,9 @@ export class FeecollectionreportComponent implements OnInit {
           //result =result.sort((a,b)=>a.Sequence - b.Sequence);
           this.ELEMENT_DATA = alasql("select Name,ClassRollNoSection,RollNo,Sequence,Section,MAX(Month) month from ? group by Name,Sequence,ClassRollNoSection,Section,RollNo", [result]);
           if (paidNotPaid == 'NotPaid')
-            this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f:any) => f.month == 0); //.sort((a, b) => a.month - b.month)
+            this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f: any) => f.month == 0); //.sort((a, b) => a.month - b.month)
           else
-            this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f:any) => f.month > 0); //.sort((a, b) => a.month - b.month)
+            this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f: any) => f.month > 0); //.sort((a, b) => a.month - b.month)
           this.loading = false; this.PageLoading = false;
           this.TotalPaidStudentCount = this.ELEMENT_DATA.length;
           if (this.ELEMENT_DATA.length == 0) {
@@ -267,7 +274,7 @@ export class FeecollectionreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         let paid;
-        this.StudentDetail= [];
+        this.StudentDetail = [];
         if (data.value.length > 0) {
           data.value.forEach((item, indx) => {
             paid = this.ELEMENT_DATA.filter(paidlist => {
@@ -326,7 +333,7 @@ export class FeecollectionreportComponent implements OnInit {
         //  //console.log('data.value', data.value);
         if (data.value.length > 0) {
           var _students: any = this.tokenStorage.getStudents()!;
-          var _filteredStudents = _students.filter((s:any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
+          var _filteredStudents = _students.filter((s: any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
           this.Students = data.value.map(studentcls => {
             var matchstudent = _filteredStudents.filter(stud => stud.StudentId == studentcls.StudentId)
             var _classNameobj = this.Classes.filter(c => c.ClassId == studentcls.ClassId);
@@ -335,7 +342,7 @@ export class FeecollectionreportComponent implements OnInit {
               _className = _classNameobj[0].ClassName;
 
             var _Section = '';
-            var _sectionobj = this.Sections.filter((f:any) => f.MasterDataId == studentcls.SectionId);
+            var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studentcls.SectionId);
             if (_sectionobj.length > 0)
               _Section = _sectionobj[0].MasterDataName;
 

@@ -7,7 +7,7 @@
             <div>
                 <mat-form-field appearance="outline" style="width: 100px;">
                     <mat-label>PID</mat-label>
-                    <input formControlName="searchPID" onfocus="this.select()" autocomplete="Off" matInput [maxlength]="10">
+                    <input id="searchPID" formControlName="searchPID" onfocus="this.select()" autocomplete="Off" matInput [maxlength]="10">
                 </mat-form-field>
                 <mat-form-field appearance="outline" [style.width.px]="300">
                     <mat-label>Student</mat-label>
@@ -80,14 +80,14 @@
                     </mat-option> -->
                     </mat-select>
                 </mat-form-field>
-                <button [disabled]="loading" matTooltip="search student" mat-raised-button color="accent"
+                <button [disabled]="loading" id="btnSearchStudent" matTooltip="search student" mat-raised-button color="accent"
                     (click)="GetStudent()">
                     <mat-icon>search</mat-icon>
                     <mat-icon *ngIf="loading">
                         <mat-spinner diameter="20" color="Blue"></mat-spinner>
                     </mat-icon>
                 </button>
-                <button [disabled]="loading" matTooltip="new student" mat-raised-button color="accent" (click)="new()">
+                <button [disabled]="loading" id="btnNewStudent" matTooltip="new student" mat-raised-button color="accent" (click)="new()">
                     <mat-icon>fiber_new</mat-icon>
                 </button>
             </div>

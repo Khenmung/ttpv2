@@ -21,7 +21,7 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <mat-select (selectionChange)="SetClassCategory(element)" [disabled]="!NewItem" 
+                <mat-select (selectionChange)="SetClassCategory(element)" [disabled]="true" 
                 [(ngModel)]="element.ClassId" [value]="element.ClassId">
                     <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
                         {{item.ClassName}}
@@ -36,7 +36,7 @@
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
                 <mat-select [(ngModel)]="element.SectionId" [value]="element.SectionId" 
-                [disabled]="SelectedClassCategory==getCollegeCategory()">
+                [disabled]="NewItem || SelectedClassCategory==getCollegeCategory()" (selectionChange)="enableAction(element)">
                     <mat-option value="0">select</mat-option>
                     <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
                         {{item.MasterDataName}}
@@ -51,7 +51,7 @@
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
                 <mat-select [(ngModel)]="element.SemesterId" [value]="element.SemesterId"
-                [disabled]="SelectedClassCategory==getHighSchoolCategory()">
+                [disabled]="SelectedClassCategory==getHighSchoolCategory()" (selectionChange)="enableAction(element)">
                     <mat-option value="0">select</mat-option>
                     <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
                         {{item.MasterDataName}}
@@ -65,7 +65,7 @@
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
                 <!-- <mat-label>roll no.</mat-label> -->
-                <input [(ngModel)]="element.RollNo" [value]="element.RollNo" matInput autocomplete="off">
+                <input [(ngModel)]="element.RollNo" (blur)="enableAction(element)" [value]="element.RollNo" matInput autocomplete="off">
             </mat-form-field>
         </mat-cell>
     </ng-container>
@@ -73,8 +73,8 @@
         <mat-header-cell *matHeaderCellDef>Fee Type
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <mat-form-field appearance="outline" *ngIf="!this.FeeTypePermission.includes('rw')">
-                <mat-select [(ngModel)]="element.FeeTypeId" [value]="element.FeeTypeId">
+            <mat-form-field appearance="outline">
+                <mat-select [disabled]="!this.FeeTypePermission.includes('rw') && this.FeeTypePermission.includes('rwd')" [(ngModel)]="element.FeeTypeId" [value]="element.FeeTypeId" (selectionChange)="enableAction(element)">
                     <mat-option *ngFor="let item of FeeType" [value]="item.FeeTypeId">
                         {{item.FeeTypeName}}
                     </mat-option>
@@ -88,7 +88,7 @@
             <mat-form-field appearance="outline" [style.width.px]="150">
                 <!-- <mat-label>admission date</mat-label> -->
                 <input [(ngModel)]="element.AdmissionDate" [value]="element.AdmissionDate" matInput
-                    [matDatepicker]="AdmissionDate" autocomplete="off">
+                    [matDatepicker]="AdmissionDate" autocomplete="off" (dateChange)="enableAction(element)">
                 <mat-datepicker-toggle matSuffix [for]="AdmissionDate"></mat-datepicker-toggle>
                 <mat-datepicker #AdmissionDate></mat-datepicker>
             </mat-form-field>
@@ -99,7 +99,8 @@
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
                 <!-- <mat-label>remarks</mat-label> -->
-                <input [(ngModel)]="element.Remarks" [value]="element.Remarks" matInput autocomplete="off">
+                <input [(ngModel)]="element.Remarks" [value]="element.Remarks" (blur)="enableAction(element)"
+                 matInput autocomplete="off">
             </mat-form-field>
         </mat-cell>
     </ng-container>
@@ -130,7 +131,7 @@
     </ng-container>
     <ng-container matColumnDef="Action">
         <mat-header-cell *matHeaderCellDef>
-            <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="addnew()">
+            <button [disabled]="SelectedClassCategory==getHighSchoolCategory() || loading || Permission=='read'" matTooltip="add new semester" mat-mini-fab (click)="addnew()">
                 <mat-icon>add</mat-icon>
             </button>
         </mat-header-cell>

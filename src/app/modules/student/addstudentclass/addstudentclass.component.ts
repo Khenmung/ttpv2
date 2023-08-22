@@ -23,24 +23,25 @@ export class AddstudentclassComponent implements OnInit {
   SaveDisable = false;
   StudentId = 0;
   StudentClassId = 0;
+  CurrentClassId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId = '';
   filterOrgSubOrg = '';
   invalidId = false;
-  allMasterData :any[]= [];
-  Students :any[]= [];
-  Classes :any[]= [];
-  Houses :any[]= [];
-  Sections :any[]= [];
-  FeeType :any[]= [];
+  allMasterData: any[] = [];
+  Students: any[] = [];
+  Classes: any[] = [];
+  Houses: any[] = [];
+  Sections: any[] = [];
+  FeeType: any[] = [];
   dataSource: MatTableDataSource<any>;
-  Semesters :any[]= [];
+  Semesters: any[] = [];
   NewItem = false;
   //studentclassForm: UntypedFormGroup;
   StudentName = '';
   SelectedApplicationId = 0;
-  LoginUserDetail :any[]= [];
-  FeeCategories :any[]= [];
+  LoginUserDetail: any[] = [];
+  FeeCategories: any[] = [];
   FeeTypePermission = '';
   studentclassData = {
     StudentClassId: 0,
@@ -65,8 +66,8 @@ export class AddstudentclassComponent implements OnInit {
     "ClassId",
     "SectionId",
     "SemesterId",
-    "RollNo",    
-    "AdmissionDate",    
+    "RollNo",
+    "AdmissionDate",
     "Remarks",
     "FeeTypeId",
     "IsCurrent",
@@ -131,7 +132,7 @@ export class AddstudentclassComponent implements OnInit {
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        
+
 
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
 
@@ -151,7 +152,7 @@ export class AddstudentclassComponent implements OnInit {
     }
   }
   //get f() { return this.studentclassForm.controls }
-  ClassCategory :any[]= [];
+  ClassCategory: any[] = [];
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
@@ -162,7 +163,7 @@ export class AddstudentclassComponent implements OnInit {
     this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
       this.Classes = data.value.map(m => {
         m.Category = '';
-        var obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId)
+        var obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId)
         if (obj.length > 0)
           m.Category = obj[0].MasterDataName.toLowerCase();
         return m;
@@ -201,13 +202,13 @@ export class AddstudentclassComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
-  StudentClassList :any[]= [];
+  StudentClassList: any[] = [];
   addnew() {
     this.NewItem = true;
     this.StudentClassList = [];
     var newitem = {
       StudentClassId: 0,
-      ClassId: 0,
+      ClassId: this.CurrentClassId,
       SectionId: 0,
       RollNo: '',
       FeeTypeId: 0,
@@ -222,12 +223,16 @@ export class AddstudentclassComponent implements OnInit {
     this.StudentClassList.push(newitem);
     this.dataSource = new MatTableDataSource<any>(this.StudentClassList);
   }
-  
+
   GetStudentClass() {
     debugger;
     this.NewItem = false;
     if (this.StudentId > 0 && this.StudentClassId > 0) {
-
+      let filterWithOrgAndBatchId = ''
+      if (this.SelectedClassCategory == globalconstants.CategoryCollege)
+        filterWithOrgAndBatchId = this.filterOrgSubOrg + " and BatchId le " + this.SelectedBatchId;
+      else
+        filterWithOrgAndBatchId = this.filterOrgSubOrg + " and BatchId eq " + this.SelectedBatchId;
       let list: List = new List();
       list.fields = [
         "StudentClassId", "ClassId",
@@ -235,7 +240,7 @@ export class AddstudentclassComponent implements OnInit {
         "BatchId", "FeeTypeId", "IsCurrent",
         "AdmissionDate", "Remarks", "Active"];
       list.PageName = "StudentClasses";
-      list.filter = [this.FilterOrgSubOrgBatchId + " and StudentId eq " + this.StudentId]// + " and IsCurrent eq true"];
+      list.filter = [filterWithOrgAndBatchId + " and StudentId eq " + this.StudentId]// + " and IsCurrent eq true"];
 
       this.dataservice.get(list)
         .subscribe((data: any) => {
@@ -248,7 +253,8 @@ export class AddstudentclassComponent implements OnInit {
             });
             studentcls = studentcls.sort((a, b) => b.StudentClassId - a.StudentClassId);
             if (studentcls[0].ClassId > 0) {
-              let obj = this.Classes.filter((f:any) => f.ClassId == studentcls[0].ClassId);
+              this.CurrentClassId = studentcls[0].ClassId;
+              let obj = this.Classes.filter((f: any) => f.ClassId == studentcls[0].ClassId);
               if (obj.length > 0)
                 this.SelectedClassCategory = obj[0].Category.toLowerCase();
             }
@@ -265,6 +271,9 @@ export class AddstudentclassComponent implements OnInit {
       this.loading = false;
       this.PageLoading = false;
     }
+  }
+  enableAction(element) {
+    element.Action = true;
   }
   onResize(event) {
     this.breakpoint = (event.target.innerWidth <= 400) ? 1 : 3;
@@ -299,7 +308,7 @@ export class AddstudentclassComponent implements OnInit {
       //var _classId = this.studentclassForm.get("ClassId")?.value;
       var ClassStrength = 0;
       if (row.ClassId > 0) {
-        this.contentservice.GetStudentClassCount(this.filterOrgSubOrg, 0, 0,0, this.SelectedBatchId)
+        this.contentservice.GetStudentClassCount(this.filterOrgSubOrg, 0, 0, 0, this.SelectedBatchId)
           .subscribe((data: any) => {
             ClassStrength = data.value.length;
             ClassStrength += 1;
@@ -311,8 +320,8 @@ export class AddstudentclassComponent implements OnInit {
             this.studentclassData.BatchId = this.SelectedBatchId;
             this.studentclassData.ClassId = row.ClassId;
             this.studentclassData.RollNo = row.RollNo;
-            this.studentclassData.SectionId = row.SectionId;
-            this.studentclassData.SemesterId = row.SemesterId;
+            this.studentclassData.SectionId = !row.SectionId ? 0 : row.SectionId;
+            this.studentclassData.SemesterId = !row.SemesterId ? 0 : row.SemesterId;
             this.studentclassData.FeeTypeId = row.FeeTypeId;
             this.studentclassData.AdmissionNo = _admissionNo;// ?_year + ClassStrength : _admissionNo;
             this.studentclassData.Remarks = row.Remarks;
@@ -357,7 +366,7 @@ export class AddstudentclassComponent implements OnInit {
           this.CreateInvoice();
           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         }, error => {
-          this.loading=false;
+          this.loading = false;
           this.contentservice.openSnackBar(globalconstants.formatError(error), globalconstants.ActionText, globalconstants.RedBackground);
         });
 
@@ -386,7 +395,7 @@ export class AddstudentclassComponent implements OnInit {
 
         this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, this.StudentClassId, 0)
           .subscribe((data: any) => {
-            var studentfeedetail :any[]= [];
+            var studentfeedetail: any[] = [];
             data.value.forEach(studcls => {
               var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId
@@ -397,11 +406,11 @@ export class AddstudentclassComponent implements OnInit {
                 var _category = '';
                 var _subCategory = '';
 
-                var objcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat.length > 0)
                   _category = objcat[0].MasterDataName;
 
-                var objsubcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                var objsubcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
@@ -440,10 +449,10 @@ export class AddstudentclassComponent implements OnInit {
       });
 
   }
-  getCollegeCategory(){
+  getCollegeCategory() {
     return globalconstants.CategoryCollege;
   }
-  getHighSchoolCategory(){
+  getHighSchoolCategory() {
     return globalconstants.CategoryHighSchool;
   }
   SelectedClassCategory = '';
@@ -451,7 +460,7 @@ export class AddstudentclassComponent implements OnInit {
     debugger;
     this.SelectedClassCategory = '';
     if (row.ClassId > 0) {
-      let obj = this.Classes.filter((f:any) => f.ClassId == row.ClassId);
+      let obj = this.Classes.filter((f: any) => f.ClassId == row.ClassId);
       if (obj.length > 0)
         this.SelectedClassCategory = obj[0].Category.toLowerCase();
     }
@@ -483,8 +492,8 @@ export class AddstudentclassComponent implements OnInit {
     //     "Action"
     //   ]
     // }
-    row.SectionId =0;
-    row.SemesterId =0;
+    row.SectionId = 0;
+    row.SemesterId = 0;
   }
   getDropDownDataFeeType(feeType) {
     return this.contentservice.getDropDownDataFeeType(this.tokenStorage, feeType);

@@ -5,6 +5,7 @@ import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { AssignStudentclassdashboardComponent } from '../AssignStudentClass/Assignstudentclassdashboard.component';
 import { PromoteclassComponent } from '../promoteclass/promoteclass.component';
+import { InactivestudentComponent } from '../inactivestudent/inactivestudent.component';
 
 @Component({
   selector: 'app-admissionboard',
@@ -15,18 +16,20 @@ export class AdmissionboardComponent implements AfterViewInit {
 
   components:any = [
     PromoteclassComponent,
-    AssignStudentclassdashboardComponent
-  
+    AssignStudentclassdashboardComponent,
+    InactivestudentComponent  
   ];
 
   tabNames = [
     { "label": "Subject Type", "faIcon": '' },
+    { "label": "Subject Detail", "faIcon": '' },  
     { "label": "Subject Detail", "faIcon": '' }   
   ];
   Permissions =
     {
       AdmissionPermission: '',
-      AssignStudentClass: ''
+      AssignStudentClass: '',
+      InactiveStudent: ''
     };
 
   @ViewChild('container', { read: ViewContainerRef, static: false })
@@ -56,6 +59,10 @@ export class AdmissionboardComponent implements AfterViewInit {
     
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.PROMOTESTUDENT)
     comindx = this.components.indexOf(PromoteclassComponent);
+    this.GetComponents(perObj, comindx)
+    
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.INACTIVESTUDENT)
+    comindx = this.components.indexOf(InactivestudentComponent);
     this.GetComponents(perObj, comindx)
 
     this.shareddata.ChangePermissionAtParent(this.Permissions.AdmissionPermission);

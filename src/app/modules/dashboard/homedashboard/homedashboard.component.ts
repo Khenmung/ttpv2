@@ -33,6 +33,7 @@ export class HomeDashboardComponent implements OnInit {
   SelectedAppId = 0;
   filterOrgSubOrgBatchId = '';
   filterOrgSubOrg = '';
+  RedirectionText = '';
   Batches: any[] = [];
   PermittedApplications: any[] = [];
   SelectedAppName = '';
@@ -48,6 +49,7 @@ export class HomeDashboardComponent implements OnInit {
 
   ) { }
   Role = '';
+  Roles: any[] = [];
   Submitted = false;
   ngOnInit(): void {
     this.servicework.activateUpdate().then(() => {
@@ -341,6 +343,12 @@ export class HomeDashboardComponent implements OnInit {
         .subscribe((data: any) => {
           this.tokenStorage.saveMasterData([...data.value]);
           this.allMasterData = [...data.value];
+          this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
+
+          let _obj = this.Roles.filter(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
+          if (_obj.length > 0 && _obj[0].Description)
+            this.RedirectionText = _obj[0].Description;
+
           this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
           this.SubOrganization.forEach(s => {
             var ex = this.CustomerPlansList.filter(c => c.SubOrgId == s.MasterDataId);
@@ -351,11 +359,12 @@ export class HomeDashboardComponent implements OnInit {
           })
           var _orgSubOrg = this.SubOrganization.filter((f: any) => f.MasterDataId == this.SubOrgId);
           this.searchForm.patchValue({ "searchSubOrgId": _orgSubOrg[0] });
-          this.loading=false;
+          this.loading = false;
         });
     }
 
   }
+  
   changebatch() {
     this.ValueChanged = true;
   }
@@ -427,6 +436,7 @@ export class HomeDashboardComponent implements OnInit {
   }
   allMasterData: any[] = [];
   SubOrganization: any[] = [];
+  Semesters: any[] = [];
   Sections: any[] = [];
   Classes: any[] = [];
   // GetMasterData(SelectedAppId) {
@@ -462,6 +472,7 @@ export class HomeDashboardComponent implements OnInit {
 
         if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
           this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+          this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
           var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
             this.Classes = [...data.value];
@@ -476,7 +487,13 @@ export class HomeDashboardComponent implements OnInit {
         }
         else {
           if (this.Submitted)
-            this.route.navigate(['/', selectedApp.appShortName]);
+          //this.route.navigate(['/', selectedApp.appShortName]);
+          {
+            if (this.RedirectionText.length == 0)
+              this.RedirectionText = selectedApp.appShortName;
+            this.route.navigateByUrl("/" + this.RedirectionText);
+          }
+
         }
       });
   }
@@ -576,6 +593,12 @@ export class HomeDashboardComponent implements OnInit {
           .subscribe((data: any) => {
             this.tokenStorage.saveMasterData([...data.value]);
             this.allMasterData = [...data.value];
+            this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
+
+            let _obj = this.Roles.filter(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
+            if (_obj.length > 0 && _obj[0].Description)
+              this.RedirectionText = _obj[0].Description;
+
             this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
             this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
             var selectedItem = this.SubOrganization.filter((s: any) => s.MasterDataId == this.SubOrgId);
@@ -667,26 +690,35 @@ export class HomeDashboardComponent implements OnInit {
           var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == d.StudentClasses[0].SectionId);
           if (_sectionobj.length > 0)
             _Section = _sectionobj[0].MasterDataName;
+          var _semester = '';
+          var _semesterobj = this.Semesters.filter((f: any) => f.MasterDataId == d.StudentClasses[0].SemesterId);
+          if (_semesterobj.length > 0)
+            _semester = _semesterobj[0].MasterDataName;
+
           var _RollNo = d.StudentClasses[0].RollNo;
           _studentClassId = d.StudentClasses[0].StudentClassId;
           //}
           var _lastname = d.LastName == null ? '' : " " + d.LastName;
 
           var _name = d.FirstName + _lastname;
-          var _fullDescription = _name + "-" + _className + "-" + _Section + "-" + _RollNo;
+          //var _fullDescription = _name + "-" + _className + "-" + _Section + "-" + _RollNo;
 
-          //d.StudentClassId = _studentClassId;
-          d.Name = _fullDescription;
+          d.RollNo = d.StudentClasses[0].RollNo;
+          d.Name = _name;
           d.ClassName = _className;
           d.Section = _Section;
+          d.Semester = _semester;
           this.Students.push(d);
         });
         this.tokenStorage.saveStudents(this.Students);
         //console.log("previous students", this.Students);
         this.loading = false;
         this.PageLoading = false;
-        if (this.Submitted)
-          this.route.navigate(['/', appShortName]);
+        if (this.Submitted) {
+          if (this.RedirectionText.length == 0)
+            this.RedirectionText = appShortName;
+          this.route.navigateByUrl("/" + this.RedirectionText);
+        }
       })
   }
   getDropdownFromDB(pParentId, pAppId) {
@@ -735,9 +767,9 @@ export class HomeDashboardComponent implements OnInit {
           var _lastname = d.LastName == null ? '' : " " + d.LastName;
           //this.House
           var _name = d.FirstName + _lastname;
-          var _fullDescription = _name + "-" + _className + "-" + _Section + "-" + _RollNo;
+          //var _fullDescription = _name + "-" + _className + "-" + _Section + "-" + _RollNo;
           d.StudentClassId = _studentClassId;
-          d.Name = _fullDescription;
+          d.Name = _name;
           d.ClassName = _className;
           d.Section = _Section;
           d.StudentClasses = studcls;
@@ -750,7 +782,8 @@ export class HomeDashboardComponent implements OnInit {
         this.loading = false;
         this.PageLoading = false;
         if (this.Submitted)
-          this.route.navigate(['/', appShortName]);
+          //this.route.navigate(['/', appShortName]);
+          this.route.navigateByUrl("/" + this.RedirectionText);
       })
   }
   GetStudentClasses() {

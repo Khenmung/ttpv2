@@ -122,7 +122,7 @@ export class ContactdashboardComponent implements OnInit { PageLoading=true;
 
 
     let checked = this.selection.toggle(element);
-    let messageDetail ={
+    let messageDetail:any ={
       Active: event.checked == true ? 1 : 0,
       CreatedDate: new Date()
     } 

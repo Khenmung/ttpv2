@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { List } from './interface';
 import { globalconstants } from './globalconstant';
-import { environment } from 'src/environments/environment';
+//import { environment } from 'src/environments/environment';
 
 //import { isNull } from 'util';
 
@@ -85,7 +85,7 @@ export class NaomitsuService {
   postPatch<returnType>(
     model: string,
     data: any,
-    id: number = null,
+    id: number = 0,
     method: string = 'post'//'post' | 'patch' | 'delete' = 'post'
   ): Observable<returnType> {
     //const cfqu = this.correctFormatForQueryUrl(qp);

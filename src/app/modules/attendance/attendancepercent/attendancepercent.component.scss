@@ -11,7 +11,7 @@ mat-form-field,button{
 mat-cell:first-of-type{
     padding-left: 0px;
 }
-.mat-column-StudentRollNo{
+.mat-column-Student{
     flex:1 0 150px;
 }
 .mat-column-Percent, .mat-column-PresentCount,.mat-column-AbsentCount{
@@ -20,4 +20,7 @@ mat-cell:first-of-type{
 }
 .mat-column-ClassName{
     flex:1 0 120px;
+}
+.mat-column-Section,.mat-column-Semester,.mat-column-Section,.mat-column-RollNo{
+    flex:1 0 80px;
 }

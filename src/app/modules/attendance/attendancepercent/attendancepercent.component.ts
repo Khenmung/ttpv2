@@ -70,13 +70,7 @@ export class AttendancepercentComponent implements OnInit {
     OrgId: 0,
     SubOrgId: 0
   };
-  displayedColumns = [
-    // 'ClassName',
-    'StudentRollNo',
-    'Percent',
-    'PresentCount',
-    'AbsentCount'
-  ];
+  displayedColumns:any[] = [];
   SelectedApplicationId = 0;
   distinctStudent :any[]= [];
   SelectedClassCategory = '';
@@ -157,7 +151,30 @@ export class AttendancepercentComponent implements OnInit {
         this.SelectedClassCategory = obj[0].Category;
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
-
+    if(this.SelectedClassCategory == globalconstants.CategoryHighSchool)
+    {
+      this.displayedColumns = [
+        'Student',
+        'ClassName',
+        'Section',
+        'RollNo',
+        'Percent',
+        'PresentCount',
+        'AbsentCount'
+      ];
+    }
+    else if(this.SelectedClassCategory == globalconstants.CategoryCollege)
+    {
+      this.displayedColumns = [
+        'Student',
+        'ClassName',
+        'Semester',
+        'RollNo',
+        'Percent',
+        'PresentCount',
+        'AbsentCount'
+      ];
+    }
     this.ClearData();
   }
 
@@ -245,17 +262,17 @@ export class AttendancepercentComponent implements OnInit {
 
         attendance.value.forEach(sc => {
           var _student = _AllStudents.filter(all => all.StudentClasses[0].StudentClassId == sc.StudentClassId);
-          var _lastname = (_student[0].LastName === null) ? '' : _student[0].LastName;
-          var _Classobj = this.Classes.filter((s:any) => s.ClassId == sc.ClassId);
-          var _Class = '';
-          if (_Classobj.length > 0) {
-            _Class = _Classobj[0].ClassName;
-          }
-          var _sectionobj = this.Sections.filter((s:any) => s.MasterDataId == sc.SectionId);
-          var _section = '';
-          if (_sectionobj.length > 0) {
-            _section = "-" + _sectionobj[0].MasterDataName;
-          }
+          //var _lastname = (_student[0].LastName === null) ? '' : _student[0].LastName;
+          // var _Classobj = this.Classes.filter((s:any) => s.ClassId == sc.ClassId);
+          // var _Class = '';
+          // if (_Classobj.length > 0) {
+          //   _Class = _Classobj[0].ClassName;
+          // }
+          // var _sectionobj = this.Sections.filter((s:any) => s.MasterDataId == sc.SectionId);
+          // var _section = '';
+          // if (_sectionobj.length > 0) {
+          //   _section = "-" + _sectionobj[0].MasterDataName;
+          // }
 
           //sc.Attendances.forEach(item => {
           var _subjName = '';
@@ -272,21 +289,23 @@ export class AttendancepercentComponent implements OnInit {
             AttendanceDate: sc.AttendanceDate,
             ClassSubjectId: sc.ClassSubjectId,
             ClassSubject: _subjName,
-            StudentRollNo: _student[0].FirstName + _lastname + "-" + _student[0].StudentClasses[0].RollNo,
-            ClassName: _Class + _section
+            Student: _student[0].Name,//_student[0].FirstName + _lastname + "-" + _student[0].StudentClasses[0].RollNo,
+            ClassName: _student[0].ClassName,
+            Section: _student[0].Section,
+            Semester: _student[0].Semester,
 
           });
 
           //})
         })
-
-        var PresentAttendance = alasql('select count(AttendanceStatusId) as PresentAbsentCount,StudentRollNo,ClassName from ? where AttendanceStatusId='+ this.AttendancePresentId +' group by StudentRollNo,ClassName', [this.StudentAttendanceList])
-        var AbsentAttendance = alasql('select count(AttendanceStatusId) as PresentAbsentCount,StudentRollNo,ClassName from ? where AttendanceStatusId='+ this.AttendanceAbsentId +' group by StudentRollNo,ClassName', [this.StudentAttendanceList])
-        this.distinctStudent = alasql('select distinct StudentRollNo,RollNo,ClassName from ? ', [this.StudentAttendanceList])
+        console.log('this.StudentAttendanceList',this.StudentAttendanceList)
+        var PresentAttendance = alasql('select count(AttendanceStatusId) as PresentAbsentCount,StudentClassId from ? where AttendanceStatusId='+ this.AttendancePresentId +' group by StudentClassId', [this.StudentAttendanceList])
+        var AbsentAttendance = alasql('select count(AttendanceStatusId) as PresentAbsentCount,StudentClassId from ? where AttendanceStatusId='+ this.AttendanceAbsentId +' group by StudentClassId', [this.StudentAttendanceList])
+        this.distinctStudent = alasql('select distinct Student,ClassName,Semester,Section,RollNo,StudentClassId from ? ', [this.StudentAttendanceList])
 
         this.distinctStudent.forEach(p => {
-          var absent = AbsentAttendance.filter(a => a.StudentRollNo == p.StudentRollNo)
-          var present = PresentAttendance.filter(a => a.StudentRollNo == p.StudentRollNo)
+          var absent = AbsentAttendance.filter(a => a.StudentClassId == p.StudentClassId)
+          var present = PresentAttendance.filter(a => a.StudentClassId == p.StudentClassId)
           if (absent.length > 0)
             p.AbsentCount = absent[0].PresentAbsentCount;
           else
@@ -512,8 +531,10 @@ export interface IStudentAttendance {
   ClassSubjectId: number;
   ClassSubject: string;
   AttendanceDate: Date;
-  StudentRollNo: string;
+  Student: string;
   ClassName: string;
+  Semester: string;
+  Section: string;
 }
 
 

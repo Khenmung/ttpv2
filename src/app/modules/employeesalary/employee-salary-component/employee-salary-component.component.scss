@@ -1,17 +1,22 @@
-mat-form-field{
-    margin-right: 15px;
-    width:99%;
+.mat-column-SalaryComponent,
+.mat-column-Grade {
+  flex: 1 0 150px;
 }
-.mat-column-SalaryComponent,.mat-column-Grade{
-  flex:1 0 150px;
+
+.mat-column-ActualFormulaOrAmount,
+.mat-column-FormulaOrAmount {
+  flex: 1 0 200px;
 }
-.mat-column-ActualFormulaOrAmount,.mat-column-FormulaOrAmount{
-    flex:1 0 200px;
-}
+
 .example-month-picker .mat-calendar-period-button {
-    pointer-events: none;
-  }
-  
-  .example-month-picker .mat-calendar-arrow {
-    display: none;
-  }
+  pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+  display: none;
+}
+
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+  padding: 0px 15px 0px 0px;
+}

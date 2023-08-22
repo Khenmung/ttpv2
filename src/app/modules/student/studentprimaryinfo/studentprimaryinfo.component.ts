@@ -140,7 +140,7 @@ export class studentprimaryinfoComponent implements OnInit {
       this.Edit = false;
     });
   }
-
+  
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
     private dataservice: NaomitsuService,
@@ -706,7 +706,8 @@ export class studentprimaryinfoComponent implements OnInit {
     //debugger;
     //console.log("studentData", this.studentData)
     if (this.studentForm.get("StudentId")?.value == 0) {
-      //this.studentData[0].EmailAddress =this.studentForm.get("EmailAddress")?.value;
+      this.studentData[0].SectionId =0;
+      this.studentData[0].SemesterId =0;
       this.save();
     }
     else {
@@ -775,6 +776,12 @@ export class studentprimaryinfoComponent implements OnInit {
         this.loading = false;
         console.log("student update", error);
       })
+  }
+  getErrorMessage(pickerInput: string): string {
+    if (!pickerInput || pickerInput === '' ) {
+      return 'Please choose a date.';
+    }
+    return globalconstants.isMyDateFormat(pickerInput);
   }
   CreateInvoice() {
     this.contentservice.getInvoice(+this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedBatchId, this.StudentClassId)

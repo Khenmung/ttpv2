@@ -137,7 +137,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.SALARY);
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeesalary.SALARYCOMPONENT);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission == 'deny') {

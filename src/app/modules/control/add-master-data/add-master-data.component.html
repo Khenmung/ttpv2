@@ -108,7 +108,7 @@
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="Description">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Description/Home Page/CSS</mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
                     <textarea matInput [value]="element.Description" [(ngModel)]="element.Description"
@@ -166,11 +166,7 @@
                                        || Parent=='Attendance Mode'    
                                        || Parent=='Leave Status'    
                                        || element.MasterDataName=='Grading'
-                                       || element.MasterDataName=='Marking'
-                                       || element.MasterDataName=='Admin'
-                                       || element.MasterDataName=='Teacher'
-                                       || element.MasterDataName=='Student'
-                                       || element.MasterDataName=='Employee'
+                                       || element.MasterDataName=='Marking'                                      
                                        || element.MasterDataName=='Employee Upload'
                                        || element.MasterDataName=='Cash'
                                        || element.MasterDataName=='Helper'

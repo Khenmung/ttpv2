@@ -28,18 +28,23 @@ mat-header-cell {
     justify-content: center;
 }
 .mat-column-ClassSubject,
+.mat-column-Section,
+.mat-column-RollNo,
 .mat-column-ClassName{
-    flex: 1 1 80px;
+    flex: 1 0 80px;
 }
 .mat-column-AttendanceDate{
-    flex: 1 1 90px;
+    flex: 1 0 90px;
 }
-.mat-column-StudentRollNo{
-    flex: 1 1 140px;
+.mat-column-Student{
+    flex: 1 0 140px;
 }
 .mat-column-ApprovedByName,
 .mat-column-PersonalNo,
-.mat-column-Remarks,
+.mat-column-Remarks
+{
+    flex: 1 0 120px;
+}
 .mat-column-ReportedTo {
-    flex: 1 1 120px;
+    flex: 1 0 160px;
 }

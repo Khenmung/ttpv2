@@ -236,7 +236,7 @@ export class InvoiceComponent implements OnInit {
       this.nav.navigate(['/edu/addstudent/' + this.studentInfoTodisplay.StudentId]);
   }
   admission() {
-    this.nav.navigate(['/edu/Admission']);
+    this.nav.navigate(['/edu/admission']);
   }
   
   PageLoad() {

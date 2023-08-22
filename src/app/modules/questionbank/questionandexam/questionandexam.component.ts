@@ -96,6 +96,8 @@ export class QuestionandexamComponent implements OnInit {
     this.StudentClassId = this.tokenStorage.getStudentClassId()!;
     this.searchForm = this.fb.group({
       searchClassId: [0],
+      searchSectionId:[0],
+      searchSemesterId:[0],
       searchSubjectId: [0],
       searchContentUnitId: [0],
       searchSubContentUnitId: [0],
@@ -172,7 +174,11 @@ export class QuestionandexamComponent implements OnInit {
     var _searchClassId = this.searchForm.get("searchClassId")?.value;
     var _searchSectionId = this.searchForm.get("searchSectionId")?.value;
     var _searchSemesterId = this.searchForm.get("searchSemesterId")?.value;
-    this.SelectedClassSubjects = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects, _searchClassId, _searchSectionId, _searchSemesterId);
+    this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _searchClassId, _searchSectionId, _searchSemesterId);
+    let obj = this.Classes.filter(c => c.ClassId == _searchClassId);
+    if (obj.length > 0) {
+      this.SelectedClassCategory = obj[0].Category.toLowerCase();
+    }
     this.cleardata();
     //this.GetSyllabusDetailForDropDown();
   }
@@ -707,6 +713,9 @@ export class QuestionandexamComponent implements OnInit {
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.ContentUnit = this.getDropDownData(globalconstants.MasterDefinitions.school.BOOKCONTENTUNIT);
     this.DifficultyLevels = this.getDropDownData(globalconstants.MasterDefinitions.school.DIFFICULTYLEVEL);
+    this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
+    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.GetExams();
     // if (this.Classes.length == 0) {
     //   var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -717,6 +726,7 @@ export class QuestionandexamComponent implements OnInit {
     //   });
     //   //this.GetQuestionBank();
     // }
+    this.Classes =[];
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
         let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
