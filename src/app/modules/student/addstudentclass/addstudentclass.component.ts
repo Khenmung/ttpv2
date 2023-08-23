@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { ContentService } from '../../../shared/content.service';
@@ -29,7 +29,7 @@ export class AddstudentclassComponent implements OnInit {
   filterOrgSubOrg = '';
   invalidId = false;
   allMasterData: any[] = [];
-  Students: any[] = [];
+  //Students: any[] = [];
   Classes: any[] = [];
   Houses: any[] = [];
   Sections: any[] = [];
@@ -93,7 +93,7 @@ export class AddstudentclassComponent implements OnInit {
     //   })
     // })
     this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
-    var today = new Date();
+    //var today = new Date();
     // this.studentclassForm = this.fb.group({
     //   AdmissionNo: [''],
     //   StudentName: [{ value: this.StudentName, disabled: true }],
@@ -362,7 +362,15 @@ export class AddstudentclassComponent implements OnInit {
           this.loading = false; this.PageLoading = false;
           this.StudentClassId = data.StudentClassId;
           row.AdmissionNo = this.studentclassData.AdmissionNo;
+          this.studentclassData.StudentClassId = this.StudentClassId;
+
           this.tokenStorage.saveStudentClassId(this.StudentClassId + "")
+          let _Students: any = this.tokenStorage.getStudents()!;
+          let temp = _Students.filter(s => s.StudentId == this.studentclassData.StudentId);
+          if (temp.length > 0) {
+            temp[0].StudentClasses.push(this.studentclassData);
+            this.tokenStorage.saveStudents(_Students);
+          }
           this.CreateInvoice();
           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         }, error => {
@@ -378,6 +386,22 @@ export class AddstudentclassComponent implements OnInit {
         this.CreateInvoice();
         row.AdmissionNo = this.studentclassData.AdmissionNo;
         row.Action = false;
+        let _Students: any = this.tokenStorage.getStudents()!;
+        let temp = _Students.filter(s => s.StudentId == this.studentclassData.StudentId);
+        if (temp.length > 0) {
+          let studcls = temp[0].StudentClasses.filter(c => c.StudentClassId == this.studentclassData.StudentClassId)
+          if (studcls.length > 0) {
+            studcls[0].Active = this.studentclassData.Active;
+            studcls[0].RollNo = this.studentclassData.RollNo;
+            studcls[0].SectionId = this.studentclassData.SectionId;
+            studcls[0].SemesterId = this.studentclassData.SemesterId;
+            studcls[0].FeeTypeId = this.studentclassData.FeeTypeId;
+            studcls[0].Remarks = this.studentclassData.Remarks;
+            studcls[0].AdmissionDate = this.studentclassData.AdmissionDate;
+            studcls[0].IsCurrent = this.studentclassData.IsCurrent;
+            this.tokenStorage.saveStudents(_Students);
+          }
+        }
       }, error => {
         var msg = globalconstants.formatError(error);
         this.contentservice.openSnackBar(msg, globalconstants.ActionText, globalconstants.RedBackground);

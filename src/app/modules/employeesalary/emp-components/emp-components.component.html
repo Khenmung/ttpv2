@@ -36,9 +36,19 @@
             <mat-header-cell *matHeaderCellDef>Formula/Amount
             </mat-header-cell>
             <mat-cell *matCellDef="let element ">
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="outline" style="width:100%">
                     <textarea matInput [value]="element.FormulaOrAmount" (blur)="onBlur(element,$event)"
                         [(ngModel)]="element.FormulaOrAmount"></textarea>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Description">
+            <mat-header-cell *matHeaderCellDef>Description
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                <mat-form-field appearance="outline" style="width:100%">
+                    <textarea matInput [value]="element.Description" (blur)="onBlur(element,$event)"
+                        [(ngModel)]="element.Description"></textarea>
                 </mat-form-field>
             </mat-cell>
         </ng-container>

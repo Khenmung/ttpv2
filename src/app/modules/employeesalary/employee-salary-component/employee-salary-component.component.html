@@ -87,6 +87,20 @@
                 <b>Total</b>
             </mat-footer-cell>
         </ng-container>
+        <ng-container matColumnDef="Description">
+            <mat-header-cell *matHeaderCellDef> Description
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element ">
+                <mat-form-field [style.width.px]="200">
+                    <textarea rows="1" matInput [attr.name]='element.Description'
+                        (blur)="onBlur(element,$event)" [value]="element.Description"
+                        [(ngModel)]="element.Description"></textarea>
+                </mat-form-field>
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+              
+            </mat-footer-cell>
+        </ng-container>
         <ng-container matColumnDef="Amount">
             <mat-header-cell *matHeaderCellDef> Amount
             </mat-header-cell>

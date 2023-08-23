@@ -77,6 +77,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
     "SalaryComponent",
     "FormulaOrAmount",
     "ActualFormulaOrAmount",
+    "Description",
     "Amount",
     "Active",
     "Action"
@@ -483,6 +484,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
       "EmpComponentId",
       "DepartmentId",
       "ActualFormulaOrAmount",
+      "Description",
       "Month",
       "Amount",
       "Active"
@@ -546,6 +548,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
                 EmpComponentId: existing[0].EmpComponentId,
                 SalaryComponent: ec.SalaryComponent,
                 ActualFormulaOrAmount: existing[0].ActualFormulaOrAmount,
+                Description:existing[0].Description,
                 FormulaOrAmount: ec.FormulaOrAmount,
                 Month: _Month,
                 Amount: existing[0].Amount,
@@ -565,6 +568,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
                 DepartmentId:emp.DepartmentId,
                 EmpComponentId: ec.EmpSalaryComponentId,
                 ActualFormulaOrAmount: '',
+                Description:'',
                 SalaryComponent: ec.SalaryComponent,
                 FormulaOrAmount: ec.FormulaOrAmount,
                 Month: _Month,
@@ -604,6 +608,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
               EmpComponentId: sal.EmpComponentId,
               Month: sal.Month,
               ActualFormulaOrAmount: sal.ActualFormulaOrAmount.toString(),
+              Description:sal.Description,
               Active: sal.EmployeeSalaryComponentId==0?1:sal.Active,
               Amount: sal.Amount,
               BatchId:this.SelectedBatchId,
@@ -718,6 +723,7 @@ export interface IEmployeeSalaryComponent {
   EmployeeId: number;
   EmpComponentId: number;
   ActualFormulaOrAmount: string;
+  Description:string;
   FormulaOrAmount: number;
   Month: number;
   Amount: number;

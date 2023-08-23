@@ -54,6 +54,7 @@ export class EmpComponentsComponent implements OnInit {
     EmpSalaryComponentId: 0,
     SalaryComponent: '',
     FormulaOrAmount: 0,
+    Description:'',
     ComponentTypeId: 0,
     DisplayOrder:0,
     OrgId: 0, 
@@ -63,6 +64,7 @@ export class EmpComponentsComponent implements OnInit {
   displayedColumns = [
     "SalaryComponent",
     "FormulaOrAmount",
+    "Description",
     "ComponentTypeId",
     "DisplayOrder",
     "Active",
@@ -161,6 +163,7 @@ export class EmpComponentsComponent implements OnInit {
           this.EmpComponentData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.EmpComponentData.SubOrgId = this.SubOrgId;
           this.EmpComponentData.FormulaOrAmount = row.FormulaOrAmount;
+          this.EmpComponentData.Description = row.Description;
           ////console.log('data', this.EmpComponentData);
           if (this.EmpComponentData.EmpSalaryComponentId == 0) {
             this.EmpComponentData["CreatedDate"] = new Date();
@@ -328,6 +331,7 @@ export class EmpComponentsComponent implements OnInit {
       "EmpSalaryComponentId",
       "SalaryComponent",
       "FormulaOrAmount",
+      "Description",
       "ComponentTypeId",
       "DisplayOrder",
       "Active"
@@ -364,6 +368,7 @@ export class EmpComponentsComponent implements OnInit {
       "EmpSalaryComponentId": 0,
       "SalaryComponent": '',
       "FormulaOrAmount": '',
+      "Description":'',
       "ComponentTypeId": 0,
       "DisplayOrder":0,
       "Active": 0,
@@ -394,6 +399,7 @@ export interface IEmpComponent {
   EmpSalaryComponentId: number;
   SalaryComponent: string;
   FormulaOrAmount: string;
+  Description: string;
   ComponentTypeId: number;
   Active: number;
   Action: boolean;

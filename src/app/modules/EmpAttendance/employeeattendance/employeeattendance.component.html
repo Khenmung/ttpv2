@@ -4,13 +4,13 @@
 <form [formGroup]="searchForm">
     <div style="display:flex;justify-content: space-between;">
         <div>
-            <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-form-field appearance="outline" style="width: 200px;margin-right: 15px;">
                 <mat-label>Department</mat-label>
                 <mat-select formControlName="searchDepartment">
                     <mat-option *ngFor="let item of Departments" [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
                </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" [style.width.px]="140">
+            <mat-form-field appearance="outline" style="width: 160px;margin-right: 15px;">
                 <mat-label>Date</mat-label>
                 <input formControlName="searchAttendanceDate" matInput [matDatepicker]="AttendanceDate"
                     autocomplete="off">

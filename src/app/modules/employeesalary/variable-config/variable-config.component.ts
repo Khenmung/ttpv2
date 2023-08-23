@@ -53,8 +53,8 @@ export class VariableConfigComponent implements OnInit {
   };
   displayedColumns = [
     "VariableName",
-    "VariableDescription",
     "VariableFormula",
+    "VariableDescription",
     "DisplayOrder",
    // "VariableAmount",
     "Active",

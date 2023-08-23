@@ -36,7 +36,7 @@ export class SlotnclasssubjectComponent implements OnInit {
   ClassWiseSubjectDisplay :any[]= [];
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  AllSelectedSubjects :any[]= [];
+  AllSubjectsOfSelectedExam :any[]= [];
   ExamSlots :any[]= [];
   Classes :any[]= [];
   Subjects :any[]= [];
@@ -50,7 +50,7 @@ export class SlotnclasssubjectComponent implements OnInit {
   allMasterData :any[]= [];
   rowCount = 0;
   ExamId = 0;
-  SlotNClassSubjectData = {
+  SlotNClassSubjectData:any = {
     SlotClassSubjectId: 0,
     SlotId: 0,
     ClassSubjectId: 0,
@@ -488,13 +488,13 @@ export class SlotnclasssubjectComponent implements OnInit {
     list.lookupFields = ["SlotAndClassSubjects($select=SlotId,ClassSubjectId)"];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        this.AllSelectedSubjects = data.value.map(m => {
+        this.AllSubjectsOfSelectedExam = data.value.map(m => {
           var _slotName = this.SlotNames.filter(name => name.MasterDataId == m.SlotNameId)[0].MasterDataName;
           m.SlotName = _slotName;
           m.Tooltip = moment(m.ExamDate).format('DD/MM/yyyy') + " - " + _slotName;
           return m;
         });
-        //console.log("all",this.AllSelectedSubjects)
+        //console.log("allAllSubjectsOfSelectedExam",this.AllSubjectsOfSelectedExam)
       })
   }
   emptyresult() {
@@ -507,12 +507,13 @@ export class SlotnclasssubjectComponent implements OnInit {
     debugger;
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId + ' and Active eq 1';
     //var filterstr = 'Active eq 1';
-    if (this.searchForm.get("searchSlotId")?.value == 0) {
+    let _slotId =this.searchForm.get("searchSlotId")?.value;
+    if (_slotId == 0) {
       this.contentservice.openSnackBar("Please select exam slot", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
 
-    orgIdSearchstr += ' and SlotId eq ' + this.searchForm.get("searchSlotId")?.value;
+    orgIdSearchstr += ' and SlotId eq ' + _slotId;
 
     let list: List = new List();
     list.fields = [
@@ -546,19 +547,19 @@ export class SlotnclasssubjectComponent implements OnInit {
 
             var selected = 0;
             var toolTip = '';
-            let existing = data.value.filter(db => db.ClassSubjectId == clssub.ClassSubjectId);
+            let existingInSelectedSlot = data.value.filter(db => db.ClassSubjectId == clssub.ClassSubjectId);
 
-            if (existing.length > 0) {
-              let existingsubject = this.AllSelectedSubjects
-                .filter((f:any) => f.SlotAndClassSubjects.filter(c => c.Active==1 && c.SlotId != existing[0].SlotId && c.ClassSubjectId == clssub.ClassSubjectId).length > 0)
+            if (existingInSelectedSlot.length > 0) {
+              let existingsubject = this.AllSubjectsOfSelectedExam
+                .filter((f:any) => f.SlotAndClassSubjects.filter(c =>c.SlotId != existingInSelectedSlot[0].SlotId && c.ClassSubjectId == clssub.ClassSubjectId).length > 0)
               if (existingsubject.length > 0) {
                 toolTip = existingsubject[0].Tooltip;
                 selected = 2;
               }
-              displayrow["SlotClassSubjectId"] = existing[0].SlotClassSubjectId;
+              displayrow["SlotClassSubjectId"] = existingInSelectedSlot[0].SlotClassSubjectId;
               displayrow["Subject"].push(
                 {
-                  ClassSubjectId: existing[0].ClassSubjectId,
+                  ClassSubjectId: existingInSelectedSlot[0].ClassSubjectId,
                   SubjectName: clssub.Subject,
                   value: selected == 2 ? 2 : 1,
                   Tooltip: toolTip
@@ -566,23 +567,23 @@ export class SlotnclasssubjectComponent implements OnInit {
               // displayrow["Subject"][clssub.Subject] = +existing[0].Active;
               //displayrow['Selected'] = selected;
               this.StoreForUpdate.push({
-                SlotClassSubjectId: existing[0].SlotClassSubjectId,
-                SlotId: existing[0].SlotId,
-                Slot: this.ExamSlots.filter((s:any) => s.ExamSlotId == existing[0].SlotId)[0].ExamSlotName,
-                ClassSubjectId: existing[0].ClassSubjectId,
+                SlotClassSubjectId: existingInSelectedSlot[0].SlotClassSubjectId,
+                SlotId: existingInSelectedSlot[0].SlotId,
+                Slot: this.ExamSlots.filter((s:any) => s.ExamSlotId == existingInSelectedSlot[0].SlotId)[0].ExamSlotName,
+                ClassSubjectId: existingInSelectedSlot[0].ClassSubjectId,
                 ClassSubject: clssub.ClassSubject,
                 Subject: clssub.Subject,
-                SubjectId: existing[0].ClassSubject.SubjectId,
-                ClassId: existing[0].ClassSubject.ClassId,
+                SubjectId: existingInSelectedSlot[0].ClassSubject.SubjectId,
+                ClassId: existingInSelectedSlot[0].ClassSubject.ClassId,
                 ClassName: displayrow.ClassName,
-                Active: existing[0].Active,
+                Active: existingInSelectedSlot[0].Active,
                 Action: false
               });
             }
             else {
               var toopTip = '';
-              let existingsubject = this.AllSelectedSubjects
-                .filter((f:any) => f.SlotAndClassSubjects.filter(c => c.Active==1 && c.ClassSubjectId == clssub.ClassSubjectId).length > 0)
+              let existingsubject = this.AllSubjectsOfSelectedExam
+                .filter((f:any) => f.SlotAndClassSubjects.filter(c => c.ClassSubjectId == clssub.ClassSubjectId).length > 0)
               if (existingsubject.length > 0) {
                 toopTip = existingsubject[0].Tooltip;
                 selected = 2;
@@ -597,8 +598,8 @@ export class SlotnclasssubjectComponent implements OnInit {
 
               this.StoreForUpdate.push({
                 SlotClassSubjectId: 0,
-                SlotId: this.searchForm.get("searchSlotId")?.value,
-                Slot: this.ExamSlots.filter((s:any) => s.ExamSlotId == this.searchForm.get("searchSlotId")?.value)[0].ExamSlotName,
+                SlotId: _slotId,
+                Slot: this.ExamSlots.filter((s:any) => s.ExamSlotId == _slotId)[0].ExamSlotName,
                 ClassSubjectId: clssub.ClassSubjectId,
                 ClassSubject: clssub.ClassSubject,
                 Subject: clssub.Subject,

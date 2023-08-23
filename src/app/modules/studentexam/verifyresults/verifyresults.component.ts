@@ -277,6 +277,7 @@ export class VerifyResultsComponent implements OnInit {
         })
         this.ClassSubjects = this.contentservice.getConfidentialData(this.tokenStorage, this.ClassSubjects, "ClassSubject");
         this.loading = false;
+        this.GetSubjectComponents();
       })
   }
   // GetExamClassGroup() {
@@ -1117,9 +1118,9 @@ export class VerifyResultsComponent implements OnInit {
           m.Category = '';
         return m;
       });
+      this.GetSubjectTypes();
     });
-    this.GetSubjectTypes();
-
+    
     this.GetClassGroup();
     this.GetClassGroupMapping();
     this.GetExams();
@@ -1212,9 +1213,7 @@ export class VerifyResultsComponent implements OnInit {
       this.Students = studentList.filter((s: any) =>
         s["Active"] == 1 && s.StudentClasses
         && s.StudentClasses.length > 0
-        && s.StudentClasses[0].ClassId == _classId
-        && s.StudentClasses[0].SectionId == (_sectionId ? _sectionId : s.StudentClasses[0].SectionId)
-        && s.StudentClasses[0].SemesterId == (_semesterId ? _semesterId : s.StudentClasses[0].SemesterId)
+        && s.StudentClasses[0].ClassId == _classId       
       );
       this.ClearData();
       if (this.Students.length == 0) {
@@ -1368,7 +1367,7 @@ export class VerifyResultsComponent implements OnInit {
         //debugger;
         this.SubjectTypes = [...data.value];
         this.GetClassSubject();
-        this.GetSubjectComponents();
+        
       })
   }
   GetSubjectComponents() {
