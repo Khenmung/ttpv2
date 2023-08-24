@@ -1,37 +1,43 @@
 // mat-form-field{
 //     width:98%;
 // }
-mat-cell:first-of-type{
+mat-cell:first-of-type {
     padding-left: 0px;
 }
+
 .mat-column-FullMark,
 .mat-column-PassMark,
-.mat-column-Duration
-{
-    flex:1 0 100px;
+.mat-column-Duration {
+    flex: 1 0 100px;
     //justify-content: center;
 }
+
 .mat-column-ProvideCertificate,
 .mat-column-DisplayResult,
 .mat-column-Active,
 .mat-column-AppendAnswer,
 .mat-column-EvaluationMasterId,
-.mat-column-Confidential
-{
-    flex:1 0 100px;
+.mat-column-Confidential {
+    flex: 1 0 100px;
     justify-content: center;
 }
-.mat-column-StartTime{
-    flex:1 0 200px;
+
+.mat-column-StartDate {
+    flex: 1 0 280px;
 }
-.mat-column-Action,.mat-column-ClassGroupId{
-    flex:1 0 145px;
+
+.mat-column-Action,
+.mat-column-ClassGroupId {
+    flex: 1 0 145px;
 }
+
 .mat-column-EvaluationName,
-.mat-column-Description
-{
-    flex:1 0 200px;
+.mat-column-Description {
+    flex: 1 0 200px;
 }
-.mdc-data-table__cell, .mdc-data-table__header-cell{
-    padding:0px 15px 0px 0px;
-  }
+
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+    padding: 0px 15px 0px 0px;
+}
+

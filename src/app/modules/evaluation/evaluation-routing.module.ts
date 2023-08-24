@@ -9,6 +9,7 @@ import { EvaluationMasterComponent } from './evaluationmaster/evaluationmaster.c
 import { EvaluationControlComponent } from './evaluationcontrol/evaluationcontrol.component';
 import { QuestionnexamComponent } from './questionnexam/questionnexam.component';
 import { EvaluationstatusComponent } from './evaluationstatus/evaluationstatus.component';
+import { EvaluationresultlistComponent } from './evaluationresultlist/evaluationresultlist.component';
 
 const routes: Routes = [
   {
@@ -35,5 +36,6 @@ export const EvaluationComponents = [
   EvaluationControlComponent,
   QuestionnexamComponent,
   EvaluationstatusComponent,
+  EvaluationresultlistComponent
 ];
 

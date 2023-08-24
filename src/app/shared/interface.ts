@@ -59,6 +59,6 @@ export class FileToUpload {
     fileSize: number = 0;
     fileType: string = "";
     lastModifiedTime: string = "";
-    lastModifiedDate: Date = null;
+    lastModifiedDate: Date = new Date();
     fileAsBase64: string = "";
   }

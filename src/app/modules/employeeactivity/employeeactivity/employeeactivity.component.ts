@@ -43,16 +43,14 @@ export class EmployeeactivityComponent implements OnInit {
 
   EmployeeActivityData = {
     EmployeeActivityId: 0,
-    Achievement: '',
-    Secured: '',
+    Description: '',
     ActivityNameId: 0,
-    GroupId: 0,
-    CategoryId: 0,
-    SubCategoryId: 0,
+    EmployeeActivityCategoryId: 0,
+    EmployeeActivitySubCategoryId: 0,
     EmployeeId: 0,
-    AchievementDate: new Date(),
+    ActivityDate: new Date(),
     SessionId: 0,
-    BatchId: 0,
+   // BatchId: 0,
     OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
@@ -60,13 +58,12 @@ export class EmployeeactivityComponent implements OnInit {
   displayedColumns = [
     'EmployeeActivityId',
     'Employee',
-    'Achievement',
-    'Secured',
+    'Description',
     'ActivityNameId',
-    'CategoryId',
-    'SubCategoryId',
+    'EmployeeActivityCategoryId',
+    'EmployeeActivitySubCategoryId',
     'SessionId',
-    'AchievementDate',
+    'ActivityDate',
     'Active',
     'Action'
   ];
@@ -148,7 +145,8 @@ export class EmployeeactivityComponent implements OnInit {
         });
   }
   AddNew() {
-    var _employee = this.searchForm.get("searchEmployeeName")?.value.name;
+    debugger;
+    var _employee = this.searchForm.get("searchEmployeeName")?.value.Name;
     if (!_employee) {
       this.contentservice.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
     }
@@ -156,16 +154,14 @@ export class EmployeeactivityComponent implements OnInit {
       var newItem = {
         EmployeeActivityId: 0,
         Employee: _employee,
-        Achievement: '',
-        Secured: '',
+        Description: '',
         ActivityNameId: 0,
-        GroupId: 0,
-        CategoryId: 0,
-        SubCategoryId: 0,
+        EmployeeActivityCategoryId: 0,
+        EmployeeActivitySubCategoryId: 0,
         EmployeeId: 0,
-        AchievementDate: new Date(),
+        ActivityDate: new Date(),
         SessionId: 0,
-        BatchId: 0,
+        //BatchId: 0,
         Action: false
       }
       this.EmployeeActivityList = [];
@@ -190,10 +186,10 @@ export class EmployeeactivityComponent implements OnInit {
       return;
     }
     let checkFilterString = this.FilterOrgSubOrg + " and Active eq true";// and OrgId eq " + this.LoginUserDetail[0]["orgId"];
-    if (row.CategoryId > 0)
-      checkFilterString += " and CategoryId eq " + row.CategoryId
-    if (row.SubCategoryId > 0)
-      checkFilterString += " and SubCategoryId eq " + row.SubCategoryId;
+    if (row.EmployeeActivityCategoryId > 0)
+      checkFilterString += " and EmployeeActivityCategoryId eq " + row.EmployeeActivityCategoryId
+    if (row.EmployeeActivitySubCategoryId > 0)
+      checkFilterString += " and EmployeeActivitySubCategoryId eq " + row.EmployeeActivitySubCategoryId;
 
     if (row.SessionId > 0)
       checkFilterString += " and SessionId eq " + row.SessionId;
@@ -222,16 +218,15 @@ export class EmployeeactivityComponent implements OnInit {
 
           this.EmployeeActivityData.EmployeeActivityId = row.EmployeeActivityId;
           this.EmployeeActivityData.ActivityNameId = _ActivityId;
-          this.EmployeeActivityData.CategoryId = row.CategoryId;
-          this.EmployeeActivityData.Secured = row.Secured;
-          this.EmployeeActivityData.SubCategoryId = row.SubCategoryId;
-          this.EmployeeActivityData.AchievementDate = row.AchievementDate;
+          this.EmployeeActivityData.EmployeeActivityCategoryId = row.EmployeeActivityCategoryId;
+          this.EmployeeActivityData.EmployeeActivitySubCategoryId = row.EmployeeActivitySubCategoryId;
+          this.EmployeeActivityData.ActivityDate = row.ActivityDate;
           this.EmployeeActivityData.EmployeeId = _employeeId;
           this.EmployeeActivityData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.EmployeeActivityData.SubOrgId = this.SubOrgId;
-          this.EmployeeActivityData.Achievement = row.Achievement;
+          this.EmployeeActivityData.Description = row.Description;
           this.EmployeeActivityData.SessionId = row.SessionId;
-          this.EmployeeActivityData.BatchId = this.SelectedBatchId;
+          //this.EmployeeActivityData.BatchId = this.SelectedBatchId;
           this.EmployeeActivityData.Active = row.Active;
 
           if (this.EmployeeActivityData.EmployeeActivityId == 0) {
@@ -303,21 +298,18 @@ export class EmployeeactivityComponent implements OnInit {
     if (_sessionId > 0)
       filterStr += ' and SessionId eq ' + _sessionId;
     if (_categoryId > 0)
-      filterStr += ' and CategoryId eq ' + _categoryId;
+      filterStr += ' and EmployeeActivityCategoryId eq ' + _categoryId;
 
     let list: List = new List();
     list.fields = [
       'EmployeeActivityId',
-      'Achievement',
-      'Secured',
+      'Description',
       'ActivityNameId',
-      'GroupId',
-      'CategoryId',
-      'SubCategoryId',
+      'EmployeeActivityCategoryId',
+      'EmployeeActivitySubCategoryId',
       'EmployeeId',
-      'AchievementDate',
+      'ActivityDate',
       'SessionId',
-      'BatchId',
       'Active'
     ];
 
@@ -346,7 +338,11 @@ export class EmployeeactivityComponent implements OnInit {
       });
 
   }
-
+  FilteredCategory:any[]=[];
+  SelectCategory(event){
+    //debugger;
+    this.FilteredCategory= this.allMasterData.filter((f:any) => f.ParentId == event.value);
+  }
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -407,11 +403,11 @@ export class EmployeeactivityComponent implements OnInit {
           this.Employees = data.value.map(Employee => {
             var _lastname = Employee.LastName == null ? '' : " " + Employee.LastName;
             var _name = Employee.FirstName + _lastname;
-            var _fullDescription = _name + "-" + Employee.ContactNo;
+            //var _fullDescription = _name;
             return {
               EmployeeId: Employee.EmpEmployeeId,
               EmployeeCode: Employee.EmployeeCode,
-              Name: _fullDescription
+              Name: Employee.EmployeeCode + "-" + _name
             }
           })
         }
@@ -422,13 +418,12 @@ export class EmployeeactivityComponent implements OnInit {
 }
 export interface IEmployeeActivity {
   EmployeeActivityId: number;
-  Achievement: string;
+  Description: string;
   ActivityNameId: number;
-  GroupId: number;
-  CategoryId: number;
-  SubCategoryId: number;
+  EmployeeActivityCategoryId: number;
+  EmployeeActivitySubCategoryId: number;
   EmployeeId: number;
-  AchievementDate: Date;
+  ActivityDate: Date;
   SessionId: number;
   Action: boolean;
 }

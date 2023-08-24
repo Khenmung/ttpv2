@@ -1,7 +1,4 @@
-mat-form-field{
-    width: 98%;
-    margin-right: 15px;
-}
+
 .mat-column-Active,.mat-column-Action{
     flex:1 0 100px;
 }
@@ -14,6 +11,9 @@ mat-form-field{
 .mat-column-Employee,.mat-column-Secured{
     flex:1 0 150px;
 }
-.mat-column-Achievement{
+.mat-column-Description{
     flex:1 0 200px;
 }
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

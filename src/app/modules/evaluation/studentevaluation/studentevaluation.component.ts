@@ -26,13 +26,13 @@ export class StudentEvaluationComponent implements OnInit {
   EvaluationStarted = false;
   EvaluationSubmitted = false;
   boolSaveAsDraft = false;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
-  ClassGroups :any[]= [];
-  ClassGroupMappings :any[]= [];
-  EvaluationExamMaps :any[]= [];
-  ClassSubjects :any[]= [];
-  Ratings :any[]= [];
+  ClassGroups: any[] = [];
+  ClassGroupMappings: any[] = [];
+  EvaluationExamMaps: any[] = [];
+  ClassSubjects: any[] = [];
+  Ratings: any[] = [];
   NowTime = new Date();
   //ExamModes :any[]= [];
   SelectedApplicationId = 0;
@@ -43,24 +43,24 @@ export class StudentEvaluationComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  RelevantEvaluationListForSelectedStudent :any[]= [];
-  StudentEvaluationList:any[]= [];
+  RelevantEvaluationListForSelectedStudent: any[] = [];
+  StudentEvaluationList: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
-  QuestionnaireTypes :any[]= [];
-  Sections :any[]= [];
-  Classes :any[]= [];
-  ClassEvaluations :any[]= [];
+  QuestionnaireTypes: any[] = [];
+  Sections: any[] = [];
+  Classes: any[] = [];
+  ClassEvaluations: any[] = [];
   AssessmentTypeDatasource: MatTableDataSource<any>;
-  RatingOptions :any[]= [];
+  RatingOptions: any[] = [];
   dataSource: MatTableDataSource<any>;
-  allMasterData :any[]= [];
-  EvaluationMaster :any[]= [];
-  StudentList :any[]= [];
-  Exams :any[]= [];
-  ExamNames :any[]= [];
-  SelectedClassSubjects :any[]= [];
-  StudentClasses :any[]= [];
-  Students :any[]= [];
+  allMasterData: any[] = [];
+  EvaluationMaster: any[] = [];
+  StudentList: any[] = [];
+  Exams: any[] = [];
+  ExamNames: any[] = [];
+  SelectedClassSubjects: any[] = [];
+  StudentClasses: any[] = [];
+  Students: any[] = [];
   EvaluationPlanColumns = [
     'EvaluationName',
     'ClassGroup',
@@ -68,7 +68,7 @@ export class StudentEvaluationComponent implements OnInit {
     'Action1'
   ];
   //ExamDurationMinutes = 0;
-  ClassEvaluationOptionList :any[]= [];
+  ClassEvaluationOptionList: any[] = [];
   filteredStudents: Observable<IStudent[]>;
   StudentEvaluationData = {
     StudentEvaluationId: 0,
@@ -88,7 +88,7 @@ export class StudentEvaluationComponent implements OnInit {
     StudentClassId: 0,
     ExamId: 0
   }
-  StudentEvaluationForUpdate :any[]= [];
+  StudentEvaluationForUpdate: any[] = [];
   displayedColumns = [
     //'AutoId',
     'Description',
@@ -181,8 +181,8 @@ export class StudentEvaluationComponent implements OnInit {
         });
   }
   SelectedClassCategory = '';
-  Semesters :any[]= [];
-  ClassCategory :any[]= [];
+  Semesters: any[] = [];
+  ClassCategory: any[] = [];
   Defaultvalue = 0;
   getCollegeCategory() {
     return globalconstants.CategoryCollege;
@@ -215,7 +215,7 @@ export class StudentEvaluationComponent implements OnInit {
   }
   UpdateAnswers(row, item, event, i) {
     debugger;
-    var exItem = row.StudentEvaluationAnswers.filter((f:any) => f.ClassEvaluationAnswerOptionsId == item.ClassEvaluationAnswerOptionsId);
+    var exItem = row.StudentEvaluationAnswers.filter((f: any) => f.ClassEvaluationAnswerOptionsId == item.ClassEvaluationAnswerOptionsId);
     if (exItem.length > 0) {
       if (event.checked)
         exItem[0].Active = 1;
@@ -237,7 +237,7 @@ export class StudentEvaluationComponent implements OnInit {
   UpdateRadio(row, item) {
     //row.StudentEvaluationAnswers :any[]= [];
     debugger;
-    var exItem = row.StudentEvaluationAnswers.filter((f:any) => f.ClassEvaluationAnswerOptionsId == item.ClassEvaluationAnswerOptionsId);
+    var exItem = row.StudentEvaluationAnswers.filter((f: any) => f.ClassEvaluationAnswerOptionsId == item.ClassEvaluationAnswerOptionsId);
     if (exItem.length > 0) {
       row.StudentEvaluationAnswers.forEach(answer => {
         if (item.ClassEvaluationAnswerOptionsId == answer.ClassEvaluationAnswerOptionsId) {
@@ -274,6 +274,7 @@ export class StudentEvaluationComponent implements OnInit {
     })
   }
   SubmitEvaluation() {
+    debugger;
     this.RowsToUpdate = this.StudentEvaluationList.length;
     this.EvaluationSubmitted = true;
     this.boolSaveAsDraft = false;
@@ -309,7 +310,7 @@ export class StudentEvaluationComponent implements OnInit {
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        //debugger;
+        debugger;
         if (data.value.length > 0) {
           this.loading = false;
           this.PageLoading = false;
@@ -364,7 +365,7 @@ export class StudentEvaluationComponent implements OnInit {
               Active: 1,
               Submitted: this.EvaluationSubmitted,
               OrgId: this.LoginUserDetail[0]["orgId"],
-              BatchId:this.SelectedBatchId,
+              BatchId: this.SelectedBatchId,
               SubOrgId: this.SubOrgId
             });
 
@@ -374,7 +375,7 @@ export class StudentEvaluationComponent implements OnInit {
             this.StudentEvaluationForUpdate[_lastIndex]["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.StudentEvaluationForUpdate[_lastIndex]["UpdatedDate"];
             delete this.StudentEvaluationForUpdate[_lastIndex]["UpdatedBy"];
-            //console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate[0])
+            console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate[0])
             //this.insert(row);
           }
           else {
@@ -425,7 +426,7 @@ export class StudentEvaluationComponent implements OnInit {
           row.Action = false;
           this.EvaluationSubmitted = false;
           this.StudentEvaluationList = [];
-          this.RelevantEvaluationListForSelectedStudent= [];
+          this.RelevantEvaluationListForSelectedStudent = [];
           this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.RelevantEvaluationListForSelectedStudent);
           this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
@@ -434,8 +435,20 @@ export class StudentEvaluationComponent implements OnInit {
   }
   interval;
   startTimer(row) {
-    if (row.tempDuration == row.Duration)
+    //if startdate is mentioned, startdate with starttime + Duration is the time's up
+    if (row.StartDate) {
+      let TimeUp = moment(row.StartDateAndTime).minutes(row.Duration);
+      let TimeNow = moment();
+      var duration = moment.duration(TimeUp.diff(TimeNow));
+      var remainingMinutes = duration.asMinutes();
+      if (remainingMinutes > 0) 
+        row.TempDuration = remainingMinutes * 60;
+      else
+        row.TempDuration = 0;
+    }
+    else// otherwise count only the duration.
       row.TempDuration *= 60;
+
     this.interval = setInterval(() => {
       if (row.TempDuration > 0) {
         row.TempDuration--;
@@ -452,7 +465,7 @@ export class StudentEvaluationComponent implements OnInit {
     this.loading = true;
     this.StudentEvaluationList = [];
     this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);
-    
+
 
     var objstudent = this.searchForm.get("searchStudentName")?.value;
     this.ClassId = this.searchForm.get("searchClassId")?.value;
@@ -469,7 +482,7 @@ export class StudentEvaluationComponent implements OnInit {
       if (mapping.EvaluationExamMapId != row.EvaluationExamMapId)
         mapping.Action = false;
     })
-    var _classEvaluations = this.ClassEvaluations.filter((f:any) => f.EvaluationMasterId == row.EvaluationMasterId
+    var _classEvaluations = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == row.EvaluationMasterId
       && (f.ExamId == null || f.ExamId == 0 || f.ExamId == row.ExamId));
     //delete row all except selected one
     for (var i = 0; i < this.RelevantEvaluationListForSelectedStudent.length; i++) {
@@ -505,8 +518,9 @@ export class StudentEvaluationComponent implements OnInit {
         if (data.value.length > 0) {
           row.Submitted = data.value[0].Submitted;
         }
+        console.log("row", row);
         if (!row.Updatable && row.Duration > 0 && data.value.length == 0) {
-          if (row.TempDuration == undefined || row.TempDuration == 0)
+          if (!row.TempDuration)
             row.TempDuration = row.Duration;
           this.startTimer(row);
         }
@@ -521,7 +535,7 @@ export class StudentEvaluationComponent implements OnInit {
           else
             SlNo = '';
 
-          var existing = data.value.filter((f:any) => f.ClassEvaluationId == clseval.ClassEvaluationId);
+          var existing = data.value.filter((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId);
 
           if (existing.length > 0) {
             clseval.ClassEvaluationOptions.forEach(cls => {
@@ -634,29 +648,30 @@ export class StudentEvaluationComponent implements OnInit {
           .subscribe((data: any) => {
             this.NowTime = new Date();
             data.value.forEach(m => {
-              let EvaluationObj = this.EvaluationMaster.filter((f:any) => f.EvaluationMasterId == m.EvaluationMasterId);
+              let EvaluationObj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == m.EvaluationMasterId);
               if (EvaluationObj.length > 0) {
                 m.EvaluationName = EvaluationObj[0].EvaluationName;
                 m.Duration = EvaluationObj[0].Duration;
                 m.TempDuration = EvaluationObj[0].Duration;
                 m.Updatable = EvaluationObj[0].AppendAnswer;
                 m.StartTime = EvaluationObj[0].StartTime;
-                //m.EndTime = EvaluationObj[0].EndTime;
-                if (m.StartTime && new Date(m.StartTime).getTime() <= this.NowTime.getTime()
-                  && new Date(m.StartTime).getTime() + (m.Duration * 60 * 1000) < this.NowTime.getTime())
-                  m.TimeStarted = true;
-                // else if (m.Duration > 0)
-                //   m.TimeStarted = true;
-                else
-                  m.TimeStarted = false;
+                m.StartDate = EvaluationObj[0].StartDate;
 
-                var _clsObj = this.ClassGroups.filter((f:any) => f.MasterDataId == m.ClassGroupId);
+                m.StartDateAndTime = moment(m.StartDate + " " + m.StartTime, 'YYYY-MM-DD HH:mm');
+                //m.StartDateAndTime =startedTime;
+
+                if (m.StartDate && m.StartDateAndTime.valueOf() + (m.Duration * 60 * 1000) < this.NowTime.getTime())
+                  m.TimeLapsed = true;
+                else
+                  m.TimeLapsed = false;
+
+                var _clsObj = this.ClassGroups.filter((f: any) => f.MasterDataId == m.ClassGroupId);
                 if (_clsObj.length > 0)
                   m.ClassGroupName = _clsObj[0].MasterDataName;
                 else
                   m.ClassGroupName = '';
                 m.ClassGroupId = EvaluationObj[0].ClassGroupId;
-                var _examObj = this.Exams.filter((f:any) => f.ExamId == m.ExamId);
+                var _examObj = this.Exams.filter((f: any) => f.ExamId == m.ExamId);
                 if (_examObj.length > 0)
                   m.ExamName = _examObj[0].ExamName
                 else
@@ -681,7 +696,7 @@ export class StudentEvaluationComponent implements OnInit {
       .subscribe((data: any) => {
         this.ClassSubjects = data.value.map(m => {
           var _subjectname = "";
-          var subjectobj = this.allMasterData.filter((f:any) => f.MasterDataId == m.SubjectId);
+          var subjectobj = this.allMasterData.filter((f: any) => f.MasterDataId == m.SubjectId);
           if (subjectobj.length > 0)
             _subjectname = subjectobj[0].MasterDataName;
           m.SubjectName = _subjectname;
@@ -711,14 +726,16 @@ export class StudentEvaluationComponent implements OnInit {
     // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
     //   this.Classes = data.value;
     // });
+    this.loading = true;
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
-        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
           this.Classes.push(m);
         }
       });
+      this.loading = false;
     });
     this.GetExams();
     this.GetEvaluationOption();
@@ -730,8 +747,8 @@ export class StudentEvaluationComponent implements OnInit {
   CategoryChanged(row) {
     debugger;
     row.Action = true;
-    var item = this.StudentEvaluationList.filter((f:any) => f.StudentEvaluationId == row.StudentEvaluationId);
-    item[0].SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
+    var item = this.StudentEvaluationList.filter((f: any) => f.StudentEvaluationId == row.StudentEvaluationId);
+    item[0].SubCategories = this.allMasterData.filter((f: any) => f.ParentId == row.CategoryId);
 
     this.dataSource = new MatTableDataSource(this.StudentEvaluationList);
   }
@@ -768,6 +785,7 @@ export class StudentEvaluationComponent implements OnInit {
       'EvaluationName',
       'Description',
       'Duration',
+      'StartDate',
       'StartTime',
       'ClassGroupId',
       'DisplayResult',
@@ -801,7 +819,7 @@ export class StudentEvaluationComponent implements OnInit {
   //     this.ExamDurationMinutes = _obj[0].Duration;
   //   }
   // }
-  StudentSubmittedEvaluations :any[]= [];
+  StudentSubmittedEvaluations: any[] = [];
   CheckIfEvaluationWasSubmitted() {
     var studentobj = this.searchForm.get("searchStudentName")?.value;
     var _studentClassId = studentobj.StudentClassId;
@@ -838,9 +856,9 @@ export class StudentEvaluationComponent implements OnInit {
       return;
     }
     var _classgroupsOfSelectedStudent = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
-    var _EvaluationExamMapSelectedStudentObj :any[]= [];
+    var _EvaluationExamMapSelectedStudentObj: any[] = [];
 
-    _EvaluationExamMapSelectedStudentObj = this.EvaluationExamMaps.filter((f:any) => _classgroupsOfSelectedStudent.filter((s:any) => s.ClassGroupId == f.ClassGroupId).length > 0);
+    _EvaluationExamMapSelectedStudentObj = this.EvaluationExamMaps.filter((f: any) => !f.TimeLapsed && _classgroupsOfSelectedStudent.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
     this.CheckIfEvaluationWasSubmitted()
       .subscribe((data: any) => {
         this.StudentSubmittedEvaluations = [...data.value];
@@ -848,9 +866,9 @@ export class StudentEvaluationComponent implements OnInit {
         this.RelevantEvaluationListForSelectedStudent = [];
         if (_EvaluationExamMapSelectedStudentObj.length > 0) {
           _EvaluationExamMapSelectedStudentObj.forEach(m => {
-            m.ClassGroup = this.ClassGroups.filter((f:any) => f.ClassGroupId == m.ClassGroupId)[0].GroupName;
+            m.ClassGroup = this.ClassGroups.filter((f: any) => f.ClassGroupId == m.ClassGroupId)[0].GroupName;
             m.EvaluationStarted = false;
-            var existing = this.StudentSubmittedEvaluations.filter((f:any) => f.EvaluationExamMapId == m.EvaluationExamMapId)
+            var existing = this.StudentSubmittedEvaluations.filter((f: any) => f.EvaluationExamMapId == m.EvaluationExamMapId)
             if (existing.length > 0) {
               if (!existing[0].Submitted || m.Updatable) {
                 m.StudentEvaluationResultId = existing[0].StudentEvaluationResultId
@@ -873,7 +891,7 @@ export class StudentEvaluationComponent implements OnInit {
         }
         //console.log("this.RelevantEvaluationListForSelectedStudent", this.RelevantEvaluationListForSelectedStudent);
         this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.RelevantEvaluationListForSelectedStudent);
-
+        console.log('this.RelevantEvaluationListForSelectedStudent', this.RelevantEvaluationListForSelectedStudent)
         this.StudentEvaluationList = [];
         this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);
         this.dataSource.paginator = this.paginator;
@@ -935,10 +953,10 @@ export class StudentEvaluationComponent implements OnInit {
         if (data.value.length > 0) {
           this.ClassEvaluations = [];
           data.value.forEach(clseval => {
-            var obj = this.QuestionnaireTypes.filter((f:any) => f.MasterDataId == clseval.QuestionnaireTypeId);
+            var obj = this.QuestionnaireTypes.filter((f: any) => f.MasterDataId == clseval.QuestionnaireTypeId);
             if (obj.length > 0) {
               clseval.QuestionnaireType = obj[0].MasterDataName;
-              clseval.ClassEvaluationOptions = this.ClassEvaluationOptionList.filter((f:any) => f.ParentId == clseval.ClassEvaluationAnswerOptionParentId)
+              clseval.ClassEvaluationOptions = this.ClassEvaluationOptionList.filter((f: any) => f.ParentId == clseval.ClassEvaluationAnswerOptionParentId)
               this.ClassEvaluations.push(clseval);
             }
           })
@@ -995,19 +1013,19 @@ export class StudentEvaluationComponent implements OnInit {
           var _section = '';
           let _semester = '';
           var _studentClassId = 0;
-          var studentclassobj = data.value.filter((f:any) => f.StudentId == student.StudentId);
+          var studentclassobj = data.value.filter((f: any) => f.StudentId == student.StudentId);
           if (studentclassobj.length > 0) {
             _studentClassId = studentclassobj[0].StudentClassId;
             var _classNameobj = this.Classes.filter(c => c.ClassId == studentclassobj[0].ClassId);
             _classId = studentclassobj[0].ClassId;
             if (_classNameobj.length > 0) {
               _className = _classNameobj[0].ClassName;
-              var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclassobj[0].SectionId)
+              var _SectionObj = this.Sections.filter((f: any) => f.MasterDataId == studentclassobj[0].SectionId)
               _RollNo = studentclassobj[0].RollNo;
 
               if (_SectionObj.length > 0)
                 _section = "-" + _SectionObj[0].MasterDataName;
-              var _SemesterObj = this.Semesters.filter((f:any) => f.MasterDataId == studentclassobj[0].SemesterId)
+              var _SemesterObj = this.Semesters.filter((f: any) => f.MasterDataId == studentclassobj[0].SemesterId)
               if (_SemesterObj.length > 0)
                 _semester = "-" + _SemesterObj[0].MasterDataName;
               var _lastname = student.LastName == null ? '' : " " + student.LastName;

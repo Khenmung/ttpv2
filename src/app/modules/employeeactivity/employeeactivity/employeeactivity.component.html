@@ -7,28 +7,28 @@
 <!-- <div style="padding: 15px;"> -->
 <div style="width: 100%;">
     <form [formGroup]="searchForm">
-        <mat-form-field appearance="outline" [style.width.px]="180">
+        <mat-form-field appearance="outline" style="width:180px;margin-right: 15px;">
             <mat-label>activity</mat-label>
-            <mat-select formControlName="searchActivity">
+            <mat-select formControlName="searchActivity" (selectionChange)="SelectCategory($event)">
                 <mat-option *ngFor="let item of EmployeeActivity" [value]="item.MasterDataId">
                     {{item.MasterDataName}}</mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" [style.width.px]="180">
+        <mat-form-field appearance="outline" style="width:180px;margin-right: 15px;">
             <mat-label>category</mat-label>
             <mat-select formControlName="searchCategoryId">
-                <mat-option *ngFor="let item of EmployeeActivityCategories" [value]="item.MasterDataId">
+                <mat-option *ngFor="let item of FilteredCategory" [value]="item.MasterDataId">
                     {{item.MasterDataName}}</mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" [style.width.px]="180">
+        <mat-form-field appearance="outline" style="width:180px;margin-right: 15px;">
             <mat-label>session</mat-label>
             <mat-select formControlName="searchSession">
                 <mat-option *ngFor="let item of EmployeeActivitySession" [value]="item.MasterDataId">
                     {{item.MasterDataName}}</mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field [style.width.px]="250" appearance="outline">
+        <mat-form-field style="width:250px;margin-right: 15px;" appearance="outline">
             <mat-label>employee</mat-label>
             <input type="text" matInput formControlName="searchEmployeeName" [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
@@ -63,23 +63,14 @@
                 {{element.Employee}}
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="Secured">
-            <mat-header-cell *matHeaderCellDef>Secured
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <mat-form-field appearance="outline">
-                    <input matInput [maxlength]="20" (blur)="onBlur(element)" [value]="element.Secured"
-                        [(ngModel)]="element.Secured">
-                </mat-form-field>
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="Achievement">
+        
+        <ng-container matColumnDef="Description">
             <mat-header-cell *matHeaderCellDef>Description
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <input matInput [maxlength]="256" (blur)="onBlur(element)" [value]="element.Achievement"
-                        [(ngModel)]="element.Achievement">
+                    <input matInput [maxlength]="256" (blur)="onBlur(element)" [value]="element.Description"
+                        [(ngModel)]="element.Description">
                 </mat-form-field>
             </mat-cell>
         </ng-container>
@@ -95,26 +86,26 @@
                 </mat-form-field>
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="CategoryId">
+        <ng-container matColumnDef="EmployeeActivityCategoryId">
             <mat-header-cell *matHeaderCellDef>Category
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <mat-select (selectionChange)="CategoryChanged(element)" [(ngModel)]="element.CategoryId"
-                        [value]="element.CategoryId">
+                    <mat-select (selectionChange)="CategoryChanged(element)" [(ngModel)]="element.EmployeeActivityCategoryId"
+                        [value]="element.EmployeeActivityCategoryId">
                         <mat-option *ngFor="let item of EmployeeActivityCategories" [value]="item.MasterDataId">
                             {{item.MasterDataName}}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="SubCategoryId">
+        <ng-container matColumnDef="EmployeeActivitySubCategoryId">
             <mat-header-cell *matHeaderCellDef>Sub Category
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <mat-select (selectionChange)="onBlur(element)" [(ngModel)]="element.SubCategoryId"
-                        [value]="element.SubCategoryId">
+                    <mat-select (selectionChange)="onBlur(element)" [(ngModel)]="element.EmployeeActivitySubCategoryId"
+                        [value]="element.EmployeeActivitySubCategoryId">
                         <mat-option [value]="0">--sub category--</mat-option>
                         <mat-option *ngFor="let item of element.ActivitySubCategory"
                             [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
@@ -136,16 +127,16 @@
                 </mat-form-field>
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="AchievementDate">
+        <ng-container matColumnDef="ActivityDate">
             <mat-header-cell *matHeaderCellDef>Date
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <input [value]="element.AchievementDate" (dateChange)="onBlur(element)"
-                        [(ngModel)]="element.AchievementDate" matInput [matDatepicker]="AchievementDate"
+                    <input [value]="element.ActivityDate" (dateChange)="onBlur(element)"
+                        [(ngModel)]="element.ActivityDate" matInput [matDatepicker]="ActivityDate"
                         autocomplete="off">
-                    <mat-datepicker-toggle matSuffix [for]="AchievementDate"></mat-datepicker-toggle>
-                    <mat-datepicker #AchievementDate></mat-datepicker>
+                    <mat-datepicker-toggle matSuffix [for]="ActivityDate"></mat-datepicker-toggle>
+                    <mat-datepicker #ActivityDate></mat-datepicker>
                 </mat-form-field>
             </mat-cell>
         </ng-container>

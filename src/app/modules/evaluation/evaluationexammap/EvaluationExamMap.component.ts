@@ -244,8 +244,6 @@ export class EvaluationExamMapComponent implements OnInit {
           this.EvaluationExamMapForUpdate.push(
             {
               EvaluationExamMapId: row.EvaluationExamMapId,
-              //ClassGroupId: row.ClassGroupId,
-              //ClassSubjectId: row.ClassSubjectId,
               ExamId: row.ExamId == null ? 0 : row.ExamId,
               EvaluationMasterId: this.searchForm.get("searchEvaluationMasterId")?.value,
               Active: row.Active,

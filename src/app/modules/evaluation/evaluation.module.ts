@@ -7,13 +7,13 @@ import { MaterialModule } from '../../shared/material/material.module';
 import { SharedhomepageModule } from '../sharedhomepage.module';
 import { NgxPrintModule } from 'ngx-print';
 import { SharedModule } from '../../shared/shared.module';
-import { EvaluationresultlistComponent } from './evaluationresultlist/evaluationresultlist.component';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+//import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import {NgxMatTimepickerModule} from 'ngx-mat-timepicker';
 @NgModule({
   declarations: [
-    EvaluationComponents,
-    EvaluationresultlistComponent  
+    EvaluationComponents      
   ],
   imports: [
     CommonModule,
@@ -24,9 +24,10 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
     SharedhomepageModule,
     NgxPrintModule,
     SharedModule,
-    NgxMatDatetimePickerModule,
+    //NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
-    NgxMatNativeDateModule
+    NgxMatMomentModule
+    
   ],
   exports:[
     EvaluationComponents

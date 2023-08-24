@@ -86,7 +86,7 @@
                     || !element.Action1 
                     || Permission=='read' 
                     || element.EvaluationStarted
-                    || !element.TimeStarted" matTooltip="start" mat-mini-fab color="accent"
+                    || !element.TimeStarted?false:true" matTooltip="start" mat-mini-fab color="accent"
                     (click)="StartEvaluation(element)">
                     <mat-icon>start</mat-icon>
                 </button>

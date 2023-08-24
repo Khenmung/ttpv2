@@ -13,6 +13,8 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
+ 
+import moment from 'moment';
 
 @Component({
   selector: 'app-EvaluationMaster',
@@ -22,6 +24,7 @@ import { SwUpdate } from '@angular/service-worker';
 export class EvaluationMasterComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
+  
   LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   EvaluationMasterListName = 'EvaluationMasters';
@@ -41,7 +44,8 @@ export class EvaluationMasterComponent implements OnInit {
     EvaluationName: '',
     Description: '',
     Duration: 0,
-    StartTime: new Date(),
+    StartDate: new Date(),
+    StartTime:'',
     ClassGroupId: 0,
     DisplayResult: false,
     AppendAnswer: false,
@@ -57,7 +61,7 @@ export class EvaluationMasterComponent implements OnInit {
     "EvaluationName",
     "ClassGroupId",
     "Duration",
-    "StartTime",
+    "StartDate",
     "FullMark",
     "PassMark",
     "AppendAnswer",
@@ -130,7 +134,8 @@ export class EvaluationMasterComponent implements OnInit {
       EvaluationName: '',
       Description: '',
       Duration: 0,
-      StartTime: new Date(),
+      StartDate: new Date(),
+      StartTime:'',
       ClassGroupId: 0,
       DisplayResult: false,
       ProvideCertificate: false,
@@ -230,7 +235,7 @@ export class EvaluationMasterComponent implements OnInit {
 
     debugger;
     this.loading = true;
-
+    console.log('row.StartTime:' +row.StartTime)
     if (row.ClassGroupId == 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please select class group.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -263,6 +268,7 @@ export class EvaluationMasterComponent implements OnInit {
           this.EvaluationMasterData.ProvideCertificate = row.ProvideCertificate;
           this.EvaluationMasterData.AppendAnswer = row.AppendAnswer;
           this.EvaluationMasterData.Duration = row.Duration == null ? 0 : row.Duration;
+          this.EvaluationMasterData.StartDate = row.StartDate;
           this.EvaluationMasterData.StartTime = row.StartTime;
           this.EvaluationMasterData.ClassGroupId = row.ClassGroupId;
           this.EvaluationMasterData.FullMark = row.FullMark == null ? 0 : row.FullMark;
@@ -354,6 +360,7 @@ export class EvaluationMasterComponent implements OnInit {
         "Description",
         "AppendAnswer",
         "Duration",
+        "StartDate",
         "StartTime",
         "ClassGroupId",
         "FullMark",
@@ -371,8 +378,9 @@ export class EvaluationMasterComponent implements OnInit {
         .subscribe((data: any) => {
           //debugger;
           if (data.value.length > 0) {
+            let _startTime ='';
             this.EvaluationMasterList = data.value.map(d => {
-
+             
               d.EvaluationName = globalconstants.decodeSpecialChars(d.EvaluationName);
               d.Description = globalconstants.decodeSpecialChars(d.Description);
               d.Action = false;
@@ -441,7 +449,7 @@ export interface IEvaluationMaster {
   EvaluationName: string;
   Description: string;
   Duration: number;
-  StartTime: Date;
+  StartDate: Date;
   ClassGroupId: number;
   DisplayResult: boolean;
   AppendAnswer: boolean;
