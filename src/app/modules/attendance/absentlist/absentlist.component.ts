@@ -27,7 +27,7 @@ export class AbsentListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   EnableSave = true;
   Permission = 'deny';
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   SaveAll = false;
@@ -37,19 +37,19 @@ export class AbsentListComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  Sections :any[]= [];
-  Classes :any[]= [];
-  Subjects :any[]= [];
-  ClassSubjects :any[]= [];
-  AttendanceStatus:any[]=[];
+  Sections: any[] = [];
+  Classes: any[] = [];
+  Subjects: any[] = [];
+  ClassSubjects: any[] = [];
+  AttendanceStatus: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
-  Batches :any[]= [];
-  AttendanceStatusId :any[]= [];
-  FilteredClassSubjects :any[]= [];
-  StudentAttendanceList: IStudentAttendance[]= [];
-  StudentClassList :any[]= [];
+  Batches: any[] = [];
+  AttendanceStatusId: any[] = [];
+  FilteredClassSubjects: any[] = [];
+  StudentAttendanceList: IStudentAttendance[] = [];
+  StudentClassList: any[] = [];
   dataSource: MatTableDataSource<IStudentAttendance>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   searchForm = this.fb.group({
     searchClassId: [0],
     searchSectionId: [0],
@@ -68,7 +68,6 @@ export class AbsentListComponent implements OnInit {
     BatchId: 0
   };
   displayedColumns = [
-    'ClassName',
     'Student',
     'ClassName',
     'Section',
@@ -151,13 +150,12 @@ export class AbsentListComponent implements OnInit {
     this.SelectedClassCategory = '';
 
     if (classId > 0) {
-      let obj = this.Classes.filter((f:any) => f.ClassId == classId);
+      let obj = this.Classes.filter((f: any) => f.ClassId == classId);
       if (obj.length > 0)
         this.SelectedClassCategory = obj[0].Category;
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
-    if(this.SelectedClassCategory==this.getHighSchoolCategory())
-    {
+    if (this.SelectedClassCategory == this.getHighSchoolCategory()) {
       this.displayedColumns = [
         'ClassName',
         'Student',
@@ -174,8 +172,7 @@ export class AbsentListComponent implements OnInit {
         'Action'
       ];
     }
-    else if(this.SelectedClassCategory==this.getCollegeCategory())
-    {
+    else if (this.SelectedClassCategory == this.getCollegeCategory()) {
       this.displayedColumns = [
         'ClassName',
         'Student',
@@ -208,7 +205,7 @@ export class AbsentListComponent implements OnInit {
       this.loading = false;
     }
   }
-  Teachers :any[]= [];
+  Teachers: any[] = [];
   GetTeachers() {
 
     var orgIdSearchstr = this.FilterOrgSubOrg;
@@ -227,7 +224,7 @@ export class AbsentListComponent implements OnInit {
     this.Teachers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        data.value.filter((f:any) => {
+        data.value.filter((f: any) => {
           this.Teachers.push({
             UserId: f.Employee.UserId,
             TeacherId: f.Employee.EmpEmployeeId,
@@ -239,8 +236,8 @@ export class AbsentListComponent implements OnInit {
   }
   SelectedClassCategory = '';
   Defaultvalue = 0;
-  Semesters :any[]= [];
-  ClassCategory :any[]= [];
+  Semesters: any[] = [];
+  ClassCategory: any[] = [];
   getCollegeCategory() {
     return globalconstants.CategoryCollege;
   }
@@ -274,8 +271,8 @@ export class AbsentListComponent implements OnInit {
       return;
     }
 
-    if(_semesterId) filterStr += " and SemesterId eq " + _semesterId;
-    if(_sectionId) filterStr += " and SectionId eq " + _sectionId;
+    if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
+    if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
     filterStr += " and BatchId eq " + this.SelectedBatchId;
 
     var datefilterStr = " and AttendanceDate ge " + moment(this.searchForm.get("searchAttendanceFromDate")?.value).format('yyyy-MM-DD')
@@ -317,7 +314,7 @@ export class AbsentListComponent implements OnInit {
           _AllStudents = _AllStudents.filter(stud => stud.StudentClasses &&
             stud.StudentClasses.length > 0)
         }
-        _AllStudents = _AllStudents.filter((f:any) => f.StudentClasses.length > 0 && f.StudentClasses[0].Active == 1);
+        _AllStudents = _AllStudents.filter((f: any) => f.StudentClasses.length > 0 && f.StudentClasses[0].Active == 1);
         // studentclass.value.forEach(item => {
         //   var _student = _AllStudents.filter(a=>a.StudentId == item.StudentId);
 
@@ -327,7 +324,7 @@ export class AbsentListComponent implements OnInit {
           if (_student.length > 0) {
             var _subjName = '';
             if (sc.ClassSubjectId > 0) {
-              var obj = this.ClassSubjects.filter((s:any) => s.ClassSubjectId == sc.ClassSubjectId);
+              var obj = this.ClassSubjects.filter((s: any) => s.ClassSubjectId == sc.ClassSubjectId);
               if (obj.length > 0)
                 _subjName = obj[0].ClassSubject;
             }
@@ -337,25 +334,31 @@ export class AbsentListComponent implements OnInit {
               if (objApproved.length > 0)
                 _approvedByName = objApproved[0].TeacherName;
             }
-            var _Classobj = this.Classes.filter((s:any) => s.ClassId == sc.ClassId);
+            var _Classobj = this.Classes.filter((s: any) => s.ClassId == sc.ClassId);
             var _Class = '';
             if (_Classobj.length > 0) {
               _Class = _Classobj[0].ClassName;
 
-              var _semesterobj = this.Semesters.filter((s:any) => s.MasterDataId == sc.SemesterId);
+              var _semesterobj = this.Semesters.filter((s: any) => s.MasterDataId == sc.SemesterId);
               var _semester = '';
               if (_semesterobj.length > 0) {
                 _semester = _semesterobj[0].MasterDataName;
               }
-              var _sectionobj = this.Sections.filter((s:any) => s.MasterDataId == sc.SectionId);
+              var _sectionobj = this.Sections.filter((s: any) => s.MasterDataId == sc.SectionId);
               var _section = '';
               if (_sectionobj.length > 0) {
                 _section = _sectionobj[0].MasterDataName;
               }
               this.StudentAttendanceList.push({
                 AttendanceId: sc.AttendanceId,
+                Student: _student[0].FirstName + " " + (_student[0].LastName == null ? '' : _student[0].LastName),
+                RollNo: _student[0].StudentClasses[0].RollNo,
+                PID:_student[0].PID,
+                Section: _section,
+                Semester: _semester,
                 StudentClassId: sc.StudentClassId,
                 AttendanceStatusId: sc.AttendanceStatusId,
+                AttendanceStatus: this.AttendanceStatus.filter(a=>a.MasterDataId ==sc.AttendanceStatusId)[0].MasterDataName,
                 AttendanceDate: sc.AttendanceDate,
                 ClassSubjectId: sc.ClassSubjectId,
                 Approved: sc.Approved,
@@ -364,12 +367,7 @@ export class AbsentListComponent implements OnInit {
                 ApprovedByName: _approvedByName,
                 ClassName: _Class,
                 ClassSubject: _subjName,
-                Remarks: sc.Remarks,
-                RollNo: _student[0].StudentClasses[0].RollNo,
-                Section:_section,
-                Semester:_semester,
-                //StudentRollNo: _student[0].StudentClasses[0].RollNo + "-" + _student[0].FirstName + " " + (_student[0].LastName == null ? '' : _student[0].LastName) + _section,
-                Student: _student[0].FirstName + " " + (_student[0].LastName == null ? '' : _student[0].LastName),
+                Remarks: sc.Remarks,                
                 PersonalNo: _student[0].PersonalNo,
                 ClassSequence: sc.ClassSequence
               });
@@ -379,10 +377,19 @@ export class AbsentListComponent implements OnInit {
         })
         if (this.StudentAttendanceList.length == 0)
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
-        else
-          this.StudentAttendanceList = this.StudentAttendanceList.sort((a, b) => {
-            return a.ClassSequence - b.ClassSequence || a.RollNo - b.RollNo
-          });
+        else {
+
+          this.StudentAttendanceList = this.StudentAttendanceList.sort((a:any, b:any) => {
+            // if (a.ClassSequence == b.ClassSequence) {
+            //   return a.Section.localeCompare(b.Section);
+            // }
+            return a.ClassSequence - b.ClassSequence;
+
+            //return a.ClassSequence - b.ClassSequence || (a.ClassSequence == b.ClassSequence?a.Section.localeCompare(b.Section):0)
+            //return a.ClassSequence - b.ClassSequence// || a.Section.localeCompare(b.Section)
+          })
+          //this.StudentAttendanceList.for
+        }
         //console.log("this.StudentAttendanceList", this.StudentAttendanceList);
         this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
         this.dataSource.paginator = this.paginator;
@@ -391,6 +398,20 @@ export class AbsentListComponent implements OnInit {
       });
     //this.changeDetectorRefs.detectChanges();
     // });
+  }
+  sortdata(a, b) {
+    var aSize = a.ClassSequence;
+    var bSize = b.ClassSequence;
+    var aLow = a.RollNo;
+    var bLow = b.RollNo;
+    console.log(aLow + " | " + bLow);
+
+    if (aSize == bSize) {
+      return (aLow < bLow) ? -1 : (aLow > bLow) ? 1 : 0;
+    }
+    else {
+      return (aSize < bSize) ? -1 : 1;
+    }
   }
   clear() {
     this.searchForm.patchValue({
@@ -555,7 +576,7 @@ export class AbsentListComponent implements OnInit {
         this.ClassSubjects = [];
         data.value.forEach(item => {
           //var _subjectName = '';
-          var objsubject = this.Subjects.filter((f:any) => f.MasterDataId == item.SubjectId)
+          var objsubject = this.Subjects.filter((f: any) => f.MasterDataId == item.SubjectId)
           if (objsubject.length > 0) {
             // _subjectName = objsubject[0].MasterDataName;
             this.ClassSubjects.push({
@@ -569,8 +590,8 @@ export class AbsentListComponent implements OnInit {
         })
       })
   }
-  AttendancePresentId=0;
-  AttendanceAbsentId=0;
+  AttendancePresentId = 0;
+  AttendanceAbsentId = 0;
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -579,9 +600,9 @@ export class AbsentListComponent implements OnInit {
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
-    this.AttendanceStatus= this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
-    this.AttendancePresentId = this.AttendanceStatus.filter((s:any)=>s.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
-    this.AttendanceAbsentId = this.AttendanceStatus.filter((s:any)=>s.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
+    this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
+    this.AttendancePresentId = this.AttendanceStatus.filter((s: any) => s.MasterDataName.toLowerCase() == 'present')[0].MasterDataId;
+    this.AttendanceAbsentId = this.AttendanceStatus.filter((s: any) => s.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
     this.shareddata.ChangeSubjects(this.Subjects);
     this.GetClassSubject();
     this.loading = false; this.PageLoading = false;
@@ -592,18 +613,39 @@ export class AbsentListComponent implements OnInit {
   }
   exportArray() {
     if (this.StudentAttendanceList.length > 0) {
-      const datatoExport: Partial<IStudentAttendance>[] = this.StudentAttendanceList;
-      TableUtil.exportArrayToExcel(datatoExport, "StudentInfoDump");
+      let toExport :any[]= [];
+      this.StudentAttendanceList.forEach(m=>{
+        toExport.push({
+          AttendanceId:m.AttendanceId,
+          PID:m.PID,
+          Student:m.Student,
+          AttendanceDate:moment(m.AttendanceDate).format('DD-MM-YYYY'),
+          AttendanceStatus:m.AttendanceStatus,
+          ClassName:m.ClassName,
+          RollNo:m.RollNo,
+          Section:m.Section,
+          Semester:m.Semester,
+          PersonalNo:m.PersonalNo,
+          Subject:m.ClassSubject,
+          Remarks:m.Remarks,
+          ReportedTo:m.ReportedTo,
+          LeaveGranted:m.Approved
+        })
+      })
+      const datatoExport: Partial<any>[] = toExport;
+      TableUtil.exportArrayToExcel(datatoExport, "StudentAbsentlist");
     }
   }
 }
 export interface IStudentAttendance {
   AttendanceId: number;
+  PID:number;
   RollNo: number;
-  Section:string;
-  Semester:string;
+  Section: string;
+  Semester: string;
   StudentClassId: number;
   AttendanceStatusId: number;
+  AttendanceStatus:string;
   ClassSubjectId: number;
   ClassSubject: string;
   AttendanceDate: Date;

@@ -20,6 +20,7 @@ export class AddstudentclassComponent implements OnInit {
   PageLoading = true;
   loading = false;
   breakpoint = 0;
+  Defaultvalue=0;
   SaveDisable = false;
   StudentId = 0;
   StudentClassId = 0;

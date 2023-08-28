@@ -33,7 +33,7 @@
         <!-- <mat-form-field appearance="outline" style="width:200px">
             <mat-label>Section</mat-label>
             <mat-select formControlName="searchSectionId" (selectionChange)="GetStudentClasses()">
-                <mat-option value="0">select</mat-option>
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
                     {{item.MasterDataName}}
                 </mat-option>
@@ -86,7 +86,8 @@
                     || !element.Action1 
                     || Permission=='read' 
                     || element.EvaluationStarted
-                    || !element.TimeStarted?false:true" matTooltip="start" mat-mini-fab color="accent"
+                    || element.TimeLapsed
+                    || !element.CanStartNow" matTooltip="start" mat-mini-fab color="accent"
                     (click)="StartEvaluation(element)">
                     <mat-icon>start</mat-icon>
                 </button>
@@ -94,7 +95,9 @@
                     loading 
                     || !element.Action1 
                     || Permission=='read' 
-                    || !element.EvaluationStarted" matTooltip="save as draft" mat-mini-fab color="accent"
+                    || !element.EvaluationStarted
+                    || element.TimeLapsed
+                    || element.StartTime!=''" matTooltip="save as draft" mat-mini-fab color="accent"
                     (click)="SaveAsDraft()">
                     <mat-icon>edit</mat-icon>
                     <mat-icon *ngIf="loading">
@@ -105,15 +108,18 @@
                     loading 
                     || Permission=='read'     
                     || !element.Action1                     
-                    || !element.EvaluationStarted" matTooltip="submit" mat-mini-fab color="accent"
+                    || !element.EvaluationStarted
+                    || element.TimeLapsed" matTooltip="submit" mat-mini-fab color="accent"
                     (click)="SubmitEvaluation()">
                     <mat-icon>done_all</mat-icon>
                     <mat-icon *ngIf="loading">
                         <mat-spinner diameter="20" color="Blue"></mat-spinner>
                     </mat-icon>
                 </button>
-                <span *ngIf="element.TempDuration>0" style="font-weight:bold;padding:15px">Duration:
+                <span *ngIf="!element.TimeLapsed" style="font-weight:bold;padding:15px">Duration:
                     {{element.TempDuration}}</span>
+                <span *ngIf="element.TimeLapsed" style="font-weight:bold;padding:15px">
+                    Time Lapsed</span>
             </mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="EvaluationPlanColumns"></mat-header-row>

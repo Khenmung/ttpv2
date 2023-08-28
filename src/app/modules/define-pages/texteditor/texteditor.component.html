@@ -19,7 +19,7 @@
             <mat-form-field appearance="outline" fxFlex>
                 <mat-label>Select parent</mat-label>
                 <mat-select formControlName="ParentId">
-                    <mat-option value="0">---</mat-option>
+                    <mat-option [value]="Defaultvalue">---</mat-option>
                     <mat-option *ngFor="let p of PageGroups" [value]="p.PageId">{{p.PageTitle}}</mat-option>
                 </mat-select>
             </mat-form-field>

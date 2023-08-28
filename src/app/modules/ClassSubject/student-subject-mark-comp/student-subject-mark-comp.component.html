@@ -38,11 +38,11 @@
                         {{item.MasterDataName}}
                     </mat-option>
                 </mat-select>
-            </mat-form-field>            
+            </mat-form-field>
             <mat-form-field appearance="outline" [style.width.px]="200">
                 <mat-label>Subject</mat-label>
                 <mat-select formControlName="searchSubjectId" #SubjectId (selectionChange)="ClearData()">
-                    <mat-option value="0">All</mat-option>
+                    <mat-option [value]="Defaultvalue">All</mat-option>
                     <mat-option *ngFor="let p of SelectedClassSubjects" [value]="p.ClassSubjectId">
                         {{p.SubjectName}}
                     </mat-option>
@@ -56,7 +56,7 @@
             </button>
         </div>
         <mat-divider></mat-divider>
-        <div style="margin-top:15px">           
+        <div style="margin-top:15px">
             <mat-form-field appearance="outline" [style.width.px]="250">
                 <mat-label>Copy from other exam</mat-label>
                 <mat-select formControlName="searchCopyExamId">
@@ -72,7 +72,7 @@
         </div>
     </form>
     <div style="font-weight: bold;font-style: italic;">{{datafromotherexam}}</div>
-    <mat-table #table [dataSource]="dataSource" matSort>        
+    <mat-table #table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="ClassSubjectMarkComponentId">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
             <mat-cell *matCellDef="let element">
@@ -173,9 +173,10 @@
     <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
         <ul>
             <li>
-                <div>If examination has been released, subject component cannot be updated. If a subject component's
-                    Pass Mark is > 0, it means student has to pass on that component.</div>
+                If examination has been released, subject component cannot be updated.
             </li>
+            <li>If a subject component's
+                Pass Mark is > 0, it means student has to pass on that component.</li>
             <li>If all components' Pass Mark is equal to zero,
                 passing criteria is based on <b>Subject Pass Mark</b>.</li>
         </ul>

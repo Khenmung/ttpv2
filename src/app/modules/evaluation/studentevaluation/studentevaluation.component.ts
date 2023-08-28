@@ -33,7 +33,7 @@ export class StudentEvaluationComponent implements OnInit {
   EvaluationExamMaps: any[] = [];
   ClassSubjects: any[] = [];
   Ratings: any[] = [];
-  NowTime = new Date();
+  NowTime = moment();
   //ExamModes :any[]= [];
   SelectedApplicationId = 0;
   StudentId = 0;
@@ -433,18 +433,28 @@ export class StudentEvaluationComponent implements OnInit {
           this.loadingFalse();
         });
   }
+  getRemainingTime(row) {
+    debugger;
+    let TimeUp = moment(row.StartDateAndTime).add(row.Duration, 'minutes');
+    let TimeNow = moment();
+    let duration = moment.duration(TimeUp.diff(TimeNow));
+    let remainingMinutes = +duration.asMinutes();
+    return remainingMinutes;
+  }
   interval;
   startTimer(row) {
     //if startdate is mentioned, startdate with starttime + Duration is the time's up
     if (row.StartDate) {
-      let TimeUp = moment(row.StartDateAndTime).minutes(row.Duration);
-      let TimeNow = moment();
-      var duration = moment.duration(TimeUp.diff(TimeNow));
-      var remainingMinutes = duration.asMinutes();
-      if (remainingMinutes > 0) 
-        row.TempDuration = remainingMinutes * 60;
-      else
+      let remainingMinutes = this.getRemainingTime(row);
+      if (remainingMinutes > 0) {
+        row.TempDuration = +(remainingMinutes * 60).toFixed(0);
+        row.EvaluationStarted = true;
+      }
+      else {
         row.TempDuration = 0;
+        row.EvaluationStarted = false;
+      }
+
     }
     else// otherwise count only the duration.
       row.TempDuration *= 60;
@@ -453,7 +463,7 @@ export class StudentEvaluationComponent implements OnInit {
       if (row.TempDuration > 0) {
         row.TempDuration--;
       }
-      else if (row.TempDuration == 0) {
+      else if (row.TempDuration == 0 && row.EvaluationStarted) {
         clearInterval(this.interval);
         this.SubmitEvaluation();
       }
@@ -520,8 +530,8 @@ export class StudentEvaluationComponent implements OnInit {
         }
         console.log("row", row);
         if (!row.Updatable && row.Duration > 0 && data.value.length == 0) {
-          if (!row.TempDuration)
-            row.TempDuration = row.Duration;
+          //if (!row.TempDuration)
+          //row.TempDuration = row.Duration;
           this.startTimer(row);
         }
 
@@ -623,7 +633,7 @@ export class StudentEvaluationComponent implements OnInit {
 
     // var orgIdSearchstr = 'and OrgId eq ' + this.LoginUserDetail[0]["orgId"] +
     //   ' and BatchId eq ' + this.SelectedBatchId //+
-
+    this.loading = true;
 
     let list: List = new List();
     this.Exams = [];
@@ -646,7 +656,8 @@ export class StudentEvaluationComponent implements OnInit {
         })
         this.contentservice.GetEvaluationExamMaps(this.FilterOrgSubOrg, 1)
           .subscribe((data: any) => {
-            this.NowTime = new Date();
+            //this.NowTime = moment();
+            console.log('this.EvaluationMaster', this.EvaluationMaster)
             data.value.forEach(m => {
               let EvaluationObj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == m.EvaluationMasterId);
               if (EvaluationObj.length > 0) {
@@ -657,17 +668,10 @@ export class StudentEvaluationComponent implements OnInit {
                 m.StartTime = EvaluationObj[0].StartTime;
                 m.StartDate = EvaluationObj[0].StartDate;
 
-                m.StartDateAndTime = moment(m.StartDate + " " + m.StartTime, 'YYYY-MM-DD HH:mm');
-                //m.StartDateAndTime =startedTime;
-
-                if (m.StartDate && m.StartDateAndTime.valueOf() + (m.Duration * 60 * 1000) < this.NowTime.getTime())
-                  m.TimeLapsed = true;
-                else
-                  m.TimeLapsed = false;
 
                 var _clsObj = this.ClassGroups.filter((f: any) => f.MasterDataId == m.ClassGroupId);
                 if (_clsObj.length > 0)
-                  m.ClassGroupName = _clsObj[0].MasterDataName;
+                  m.ClassGroupName = _clsObj[0].GroupName;
                 else
                   m.ClassGroupName = '';
                 m.ClassGroupId = EvaluationObj[0].ClassGroupId;
@@ -680,6 +684,7 @@ export class StudentEvaluationComponent implements OnInit {
                 this.EvaluationExamMaps.push(m);
               }
             })
+            console.log("EvaluationExamMaps", this.EvaluationExamMaps)
             this.loading = false;
             this.PageLoading = false;
           })
@@ -858,16 +863,50 @@ export class StudentEvaluationComponent implements OnInit {
     var _classgroupsOfSelectedStudent = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
     var _EvaluationExamMapSelectedStudentObj: any[] = [];
 
-    _EvaluationExamMapSelectedStudentObj = this.EvaluationExamMaps.filter((f: any) => !f.TimeLapsed && _classgroupsOfSelectedStudent.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
+    _EvaluationExamMapSelectedStudentObj = this.EvaluationExamMaps.filter((f: any) => _classgroupsOfSelectedStudent.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
     this.CheckIfEvaluationWasSubmitted()
       .subscribe((data: any) => {
         this.StudentSubmittedEvaluations = [...data.value];
-        this.NowTime = new Date();
+        //this.NowTime = moment();
         this.RelevantEvaluationListForSelectedStudent = [];
         if (_EvaluationExamMapSelectedStudentObj.length > 0) {
           _EvaluationExamMapSelectedStudentObj.forEach(m => {
             m.ClassGroup = this.ClassGroups.filter((f: any) => f.ClassGroupId == m.ClassGroupId)[0].GroupName;
             m.EvaluationStarted = false;
+
+            ////////
+            let _time = [0, 0];
+            let StartDateAndTimeDuration: moment.Moment = moment('1970-01-01');
+            
+
+            if (m.StartTime && m.StartDate) {
+              let _startDate =new Date(m.StartDate);
+              m.StartDate = new Date(_startDate.getFullYear(), _startDate.getMonth(), _startDate.getDate(), 0, 0, 0);
+              _time = m.StartTime.split(':')
+              m.StartDateAndTime = moment(m.StartDate).add(+_time[0], 'hours').add(+_time[1], 'minutes');// + " " + m.StartTime, 'YYYY-MM-DD HH:mm');
+              console.log(' m.StartDateAndTime after adding minutes', m.StartDateAndTime)
+              StartDateAndTimeDuration = moment(m.StartDateAndTime).add(m.Duration, 'minutes');
+            }
+            //m.StartDateAndTime =startedTime;
+
+            //var enddatetime = moment(StartDateAndTimeDuration, "YYYY-MM-DD  HH:mm:ss");
+            if (m.StartDate && StartDateAndTimeDuration && StartDateAndTimeDuration.isBefore(moment()))
+              m.TimeLapsed = true;
+            else
+              m.TimeLapsed = false;
+            if (m.StartDateAndTime) {
+              //let diff = moment().diff(m.StartDateAndTime, 'minutes');
+              //console.log('moment()',moment(moment(),'YYYY-MM-DD HH:mm:ss'))
+              //console.log('m.StartDateAndTime',moment(m.StartDate).format('YYYY-MM-DD HH:mm:ss'))
+              //console.log('m.StartDateAndTime.diff(moment(),"minutes")',m.StartDateAndTime.diff(moment(),'minutes'))
+              if (m.StartDateAndTime.diff(moment(),'seconds')>0)
+                m.CanStartNow = false;
+              else
+                m.CanStartNow = true;
+            }
+            else
+              m.CanStartNow = true;
+            ///////
             var existing = this.StudentSubmittedEvaluations.filter((f: any) => f.EvaluationExamMapId == m.EvaluationExamMapId)
             if (existing.length > 0) {
               if (!existing[0].Submitted || m.Updatable) {
@@ -879,6 +918,7 @@ export class StudentEvaluationComponent implements OnInit {
               m.StudentEvaluationResultId = 0;
               this.RelevantEvaluationListForSelectedStudent.push(m);
             }
+
           });
         }
         else {
@@ -891,7 +931,7 @@ export class StudentEvaluationComponent implements OnInit {
         }
         //console.log("this.RelevantEvaluationListForSelectedStudent", this.RelevantEvaluationListForSelectedStudent);
         this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.RelevantEvaluationListForSelectedStudent);
-        console.log('this.RelevantEvaluationListForSelectedStudent', this.RelevantEvaluationListForSelectedStudent)
+       // console.log('this.RelevantEvaluationListForSelectedStudent', this.RelevantEvaluationListForSelectedStudent)
         this.StudentEvaluationList = [];
         this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);
         this.dataSource.paginator = this.paginator;
@@ -901,6 +941,7 @@ export class StudentEvaluationComponent implements OnInit {
       })
   }
   GetEvaluationOption() {
+    this.loading=true;
     let list: List = new List();
     list.fields = [
       'ClassEvaluationAnswerOptionsId',

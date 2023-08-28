@@ -1,123 +1,131 @@
 <!-- <div> -->
-    <div style="padding:15px 15px 10px 15px;">
-        <div><strong>Exam Mark Config</strong></div>
-    </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
-    <!-- <alert></alert> -->
-    <div style="padding: 15px;flex-direction: column;">
-        <!-- <div style="width: 100%;"> -->
-        <form [formGroup]="searchForm">
-            <mat-form-field appearance="outline" [style.width.px]="200">
-                <mat-label>Exam</mat-label>
-                <mat-select formControlName="searchExamId" (selectionChange)="GetResultReleased($event)">
-                    <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
-                        {{item.ExamName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline" [style.width.px]="200">
-                <mat-label>Class</mat-label>
-                <mat-select formControlName="searchClassId" (selectionChange)="SelectClassSubject()">
-                    <mat-option *ngFor="let item of FilteredClasses" [value]="item.ClassId">
-                        {{item.ClassName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>           
-            <mat-form-field appearance="outline" [style.width.px]="200" *ngIf="SelectedClassCategory==getCollegeCategory()">
-                <mat-label>Semester</mat-label>
-                <mat-select formControlName="searchSemesterId" (selectionChange)="clearData()">
-                    <mat-option [value]="Defaultvalue">select</mat-option>
-                    <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
-                        {{item.MasterDataName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline" [style.width.px]="200" *ngIf="SelectedClassCategory==getHighSchoolCategory()">
-                <mat-label>Section</mat-label>
-                <mat-select formControlName="searchSectionId" (selectionChange)="clearData()">
-                    <mat-option value="0">select</mat-option>
-                    <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
-                        {{item.MasterDataName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetExamMarkConfig()">
-                <mat-icon>search</mat-icon>
-                <mat-icon *ngIf="loading">
-                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                </mat-icon>
-            </button>
-        </form>
-        <div style="display:flex;flex-direction:column;">
-            <mat-table #table [dataSource]="dataSource">
-                <ng-container matColumnDef="ExamMarkConfigId">
-                    <mat-header-cell *matHeaderCellDef>Id
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        {{element.ExamMarkConfigId}}
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="SubjectName">
-                    <mat-header-cell *matHeaderCellDef>Subject
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        {{element.SubjectName}}
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="Formula">
-                    <mat-header-cell *matHeaderCellDef>Formula
-                    </mat-header-cell>
-                    <mat-cell style="display: flex;" *matCellDef="let element">
-                        <mat-form-field appearance="outline">
-                            <textarea matInput (blur)="Calculatemark(element)" [value]="element.Formula"
-                                [(ngModel)]="element.Formula" [maxlength]="1000"></textarea>
-                        </mat-form-field>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="Active">
-                    <mat-header-cell *matHeaderCellDef>Active
-                    </mat-header-cell>
-                    <mat-cell style="display: flex;" *matCellDef="let element">
-                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
-                            [checked]="element.Active">
-                        </mat-checkbox>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="Action">
-                    <mat-header-cell *matHeaderCellDef>
-                        <!-- <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
+<div style="padding:15px 15px 10px 15px;">
+    <div><strong>Exam Mark Config</strong></div>
+</div>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<!-- <alert></alert> -->
+<div style="padding: 15px;flex-direction: column;">
+    <!-- <div style="width: 100%;"> -->
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-label>Exam</mat-label>
+            <mat-select formControlName="searchExamId" (selectionChange)="GetResultReleased($event)">
+                <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
+                    {{item.ExamName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-label>Class</mat-label>
+            <mat-select formControlName="searchClassId" (selectionChange)="SelectClassSubject()">
+                <mat-option *ngFor="let item of FilteredClasses" [value]="item.ClassId">
+                    {{item.ClassName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="200" *ngIf="SelectedClassCategory==getCollegeCategory()">
+            <mat-label>Semester</mat-label>
+            <mat-select formControlName="searchSemesterId" (selectionChange)="clearData()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
+                <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="200"
+            *ngIf="SelectedClassCategory==getHighSchoolCategory()">
+            <mat-label>Section</mat-label>
+            <mat-select formControlName="searchSectionId" (selectionChange)="clearData()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
+                <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button [disabled]="loading" mat-raised-button color="accent" (click)="GetExamMarkConfig()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+    <div style="display:flex;flex-direction:column;">
+        <mat-table #table [dataSource]="dataSource">
+            <ng-container matColumnDef="ExamMarkConfigId">
+                <mat-header-cell *matHeaderCellDef>Id
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.ExamMarkConfigId}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="SubjectName">
+                <mat-header-cell *matHeaderCellDef>Subject
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.SubjectName}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Formula">
+                <mat-header-cell *matHeaderCellDef>Formula
+                </mat-header-cell>
+                <mat-cell style="display: flex;" *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <textarea matInput (blur)="Calculatemark(element)" [value]="element.Formula"
+                            [(ngModel)]="element.Formula" [maxlength]="1000"></textarea>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Active">
+                <mat-header-cell *matHeaderCellDef>Active
+                </mat-header-cell>
+                <mat-cell style="display: flex;" *matCellDef="let element">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                        [checked]="element.Active">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef>
+                    <!-- <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
                             (click)="AddNew()">
                             <mat-icon>add</mat-icon>
                         </button> -->
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <button [disabled]="loading || !element.Action || Permission=='read' || ResultReleased==1" matTooltip="save"
-                            mat-raised-button color="accent" (click)="UpdateOrSave(element)">
-                            <mat-icon>save</mat-icon>
-                            <mat-icon *ngIf="loading">
-                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                            </mat-icon>
-                        </button>
-                    </mat-cell>
-                </ng-container>
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
-            </mat-table>
-            <div>
-                <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50,100]">
-                </mat-paginator>
-            </div>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button [disabled]="loading || !element.Action || Permission=='read' || ResultReleased==1"
+                        matTooltip="save" mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                        <mat-icon>save</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+        </mat-table>
+        <div>
+            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50,100]">
+            </mat-paginator>
         </div>
-        <div style="margin-top:30px;" data-expand="false" #expandWrap>
-            <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
-                <mat-icon>info</mat-icon>
-                Guides...
-            </span>
-            <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
-                <ul>
-                    <li>If exam has been released, formula cannot be updated.</li>
-                </ul>
-            </span>
-        </div>    
     </div>
-    
+    <div style="margin-top:30px;" data-expand="false" #expandWrap>
+        <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+            <mat-icon>info</mat-icon>
+            Guides...
+        </span>
+        <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+            <ul>
+                <li>Formula can be defined for an exam which will be used for that exam and all classes and all subjects
+                    or each subject for that exam.
+                </li>
+                <li>Similarly, for an exam - class, exam - class - semester, class - section which will be used
+                    for the selected exam, class, semester, section and all subjects or each subject.
+                </li>
+                <li>If exam has been released, formula cannot be updated.</li>
+                <li>A subject cannot have components in Promotional Exam or Average calculation exam.</li>
+                <li>In promotional or average exam, marks are calculated on the percentage of the total marks of the subject in the previous exam.</li>
+            </ul>
+        </span>
+    </div>
+</div>

@@ -468,7 +468,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
         //debugger;
         var clsSubjMarkComponentsDefinitionFiltered :any[]= [];
         //if all subject is selected.
-        var fitlersectionsemesterClass = this.ClassSubjects.filter(c => c.SectionId == _sectionId && c.SemesterId == _semesterId && c.ClassId == _classId);
+        var fitlersectionsemesterClass = globalconstants.getFilteredClassSubjects(this.ClassSubjects,_classId,_sectionId, _semesterId);
         // clsSubjFiltered = data.value.filter(item => item.ClassSubject.ClassId == _classId);
         clsSubjMarkComponentsDefinitionFiltered = data.value.map(item => {
           var _clssubject = fitlersectionsemesterClass.filter((f:any) => f.ClassSubjectId == item.ClassSubjectId);

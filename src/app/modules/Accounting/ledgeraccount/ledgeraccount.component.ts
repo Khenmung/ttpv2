@@ -20,6 +20,7 @@ export class LedgerAccountComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   PageLoading = true;
+  Defaultvalue=0;
   LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;

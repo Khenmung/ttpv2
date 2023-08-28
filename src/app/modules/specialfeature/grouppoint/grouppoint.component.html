@@ -7,7 +7,7 @@
         <mat-form-field appearance="outline" [style.width.px]="300">
             <mat-label>Session</mat-label>
             <mat-select formControlName="searchSessionId" (selectionChange)="ClearData()">
-                <mat-option value="0">select</mat-option>
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let list of ActivitySessions" [value]="list.MasterDataId">
                     {{list.MasterDataName}}
                 </mat-option>

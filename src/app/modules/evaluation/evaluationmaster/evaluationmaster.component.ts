@@ -13,7 +13,7 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
- 
+
 import moment from 'moment';
 
 @Component({
@@ -24,20 +24,20 @@ import moment from 'moment';
 export class EvaluationMasterComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  
-  LoginUserDetail:any[]= [];
+
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   EvaluationMasterListName = 'EvaluationMasters';
-  Applications :any[]= [];
-  ClassGroups :any[]= [];
+  Applications: any[] = [];
+  ClassGroups: any[] = [];
   loading = false;
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrg = '';
-  EvaluationMasterList: IEvaluationMaster[]= [];
+  EvaluationMasterList: IEvaluationMaster[] = [];
   filteredOptions: Observable<IEvaluationMaster[]>;
   dataSource: MatTableDataSource<IEvaluationMaster>;
-  allMasterData :any[]= [];
-  EvaluationMaster :any[]= [];
+  allMasterData: any[] = [];
+  EvaluationMaster: any[] = [];
   Permission = 'deny';
   EvaluationMasterData = {
     EvaluationMasterId: 0,
@@ -45,7 +45,7 @@ export class EvaluationMasterComponent implements OnInit {
     Description: '',
     Duration: 0,
     StartDate: new Date(),
-    StartTime:'',
+    StartTime: '',
     ClassGroupId: 0,
     DisplayResult: false,
     AppendAnswer: false,
@@ -134,8 +134,8 @@ export class EvaluationMasterComponent implements OnInit {
       EvaluationName: '',
       Description: '',
       Duration: 0,
-      StartDate: new Date(),
-      StartTime:'',
+      StartDate: null,
+      StartTime: '',
       ClassGroupId: 0,
       DisplayResult: false,
       ProvideCertificate: false,
@@ -156,6 +156,7 @@ export class EvaluationMasterComponent implements OnInit {
     this.dataSource = new MatTableDataSource<IEvaluationMaster>(this.EvaluationMasterList);
   }
   onBlur(element) {
+    debugger;
     element.Action = true;
   }
 
@@ -235,7 +236,7 @@ export class EvaluationMasterComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    console.log('row.StartTime:' +row.StartTime)
+    console.log('row.StartTime:' + row.StartTime)
     if (row.ClassGroupId == 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please select class group.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -321,7 +322,7 @@ export class EvaluationMasterComponent implements OnInit {
           this.loadingFalse();
         });
   }
-  EvaluationMasterForDropdown :any[]= [];
+  EvaluationMasterForDropdown: any[] = [];
   GetEvaluationMaster() {
     debugger;
 
@@ -335,67 +336,49 @@ export class EvaluationMasterComponent implements OnInit {
     if (_classGroupId)
       filterStr += " and ClassGroupId eq " + _classGroupId;
 
+    let list: List = new List();
+    list.fields = [
+      "EvaluationMasterId",
+      "EvaluationName",
+      "Description",
+      "AppendAnswer",
+      "Duration",
+      "StartDate",
+      "StartTime",
+      "ClassGroupId",
+      "FullMark",
+      "PassMark",
+      "DisplayResult",
+      "ProvideCertificate",
+      "Confidential",
+      "Active"
+    ];
 
-    var result :any[]= [];
-    // if (this.EvaluationMasterList.length > 0) {
-    //   if (_classGroupId > 0 && _evaluationMasterId > 0)
-    //     result = this.EvaluationMasterList.filter((f:any) => f.ClassGroupId == _classGroupId
-    //       && f.EvaluationMasterId == _evaluationMasterId)
-    //   else if (_evaluationMasterId > 0) {
-    //     result = this.EvaluationMasterList.filter((f:any) => f.EvaluationMasterId == _evaluationMasterId)
-    //   }
-    //   else if (_classGroupId > 0) {
-    //     result = this.EvaluationMasterList.filter((f:any) => f.ClassGroupId == _classGroupId)
-    //   }
-    //   //console.log("result",result)
-    //   this.dataSource = new MatTableDataSource<IEvaluationMaster>(result);
-    //   this.dataSource.paginator = this.paging;
-    //   this.loadingFalse();
-    // }
-    // else {
-      let list: List = new List();
-      list.fields = [
-        "EvaluationMasterId",
-        "EvaluationName",
-        "Description",
-        "AppendAnswer",
-        "Duration",
-        "StartDate",
-        "StartTime",
-        "ClassGroupId",
-        "FullMark",
-        "PassMark",
-        "DisplayResult",
-        "ProvideCertificate",
-        "Confidential",
-        "Active"
-      ];
+    list.PageName = this.EvaluationMasterListName;
+    list.filter = [filterStr];
+    this.EvaluationMasterList = [];
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        //debugger;
+        if (data.value.length > 0) {
+          let _startTime = '';
+          this.EvaluationMasterList = data.value.map(d => {
 
-      list.PageName = this.EvaluationMasterListName;
-      list.filter = [filterStr];
-      this.EvaluationMasterList = [];
-      this.dataservice.get(list)
-        .subscribe((data: any) => {
-          //debugger;
-          if (data.value.length > 0) {
-            let _startTime ='';
-            this.EvaluationMasterList = data.value.map(d => {
-             
-              d.EvaluationName = globalconstants.decodeSpecialChars(d.EvaluationName);
-              d.Description = globalconstants.decodeSpecialChars(d.Description);
-              d.Action = false;
-              return d;
-            })
-          }
-          this.EvaluationMasterForDropdown = [...this.EvaluationMasterList]
-          //console.log("this.EvaluationMasterList",this.EvaluationMasterList)
-          this.dataSource = new MatTableDataSource<IEvaluationMaster>(this.EvaluationMasterList);
-          this.dataSource.paginator = this.paging;
-          this.loadingFalse();
-        });
+            d.EvaluationName = globalconstants.decodeSpecialChars(d.EvaluationName);
+            d.Description = globalconstants.decodeSpecialChars(d.Description);
+            d.Action = false;
+            return d;
+          })
+        }
+        this.EvaluationMasterForDropdown = [...this.EvaluationMasterList]
+        //console.log("this.EvaluationMasterList",this.EvaluationMasterList)
+        this.dataSource = new MatTableDataSource<IEvaluationMaster>(this.EvaluationMasterList);
+        this.dataSource.paginator = this.paging;
+        this.loadingFalse();
+      });
     //}
   }
-  AlreadyUsedEvaluation :any[]= [];
+  AlreadyUsedEvaluation: any[] = [];
   GetUsedEvaluationType(pEvaluationMasterId) {
     var filterStr = "EvaluationMasterId eq " + pEvaluationMasterId +
       " and Active eq 1 and OrgId eq " + this.LoginUserDetail[0]['orgId'];
@@ -411,7 +394,7 @@ export class EvaluationMasterComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
-          this.AlreadyUsedEvaluation = data.value.filter((f:any) => f.StudentEvaluationResult.length > 0)
+          this.AlreadyUsedEvaluation = data.value.filter((f: any) => f.StudentEvaluationResult.length > 0)
         }
       })
   }
@@ -449,7 +432,7 @@ export interface IEvaluationMaster {
   EvaluationName: string;
   Description: string;
   Duration: number;
-  StartDate: Date;
+  StartDate: any;
   ClassGroupId: number;
   DisplayResult: boolean;
   AppendAnswer: boolean;

@@ -71,7 +71,7 @@
                             <!-- <mat-label>subject type</mat-label> -->
                             <mat-select (selectionChange)="updateSelectHowMany(element)" [value]="element.SubjectTypeId"
                                 [(ngModel)]="element.SubjectTypeId">
-                                <mat-option value="0">select</mat-option>
+                                <mat-option [value]="Defaultvalue">select</mat-option>
                                 <mat-option *ngFor="let item of SubjectTypes" [value]="item.SubjectTypeId">
                                     {{item.SubjectTypeName}}</mat-option>
                             </mat-select>

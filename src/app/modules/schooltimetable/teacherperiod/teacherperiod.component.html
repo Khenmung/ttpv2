@@ -11,7 +11,7 @@
                 <mat-form-field appearance="outline" style="width:250px">
                     <mat-label>Teacher</mat-label>
                     <mat-select formControlName="searchEmployeeId" (selectionChange)="ClearData()">
-                        <mat-option value="0">select</mat-option>
+                        <mat-option [value]="Defaultvalue">select</mat-option>
                         <mat-option *ngFor="let option of Teachers" [value]="option.TeacherId">
                             {{option.TeacherName}}
                         </mat-option>

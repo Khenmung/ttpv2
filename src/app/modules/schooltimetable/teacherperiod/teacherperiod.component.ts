@@ -22,6 +22,7 @@ export class TeacherperiodComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   PageLoading = true;
+  Defaultvalue=0;
   SelectedApplicationId = 0;
   LoginUserDetail:any[]= [];
   CurrentRow: any = {};

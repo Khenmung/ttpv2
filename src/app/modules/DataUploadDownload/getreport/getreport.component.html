@@ -27,7 +27,7 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Condition</mat-label>
                         <mat-select formControlName="searchCondition">
-                            <mat-option value="0">--select condition--</mat-option>
+                            <mat-option [value]="Defaultvalue">--select condition--</mat-option>
                             <mat-option *ngFor="let item of FilterConditions" [value]="item.val">
                                 {{item.text}}
                             </mat-option>

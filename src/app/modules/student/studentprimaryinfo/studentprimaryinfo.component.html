@@ -415,7 +415,7 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Club</mat-label>
                         <mat-select id="ddClub" formControlName="Club" (selectionChange)="OnBlur()">
-                            <mat-option value="0">---</mat-option>
+                            <mat-option [value]="Defaultvalue">---</mat-option>
                             <mat-option *ngFor="let p of Clubs" [value]="p.MasterDataId">
                                 {{p.MasterDataName}}
                             </mat-option>
@@ -424,7 +424,7 @@
                     <mat-form-field appearance="outline">
                         <mat-label>House</mat-label>
                         <mat-select id="ddHouse" formControlName="House" (selectionChange)="OnBlur()">
-                            <mat-option value="0">---</mat-option>
+                            <mat-option [value]="Defaultvalue">---</mat-option>
                             <mat-option *ngFor="let p of Houses" [value]="p.MasterDataId">
                                 {{p.MasterDataName}}
                             </mat-option>
@@ -440,7 +440,7 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Remarks</mat-label>
                         <mat-select id="ddRemarks" formControlName="Remarks" (selectionChange)="OnBlur()">
-                            <mat-option value="0">---</mat-option>
+                            <mat-option [value]="Defaultvalue">---</mat-option>
                             <mat-option *ngFor="let p of Remarks" [value]="p.MasterDataId">
                                 {{p.MasterDataName}}
                             </mat-option>
@@ -470,7 +470,7 @@
                     <mat-form-field *ngIf="StudentLeaving" appearance="outline">
                         <mat-label>Reason For Leaving</mat-label>
                         <mat-select id="ddReasonForLeaving" formControlName="ReasonForLeaving" (selectionChange)="OnBlur()">
-                            <mat-option value="0">---</mat-option>
+                            <mat-option [value]="Defaultvalue">---</mat-option>
                             <mat-option *ngFor="let p of ReasonForLeaving" [value]="p.MasterDataId">
                                 {{p.MasterDataName}}
                             </mat-option>

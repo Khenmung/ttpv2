@@ -1,188 +1,192 @@
-<div style="padding: 15px;"><strong>Absent List</strong></div>
-<!-- <alert></alert> -->
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
-<form [formGroup]="searchForm">
-    <mat-form-field appearance="outline" [style.width.px]="150">
-        <mat-label>Class</mat-label>
-        <mat-select formControlName="searchClassId" (selectionChange)="bindClassSubject()">
-            <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
-        <mat-label>semester</mat-label>
-        <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
-            <mat-option [value]="Defaultvalue">select</mat-option>
-            <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
-                {{item.MasterDataName}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
-        <mat-label>Section</mat-label>
-        <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
-            <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">{{item.MasterDataName}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" [style.width.px]="150" (selectionChange)="ClearData()">
-        <mat-label>Subject</mat-label>
-        <mat-select formControlName="searchClassSubjectId">
-            <mat-option value="0">--select--</mat-option>
-            <mat-option *ngFor="let item of FilteredClassSubjects" [value]="item.ClassSubjectId">{{item.ClassSubject}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" [style.width.px]="160">
-        <mat-label>From</mat-label>
-        <input formControlName="searchAttendanceFromDate" matInput [matDatepicker]="AttendanceFromDate"
-            (dateChange)="ClearData()" autocomplete="off">
-        <mat-datepicker-toggle matSuffix [for]="AttendanceFromDate"></mat-datepicker-toggle>
-        <mat-datepicker #AttendanceFromDate></mat-datepicker>
-    </mat-form-field>
-    <mat-form-field appearance="outline" [style.width.px]="160">
-        <mat-label>To</mat-label>
-        <input formControlName="searchAttendanceDate" matInput (dateChange)="ClearData()"
-            [matDatepicker]="AttendanceDate" autocomplete="off">
-        <mat-datepicker-toggle matSuffix [for]="AttendanceDate"></mat-datepicker-toggle>
-        <mat-datepicker #AttendanceDate></mat-datepicker>
-    </mat-form-field>
-    <button [disabled]="loading" (click)="GetStudentAttendance()" mat-raised-button color="accent">
-        <mat-icon>search</mat-icon>
-        <mat-icon *ngIf="loading">
-            <mat-spinner diameter="20" color="Blue"></mat-spinner>
-        </mat-icon>
-    </button>
-</form>
-<div id="printSection">
-    <mat-table #table [dataSource]="dataSource" matSort>
-        <ng-container matColumnDef="ClassName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Class
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.ClassName}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="Student">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Student
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.Student}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="Section">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Section
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.Section}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="Semester">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Semester
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.Semester}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="RollNo">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Roll No
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.RollNo}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="AttendanceDate">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Date
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.AttendanceDate|date:'dd/MM/yyyy'}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="ClassSubject">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Subject
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.ClassSubject}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="PersonalNo">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Personal No
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.PersonalNo}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="ReportedTo">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Reported To
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <mat-form-field appearance="outline">
-                    <mat-label>reported to</mat-label>
-                    <mat-select [(ngModel)]="element.ReportedTo" [value]="element.ReportedTo">
-                        <mat-option value="0">--select--</mat-option>
-                        <mat-option *ngFor="let item of Teachers" [value]="item.TeacherId">{{item.TeacherName}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="Approved">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Leave Granted
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateApproved(element,$event)"
-                    [checked]="element.Approved">
-                </mat-checkbox>
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="ApprovedByName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Granted By
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.ApprovedByName}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="Remarks">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Remarks </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.Remarks}}
-            </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="Action">
-            <mat-header-cell *matHeaderCellDef>
-                <button [disabled]="loading || Permission=='read'" *ngIf="StudentAttendanceList.length>0"
-                    matTooltip="save all" mat-mini-fab (click)="saveall()">
-                    <mat-icon>all_out</mat-icon>
-                    <mat-icon *ngIf="loading">
-                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                    </mat-icon>
-                </button>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
-                <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="view/edit"
-                    mat-raised-button color="accent" (click)="SaveRow(element)">
-                    <mat-icon>save</mat-icon>
-                    <mat-icon *ngIf="loading">
-                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                    </mat-icon>
-                </button>
-            </mat-cell>
-        </ng-container>
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
-    </mat-table>
-</div>
-<mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50,75]"></mat-paginator>
-<div style="margin-top:15px;display:flex;justify-content: center;">
-    <button style="margin-right: 15px;" [disabled]="loading || Permission=='read'" *ngIf="StudentAttendanceList.length>0" matTooltip="print"
-        printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
-        <mat-icon>print</mat-icon>
-    </button>
+<div style="overflow: hidden;">
+    <div style="padding: 15px;"><strong>Absent List</strong></div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <form [formGroup]="searchForm">
+        <mat-form-field appearance="outline" [style.width.px]="150">
+            <mat-label>Class</mat-label>
+            <mat-select formControlName="searchClassId" (selectionChange)="bindClassSubject()">
+                <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
+            <mat-label>semester</mat-label>
+            <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
+                <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
+            <mat-label>Section</mat-label>
+            <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+                <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">{{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="150" (selectionChange)="ClearData()">
+            <mat-label>Subject</mat-label>
+            <mat-select formControlName="searchClassSubjectId">
+                <mat-option [value]="Defaultvalue">--select--</mat-option>
+                <mat-option *ngFor="let item of FilteredClassSubjects"
+                    [value]="item.ClassSubjectId">{{item.ClassSubject}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="160">
+            <mat-label>From</mat-label>
+            <input formControlName="searchAttendanceFromDate" matInput [matDatepicker]="AttendanceFromDate"
+                (dateChange)="ClearData()" autocomplete="off">
+            <mat-datepicker-toggle matSuffix [for]="AttendanceFromDate"></mat-datepicker-toggle>
+            <mat-datepicker #AttendanceFromDate></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline" [style.width.px]="160">
+            <mat-label>To</mat-label>
+            <input formControlName="searchAttendanceDate" matInput (dateChange)="ClearData()"
+                [matDatepicker]="AttendanceDate" autocomplete="off">
+            <mat-datepicker-toggle matSuffix [for]="AttendanceDate"></mat-datepicker-toggle>
+            <mat-datepicker #AttendanceDate></mat-datepicker>
+        </mat-form-field>
+        <button [disabled]="loading" (click)="GetStudentAttendance()" mat-raised-button color="accent">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+    <div id="printSection">
+        <mat-table #table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="ClassName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Class
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.ClassName}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Student">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Student
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Student}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Section">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Section
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Section}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Semester">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Semester
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Semester}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="RollNo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Roll No
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.RollNo}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="AttendanceDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Date
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.AttendanceDate|date:'dd/MM/yyyy'}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ClassSubject">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Subject
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.ClassSubject}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="PersonalNo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Personal No
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.PersonalNo}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ReportedTo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Reported To
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <mat-label>reported to</mat-label>
+                        <mat-select [(ngModel)]="element.ReportedTo" [value]="element.ReportedTo">
+                            <mat-option [value]="Defaultvalue">--select--</mat-option>
+                            <mat-option *ngFor="let item of Teachers" [value]="item.TeacherId">{{item.TeacherName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Approved">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Leave Granted
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateApproved(element,$event)"
+                        [checked]="element.Approved">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ApprovedByName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Granted By
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.ApprovedByName}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Remarks">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Remarks </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Remarks}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef>
+                    <button [disabled]="loading || Permission=='read'" *ngIf="StudentAttendanceList.length>0"
+                        matTooltip="save all" mat-mini-fab (click)="saveall()">
+                        <mat-icon>all_out</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                    <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="view/edit"
+                        mat-raised-button color="accent" (click)="SaveRow(element)">
+                        <mat-icon>save</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+        </mat-table>
+    </div>
+    <mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50,75]"></mat-paginator>
+    <div style="margin-top:15px;display:flex;justify-content: center;">
+        <button style="margin-right: 15px;" [disabled]="loading || Permission=='read'"
+            *ngIf="StudentAttendanceList.length>0" matTooltip="print" printSectionId="printSection"
+            [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
+            <mat-icon>print</mat-icon>
+        </button>
 
-    <button *ngIf="StudentAttendanceList.length>0" (click)="exportArray()" matTooltip="excel download" mat-raised-button color="accent">
-        <mat-icon>download</mat-icon>
-        <mat-icon *ngIf="loading">
-            <mat-spinner diameter="25"></mat-spinner>
-        </mat-icon>
-    </button>
+        <button *ngIf="StudentAttendanceList.length>0" (click)="exportArray()" matTooltip="excel download"
+            mat-raised-button color="accent">
+            <mat-icon>download</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="25"></mat-spinner>
+            </mat-icon>
+        </button>
+    </div>
 </div>

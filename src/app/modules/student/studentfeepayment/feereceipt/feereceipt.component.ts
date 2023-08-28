@@ -22,7 +22,7 @@ export class FeereceiptComponent implements OnInit {
   @Input("OffLineReceiptNo") OffLineReceiptNo: any;
   @Input("StudentClassFees") StudentClassFees: any;
   @ViewChild(MatSort) sort: MatSort;
-
+  Defaultvalue=0;
   loading = false;
   CancelReceiptMode = false;
   LoginUserDetail :any[]= [];
@@ -327,10 +327,10 @@ export class FeereceiptComponent implements OnInit {
     ];
 
     list.PageName = "StudentFeeReceipts";
-    //list.lookupFields = ["AccountingVouchers($filter=FeeReceiptId eq 0 and LedgerId gt 0 and ClassFeeId gt 0;$select=Reference,BaseAmount,Balance,AccountingVoucherId,ShortText,LedgerId,FeeReceiptId,Amount,ClassFeeId)"];
-    list.lookupFields = ["AccountingVouchers($filter=FeeReceiptId gt 0 and LedgerId gt 0 and ClassFeeId gt 0;$select=Reference,BaseAmount,Balance,AccountingVoucherId,ShortText,LedgerId,FeeReceiptId,Amount,ClassFeeId)"];
+    // FeeReceiptId =0 means for balance updating purpose. LedgerId =0 means accounting purpose.
+    list.lookupFields = ["AccountingVouchers($filter=FeeReceiptId gt 0 and LedgerId gt 0;$select=Reference,BaseAmount,Balance,AccountingVoucherId,ShortText,LedgerId,FeeReceiptId,Amount,ClassFeeId)"];
     list.filter = ["StudentClassId eq " + this.studentInfoTodisplay.StudentClassId];
-
+    
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.FeeReceipt = [...data.value];

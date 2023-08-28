@@ -26,10 +26,7 @@ export class FeecollectionreportComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   loading = false;
-  options = {
-    autoClose: true,
-    keepAfterRouteChange: true
-  };
+  Defaultvalue=0;
   SelectedApplicationId = 0;
   Permission = 'deny';
   LoginUserDetail: any[] = [];

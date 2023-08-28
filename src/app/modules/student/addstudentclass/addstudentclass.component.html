@@ -37,7 +37,7 @@
             <mat-form-field appearance="outline">
                 <mat-select [(ngModel)]="element.SectionId" [value]="element.SectionId" 
                 [disabled]="NewItem || SelectedClassCategory==getCollegeCategory()" (selectionChange)="enableAction(element)">
-                    <mat-option value="0">select</mat-option>
+                    <mat-option [value]="Defaultvalue">select</mat-option>
                     <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
                         {{item.MasterDataName}}
                     </mat-option>
@@ -52,7 +52,7 @@
             <mat-form-field appearance="outline">
                 <mat-select [(ngModel)]="element.SemesterId" [value]="element.SemesterId"
                 [disabled]="SelectedClassCategory==getHighSchoolCategory()" (selectionChange)="enableAction(element)">
-                    <mat-option value="0">select</mat-option>
+                    <mat-option [value]="Defaultvalue">select</mat-option>
                     <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
                         {{item.MasterDataName}}
                     </mat-option>
@@ -225,7 +225,7 @@
             <mat-form-field appearance="outline">
                 <mat-label>House</mat-label>
                 <mat-select formControlName="HouseId">
-                    <mat-option value="0">---</mat-option>
+                    <mat-option [value]="Defaultvalue">---</mat-option>
                     <mat-option *ngFor="let p of Houses" [value]="p.MasterDataId">
                         {{p.MasterDataName}}
                     </mat-option>

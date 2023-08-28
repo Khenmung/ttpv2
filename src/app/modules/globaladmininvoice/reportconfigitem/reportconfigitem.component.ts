@@ -18,6 +18,7 @@ import {SwUpdate} from '@angular/service-worker';
 export class ReportConfigItemComponent implements OnInit { PageLoading=true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  Defaultvalue=0;
   BaseReportId = 0;
   ParentId = 0;
   Permission = '';

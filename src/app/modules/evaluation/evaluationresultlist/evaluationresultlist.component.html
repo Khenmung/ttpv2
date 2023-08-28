@@ -63,7 +63,7 @@
                 <mat-form-field appearance="outline" [style.width.px]="200">
                     <mat-label>Exam/Test/Session</mat-label>
                     <mat-select formControlName="searchExamId">
-                        <mat-option value="0">select</mat-option>
+                        <mat-option [value]="Defaultvalue">select</mat-option>
                         <mat-option *ngFor="let item of Exams" [value]="item.ExamId">{{item.ExamName}}
                         </mat-option>
                     </mat-select>
@@ -71,7 +71,7 @@
                 <mat-form-field appearance="outline" [style.width.px]="150">
                     <mat-label>Subject</mat-label>
                     <mat-select formControlName="searchSubjectId">
-                        <mat-option value="0">select</mat-option>
+                        <mat-option [value]="Defaultvalue">select</mat-option>
                         <mat-option *ngFor="let item of SelectedClassSubjects" [value]="item.SubjectId">
                             {{item.SubjectName}}
                         </mat-option>
@@ -85,43 +85,6 @@
                 </mat-icon>
             </button>
         </form>
-        <!-- <mat-table #table [dataSource]="AssessmentTypeDatasource"
-            *ngIf="RelevantEvaluationListForSelectedStudent.length>0">
-            <ng-container matColumnDef="ExamName">
-                <mat-header-cell *matHeaderCellDef>Exam/Test/Session
-                </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    {{element.ExamName}}
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="EvaluationName">
-                <mat-header-cell *matHeaderCellDef>Evaluation type
-                </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    {{element.EvaluationName}}
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="ClassGroupName">
-                <mat-header-cell *matHeaderCellDef>Class/Class group
-                </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    {{element.ClassGroupName}}
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="Action">
-                <mat-header-cell *matHeaderCellDef>
-                </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <button style="margin-right: 15px;" [disabled]="loading || !element.Action1 || Permission=='read'"
-                        matTooltip="display" mat-mini-fab color="accent" (click)="StartEvaluation(element)">
-                        <mat-icon>pageview</mat-icon>
-                    </button>
-                </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="EvaluationPlanColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: EvaluationPlanColumns;let indx=index" class="element-row"
-                style="align-items: center;"></mat-row>
-        </mat-table> -->
 
         <div *ngIf="EvaluatedStudent.length>0"
             style="border:1px solid lightgray; display:flex;align-items:flex-start">
@@ -129,7 +92,7 @@
                 <mat-table style="width:300px" #table [dataSource]="AssessmentTypeDatasource"
                     *ngIf="EvaluatedStudent.length>0">
                     <ng-container matColumnDef="Name">
-                        <mat-header-cell *matHeaderCellDef>
+                        <mat-header-cell *matHeaderCellDef>Students
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <button style="margin-right: 15px;" [disabled]="loading" matTooltip="display"

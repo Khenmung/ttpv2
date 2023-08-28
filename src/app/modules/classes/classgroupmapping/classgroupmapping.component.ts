@@ -22,6 +22,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class ClassgroupmappingComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
+  Defaultvalue=0;
   ClassGroupTypes :any[]= [];
   ClassGroups :any[]= [];
   LoginUserDetail:any[]= [];

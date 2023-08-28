@@ -78,7 +78,8 @@ export class StudentAttendanceComponent implements OnInit {
     SubOrgId: 0
   };
   displayedColumns = [
-    'StudentRollNo',
+    'RollNo',
+    'Student',
     'AttendanceStatusId',
     'Remarks',
     'Action'
@@ -267,7 +268,7 @@ export class StudentAttendanceComponent implements OnInit {
           && f.StudentClasses[0].Active == 1);
 
         studentCls.forEach(sc => {
-          var studName = sc.StudentClasses[0].RollNo + "-" + sc.FirstName + (sc.LastName ? " " + sc.LastName : "");
+          var studName = sc.FirstName + (sc.LastName ? " " + sc.LastName : "");
           let existing = attendance.value.filter(db => db.StudentClassId == sc.StudentClasses[0].StudentClassId);
           if (existing.length > 0) {
             this.StudentAttendanceList.push({
@@ -281,7 +282,7 @@ export class StudentAttendanceComponent implements OnInit {
               AttendanceDate: existing[0].AttendanceDate,
               ClassSubjectId: existing[0].ClassSubjectId,
               Remarks: existing[0].Remarks,
-              StudentRollNo: studName,
+              Student: studName,
               Action: false
             });
           }
@@ -300,7 +301,7 @@ export class StudentAttendanceComponent implements OnInit {
                   AttendanceDate: new Date(),
                   ClassSubjectId: 0,
                   Remarks: '',
-                  StudentRollNo: studName,
+                  Student: studName,
                   Action: false
                 });
               }
@@ -317,7 +318,7 @@ export class StudentAttendanceComponent implements OnInit {
                 AttendanceDate: new Date(),
                 ClassSubjectId: 0,
                 Remarks: '',
-                StudentRollNo: studName,
+                Student: studName,
                 Action: false
               });
             }
@@ -636,7 +637,7 @@ export interface IStudentAttendance {
   AttendanceStatusId: number;
   ClassSubjectId: number;
   AttendanceDate: Date;
-  StudentRollNo: string;
+  Student: string;
   Remarks: string;
   Action: boolean
 }

@@ -9,8 +9,8 @@
                 <mat-form-field appearance="outline" [style.width.px]="150">
                     <mat-label>Evaluation Type</mat-label>
                     <mat-select formControlName="searchEvaluationTypeId">
-                        <mat-option *ngFor="let item of EvaluationTypes" [value]="item.MasterDataId">
-                            {{item.MasterDataName}}
+                        <mat-option *ngFor="let item of EvaluationMasterList" [value]="item.EvaluationMasterId">
+                            {{item.EvaluationName}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -26,7 +26,7 @@
                 <mat-form-field appearance="outline" [style.width.px]="200">
                     <mat-label>Exam/Test</mat-label>
                     <mat-select formControlName="searchExamId">
-                        <mat-option value="0">select</mat-option>
+                        <mat-option [value]="Defaultvalue">select</mat-option>
                         <mat-option *ngFor="let item of Exams" [value]="item.ExamId">{{item.ExamName}}
                         </mat-option>
                     </mat-select>

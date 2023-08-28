@@ -23,6 +23,7 @@ import { SwUpdate } from '@angular/service-worker';
 export class TextEditorComponent implements OnInit {
   PageLoading = true;
   OneMB = 1048576;
+  Defaultvalue = 0;
   processing = false;
   Edit = false;
   imageCount = 0;
@@ -36,21 +37,35 @@ export class TextEditorComponent implements OnInit {
     autoClose: true,
     keepAfterRouteChange: true
   };
-  PageDetail = {
-    PageId: 0,
-    PageTitle: '',
-    ParentId: 0,
-    FullPath: '',
-    PhotoPath: '',
-    CurrentVersion: 0,
-    UpdateDate: new Date(),
-    IsTemplate: 1,
-    HasSubmenu: 1,
-    Module: 1,
-    label: '',
-    link: '',
-    Active: 1
-  };
+  PageDetail: {
+    PageId?: number,
+    PageTitle: string,
+    ParentId: number,
+    FullPath: string,
+    PhotoPath: string,
+    CurrentVersion: number,
+    UpdateDate: Date,
+    IsTemplate: number,
+    HasSubmenu: number,
+    Module: number,
+    label: string,
+    link: string,
+    Active: number
+  } = {
+      PageId: 0,
+      PageTitle: '',
+      ParentId: 0,
+      FullPath: '',
+      PhotoPath: '',
+      CurrentVersion: 0,
+      UpdateDate: new Date(),
+      IsTemplate: 1,
+      HasSubmenu: 1,
+      Module: 1,
+      label: '',
+      link: '',
+      Active: 1
+    };
   PublishOrDraft: number = 0;
   PageDetailForm = this.fb.group({
     PhotoPath: [''],
@@ -280,7 +295,7 @@ export class TextEditorComponent implements OnInit {
   }
   insert() {
     let active = 1;
-    let duplicate :any[]= [];
+    let duplicate: any[] = [];
     if (this.Id == undefined) {
       duplicate = this.PageGroups.filter(ele => {
         return ele.ParentId == this.PageDetailForm.value.ParentId

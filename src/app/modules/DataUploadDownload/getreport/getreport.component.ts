@@ -21,7 +21,7 @@ import { SwUpdate } from '@angular/service-worker';
 })
 export class GetreportComponent implements OnInit {
   PageLoading = true;
-
+  Defaultvalue=0;
   @ViewChild('searchval') selectionList: MatSelectionList;
   @ViewChild("table") tableRef: ElementRef;
   @ViewChild(MatPaginator, { static: false })

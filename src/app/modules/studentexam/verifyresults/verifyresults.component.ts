@@ -570,7 +570,7 @@ export class VerifyResultsComponent implements OnInit {
 
                   _subject = _stdSubject[0].MasterDataName;
 
-                  let _stdSection = this.Sections.filter(c => c.MasterDataId == s.SectionId);
+                  let _stdSection = this.Sections.filter(c => c.MasterDataId == _subjectIdObj[0].SectionId);
                   if (_stdSection.length > 0)
                     _section = _stdSection[0].MasterDataName;
 
@@ -626,9 +626,9 @@ export class VerifyResultsComponent implements OnInit {
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId;
     var filterstr = " and ExamId eq " + pExamId;
     filterstr += " and ClassId eq " + pClassId;
-    if (pSemesterId)
+    //if (pSemesterId)
       filterstr += " and SemesterId eq " + pSemesterId;
-    if (pSectionId)
+    //if (pSectionId)
       filterstr += " and SectionId eq " + pSectionId;
     filterstr += " and Active eq 1";
 
@@ -660,8 +660,8 @@ export class VerifyResultsComponent implements OnInit {
         //if (pSectionId > 0) {
         StudentOwnSubjects = this.StudentSubjects.filter(studentsubject => {
           return studentsubject.ClassId == pClassId
-            && studentsubject.SectionId == (pSectionId ? pSectionId : studentsubject.SectionId)
-            && studentsubject.SemesterId == (pSemesterId ? pSemesterId : studentsubject.SemesterId)
+            && studentsubject.SectionId == pSectionId
+            && studentsubject.SemesterId == pSemesterId
             && studentsubject.SelectHowMany > 0;
         });
         // }
@@ -678,32 +678,38 @@ export class VerifyResultsComponent implements OnInit {
         // });
         // console.log("StudentOwnSubjects",StudentOwnSubjects)
         var _examSubjectMarkComponentDefn: any[] = [];
-        let semesterWise = this.ClassSubjectComponents.filter(c => c.SemesterId > 0);
-        let sectionWise = this.ClassSubjectComponents.filter(c => c.SectionId > 0);
-        if (semesterWise.length > 0 && sectionWise.length > 0) {
+        //let semesterWise = this.ClassSubjectComponents.filter(c => c.SemesterId > 0);
+        //let sectionWise = this.ClassSubjectComponents.filter(c => c.SectionId > 0);
+        //if (semesterWise.length > 0 && sectionWise.length > 0) {
           _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
             c.ClassId == pClassId
             && c.ExamId == pExamId
             && c.SectionId == pSectionId// ? pSectionId : c.SectionId
             && c.SemesterId == pSemesterId);// ? pSemesterId : c.SemesterId);
-        }
-        else if (semesterWise.length > 0 && sectionWise.length == 0) {
-          _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
-            c.ClassId == pClassId
-            && c.ExamId == pExamId
-            && c.SemesterId == pSemesterId);// ? pSemesterId : c.SemesterId);
-        }
-        else if (semesterWise.length == 0 && sectionWise.length > 0) {
-          _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
-            c.ClassId == pClassId
-            && c.ExamId == pExamId
-            && c.SectionId == pSectionId);// ? pSemesterId : c.SemesterId);
-        }
-        else if (semesterWise.length == 0 && sectionWise.length == 0) {
-          _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
-            c.ClassId == pClassId
-            && c.ExamId == pExamId);// ? pSemesterId : c.SemesterId);
-        }
+            if(_examSubjectMarkComponentDefn.length==0)
+            {
+              _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
+                c.ClassId == pClassId
+                && c.ExamId == pExamId);
+            }
+        // }
+        // else if (semesterWise.length > 0 && sectionWise.length == 0) {
+        //   _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
+        //     c.ClassId == pClassId
+        //     && c.ExamId == pExamId
+        //     && c.SemesterId == pSemesterId);// ? pSemesterId : c.SemesterId);
+        // }
+        // else if (semesterWise.length == 0 && sectionWise.length > 0) {
+        //   _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
+        //     c.ClassId == pClassId
+        //     && c.ExamId == pExamId
+        //     && c.SectionId == pSectionId);// ? pSemesterId : c.SemesterId);
+        // }
+        // else if (semesterWise.length == 0 && sectionWise.length == 0) {
+        //   _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
+        //     c.ClassId == pClassId
+        //     && c.ExamId == pExamId);// ? pSemesterId : c.SemesterId);
+        // }
         var filteredExistingComponentMarks: any[] = [];
 
         examComponentResult.value.forEach(d => {
@@ -779,28 +785,7 @@ export class VerifyResultsComponent implements OnInit {
 
           var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student)
           forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.SubjectType.localeCompare(b.SubjectType));
-          //var _subjectDetailToInsert ={}
-          //this.ClassFullMark = 0;
-
-          //console.log("forEachSubjectOfStud",forEachSubjectOfStud)
-          ////debugger;
-          // //preparing fullmark for all subjects
-          // forEachSubjectOfStud.forEach(eachsubj => {
-
-          //   //this.ClassFullMark is included only if subject category is marking.
-          //   if (_subjectCategoryMarkingId == eachsubj.SubjectCategoryId) {
-
-          //     var objFullMark = _examSubjectMarkComponentDefn.filter(c => c.ClassSubjectId == eachsubj.ClassSubjectId);
-          //     if (objFullMark.length > 0)
-          //       this.ClassFullMark += objFullMark.reduce((acc, current) => acc + current.FullMark, 0);
-          //   }
-          // })
-
-          //ss.Student =='44-Niangkhandim -A' ||  || ss.Student =='22-David Khuplianmang -A' 
-          // if (ss.Student == '39-K. Niangsuanching -A') {
-          //   debugger;
-          // }
-          //console.log("forEachSubjectOfStud",forEachSubjectOfStud)
+        
           forEachSubjectOfStud.forEach(eachsubj => {
 
             // if (eachsubj.Subject == 'Geography') {

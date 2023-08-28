@@ -66,7 +66,7 @@
                     <mat-label>Class group</mat-label>
                     <mat-select [(ngModel)]="element.ClassGroupId" (selectionChange)="onBlur(element)"
                         [value]="element.ClassGroupId">
-                        <mat-option value="0">select</mat-option>
+                        <mat-option [value]="Defaultvalue">select</mat-option>
                         <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassGroupId">{{item.GroupName}}
                         </mat-option>
                     </mat-select>

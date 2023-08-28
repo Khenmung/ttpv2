@@ -30,6 +30,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   @ViewChild("table") mattable;
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
   RowsToUpdate = -1;
+  Defaultvalue=0;
   //RowsT = 0;
   RollNoGenerationSortBy = '';
   SearchSectionId = 0;

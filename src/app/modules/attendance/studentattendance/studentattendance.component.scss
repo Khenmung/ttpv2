@@ -16,7 +16,11 @@ mat-cell:first-of-type{
     //flex:1 1 100px;
     min-width: 100px;
 }
-.mat-column-StudentRollNo{
+.mat-column-RollNo{
+    justify-content: flex-end;
+    flex:1 0 60px;
+}
+.mat-column-Student{
     flex:1 0 180px;
     
 }

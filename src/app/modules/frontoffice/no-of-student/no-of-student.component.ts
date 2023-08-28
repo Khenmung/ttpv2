@@ -22,6 +22,7 @@ import { SwUpdate } from '@angular/service-worker';
 })
 export class NoOfStudentComponent implements OnInit {
   PageLoading = true;
+  Defaultvalue=0;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("table") mattable;

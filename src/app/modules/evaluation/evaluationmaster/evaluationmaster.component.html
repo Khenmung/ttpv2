@@ -67,7 +67,7 @@
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="StartDate">
-            <mat-header-cell *matHeaderCellDef> Start Date and Time </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> Start Date and Time (24hr format)</mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline" style="width:160px;margin-right : 15px;">
                     <input [value]="element.StartDate" [(ngModel)]="element.StartDate" matInput
@@ -75,8 +75,9 @@
                     <mat-datepicker-toggle matSuffix [for]="StartDate"></mat-datepicker-toggle>
                     <mat-datepicker #StartDate></mat-datepicker>
                 </mat-form-field>
-                <input [ngxMatTimepicker]="picker" [(ngModel)]="element.StartTime" [value]="element.StartTime" style="width: 100px;">
-                <ngx-mat-timepicker #picker></ngx-mat-timepicker>
+                <input [ngxMatTimepicker]="picker" [format]="24" (closed)="onBlur(element)"
+                    [(ngModel)]="element.StartTime" [value]="element.StartTime" style="width: 100px;">
+                <ngx-mat-timepicker #picker [enableKeyboardInput]=true></ngx-mat-timepicker>
             </mat-cell>
         </ng-container>
 

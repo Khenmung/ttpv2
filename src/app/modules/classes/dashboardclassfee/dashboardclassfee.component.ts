@@ -24,6 +24,7 @@ export class DashboardclassfeeComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   loading = false;
   InvoiceCreated = false;
+  Defaultvalue=0;
   SelectedMonth = 0;
   Months :any[]= [];
   VariableObjList :any[]= [];
@@ -376,6 +377,13 @@ export class DashboardclassfeeComponent implements OnInit {
       row.Quantity = 1;
       row.Amount = row.Rate;
     }
+    // if(!row.Month)
+    // {
+    //   row.Action = false;
+    //   this.loading = false; this.PageLoading = false;
+    //   this.contentservice.openSnackBar("Please select Month Year.", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
     this.loading = true;
 
     let checkFilterString = this.FilterOrgSubOrgBatchId +

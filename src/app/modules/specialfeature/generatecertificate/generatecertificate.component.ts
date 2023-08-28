@@ -27,7 +27,7 @@ import { MatPaginator } from '@angular/material/paginator';
 export class GenerateCertificateComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild("printSection") printSection: ElementRef;
-
+  Defaultvalue=0;
   PageLoading = true;
   backgroundimage = '';
   loading = false;

@@ -263,7 +263,7 @@
                             <mat-label>Country</mat-label>
                             <mat-select formControlName="PresentAddressCountry"
                                 (selectionChange)="SelectPresentState($event.value)">
-                                <mat-option value="0">---</mat-option>
+                                <mat-option [value]="Defaultvalue">---</mat-option>
                                 <mat-option *ngFor="let p of Country" [value]="p.MasterDataId">
                                     {{p.MasterDataName}}
                                 </mat-option>
@@ -273,7 +273,7 @@
                             <mat-label>State/Province/Division</mat-label>
                             <mat-select formControlName="PresentAddressState"
                                 (selectionChange)="SelectPresentCity($event.value)">
-                                <mat-option value="0">---</mat-option>
+                                <mat-option [value]="Defaultvalue">---</mat-option>
                                 <mat-option *ngFor="let p of PresentState" [value]="p.MasterDataId">
                                     {{p.MasterDataName}}
                                 </mat-option>
@@ -282,7 +282,7 @@
                         <mat-form-field appearance="outline">
                             <mat-label>City</mat-label>
                             <mat-select formControlName="PresentAddressCity" (selectionChange)="OnBlur()">
-                                <mat-option value="0">---</mat-option>
+                                <mat-option [value]="Defaultvalue">---</mat-option>
                                 <mat-option *ngFor="let p of PresentCity" [value]="p.MasterDataId">
                                     {{p.MasterDataName}}
                                 </mat-option>
@@ -308,7 +308,7 @@
                             <mat-label>Country</mat-label>
                             <mat-select formControlName="PermanentAddressCountry"
                                 (selectionChange)="SelectPermanentState($event.value)">
-                                <mat-option value="0">---</mat-option>
+                                <mat-option [value]="Defaultvalue">---</mat-option>
                                 <mat-option *ngFor="let p of Country" [value]="p.MasterDataId">
                                     {{p.MasterDataName}}
                                 </mat-option>
@@ -318,7 +318,7 @@
                             <mat-label>State/Province/Division</mat-label>
                             <mat-select formControlName="PermanentAddressState"
                                 (selectionChange)="SelectPermanentCity($event.value)">
-                                <mat-option value="0">---</mat-option>
+                                <mat-option [value]="Defaultvalue">---</mat-option>
                                 <mat-option *ngFor="let p of PermanentState" [value]="p.MasterDataId">
                                     {{p.MasterDataName}}
                                 </mat-option>
@@ -327,7 +327,7 @@
                         <mat-form-field appearance="outline">
                             <mat-label>City</mat-label>
                             <mat-select formControlName="PermanentAddressCity" (selectionChange)="OnBlur()">
-                                <mat-option value="0">---</mat-option>
+                                <mat-option [value]="Defaultvalue">---</mat-option>
                                 <mat-option *ngFor="let p of PermanentCity" [value]="p.MasterDataId">
                                     {{p.MasterDataName}}
                                 </mat-option>
@@ -454,7 +454,7 @@
                 <mat-form-field appearance="outline">
                     <mat-label>Employment Type</mat-label>
                     <mat-select formControlName="EmploymentType" (selectionChange)="OnBlur()">
-                        <mat-option value="0">---</mat-option>
+                        <mat-option [value]="Defaultvalue">---</mat-option>
                         <mat-option *ngFor="let p of EmploymentTypes" [value]="p.MasterDataId">
                             {{p.MasterDataName}}
                         </mat-option>
@@ -463,7 +463,7 @@
                 <mat-form-field appearance="outline">
                     <mat-label>Employment Status</mat-label>
                     <mat-select formControlName="EmploymentStatus" (selectionChange)="OnBlur()">
-                        <mat-option value="0">---</mat-option>
+                        <mat-option [value]="Defaultvalue">---</mat-option>
                         <mat-option *ngFor="let p of EmploymentStatus" [value]="p.MasterDataId">
                             {{p.MasterDataName}}
                         </mat-option>
@@ -492,7 +492,7 @@
                 <mat-form-field appearance="outline">
                     <mat-label>Marital Status</mat-label>
                     <mat-select formControlName="MaritalStatus" (selectionChange)="OnBlur()">
-                        <mat-option value="0">---</mat-option>
+                        <mat-option [value]="Defaultvalue">---</mat-option>
                         <mat-option *ngFor="let p of MaritalStatus" [value]="p.MasterDataId">
                             {{p.MasterDataName}}
                         </mat-option>
@@ -510,7 +510,7 @@
                 <mat-form-field appearance="outline">
                     <mat-label>Work Nature</mat-label>
                     <mat-select formControlName="Nature" (selectionChange)="OnBlur()">
-                        <mat-option value="0">---</mat-option>
+                        <mat-option [value]="Defaultvalue">---</mat-option>
                         <mat-option *ngFor="let p of WorkNature" [value]="p.MasterDataId">
                             {{p.MasterDataName}}
                         </mat-option>

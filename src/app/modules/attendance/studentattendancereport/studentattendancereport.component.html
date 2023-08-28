@@ -41,7 +41,7 @@
     <mat-form-field appearance="outline" [style.width.px]="150">
         <mat-label>Subject</mat-label>
         <mat-select formControlName="searchClassSubjectId" (selectionChange)="GetExistingStudentClassSubjects()">
-            <mat-option value="0">--select--</mat-option>
+            <mat-option [value]="Defaultvalue">--select--</mat-option>
             <mat-option *ngFor="let item of FilteredClassSubjects"
                 [value]="item.ClassSubjectId">{{item.ClassSubject}}
             </mat-option>

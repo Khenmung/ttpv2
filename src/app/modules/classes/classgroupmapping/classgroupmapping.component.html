@@ -64,7 +64,7 @@
                     <mat-cell *matCellDef="let element">
                         <mat-form-field appearance="outline">
                             <mat-select [disabled]="CategoryName=='high school'" [(ngModel)]="element.SemesterId" [value]="element.SemesterId">
-                                <mat-option value="0">select</mat-option>
+                                <mat-option [value]="Defaultvalue">select</mat-option>
                                 <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
                                     {{item.MasterDataName}}
                                 </mat-option>
@@ -78,7 +78,7 @@
                     <mat-cell *matCellDef="let element">
                         <mat-form-field appearance="outline">
                             <mat-select [disabled]="CategoryName=='college'" [(ngModel)]="element.SectionId" [value]="element.SectionId">
-                                <mat-option value="0">select</mat-option>
+                                <mat-option [value]="Defaultvalue">select</mat-option>
                                 <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
                                     {{item.MasterDataName}}
                                 </mat-option>

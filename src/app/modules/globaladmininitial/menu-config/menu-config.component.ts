@@ -18,7 +18,7 @@ import { ContentService } from '../../../shared/content.service';
   styleUrls: ['./menu-config.component.scss']
 })
 export class MenuConfigComponent implements OnInit { PageLoading=true;
-
+  Defaultvalue=0;
   loading = false;
   SelectedAppId = 0;
   SubOrgId = 0;

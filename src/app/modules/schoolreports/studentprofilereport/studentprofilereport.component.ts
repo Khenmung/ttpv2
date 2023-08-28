@@ -11,6 +11,7 @@ import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
+import { IEvaluationMaster } from '../../evaluation/evaluationmaster/evaluationmaster.component';
 
 @Component({
   selector: 'app-studentprofilereport',
@@ -26,7 +27,7 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 })
 export class StudentprofilereportComponent implements OnInit {
   PageLoading = true;
-
+  Defaultvalue=0;
   LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   ClassSubjects :any[]= [];
@@ -138,6 +139,7 @@ export class StudentprofilereportComponent implements OnInit {
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetMasterData();
+        this.GetEvaluationMaster();
         if (this.Classes.length == 0) {
           var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
@@ -361,6 +363,59 @@ export class StudentprofilereportComponent implements OnInit {
     //row.RatingId = 
     row.Action = true;
   }
+  EvaluationMasterList=[];
+  EvaluationMasterForDropdown=[];
+  GetEvaluationMaster() {
+    debugger;
+
+    this.loading = true;
+    let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
+    // var _classGroupId = this.searchForm.get("searchClassGroupId")?.value;
+    // var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
+    // //console.log("classgroup",this.ClassGroups)
+    // if (_evaluationMasterId)
+    //   filterStr += " and EvaluationMasterId eq " + _evaluationMasterId;
+    // if (_classGroupId)
+    //   filterStr += " and ClassGroupId eq " + _classGroupId;
+
+    let list: List = new List();
+    list.fields = [
+      "EvaluationMasterId",
+      "EvaluationName",
+      "Description",
+      "AppendAnswer",
+      "Duration",
+      "StartDate",
+      "StartTime",
+      "ClassGroupId",
+      "FullMark",
+      "PassMark",
+      "DisplayResult",
+      "ProvideCertificate",
+      "Confidential",
+      "Active"
+    ];
+
+    list.PageName = "EvaluationMasters";
+    list.filter = [filterStr];
+    this.EvaluationMasterList = [];
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        //debugger;
+        if (data.value.length > 0) {
+          this.EvaluationMasterList = data.value.map(d => {
+
+            d.EvaluationName = globalconstants.decodeSpecialChars(d.EvaluationName);
+            d.Description = globalconstants.decodeSpecialChars(d.Description);
+            d.Action = false;
+            return d;
+          })
+        }
+       
+        this.loadingFalse();
+      });
+    //}
+  }
   CategoryChanged(row) {
     debugger;
     row.Action = true;
@@ -400,19 +455,19 @@ export class StudentprofilereportComponent implements OnInit {
     let list: List = new List();
     list.fields = [
       'ClassEvaluationId',
-      'ClassEvalCategoryId',
+      'QuestionnaireTypeId',
       'DisplayOrder',
-      'ClassId',
-      'SubjectId',
+      //'ClassId',
+      //'SubjectId',
       'Description',
-      'EvaluationTypeId',
-      'AnswerOptionId',
+      'EvaluationMasterId',
+      'ClassEvaluationAnswerOptionParentId',
       'MultipleAnswer',
       'ExamId'
     ];
 
     list.PageName = "ClassEvaluations";
-    list.lookupFields = ["ClassEvaluationOptions($filter=Active eq 1;$select=AnswerOptionsId,Title,Value,Correct,Point)"]
+    list.lookupFields = ["ClassEvaluationOptions($filter=Active eq 1;$select=ClassEvaluationAnswerOptionsId,Title,Description,Correct,Point)"]
     list.filter = [this.FilterOrgSubOrg + ' and Active eq 1'];
 
     this.dataservice.get(list)
@@ -422,13 +477,13 @@ export class StudentprofilereportComponent implements OnInit {
         if (data.value.length > 0) {
           this.ClassEvaluations = data.value.map(clseval => {
             var _categoryName = ''
-            var catobj = this.allMasterData.filter((f:any) => f.MasterDataId == clseval.ClassEvalCategoryId)
+            var catobj = this.allMasterData.filter((f:any) => f.MasterDataId == clseval.QuestionnaireTypeId)
             if (catobj.length > 0)
               _categoryName = catobj[0].MasterDataName;
             var _subCategoryName = '';
-            var subcatobj = this.allMasterData.filter((f:any) => f.MasterDataId == clseval.ClassEvalSubCategoryId)
-            if (subcatobj.length > 0)
-              _subCategoryName = subcatobj[0].MasterDataName;
+            // var subcatobj = this.allMasterData.filter((f:any) => f.MasterDataId == clseval.ClassEvalSubCategoryId)
+            // if (subcatobj.length > 0)
+            //   _subCategoryName = subcatobj[0].MasterDataName;
             clseval.CategoryName = _categoryName;
             clseval.SubCategoryName = _subCategoryName;
             return clseval;

@@ -20,6 +20,7 @@ export class GroupactivityComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   RowsToUpdate = -1;
+  Defaultvalue=0;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
   LoginUserDetail:any[]= [];

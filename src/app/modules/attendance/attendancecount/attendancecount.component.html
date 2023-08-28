@@ -20,7 +20,7 @@
     <!-- <mat-form-field appearance="outline">
         <mat-label>Subject</mat-label>
         <mat-select formControlName="searchClassSubjectId">
-            <mat-option value="0">--select--</mat-option>
+            <mat-option [value]="Defaultvalue">--select--</mat-option>
             <mat-option *ngFor="let item of FilteredClassSubjects" [value]="item.ClassSubjectId">{{item.ClassSubject}}
             </mat-option>
         </mat-select>

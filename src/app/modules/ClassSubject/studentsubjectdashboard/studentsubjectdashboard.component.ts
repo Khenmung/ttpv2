@@ -651,8 +651,10 @@ export class studentsubjectdashboardComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
+        
         if (data.value.length > 0) {
           console.log("row.ClassSubjectId", row.ClassSubjectId)
+          console.log("data to insert",row);
           this.contentservice.openSnackBar("Record already exists!", globalconstants.ActionText, globalconstants.RedBackground);
           return;
         }

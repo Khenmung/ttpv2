@@ -42,7 +42,7 @@
             <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" [style.width.px]="200">
                 <mat-label>Section</mat-label>
                 <mat-select formControlName="searchSectionId">
-                    <mat-option value="0">select</mat-option>
+                    <mat-option [value]="Defaultvalue">select</mat-option>
                     <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
                         {{item.MasterDataName}}
                     </mat-option>
@@ -61,7 +61,7 @@
                 <mat-form-field appearance="outline" [style.width.px]="200">
                     <mat-label>Exam/Test/Session</mat-label>
                     <mat-select formControlName="searchExamId">
-                        <mat-option value="0">select</mat-option>
+                        <mat-option [value]="Defaultvalue">select</mat-option>
                         <mat-option *ngFor="let item of Exams" [value]="item.ExamId">{{item.ExamName}}
                         </mat-option>
                     </mat-select>
@@ -69,7 +69,7 @@
                 <mat-form-field appearance="outline" [style.width.px]="150">
                     <mat-label>Subject</mat-label>
                     <mat-select formControlName="searchSubjectId">
-                        <mat-option value="0">select</mat-option>
+                        <mat-option [value]="Defaultvalue">select</mat-option>
                         <mat-option *ngFor="let item of SelectedClassSubjects" [value]="item.SubjectId">
                             {{item.SubjectName}}
                         </mat-option>

@@ -6,25 +6,26 @@ import { globalconstants } from '../../../../shared/globalconstant';
 import { List } from '../../../../shared/interface';
 import { SharedataService } from '../../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../../_services/token-storage.service';
-import {SwUpdate} from '@angular/service-worker';
+import { SwUpdate } from '@angular/service-worker';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss']
 })
-export class userComponent implements OnInit { PageLoading=true;
-loading=false;
-  @Input("UserId") UserId:number;
-@Output() UserIdOutput=new EventEmitter();
-
-title ='';
+export class userComponent implements OnInit {
+    PageLoading = true;
+  loading = false;
+  @Input("UserId") UserId: number;
+  @Output() UserIdOutput = new EventEmitter();
+  Defaultvalue = 0;
+  title = '';
   breakpoint = 0;
   SaveDisable = false;
-  allMasterData :any[]= [];
-  AppUsers :any[]= [];
-  Departments:any[]=[];
-  Locations:any[]=[];
+  allMasterData: any[] = [];
+  AppUsers: any[] = [];
+  Departments: any[] = [];
+  Locations: any[] = [];
   AppUsersForm: UntypedFormGroup;
   AppUsersData = {
     ApplicationUserId: 0,
@@ -34,7 +35,7 @@ title ='';
     ContactNo: '',
     ValidFrom: Date,
     ValidTo: Date,
-    OrgId: 0,SubOrgId: 0,
+    OrgId: 0, SubOrgId: 0,
     DepartmentId: 0,
     LocationId: 0,
     ManagerId: 0,
@@ -49,7 +50,7 @@ title ='';
   constructor(private servicework: SwUpdate,
     private dataservice: NaomitsuService,
     private contentservice: ContentService,
-    private tokenStorage:TokenStorageService,
+    private tokenStorage: TokenStorageService,
     private fb: UntypedFormBuilder,
     private sharedData: SharedataService) { }
 
@@ -61,10 +62,10 @@ title ='';
     //     }
     //   })
     // })
-    
+
     this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
     ////console.log('breakpoint',this.breakpoint);
-    this.title=this.UserId>0?'Update Detail':'Add User';
+    this.title = this.UserId > 0 ? 'Update Detail' : 'Add User';
     var date = new Date();
     var validto = date.setDate(date.getDate() + globalconstants.TrialPeriod);
     this.AppUsersForm = this.fb.group({
@@ -131,7 +132,7 @@ title ='';
           });
         }
         else
-          this.contentservice.openSnackBar("Problem fetching app users",globalconstants.ActionText,globalconstants.RedBackground);
+          this.contentservice.openSnackBar("Problem fetching app users", globalconstants.ActionText, globalconstants.RedBackground);
       });
 
   }
@@ -146,10 +147,9 @@ title ='';
     this.dataservice.get(list)
       .subscribe(
         (data: any) => {
-               if(data.value.length>0)
-               {
-                 this.AppUsersForm.get("Email")?.setErrors({'duplicate':true})
-               }                     
+          if (data.value.length > 0) {
+            this.AppUsersForm.get("Email")?.setErrors({ 'duplicate': true })
+          }
         })
   }
   onResize(event) {
@@ -157,7 +157,7 @@ title ='';
   }
   back() {
     this.UserIdOutput.emit(0);
-    
+
     //this.nav.navigate(['/admin/dashboardstudent']);
   }
   UpdateOrSave() {
@@ -176,7 +176,7 @@ title ='';
     }
 
     if (ErrorMessage.length > 0) {
-      this.contentservice.openSnackBar(ErrorMessage,globalconstants.ActionText,globalconstants.RedBackground);
+      this.contentservice.openSnackBar(ErrorMessage, globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     else {
@@ -191,8 +191,8 @@ title ='';
         this.AppUsersData.OrgId = 0;//this.AppUsersForm.get("OrgId")?.value;
       else
         this.AppUsersData.OrgId = this.AppUsersForm.get("OrgId")?.value;
-      
-        this.AppUsersData.DepartmentId = this.AppUsersForm.get("DepartmentId")?.value;
+
+      this.AppUsersData.DepartmentId = this.AppUsersForm.get("DepartmentId")?.value;
       this.AppUsersData.LocationId = this.AppUsersForm.get("LocationId")?.value;
       this.AppUsersData.ManagerId = this.AppUsersForm.get("ManagerId")?.value;
       this.AppUsersData.Remarks = this.AppUsersForm.get("Remarks")?.value;
@@ -205,7 +205,7 @@ title ='';
       else {
         this.update();
       }
-      
+
     }
   }
   tabChanged($event) {
@@ -218,9 +218,9 @@ title ='';
       .subscribe(
         (data: any) => {
           this.UserIdOutput.emit(0);
-          this.contentservice.openSnackBar(globalconstants.AddedMessage,globalconstants.ActionText,globalconstants.BlueBackground);
+          this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           //this.router.navigate(['/home/pages']);
-      
+
         });
 
   }
@@ -230,7 +230,7 @@ title ='';
       .subscribe(
         (data: any) => {
           this.UserIdOutput.emit(0);
-          this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText,globalconstants.BlueBackground);
+          this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           //this.router.navigate(['/home/pages']);
         });
   }

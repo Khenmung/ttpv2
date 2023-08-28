@@ -19,7 +19,7 @@
             <mat-form-field appearance="outline">
                 <mat-label>Report</mat-label>
                 <mat-select formControlName="searchReportName">
-                    <mat-option value="0">--select report name--</mat-option>
+                    <mat-option [value]="Defaultvalue">--select report name--</mat-option>
                     <mat-option *ngFor="let item of AppReportNames" [value]="item.ReportConfigItemId">
                         {{item.ReportName}}
                     </mat-option>

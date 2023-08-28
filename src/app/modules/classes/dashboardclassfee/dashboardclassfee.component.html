@@ -18,7 +18,7 @@
                 <mat-form-field appearance="outline" style="width: 150px;margin-right: 15px;" *ngIf="CategoryName=='high school'">
                     <mat-label>Section</mat-label>
                     <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
-                        <mat-option value="0">section</mat-option>
+                        <mat-option [value]="Defaultvalue">section</mat-option>
                         <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
                             {{item.MasterDataName}}
                         </mat-option>
@@ -115,7 +115,6 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header> Month Year </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <mat-label>Month Year</mat-label>
                     <mat-select [(ngModel)]="element.Month" [disabled]="element.FeeName=='Discount'"
                     (selectionChange)="UpdateActive(element,$event)">                
                         <mat-option [value]="0">select</mat-option>
@@ -160,7 +159,7 @@
             </mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;" style="display: flex;align-items: baseline;">
+        <mat-row *matRowDef="let row; columns: displayedColumns;" style="display: flex; align-items: baseline;">
         </mat-row>
     </mat-table>
     <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50]"></mat-paginator>

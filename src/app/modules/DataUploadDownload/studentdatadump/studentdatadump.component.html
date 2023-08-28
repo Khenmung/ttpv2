@@ -5,7 +5,7 @@
         <mat-form-field appearance="outline" style="width: 150px;">
             <mat-label>Class group</mat-label>
             <mat-select formControlName="searchGroupId">
-                <mat-option value="0">select</mat-option>
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassGroupId">
                     {{item.GroupName}}
                 </mat-option>
@@ -14,7 +14,7 @@
         <mat-form-field appearance="outline" style="width: 250px;">
             <mat-label>club/house/remarks</mat-label>
             <mat-select formControlName="searchRemarkId">
-                <mat-option value="0">select</mat-option>
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-optgroup *ngFor="let item of Groups" [label]="item.name" [disabled]="item.disabled">
                     <mat-option *ngFor="let list of item.group" [value]="list.MasterDataId">
                         {{list.MasterDataName}}

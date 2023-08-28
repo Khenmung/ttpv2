@@ -18,6 +18,7 @@ import { SwUpdate } from '@angular/service-worker';
 export class StudentgradeComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
+  Defaultvalue=0;
   ClassGroups :any[]= [];
   SubjectCategory :any[]= [];
   LoginUserDetail:any[]= [];

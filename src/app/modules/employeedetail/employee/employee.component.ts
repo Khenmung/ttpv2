@@ -23,6 +23,7 @@ export class EmployeeComponent implements OnInit {
   EmployeeCodeDuplicate = '';
   Edited = false;
   FilterOrgSubOrg='';
+  Defaultvalue=0;
   SelectedApplicationId = 0;
   LoginUserDetail :any[]= [];
   EmployeeLeaving = false;

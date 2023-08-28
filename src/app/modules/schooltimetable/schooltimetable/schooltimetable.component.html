@@ -97,7 +97,7 @@
                                 <mat-label>{{disCol}}</mat-label>
                                 <mat-select (selectionChange)="onBlur(element,$event,disCol)"
                                     [(ngModel)]="element[disCol]" [value]="element[disCol]">
-                                    <mat-option value="0">select</mat-option>
+                                    <mat-option [value]="Defaultvalue">select</mat-option>
                                     <mat-option *ngFor="let item of ClassWiseSubjects" [value]="item.TeacherSubjectId">
                                         {{item.SubjectName}}
                                     </mat-option>

@@ -16,7 +16,7 @@
         <mat-form-field appearance="outline" [style.width.px]="200">
             <mat-label>Feature Type</mat-label>
                 <mat-select formControlName="searchTableName" (selectionChange)="enable($event)">
-                <mat-option value="0">select</mat-option>
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let item of TableNames" [value]="item.MasterDataId">
                     {{item.MasterDataName}}
                 </mat-option>

@@ -45,21 +45,21 @@
                 <mat-form-field appearance="outline">
                     <mat-label>Department</mat-label>
                     <mat-select formControlName="DepartmentId">
-                        <mat-option value="0">--select--</mat-option>
+                        <mat-option [value]="Defaultvalue">--select--</mat-option>
                         <mat-option *ngFor="let item of Departments" [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
                     </mat-select>              
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Location</mat-label>
                     <mat-select formControlName="LocationId">
-                        <mat-option value="0">--select--</mat-option>
+                        <mat-option [value]="Defaultvalue">--select--</mat-option>
                         <mat-option *ngFor="let item of Locations" [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field appearance="outline">
                     <mat-label>Manager</mat-label>
                     <mat-select formControlName="ManagerId">
-                        <mat-option value="0">--select--</mat-option>
+                        <mat-option [value]="Defaultvalue">--select--</mat-option>
                         <mat-option *ngFor="let item of AppUsers" [value]="item.ApplicationUserId">{{item.UserName}}</mat-option>
                     </mat-select>
                 </mat-form-field>

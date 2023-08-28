@@ -33,7 +33,7 @@
     <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;" *ngIf="SelectedClassCategory==getHighSchoolCategory()">
         <mat-label>Section</mat-label>
         <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
-            <mat-option value="0">select</mat-option>
+            <mat-option [value]="Defaultvalue">select</mat-option>
             <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
                 {{item.MasterDataName}}
             </mat-option>

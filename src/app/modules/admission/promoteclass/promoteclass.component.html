@@ -28,7 +28,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <button [disabled]="loading" style="margin-right: 10px;" mat-raised-button color="accent"
+            <button [disabled]="loading || PreviousBatchId==-1" style="margin-right: 10px;" mat-raised-button color="accent"
                 (click)="GetData()">
                 <mat-icon>search</mat-icon>
                 <mat-icon *ngIf="loading">

@@ -27,6 +27,7 @@ export class searchstudentComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   loading = false;
+  Defaultvalue=0;
   filterOrgIdNBatchId = '';
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
@@ -34,6 +35,7 @@ export class searchstudentComponent implements OnInit {
   dataSource: MatTableDataSource<IStudent>;
   displayedColumns = [
     'PID',
+    'RollNo',
     'Name',
     'ClassName',
     'FatherName',
@@ -692,7 +694,7 @@ export class searchstudentComponent implements OnInit {
           this.ELEMENT_DATA = [];
           formattedData.forEach(item => {
             var _lastname = item.LastName == null ? '' : " " + item.LastName;
-            item.Name = item.FirstName + _lastname + "-" + item.RollNo;
+            item.Name = item.FirstName + _lastname;
             var _remark = '';
             var objremark = this.Remarks.filter((f:any) => f.MasterDataId == item.RemarkId);
             if (objremark.length > 0) {
@@ -732,6 +734,7 @@ export class searchstudentComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         //}
         //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
+        this.ELEMENT_DATA = this.ELEMENT_DATA.sort((a,b)=>a["RollNo"] - b["RollNo"])
         this.dataSource = new MatTableDataSource<IStudent>(this.ELEMENT_DATA);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -912,12 +915,12 @@ export class searchstudentComponent implements OnInit {
       student.PersonalNo = student.PersonalNo == null ? '' : student.PersonalNo;
       var _lastname = student.LastName ? " " + student.LastName : '';
       _name = student.FirstName + _lastname;
-      var _fullDescription = student.PID + "-" + _name + "-" + _className + "-" + _section + "-" + _RollNo;
+      var _fullDescription = student.PID + "-" + _name + "-" + _className + "-" + _section;
       student.StudentClassId = _studentClassId;
       student.ClassId = _classId;
       student.RollNo = _RollNo;
       student.SectionId = _sectionId;
-      student.Name = _fullDescription;
+      student.Name = _name;
       student.ClassName = _className;
       student.Semester = _semester;
       this.Students.push(student);

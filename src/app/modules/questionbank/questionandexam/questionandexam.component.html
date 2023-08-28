@@ -55,7 +55,7 @@
             <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
                 <mat-label>sub content unit</mat-label>
                 <mat-select formControlName="searchSubContentUnitId" (selectionChange)="cleardata()">
-                    <mat-option value="0">select</mat-option>
+                    <mat-option [value]="Defaultvalue">select</mat-option>
                     <mat-option *ngFor="let item of SelectedSubContentUnit" [value]="item.MasterDataId">
                         {{item.MasterDataName}}
                     </mat-option>

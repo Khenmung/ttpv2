@@ -26,7 +26,7 @@ export class StudentDatadumpComponent implements OnInit {
   @ViewChild("table") tableRef: ElementRef;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
+  Defaultvalue=0;
   loading = false;
   filterOrgIdNBatchId = '';
   filterOrgSubOrgIdOnly = '';

@@ -18,7 +18,7 @@
                 <mat-form-field appearance="outline" style="width: 150px;">
                     <mat-label>Class</mat-label>
                     <mat-select formControlName="searchClassId" (selectionChange)="GetStudentClasses()">
-                        <mat-option value="0">select</mat-option>
+                        <mat-option [value]="Defaultvalue">select</mat-option>
                         <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
                             {{item.ClassName}}
                         </mat-option>
@@ -50,7 +50,7 @@
                         <mat-label>Group</mat-label>
                         <mat-select formControlName="searchStudentGroupId" [disabled]="loading"
                             (selectionChange)="ClearData()">
-                            <mat-option value="0">select</mat-option>
+                            <mat-option [value]="Defaultvalue">select</mat-option>
                             <!-- <mat-optgroup *ngFor="let item of Groups" [label]="item.name" [disabled]="item.disabled"> -->
                             <mat-option *ngFor="let list of Houses" [value]="list.MasterDataId">
                                 {{list.MasterDataName}}
@@ -61,7 +61,7 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Activity</mat-label>
                         <mat-select formControlName="searchActivityId" (selectionChange)="ClearData()">
-                            <mat-option value="0">select</mat-option>
+                            <mat-option [value]="Defaultvalue">select</mat-option>
                             <mat-option *ngFor="let item of ActivityNames" [value]="item.MasterDataId">
                                 {{item.MasterDataName}}</mat-option>
                         </mat-select>
@@ -83,7 +83,7 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Session</mat-label>
                         <mat-select formControlName="searchSessionId" (selectionChange)="ClearData()">
-                            <mat-option value="0">select</mat-option>
+                            <mat-option [value]="Defaultvalue">select</mat-option>
                             <mat-option *ngFor="let item of ActivitySessions" [value]="item.MasterDataId">
                                 {{item.MasterDataName}}</mat-option>
                         </mat-select>

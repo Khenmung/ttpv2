@@ -31,6 +31,7 @@ export class LeaveBalanceComponent implements OnInit {
   LoginUserDetail:any[]= [];
   CurrentRow: any = {};
   PagePermission = '';
+  Defaultvalue=0;
   LeaveBalanceListName = 'LeaveBalances';
   EmployeeLeaveListName = 'LeaveEmployeeLeaves';
   FilterOrgSubOrg = '';

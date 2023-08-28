@@ -29,6 +29,7 @@ export class studentprimaryinfoComponent implements OnInit {
   @ViewChild(AddstudentfeepaymentComponent) studentFeePayment: AddstudentfeepaymentComponent;
   @ViewChild(FeereceiptComponent) feeReceipt: FeereceiptComponent;
   Edit = false;
+  Defaultvalue=0;
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
   LoginUserDetail :any[]= [];

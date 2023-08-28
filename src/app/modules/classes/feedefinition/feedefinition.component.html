@@ -127,7 +127,10 @@
         <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
             <ul>
                 <li>
-                    <div>If a fee is of percentage of total amount, '%' needs to be included in the fee name.
+                    Fee name must not contains '%'.
+                </li>
+                <li>
+                    <div>If fee name contains '%', it will be treated as tax or any other percentage.
                     </div>
                 </li>
             </ul>

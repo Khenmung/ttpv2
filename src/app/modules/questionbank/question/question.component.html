@@ -8,7 +8,7 @@
             <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                 <mat-label>class</mat-label>
                 <mat-select formControlName="searchClassId" (selectionChange)="SelectSubject()">
-                    <mat-option value="0">select</mat-option>
+                    <mat-option [value]="Defaultvalue">select</mat-option>
                     <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
                     </mat-option>
                 </mat-select>
@@ -49,7 +49,7 @@
             <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                 <mat-label>sub content unit</mat-label>
                 <mat-select formControlName="searchSubContentUnitId" (selectionChange)="cleardata()">
-                    <mat-option value="0">select</mat-option>
+                    <mat-option [value]="Defaultvalue">select</mat-option>
                     <mat-option *ngFor="let item of SelectedSubContentUnit" [value]="item.MasterDataId">
                         {{item.MasterDataName}}
                     </mat-option>
@@ -67,7 +67,7 @@
             <mat-form-field appearance="outline" [style.width.px]="420">
                 <mat-label>Unit detail</mat-label>
                 <mat-select formControlName="searchUnitDetailId">
-                    <mat-option value="0">select</mat-option>
+                    <mat-option [value]="Defaultvalue">select</mat-option>
                     <mat-option *ngFor="let item of UnitDetails" [value]="item.SyllabusId">{{item.UnitDetail}}
                     </mat-option>
                 </mat-select>

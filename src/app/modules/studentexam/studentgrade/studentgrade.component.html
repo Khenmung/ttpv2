@@ -27,7 +27,7 @@
                         <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                             <mat-label>Subject Category</mat-label>
                             <mat-select formControlName="searchSubjectCategoryId" (selectionChange)="EnableCopyButton()">
-                                <mat-option value="0">select</mat-option>
+                                <mat-option [value]="Defaultvalue">select</mat-option>
                                 <mat-option *ngFor="let item of SubjectCategory" [value]="item.MasterDataId">
                                     {{item.MasterDataName}}
                                 </mat-option>

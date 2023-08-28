@@ -28,7 +28,7 @@
     <mat-form-field appearance="outline" [style.width.px]="150">
         <mat-label>Subject</mat-label>
         <mat-select formControlName="searchClassSubjectId" (selectionChange)="ClearGrid()">
-            <mat-option value="0">--select--</mat-option>
+            <mat-option [value]="Defaultvalue">--select--</mat-option>
             <mat-option *ngFor="let item of FilteredClassSubjects" [value]="item.ClassSubjectId">{{item.ClassSubject}}
             </mat-option>
         </mat-select>
@@ -92,7 +92,7 @@
             <mat-form-field appearance="outline">
                 <mat-label>reported to</mat-label>
                 <mat-select [(ngModel)]="element.ReportedTo" [value]="element.ReportedTo">
-                    <mat-option value="0">--select--</mat-option>
+                    <mat-option [value]="Defaultvalue">--select--</mat-option>
                     <mat-option *ngFor="let item of Teachers" [value]="item.TeacherId">{{item.TeacherName}}
                     </mat-option>
                 </mat-select>
