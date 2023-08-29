@@ -45,7 +45,7 @@ export class VerifyResultsComponent implements OnInit {
   rowCount = 0;
   ExamStudentSubjectResult: IExamStudentSubjectResult[] = [];
   ExamStudentSubjectGrading: any[] = [];
-  ClassFullMark = 0;
+  FullMarkForAllSubjects100Pc = 0;
   ClassSubjectComponents: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
@@ -327,7 +327,7 @@ export class VerifyResultsComponent implements OnInit {
 
   }
   Verified() {
-    //debugger;
+    debugger;
     var _classId = this.searchForm.get("searchClassId")?.value;
     if (_classId == 0) {
       this.contentservice.openSnackBar("Class Id is zero.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -504,8 +504,8 @@ export class VerifyResultsComponent implements OnInit {
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
     let filterStr = this.FilterOrgSubOrgBatchId;
     filterStr += " and ClassId eq " + _classId;
-    if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
-    if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
+    filterStr += " and SemesterId eq " + _semesterId;
+    filterStr += " and SectionId eq " + _sectionId;
     filterStr += " and Active eq 1";
     if (_sectionId > 0) {
       this.SectionSelected = true;
@@ -546,6 +546,7 @@ export class VerifyResultsComponent implements OnInit {
         var _class = '';
         var _subject = '';
         var _section = '';
+        var _semester = '';
         this.StudentSubjects = [];
         //console.log("data.value",data.value)
         //var _data = data.value.filter(x => x.ClassSubject.Active == 1);
@@ -570,9 +571,13 @@ export class VerifyResultsComponent implements OnInit {
 
                   _subject = _stdSubject[0].MasterDataName;
 
-                  let _stdSection = this.Sections.filter(c => c.MasterDataId == _subjectIdObj[0].SectionId);
+                  let _stdSection = this.Sections.filter(c => c.MasterDataId == _activeStudents[0].StudentClasses[0].SectionId);
                   if (_stdSection.length > 0)
                     _section = _stdSection[0].MasterDataName;
+
+                  let _stdSemester = this.Semesters.filter(c => c.MasterDataId == _activeStudents[0].StudentClasses[0].SemesterId);
+                  if (_stdSemester.length > 0)
+                    _semester = _stdSemester[0].MasterDataName;
 
                   this.StudentSubjects.push({
                     StudentClassSubjectId: s.StudentClassSubjectId,
@@ -582,10 +587,11 @@ export class VerifyResultsComponent implements OnInit {
                     SubjectId: _subjectIdObj[0].SubjectId,
                     Subject: _subject,
                     Section: _section,
+                    Semester: _semester,
                     ClassId: s.ClassId,
-                    SemesterId: s.SemesterId,
+                    SemesterId: _activeStudents[0].StudentClasses[0].SemesterId,
                     StudentId: _activeStudents[0].StudentId,
-                    SectionId: s.SectionId,
+                    SectionId: _activeStudents[0].StudentClasses[0].SectionId,
                     SubjectTypeId: _subjectIdObj[0].SubjectTypeId,
                     SubjectType: _subjectIdObj[0].SubjectType,
                     SelectHowMany: _subjectIdObj[0].SelectHowMany,
@@ -627,9 +633,9 @@ export class VerifyResultsComponent implements OnInit {
     var filterstr = " and ExamId eq " + pExamId;
     filterstr += " and ClassId eq " + pClassId;
     //if (pSemesterId)
-      filterstr += " and SemesterId eq " + pSemesterId;
+    filterstr += " and SemesterId eq " + pSemesterId;
     //if (pSectionId)
-      filterstr += " and SectionId eq " + pSectionId;
+    filterstr += " and SectionId eq " + pSectionId;
     filterstr += " and Active eq 1";
 
     let list: List = new List();
@@ -657,67 +663,41 @@ export class VerifyResultsComponent implements OnInit {
         //var result = examComponentResult.value.filter(x => x.StudentClassSubjectId == 40592);
         var StudentOwnSubjects: any[] = [];
 
-        //if (pSectionId > 0) {
+        //1. Select student's subjects
+        //2. Select all components for the selected class semester section subject mark components
+        //3. Get all existing or entered component mark from no. 2
+        //4. Get All individual students of the select class, semester, section.
+        //5. Loop through individual students
+            // Loop through subjects of each student
+            ///Loop through each subject Component With Passmark greater than Zero to decide pass or failed.
+            // loop through each subject Components
         StudentOwnSubjects = this.StudentSubjects.filter(studentsubject => {
           return studentsubject.ClassId == pClassId
             && studentsubject.SectionId == pSectionId
             && studentsubject.SemesterId == pSemesterId
             && studentsubject.SelectHowMany > 0;
         });
-        // }
-        // else {
-        //   StudentOwnSubjects = this.StudentSubjects.filter(studentsubject => {
-        //     return studentsubject.ClassId == pClassId && studentsubject.SelectHowMany > 0
-        //   });
-        // }
-        // StudentOwnSubjects = StudentOwnSubjects.sort((a, b) => {
-        //   if (a.SubjectTypeId == b.SubjectTypeId) 
-        //     return (a.ClassSubjectId < b.ClassSubjectId)?-1:(a.ClassSubjectId > b.ClassSubjectId) ? 1 : 0; 
-        //   else
-        //     return a.SubjectTypeId < b.SubjectTypeId? -1 : 1;
-        // });
-        // console.log("StudentOwnSubjects",StudentOwnSubjects)
-        var _examSubjectMarkComponentDefn: any[] = [];
-        //let semesterWise = this.ClassSubjectComponents.filter(c => c.SemesterId > 0);
-        //let sectionWise = this.ClassSubjectComponents.filter(c => c.SectionId > 0);
-        //if (semesterWise.length > 0 && sectionWise.length > 0) {
-          _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
+        
+        var _examAllSelectedClsSectionSemSubjectsMarkCompntDefn: any[] = [];
+          _examAllSelectedClsSectionSemSubjectsMarkCompntDefn = this.ClassSubjectComponents.filter(c =>
+          c.ClassId == pClassId
+          && c.ExamId == pExamId
+          && c.SectionId == pSectionId// ? pSectionId : c.SectionId
+          && c.SemesterId == pSemesterId);// ? pSemesterId : c.SemesterId);
+        if (_examAllSelectedClsSectionSemSubjectsMarkCompntDefn.length == 0) {
+          _examAllSelectedClsSectionSemSubjectsMarkCompntDefn = this.ClassSubjectComponents.filter(c =>
             c.ClassId == pClassId
-            && c.ExamId == pExamId
-            && c.SectionId == pSectionId// ? pSectionId : c.SectionId
-            && c.SemesterId == pSemesterId);// ? pSemesterId : c.SemesterId);
-            if(_examSubjectMarkComponentDefn.length==0)
-            {
-              _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
-                c.ClassId == pClassId
-                && c.ExamId == pExamId);
-            }
-        // }
-        // else if (semesterWise.length > 0 && sectionWise.length == 0) {
-        //   _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
-        //     c.ClassId == pClassId
-        //     && c.ExamId == pExamId
-        //     && c.SemesterId == pSemesterId);// ? pSemesterId : c.SemesterId);
-        // }
-        // else if (semesterWise.length == 0 && sectionWise.length > 0) {
-        //   _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
-        //     c.ClassId == pClassId
-        //     && c.ExamId == pExamId
-        //     && c.SectionId == pSectionId);// ? pSemesterId : c.SemesterId);
-        // }
-        // else if (semesterWise.length == 0 && sectionWise.length == 0) {
-        //   _examSubjectMarkComponentDefn = this.ClassSubjectComponents.filter(c =>
-        //     c.ClassId == pClassId
-        //     && c.ExamId == pExamId);// ? pSemesterId : c.SemesterId);
-        // }
+            && c.ExamId == pExamId);
+        }
+       
         var filteredExistingComponentMarks: any[] = [];
 
         examComponentResult.value.forEach(d => {
-          var present = _examSubjectMarkComponentDefn.filter((f: any) => f.ClassSubjectMarkComponentId == d.ClassSubjectMarkComponentId)
+          var present = _examAllSelectedClsSectionSemSubjectsMarkCompntDefn.filter((f: any) => f.ClassSubjectMarkComponentId == d.ClassSubjectMarkComponentId)
           if (present.length > 0)
             filteredExistingComponentMarks.push(d);
         })
-        this.ClassFullMark = 0;
+        this.FullMarkForAllSubjects100Pc = 0;
         var ForGrading, ForNonGrading;
 
         StudentOwnSubjects.forEach(f => {
@@ -736,7 +716,7 @@ export class VerifyResultsComponent implements OnInit {
         var viewMarkPercent = this.searchForm.get("viewMarkPercentCheckBox")?.value;
 
         /////////
-        var subjectCount = 0;
+        var compulsorySubjectCount = 0;
         var _subjectCategoryMarkingId = 0;
         var _objSubjectCat = this.SubjectCategory.filter((f: any) => f.MasterDataName.toLowerCase() == 'marking')
         if (_objSubjectCat.length > 0)
@@ -745,19 +725,19 @@ export class VerifyResultsComponent implements OnInit {
         //   && allsubj.ClassId == pClassId)
 
         let clssubj = globalconstants.getFilteredClassSubjects(this.ClassSubjects, pClassId, pSectionId, pSemesterId);
-        var _noOfSubjectForAStudent = clssubj.filter(allsubj => allsubj.SubjectCategoryId == _subjectCategoryMarkingId);
-        var SubjectCounts = alasql("select SubjectTypeId,SubjectType,SelectHowMany from ? ", [_noOfSubjectForAStudent]);
-        subjectCount = SubjectCounts.filter(com => com.SubjectType.toLowerCase() == 'compulsory').length;
+        var _noOfMarkingSubjectForAStudent = clssubj.filter(allsubj => allsubj.SubjectCategoryId == _subjectCategoryMarkingId);
+        var AllMarkingSubjectCounts = alasql("select SubjectTypeId,SubjectType,SelectHowMany from ? ", [_noOfMarkingSubjectForAStudent]);
+        compulsorySubjectCount = AllMarkingSubjectCounts.filter(com => com.SubjectType.toLowerCase() == 'compulsory').length;
         //var OtherthanCompulsory= SubjectCounts.filter(com=>com.SubjectType.toLowerCase() !='compulsory');
-        var withoutCompulsory = this.SubjectTypes.filter((s: any) => s.SubjectTypeName.toLowerCase() != 'compulsory');
-        var subjectsWithNotCompulsory = SubjectCounts.filter(com => com.SubjectType.toLowerCase() != 'compulsory');
-        var uniqueTypes = alasql("select distinct SubjectTypeId,SubjectType,SelectHowMany from ?", [subjectsWithNotCompulsory]);
+        var notCompulsorySubjectType = this.SubjectTypes.filter((s: any) => s.SubjectTypeName.toLowerCase() != 'compulsory');
+        var subjectsWithNotCompulsory = AllMarkingSubjectCounts.filter(com => com.SubjectType.toLowerCase() != 'compulsory');
+        var uniqueTypesOtherthanCompulsoryType = alasql("select distinct SubjectTypeId,SubjectType,SelectHowMany from ?", [subjectsWithNotCompulsory]);
 
-        subjectsWithNotCompulsory = uniqueTypes.filter(sub => withoutCompulsory.findIndex(fi => fi.SubjectTypeId == sub.SubjectTypeId) > -1);
-        subjectCount += subjectsWithNotCompulsory.reduce((acc, current) => acc + current.SelectHowMany, 0);
+        subjectsWithNotCompulsory = uniqueTypesOtherthanCompulsoryType.filter(sub => notCompulsorySubjectType.findIndex(fi => fi.SubjectTypeId == sub.SubjectTypeId) > -1);
+        let allSubjectCounts = compulsorySubjectCount + subjectsWithNotCompulsory.reduce((acc, current) => acc + current.SelectHowMany, 0);
 
-        console.log("_noOfSubjectForAStudent", subjectCount)
-        this.ClassFullMark = subjectCount * 100;
+        console.log("_noOfSubjectForAStudent", allSubjectCounts)
+        this.FullMarkForAllSubjects100Pc = allSubjectCounts * 100;
         ////////  
 
         //for each student
@@ -785,7 +765,7 @@ export class VerifyResultsComponent implements OnInit {
 
           var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student)
           forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.SubjectType.localeCompare(b.SubjectType));
-        
+
           forEachSubjectOfStud.forEach(eachsubj => {
 
             // if (eachsubj.Subject == 'Geography') {
@@ -798,9 +778,9 @@ export class VerifyResultsComponent implements OnInit {
 
             var markObtained = alasql("select ExamId,StudentClassSubjectId,SUM(Marks) as Marks FROM ? where StudentClassSubjectId = ? GROUP BY StudentClassSubjectId,ExamId",
               [filteredExistingComponentMarks, eachsubj.StudentClassSubjectId]);
-            var _subjectPassMarkFullMark = alasql("select ClassSubjectId,SUM(PassMark) as PassMark,SUM(FullMark) as FullMark,SUM(OverallPassMark) as OverallPassMark FROM ? where ClassSubjectId = ? GROUP BY ClassSubjectId",
-              [_examSubjectMarkComponentDefn, eachsubj.ClassSubjectId]);
-            if (_subjectPassMarkFullMark.length == 0) {
+            var _subjectPassMarkFullMarkFromDefn = alasql("select ClassSubjectId,SUM(PassMark) as PassMark,SUM(FullMark) as FullMark,SUM(OverallPassMark) as OverallPassMark FROM ? where ClassSubjectId = ? GROUP BY ClassSubjectId",
+              [_examAllSelectedClsSectionSemSubjectsMarkCompntDefn, eachsubj.ClassSubjectId]);
+            if (_subjectPassMarkFullMarkFromDefn.length == 0) {
               if (!errormessageforEachSubject.includes(eachsubj.Subject))
                 errormessageforEachSubject.push(eachsubj.Subject) //+= "\nComponent not defined for the subject: " + eachsubj.Subject;
               //this.contentservice.openSnackBar("Component not defined for the subject: " + eachsubj.Subject, globalconstants.ActionText, globalconstants.RedBackground);
@@ -809,8 +789,9 @@ export class VerifyResultsComponent implements OnInit {
             else {
               var markPercent = 0;
               var failedInComponent = false;
-              var subjectEachComponent = _examSubjectMarkComponentDefn.filter(comp => comp.PassMark > 0 && comp.ClassSubjectId == eachsubj.ClassSubjectId)
-              subjectEachComponent.forEach(compmarkobtained => {
+              //deciding pass or failed.
+              var subjectEachComponentPassmarkGreaterthanZero = _examAllSelectedClsSectionSemSubjectsMarkCompntDefn.filter(comp => comp.PassMark > 0 && comp.ClassSubjectId == eachsubj.ClassSubjectId)
+              subjectEachComponentPassmarkGreaterthanZero.forEach(compmarkobtained => {
                 let componentobtainedmark = filteredExistingComponentMarks.filter(eres => eres.StudentClassSubjectId == eachsubj.StudentClassSubjectId
                   && eres.ClassSubjectMarkComponentId == compmarkobtained.ClassSubjectMarkComponentId)
                 //var componentPercent = (compmarkobtained.FullMark / _subjectPassMarkFullMark[0].FullMark) * 100;
@@ -823,26 +804,26 @@ export class VerifyResultsComponent implements OnInit {
                 else
                   failedInComponent = true;
               })
-              var subjectEachComponentWithPassmarkZero = _examSubjectMarkComponentDefn.filter(comp => comp.ClassSubjectId == eachsubj.ClassSubjectId)
-              //console.log("_examSubjectMarkComponentDefn",_examSubjectMarkComponentDefn);
-              subjectEachComponentWithPassmarkZero.forEach(compmarkobtained => {
-                let componentobtainedmark = filteredExistingComponentMarks.filter(eres => eres.StudentClassSubjectId == eachsubj.StudentClassSubjectId
-                  && eres.ClassSubjectMarkComponentId == compmarkobtained.ClassSubjectMarkComponentId)
-                if (componentobtainedmark.length > 0) {
-                  let fullmarkpercent = compmarkobtained.FullMark * 100;
-                  let componentPercent = parseFloat((fullmarkpercent / _subjectPassMarkFullMark[0].FullMark).toFixed(5));
-                  let dividend = (componentobtainedmark[0].Marks * componentPercent).toFixed(5);
-                  markPercent = +parseFloat((markPercent + (parseFloat(dividend) / compmarkobtained.FullMark)) + "").toFixed(2);
+              var eachComponentOfCurrentSubjectFromDefn = _examAllSelectedClsSectionSemSubjectsMarkCompntDefn.filter(comp => comp.ClassSubjectId == eachsubj.ClassSubjectId)
+              
+              eachComponentOfCurrentSubjectFromDefn.forEach(compmarkFromDefn => {
+                let componentObtainedmark = filteredExistingComponentMarks.filter(eres => eres.StudentClassSubjectId == eachsubj.StudentClassSubjectId
+                  && eres.ClassSubjectMarkComponentId == compmarkFromDefn.ClassSubjectMarkComponentId)
+                if (componentObtainedmark.length > 0) {
+                  let componentfullmarkpercentFromDefn = compmarkFromDefn.FullMark * 100;
+                  let componentPercentOutOfFullMarkFromDefn = parseFloat((componentfullmarkpercentFromDefn / _subjectPassMarkFullMarkFromDefn[0].FullMark).toFixed(5));
+                  let dividend = (componentObtainedmark[0].Marks * componentPercentOutOfFullMarkFromDefn).toFixed(5);
+                  markPercent = +parseFloat((markPercent + (parseFloat(dividend) / compmarkFromDefn.FullMark)) + "").toFixed(2);
                 }
                 ////////////////////added for component mark display
-                if (subjectEachComponentWithPassmarkZero.length > 1) {
-                  if (this.displayedColumns.indexOf(compmarkobtained.SubjectComponentName) == -1 && compmarkobtained.SubjectComponentName) {
-                    this.displayedColumns.push(compmarkobtained.SubjectComponentName);
+                if (eachComponentOfCurrentSubjectFromDefn.length > 1) {
+                  if (this.displayedColumns.indexOf(compmarkFromDefn.SubjectComponentName) == -1 && compmarkFromDefn.SubjectComponentName) {
+                    this.displayedColumns.push(compmarkFromDefn.SubjectComponentName);
                   }
-                  if (componentobtainedmark.length > 0)
-                    ForNonGrading[compmarkobtained.SubjectComponentName] = componentobtainedmark[0].Marks;
+                  if (componentObtainedmark.length > 0)
+                    ForNonGrading[compmarkFromDefn.SubjectComponentName] = componentObtainedmark[0].Marks;
                   else
-                    ForNonGrading[compmarkobtained.SubjectComponentName] = 0;
+                    ForNonGrading[compmarkFromDefn.SubjectComponentName] = 0;
                 }
                 /////////////////////
               })
@@ -900,11 +881,11 @@ export class VerifyResultsComponent implements OnInit {
                 else if (_subjectCategoryName == 'marking') {
 
                   if (!failedInComponent)//if passed in all components;
-                    _statusFail = markObtained[0].Marks < _subjectPassMarkFullMark[0].OverallPassMark;
+                    _statusFail = markObtained[0].Marks < _subjectPassMarkFullMarkFromDefn[0].OverallPassMark;
 
                   //_statusFail = ((markObtained[0].Marks * 100) / _subjectPassMarkFullMark[0].FullMark) < _subjectPassMarkFullMark[0].OverallPassMark
 
-                  ForNonGrading["FullMark"] = this.ClassFullMark;
+                  ForNonGrading["FullMark"] = this.FullMarkForAllSubjects100Pc;
 
                   if (failedInComponent || _statusFail) {
                     ForNonGrading["FailCount"] += 1;
@@ -1105,7 +1086,7 @@ export class VerifyResultsComponent implements OnInit {
       });
       this.GetSubjectTypes();
     });
-    
+
     this.GetClassGroup();
     this.GetClassGroupMapping();
     this.GetExams();
@@ -1198,7 +1179,7 @@ export class VerifyResultsComponent implements OnInit {
       this.Students = studentList.filter((s: any) =>
         s["Active"] == 1 && s.StudentClasses
         && s.StudentClasses.length > 0
-        && s.StudentClasses[0].ClassId == _classId       
+        && s.StudentClasses[0].ClassId == _classId
       );
       this.ClearData();
       if (this.Students.length == 0) {
@@ -1352,7 +1333,7 @@ export class VerifyResultsComponent implements OnInit {
         //debugger;
         this.SubjectTypes = [...data.value];
         this.GetClassSubject();
-        
+
       })
   }
   GetSubjectComponents() {

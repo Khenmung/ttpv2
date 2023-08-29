@@ -675,7 +675,8 @@ export class EvaluationresultlistComponent implements OnInit {
     var _searchSectionId = this.searchForm.get("searchSectionId")?.value;
     var _searchSemesterId = this.searchForm.get("searchSemesterId")?.value;
     var _examId = this.searchForm.get("searchExamId")?.value;
-
+    this.StudentEvaluationList = [];
+    this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);
     var _evaluationGroupId = 0;
     this.loading = true;
     if (_evaluationMasterId == 0) {

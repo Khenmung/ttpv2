@@ -23,7 +23,7 @@ export class CertificateconfigComponent implements OnInit {
   RowsToUpdate = -1;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   ClassId = 0;
@@ -32,10 +32,10 @@ export class CertificateconfigComponent implements OnInit {
   FilterOrgSubOrg = '';
   loading = false;
   //Category :any[]= [];
-  CertificateConfigList:any[]= [];
-  SelectedBatchId = 0;SubOrgId = 0;
+  CertificateConfigList: any[] = [];
+  SelectedBatchId = 0; SubOrgId = 0;
   dataSource: MatTableDataSource<any>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   CertificateConfigData = {
     CertificateConfigId: 0,
     Title: '',
@@ -47,8 +47,8 @@ export class CertificateconfigComponent implements OnInit {
     OrgId: 0
   };
   filteredMaster: Observable<ICertificateConfig[]>;
-  CertificateConfigForUpdate :any[]= [];
-  StudentVariableNames :any[]= [];
+  CertificateConfigForUpdate: any[] = [];
+  StudentVariableNames: any[] = [];
   displayedColumns = [
     "CertificateConfigId",
     "Title",
@@ -152,13 +152,13 @@ export class CertificateconfigComponent implements OnInit {
       this.contentservice.openSnackBar("Please enter description.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    if (row.ParentId == 0) {
-      this.loading = false;
-      this.contentservice.openSnackBar("Please select parent.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
+    // if (row.ParentId == 0) {
+    //   this.loading = false;
+    //   this.contentservice.openSnackBar("Please select parent.", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let checkFilterString = this.FilterOrgSubOrg + " and Title eq '" + row.Title + "' and ParentId eq " + row.ParentId
     this.RowsToUpdate = 0;
 
@@ -178,17 +178,21 @@ export class CertificateconfigComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-
+          let _parentId = this.searchForm.get("searchTitleId")?.value.CertificateConfigId;
+          if (row.ParentId > 0)
+            _parentId = row.ParentId;
           this.CertificateConfigForUpdate = [];
+
           this.CertificateConfigForUpdate.push(
             {
               CertificateConfigId: row.CertificateConfigId,
               Title: row.Title,
-              ParentId: row.ParentId,
+              ParentId: _parentId,
               Sequence: row.Sequence,
               Description: row.Description,
               Confidential: row.Confidential,
               OrgId: this.LoginUserDetail[0]['orgId'],
+              SubOrgId: this.SubOrgId,
               Active: row.Active
             });
 
@@ -245,8 +249,9 @@ export class CertificateconfigComponent implements OnInit {
           this.loadingFalse();
         });
   }
-  AllCertificateConfig :any[]= [];
-  TopCertificateConfig :any[]= [];
+  AllCertificateConfig: any[] = [];
+  TopCertificateConfig: any[] = [];
+  Defaultvalue = 0;
   GetAllCertificateConfig() {
     debugger;
     var filterStr = "Active eq true and (OrgId eq 0 or (" + this.FilterOrgSubOrg + "))";
@@ -269,8 +274,12 @@ export class CertificateconfigComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AllCertificateConfig = [...data.value];
-        var _certificatetypeId = this.AllCertificateConfig.filter((f:any) => f.Title.toLowerCase() == 'certificate type')[0].CertificateConfigId;
-        this.TopCertificateConfig = this.AllCertificateConfig.filter(a => a.ParentId == _certificatetypeId);
+        var _certificatetypeId = this.AllCertificateConfig.filter((f: any) => f.Title.toLowerCase() == 'certificate type')[0].CertificateConfigId;
+        this.TopCertificateConfig = this.AllCertificateConfig.filter(a => a.CertificateConfigId == _certificatetypeId);
+        // if(this.TopCertificateConfig.length==0)
+        // {
+        //   this.TopCertificateConfig = this.AllCertificateConfig.filter(a => a.CertificateConfigId == _certificatetypeId);
+        // }
         this.loadingFalse();
       });
   }
@@ -282,8 +291,10 @@ export class CertificateconfigComponent implements OnInit {
     debugger;
     var filterStr = this.FilterOrgSubOrg;// "OrgId eq " + this.LoginUserDetail[0]["orgId"];
     var _searchCertificateConfigId = this.searchForm.get("searchTitleId")?.value.CertificateConfigId;
+
     if (_searchCertificateConfigId > 0) {
       filterStr += " and ParentId eq " + _searchCertificateConfigId;
+      this.TopCertificateConfig = this.AllCertificateConfig.filter(a => a.CertificateConfigId == _searchCertificateConfigId);
     }
     else {
       this.loading = false;
@@ -309,7 +320,7 @@ export class CertificateconfigComponent implements OnInit {
     this.CertificateConfigList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var _subCategory :any[]= [];
+        var _subCategory: any[] = [];
         this.CertificateConfigList = data.value.map(m => {
           m.Action = false;
           return m;
@@ -327,7 +338,7 @@ export class CertificateconfigComponent implements OnInit {
   }
   SelectSubCategory(row, event) {
     if (row.CategoryId > 0)
-      row.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
+      row.SubCategories = this.allMasterData.filter((f: any) => f.ParentId == row.CategoryId);
     else
       row.SubCategories = [];
     this.onBlur(row);
@@ -355,6 +366,14 @@ export class CertificateconfigComponent implements OnInit {
     this.CertificateConfigList = [];
     this.CertificateConfigList.push(newdata);
     this.dataSource = new MatTableDataSource<ICertificateConfig>(this.CertificateConfigList);
+    var _searchCertificateConfigId = this.searchForm.get("searchTitleId")?.value.CertificateConfigId;
+
+    if (_searchCertificateConfigId > 0)
+      this.TopCertificateConfig = this.AllCertificateConfig.filter(a => a.CertificateConfigId == _searchCertificateConfigId);
+    else {
+      var _certificatetypeId = this.AllCertificateConfig.filter((f: any) => f.Title.toLowerCase() == 'certificate type')[0].CertificateConfigId;
+      this.TopCertificateConfig = this.AllCertificateConfig.filter(a => a.CertificateConfigId == _certificatetypeId);
+    }
   }
   onBlur(row) {
     row.Action = true;

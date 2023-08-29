@@ -6,21 +6,21 @@
    
     <mat-table #table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="PID">
-            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:flex ;">              
+            <mat-header-cell *matHeaderCellDef mat-sort-header>              
             </mat-header-cell>
-            <mat-cell *matCellDef="let element">
+            <mat-cell *matCellDef="let element" style="width:60px">
                {{element.PID}}
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="FirstName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>
-                <span style="display: flex;flex-direction: column;justify-content: start;">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> First Name
+                <!-- <span style="display: flex;flex-direction: column;justify-content: start;">
                     <span style="justify-content: start;display: flex;">Student</span>
-                    <mat-form-field style="width: 150px;">
+                    <mat-form-field>
                         <mat-label>search name</mat-label>
                         <input matInput [formControl]="nameFilter" autocomplete="Off">
                     </mat-form-field>
-                </span>
+                </span> -->
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 {{element.FirstName}}
