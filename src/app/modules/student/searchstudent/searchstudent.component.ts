@@ -146,7 +146,7 @@ export class searchstudentComponent implements OnInit {
       this.allMasterData = this.tokenStorage.getMasterData()!;
       this.StudentSearch = this.tokenStorage.getStudentSearch()!;
 
-      var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+      //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
       //   this.Classes = [...data.value];
       this.GetMasterData();
@@ -315,6 +315,7 @@ export class searchstudentComponent implements OnInit {
     if (searchObj.length > 0 && searchObj[0].Value > 0
       && this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() != 'student') {
       this.studentSearchForm.patchValue({ searchClassId: searchObj[0].Value })
+      this.BindSemesterSection();
       var searchSectionIdObj = this.StudentSearch.filter((f:any) => f.Text == 'SectionId');
       if (searchSectionIdObj.length > 0 && searchSectionIdObj[0].Value > 0) {
         this.studentSearchForm.patchValue({ searchSectionId: searchSectionIdObj[0].Value })

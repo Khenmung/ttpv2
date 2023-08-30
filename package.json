@@ -1,6 +1,6 @@
 {
   "name": "ttpapps",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "scripts": {
     "ng": "ng",
     "start": "nx serve",
@@ -83,6 +83,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "nx": "^16.5.2",
-    "typescript": "~5.1.3"
+    "typescript": "~5.1.3",
+    "webpack": "^5.88.2"
   }
 }

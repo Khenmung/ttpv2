@@ -33,28 +33,31 @@ export class InactivestudentComponent {
   LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
-  InActiveStudents:any[]=[];
+  InActiveStudents: any[] = [];
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  
+  ReasonForLeaving: any[] = [];
   loading = false;
   Genders: any[] = [];
   Classes: any[] = [];
-  SelectedBatchId=0;
-  SubOrgId=0; 
+  SelectedBatchId = 0;
+  SubOrgId = 0;
   StudentClassList: IStudentClass[] = [];
   dataSource: MatTableDataSource<IStudentClass>;
   allMasterData: any[] = [];
   searchForm: UntypedFormGroup;
   FeeCategories: any[] = [];
   SelectedApplicationId = 0;
-  
+
   displayedColumns = [
     'PID',
     'FirstName',
     'LastName',
     'FatherName',
     'MotherName',
+    'ReasonForLeaving',
+    'UpdatedDate',
+    'Notes',
     'Active',
     'Action'
   ];
@@ -78,11 +81,11 @@ export class InactivestudentComponent {
   ) { }
 
   ngOnInit(): void {
-    
-    
+
+
     this.PageLoad();
   }
-  
+
   PageLoad() {
     debugger;
     this.loading = true;
@@ -93,7 +96,7 @@ export class InactivestudentComponent {
     else {
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
       this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
-     
+
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
 
@@ -101,33 +104,33 @@ export class InactivestudentComponent {
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
 
-     
+
       this.GetStudents();
     }
   }
-  
-  
+
+
   onBlur(row) {
     row.Action = true;
   }
   UploadExcel() {
 
   }
-  
+
   exportArray() {
     if (this.InActiveStudents.length > 0) {
       const datatoExport: Partial<IStudentDownload>[] = this.InActiveStudents;
       TableUtil.exportArrayToExcel(datatoExport, "InActiveStudents");
     }
   }
- 
- 
+
+
   updateActive(row, value) {
 
     row.Active = value.checked ? 1 : 0;
     row.Action = true;
   }
-    
+
   Delete(row) {
 
     this.openDialog(row)
@@ -157,7 +160,7 @@ export class InactivestudentComponent {
     let toUpdate = {
       Active: 1,
       Deleted: false,
-      BatchId:this.SelectedBatchId,
+      BatchId: this.SelectedBatchId,
       UpdatedDate: new Date()
     }
 
@@ -183,11 +186,19 @@ export class InactivestudentComponent {
     }
     return filterFunction;
   }
-  
+
   isNumeric(str: number) {
     if (typeof str != "string") return false // we only process strings!  
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
       !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+  }
+  GetMasterData() {
+    this.allMasterData = this.tokenStorage.getMasterData()!;
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
+    //     debugger;
+    //     this.allMasterData = [...data.value];
+    this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
   }
 
   GetStudents() {
@@ -200,6 +211,9 @@ export class InactivestudentComponent {
       'LastName',
       'FatherName',
       'MotherName',
+      'UpdatedDate',
+      "ReasonForLeavingId",
+      "Notes",
       "PID",
       "Active"
     ];
@@ -209,19 +223,30 @@ export class InactivestudentComponent {
     this.loading = true;
     this.PageLoading = true;
     this.dataservice.get(list).subscribe((data: any) => {
-      this.InActiveStudents =[...data.value];
-      if(this.InActiveStudents.length==0)
-      {
-        this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage,globalconstants.ActionText,globalconstants.RedBackground);
+
+      this.InActiveStudents = data.value.map(f => {
+
+        let item = this.ReasonForLeaving.filter(h => h.MasterDataId == f.ReasonForLeavingId)
+        if (item.length > 0)
+          f.ReasonForLeaving = item[0].MasterDataName
+        else
+          f.ReasonForLeaving = '';
+        return f;
+      })
+
+      if (this.InActiveStudents.length == 0) {
+        this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
       }
 
       this.dataSource = new MatTableDataSource<any>(this.InActiveStudents);
-      this.loading=false;
-      this.PageLoading=false;
+      this.dataSource.paginator=this.paginator;
+      this.dataSource.sort = this.sort;
+      this.loading = false;
+      this.PageLoading = false;
     })
 
   }
- 
+
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
     // let Id = 0;

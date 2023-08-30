@@ -182,6 +182,7 @@ export class PromoteclassComponent implements OnInit {
       this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
       if (this.PreviousBatchId == -1) {
         this.loading = false;
+        this.PageLoading=false;
         this.contentservice.openSnackBar("No previous batch exists!", globalconstants.ActionText, globalconstants.RedBackground);
       }
       else {

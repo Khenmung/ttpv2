@@ -813,7 +813,7 @@ export class VerifyResultsComponent implements OnInit {
                   let componentfullmarkpercentFromDefn = compmarkFromDefn.FullMark * 100;
                   let componentPercentOutOfFullMarkFromDefn = parseFloat((componentfullmarkpercentFromDefn / _subjectPassMarkFullMarkFromDefn[0].FullMark).toFixed(5));
                   let dividend = (componentObtainedmark[0].Marks * componentPercentOutOfFullMarkFromDefn).toFixed(5);
-                  markPercent = +parseFloat((markPercent + (parseFloat(dividend) / compmarkFromDefn.FullMark)) + "").toFixed(2);
+                  markPercent = +Math.round(parseFloat((markPercent + (parseFloat(dividend) / compmarkFromDefn.FullMark)) + "")).toFixed(1);
                 }
                 ////////////////////added for component mark display
                 if (eachComponentOfCurrentSubjectFromDefn.length > 1) {

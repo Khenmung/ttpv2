@@ -5,6 +5,9 @@
 }
 
 .mat-field-FirstName,
-.mat-field-FatherName,.mat-field-MotherName {
+.mat-field-FatherName,.mat-field-MotherName,.mat-field-ReasonForLeaving,.mat-field-Notes {
     flex: 1 0 200px;
+}
+.mat-field-UpdatedDate{
+    flex:1 0 140px;
 }

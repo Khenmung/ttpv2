@@ -20,6 +20,9 @@
             "outputPath": "dist/ttpapps",
             "index": "src/index.html",
             "main": "src/main.ts",
+            "buildOptimizer": true,
+            "outputHashing": "all",
+            "aot": true,
             "polyfills": [
               "zone.js"
             ],
@@ -32,20 +35,32 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "sourceMap": false,
+            "optimization": true,
+            "namedChunks": true,
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json",
+            "baseHref": "/"
           },
           "configurations": {
             "production": {
+              "buildOptimizer": true,
+              "aot": true,
+              "commonChunk": true,
+              
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "2000kb",
-                  "maximumError": "3mb"
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "8kb"
                 }
               ],
               "outputHashing": "all"

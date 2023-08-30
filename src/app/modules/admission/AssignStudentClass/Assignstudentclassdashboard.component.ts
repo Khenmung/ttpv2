@@ -650,7 +650,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   exportArray() {
     if (this.StudentClassForDownload.length > 0) {
       const datatoExport: Partial<IStudentDownload>[] = this.StudentClassForDownload;
-      TableUtil.exportArrayToExcel(datatoExport, "studentclassfeetypedetail");
+      TableUtil.exportArrayToExcel(datatoExport, "studentclassdetail");
     }
   }
   CopyFromPreviousClassAndBatch() {

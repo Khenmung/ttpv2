@@ -3,13 +3,13 @@
         <div><strong>In Active Student</strong></div>
     </div>
     <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
-   
+
     <mat-table #table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="PID">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>              
+            <mat-header-cell *matHeaderCellDef mat-sort-header>PID
             </mat-header-cell>
             <mat-cell *matCellDef="let element" style="width:60px">
-               {{element.PID}}
+                {{element.PID}}
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="FirstName">
@@ -44,10 +44,27 @@
                 {{element.MotherName}}
             </mat-cell>
         </ng-container>
-        
+        <ng-container matColumnDef="UpdatedDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Leaving Date </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.UpdatedDate|date:'dd/MM/yyyy'}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Notes">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Notes </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Notes}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="ReasonForLeaving">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Reason For Leaving </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ReasonForLeaving}}
+            </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="Active">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
-             Active
+                Active
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
@@ -80,4 +97,4 @@
             </mat-icon>
         </button>
     </div> -->
-    </div>
+</div>
