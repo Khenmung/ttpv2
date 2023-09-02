@@ -529,8 +529,8 @@ export class LeaveBalanceComponent implements OnInit {
             if (existingdata.length > 0) {
               existingdata.forEach(ex => {
                 ex.Leave = pol.Leave;
-                ex.Year = pol.Batch;
-                ex.Employee = item.Employee.FirstName + (item.Employee.LastName ? ' ' + item.Employee.LastName : '');
+                ex.Year = pol.Year;
+                ex.Employee = item.Employee.EmployeeCode + "-" + item.Employee.FirstName + (item.Employee.LastName ? ' ' + item.Employee.LastName : '' );
                 this.StoredForUpdate.push(
                   {
                     LeaveBalanceId: ex.LeaveBalanceId,
@@ -553,8 +553,8 @@ export class LeaveBalanceComponent implements OnInit {
               if (pol.BatchId == this.SelectedBatchId) {
                 var newdata = {
                   LeaveBalanceId: 0,
-                  Employee: item.Employee.FirstName + _lastName,
-                  Year: pol.Batch,
+                  Employee:item.Employee.EmployeeCode +"-"+ item.Employee.FirstName + _lastName,
+                  Year: pol.Year,
                   Leave: pol.Leave,
                   EmployeeId: item.Employee.EmpEmployeeId,
                   DepartmentId: item.DepartmentId,
@@ -629,7 +629,7 @@ export class LeaveBalanceComponent implements OnInit {
 
     list.fields = ["DesignationId,WorkAccountId,JobTitleId,DepartmentId,EmpGradeId,EmployeeId"];
     list.PageName = "EmpEmployeeGradeSalHistories";
-    list.lookupFields = ["Employee($SELECT=EmpEmployeeId,FirstName,LastName,ShortName,GenderId,PresentAddressCountryId,PresentAddressStateId,DOB,DOJ,CategoryId,EmploymentStatusId,EmploymentTypeId,NatureId,ConfirmationDate,MaritalStatusId)"];
+    list.lookupFields = ["Employee($SELECT=EmpEmployeeId,EmployeeCode,FirstName,LastName,ShortName,GenderId,PresentAddressCountryId,PresentAddressStateId,DOB,DOJ,CategoryId,EmploymentStatusId,EmploymentTypeId,NatureId,ConfirmationDate,MaritalStatusId)"];
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1 and IsCurrent eq 1" + searchfilter];
     return this.dataservice.get(list);
   }

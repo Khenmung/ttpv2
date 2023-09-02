@@ -39,11 +39,11 @@
             "vendorChunk": true,
             "extractLicenses": false,
             "sourceMap": false,
-            "optimization": true,
+            "optimization": { "fonts": false},
             "namedChunks": true,
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json",
-            "baseHref": "/"
+            "baseHref": "/#/"
           },
           "configurations": {
             "production": {

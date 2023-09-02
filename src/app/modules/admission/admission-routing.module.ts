@@ -4,7 +4,10 @@ import { HomeComponent } from '../../shared/components/home/home.component';
 import { AdmissionboardComponent } from './admissionboard/admissionboard.component';
 import { AssignStudentclassdashboardComponent } from './AssignStudentClass/Assignstudentclassdashboard.component';
 import { PromoteclassComponent } from './promoteclass/promoteclass.component';
-import { InactivestudentComponent } from './inactivestudent/inactivestudent.component';
+import { StudenthistoryComponent } from './studenthistory/studenthistory.component';
+import { StudentDatadumpComponent } from './studentdatadump/studentdatadump.component';
+import { ExcelDataManagementComponent } from './excel-data-management/excel-data-management.component';
+import { AdmissionWithdrawnComponent } from './admissionwithdrawn/admissionwithdrawn.component';
 
 const routes: Routes = [
   {
@@ -26,5 +29,8 @@ export const AdmissionComponents = [
   PromoteclassComponent,
   AdmissionboardComponent,
   AssignStudentclassdashboardComponent,
-  InactivestudentComponent
+  AdmissionWithdrawnComponent,
+  StudenthistoryComponent,
+  StudentDatadumpComponent,
+  ExcelDataManagementComponent
 ]

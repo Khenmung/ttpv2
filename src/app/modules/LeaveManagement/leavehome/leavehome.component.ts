@@ -1,27 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { SwUpdate } from '@angular/service-worker';
+import { Component } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { forkJoin, Observable } from 'rxjs';
-//import { string } from 'mathjs';
-import { startWith, map } from 'rxjs/operators';
+import { SwUpdate } from '@angular/service-worker';
+import alasql from 'alasql';
+import { evaluate } from 'mathjs';
+import moment from 'moment';
+import { Observable, startWith, map, forkJoin } from 'rxjs';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
-import { TokenStorageService } from '../../../_services/token-storage.service';
-import { IEmployee } from '../../employeesalary/employee-gradehistory/employee-gradehistory.component';
-import * as moment from 'moment';
-import alasql from 'alasql';
-import { evaluate } from 'mathjs';
+import { IEmployee } from '../../employeeactivity/employeeactivity/employeeactivity.component';
 
 @Component({
-  selector: 'app-employee-leave',
-  templateUrl: './employee-leave.component.html',
-  styleUrls: ['./employee-leave.component.scss']
+  selector: 'app-leavehome',
+  templateUrl: './leavehome.component.html',
+  styleUrls: ['./leavehome.component.scss']
 })
-export class EmployeeLeaveComponent implements OnInit {
+export class LeavehomeComponent {
   PageLoading = true;
   LoginUserDetail:any[]= [];
   CurrentRow: any = {};
@@ -140,14 +138,14 @@ export class EmployeeLeaveComponent implements OnInit {
     return user && user.Name ? user.Name : '';
   }
 
-
+EmployeeId=0;
   PageLoad() {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.EMPLOYEE);
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.LEAVEHOME);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
@@ -160,7 +158,7 @@ export class EmployeeLeaveComponent implements OnInit {
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-
+        this.EmployeeId = this.tokenStorage.getEmployeeId()!;
         this.GetMasterData();
       }
     }
@@ -418,6 +416,7 @@ export class EmployeeLeaveComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
         this.GetEmployees();
         this.GetLeavePolicy();
+        this.GetEmployeeLeave();
       });
   }
   GetEmployees() {
@@ -472,11 +471,11 @@ export class EmployeeLeaveComponent implements OnInit {
   GetEmployeeLeave() {
     debugger;
     //var orgIdSearchstr = this.FilterOrgSubOrg;// 'and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    var _EmployeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
-    if (!_EmployeeId) {
-      this.contentservice.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
-    }
-    else {
+    // var _EmployeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
+    // if (!_EmployeeId) {
+    //   this.contentservice.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
+    // }
+    // else {
       this.displayedColumns = [
         "EmployeeLeaveId",
         "LeaveTypeId",
@@ -511,7 +510,8 @@ export class EmployeeLeaveComponent implements OnInit {
       ];
       this.loading = true;
       list.PageName = this.EmployeeLeaveListName;
-      list.filter = [this.FilterOrgSubOrgBatchId + " and EmployeeId eq " + _EmployeeId];
+      list.lookupFields = ["EmpEmployee($expand=EmpEmployeeGradeSalHistories;$filter=ManagerId eq " + this.EmployeeId +";$select=EmployeeGradeHistoryId)"];
+      list.filter = [this.FilterOrgSubOrgBatchId];
       //list.orderBy = "ParentId";
       this.EmployeeLeaveList = [];
       this.dataservice.get(list)
@@ -530,7 +530,7 @@ export class EmployeeLeaveComponent implements OnInit {
           this.dataSource = new MatTableDataSource<IEmployeeLeave>(this.EmployeeLeaveList);
           this.loading = false;
         })
-    }
+    //}
   }
 
   getDropDownData(dropdowntype) {

@@ -417,6 +417,7 @@ export class AdminrolepermissionComponent implements OnInit {
     element.Action = true;
   }
   updateActive(element, event) {
+    debugger;
     element.Action = true;
     element.Active = event.checked == true ? 1 : 0;
   }

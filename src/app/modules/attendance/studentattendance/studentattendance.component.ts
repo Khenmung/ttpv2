@@ -263,8 +263,8 @@ export class StudentAttendanceComponent implements OnInit {
         var studentCls = this.Students.filter((f: any) => f.StudentClasses
           && f.StudentClasses.length > 0
           && f.StudentClasses[0].ClassId == _classId
-          && f.StudentClasses[0].SectionId == (_sectionId ? _sectionId : f.StudentClasses[0].SectionId)
-          && f.StudentClasses[0].SemesterId == (_semesterId ? _semesterId : f.StudentClasses[0].SemesterId)
+          && f.StudentClasses[0].SectionId == _sectionId
+          && f.StudentClasses[0].SemesterId == _semesterId
           && f.StudentClasses[0].Active == 1);
 
         studentCls.forEach(sc => {

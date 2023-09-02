@@ -14,15 +14,15 @@ import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
-import { SharedataService } from '../../../shared/sharedata.service';
-import { IStudentDownload } from '../../DataUploadDownload/studentdatadump/studentdatadump.component';
+//import { SharedataService } from '../../../shared/sharedata.service';
+import { IStudentDownload } from '../studentdatadump/studentdatadump.component';
 
 @Component({
-  selector: 'app-inactivestudent',
-  templateUrl: './inactivestudent.component.html',
-  styleUrls: ['./inactivestudent.component.scss']
+  selector: 'app-admissionwithdrawn',
+  templateUrl: './admissionwithdrawn.component.html',
+  styleUrls: ['./admissionwithdrawn.component.scss']
 })
-export class InactivestudentComponent {
+export class AdmissionWithdrawnComponent {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -70,6 +70,8 @@ export class InactivestudentComponent {
   };
   Semesters: any[] = [];
   Students: IStudent[] = [];
+  Batches: any = [];
+  Months:any=[];
   filteredOptions: Observable<IStudentClass[]>;
   constructor(private servicework: SwUpdate,
     private dialog: MatDialog,
@@ -100,11 +102,11 @@ export class InactivestudentComponent {
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
 
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.INACTIVESTUDENT);
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.ADMISSIONWITHDRAWN);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
-
-
+      //  this.Months = this.contentservice.GetSessionFormattedMonths()!;
+      this.GetMasterData();
       this.GetStudents();
     }
   }
@@ -194,15 +196,26 @@ export class InactivestudentComponent {
   }
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
+
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SelectedApplicationId)
     //   .subscribe((data: any) => {
     //     debugger;
     //     this.allMasterData = [...data.value];
     this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
+    this.Batches = this.tokenStorage.getBatches()!;
+    this.PageLoading=false;
+    this.loading=false;
   }
 
   GetStudents() {
-    //var filterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+    //let _batchId = this.searchForm.get('searchBatchId')?.value;
+    let filterStr = this.FilterOrgSubOrg;
+    // if (_batchId)
+    //   this.contentservice.openSnackBar('Please select batch.', globalconstants.ActionText, globalconstants.RedBackground);
+    // else
+    //  filterStr += ' and BatchId eq ' + _batchId;
+
+
     this.Students = [];
     let list: List = new List();
     list.fields = [
@@ -219,7 +232,7 @@ export class InactivestudentComponent {
     ];
     list.PageName = "Students";
 
-    list.filter = [this.FilterOrgSubOrg + " and (Active eq 0 or BatchId eq 0)"];
+    list.filter = [filterStr + " and (Active eq 0 or BatchId eq 0)"];
     this.loading = true;
     this.PageLoading = true;
     this.dataservice.get(list).subscribe((data: any) => {
@@ -239,7 +252,7 @@ export class InactivestudentComponent {
       }
 
       this.dataSource = new MatTableDataSource<any>(this.InActiveStudents);
-      this.dataSource.paginator=this.paginator;
+      this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
       this.loading = false;
       this.PageLoading = false;

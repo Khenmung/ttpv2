@@ -1,15 +1,16 @@
-mat-form-field{
-    width: 98%;
-}
+
 .mat-column-Logic,.mat-column-Description{
-    flex: 0 0 200px;
+    flex: 1 0 200px;
 }
 .mat-column-Title{
-    flex: 0 0 200px;
+    flex: 1 0 200px;
 }
 .mat-column-PlanId{
-    flex:0 0 50px;
+    flex:1 0 50px;
 }
 .mat-column-Active,.mat-column-Sequence, .mat-column-PCPM,.mat-column-MinCount,.mat-column-MinPrice,.mat-column-Action{
-    flex:0 0 60px;
+    flex:1 0 60px;
 }
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

@@ -333,8 +333,10 @@ export class FeereceiptComponent implements OnInit {
     
     this.dataservice.get(list)
       .subscribe((data: any) => {
+        debugger;
         this.FeeReceipt = [...data.value];
         this.StudentFeePaymentList = [];
+
         this.FeeReceipt.forEach(f => {
 
           var received = this.Employees.filter(e => e.UserId == f.CreatedBy);
@@ -357,13 +359,14 @@ export class FeereceiptComponent implements OnInit {
               else
                 k.indx = 0
               k.PaymentOrder = feeObj[0].PaymentOrder;
+              this.StudentFeePaymentList.push(k);
             }
-            else
-              k.FeeName = '';
+            // else
+            //   k.FeeName = '';
 
 
             //k.BaseAmount = k.BaseAmount;
-            this.StudentFeePaymentList.push(k)
+            //this.StudentFeePaymentList.push(k)
           })
           var paymentobj = this.PaymentTypes.filter(p => p.MasterDataId == f.PaymentTypeId);
           if (paymentobj.length > 0) {
@@ -372,6 +375,7 @@ export class FeereceiptComponent implements OnInit {
         })
         this.calculateTotal();
         //console.log("this.FeeReceipt", this.FeeReceipt)
+       // this.FeeReceipt =this.FeeReceipt.filter(f=>f.FeeName!='');
         this.StudentFeePaymentList = this.StudentFeePaymentList.sort((a, b) => a.indx - b.indx);
         this.dataReceiptSource = new MatTableDataSource<any>(this.FeeReceipt);
         this.dataReceiptSource.sort = this.sort;

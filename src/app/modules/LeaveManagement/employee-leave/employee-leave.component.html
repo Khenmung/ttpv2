@@ -4,7 +4,7 @@
     <mat-card-content> -->
 <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
 <form [formGroup]="searchForm">
-    <mat-form-field style="width:250;margin-right: 15px;" appearance="outline">
+    <mat-form-field style="width:250px;margin-right: 15px;" appearance="outline">
         <mat-label>Employee</mat-label>
         <input type="text" matInput formControlName="searchEmployee" [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
@@ -34,7 +34,7 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <mat-select [(ngModel)]="element.LeaveTypeId" [value]="element.LeaveTypeId">
+                <mat-select [(ngModel)]="element.LeaveTypeId" [value]="element.LeaveTypeId" (selectionChange)="onBlur(element)">
                     <mat-option *ngFor="let item of LeavePolicies" [value]="item.LeavePolicyId">
                         {{item.Leave}}
                     </mat-option>
@@ -47,7 +47,7 @@
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
                 <mat-label>Start Date</mat-label>
-                <input [(ngModel)]="element.LeaveFrom" [value]="element.LeaveFrom" matInput [matDatepicker]="LeaveFrom"
+                <input [(ngModel)]="element.LeaveFrom" [value]="element.LeaveFrom" (dateChange)="dateChage(element)" matInput [matDatepicker]="LeaveFrom"
                     autocomplete="off">
                 <mat-datepicker-toggle matSuffix [for]="LeaveFrom"></mat-datepicker-toggle>
                 <mat-datepicker #LeaveFrom></mat-datepicker>
@@ -59,7 +59,7 @@
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
                 <mat-label>End Date</mat-label>
-                <input [value]="element.LeaveTo" [(ngModel)]="element.LeaveTo" matInput [matDatepicker]="LeaveTo"
+                <input [value]="element.LeaveTo" [(ngModel)]="element.LeaveTo" (dateChange)="dateChage(element)" matInput [matDatepicker]="LeaveTo"
                     autocomplete="off">
                 <mat-datepicker-toggle matSuffix [for]="LeaveTo"></mat-datepicker-toggle>
                 <mat-datepicker #LeaveTo></mat-datepicker>
@@ -70,7 +70,7 @@
         <mat-header-cell *matHeaderCellDef> Reason for leave </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <textarea type="number" matInput autocomplete="Off" [value]="element.LeaveReason"
+                <textarea type="number" matInput autocomplete="Off"(blur)="onBlur(element)" [value]="element.LeaveReason"
                     [(ngModel)]="element.LeaveReason"></textarea>
             </mat-form-field>
         </mat-cell>
@@ -79,7 +79,7 @@
         <mat-header-cell *matHeaderCellDef> No. Of Days </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <input type="number" matInput autocomplete="Off" [value]="element.NoOfDays"
+                <input [disabled]="true" type="number" matInput autocomplete="Off" [value]="element.NoOfDays"
                     [(ngModel)]="element.NoOfDays">
             </mat-form-field>
         </mat-cell>
@@ -90,7 +90,7 @@
             <mat-form-field appearance="outline">
                 <!-- [disabled]="!ApprovePermission.includes('rw')" -->
                 <mat-select [(ngModel)]="element.LeaveStatusId" 
-                    [value]="element.LeaveStatusId">
+                    [value]="element.LeaveStatusId" (selectionChange)="onBlur(element)">
                     <mat-option *ngFor="let item of LeaveStatus" [value]="item.MasterDataId">
                         {{item.MasterDataName}}
                     </mat-option>
@@ -102,7 +102,7 @@
         <mat-header-cell *matHeaderCellDef> Remarks </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <textarea matInput autocomplete="Off" [value]="element.Remarks"
+                <textarea matInput autocomplete="Off" [value]="element.Remarks" (blur)="onBlur(element)"
                     [(ngModel)]="element.Remarks"></textarea>
             </mat-form-field>
         </mat-cell>
@@ -123,7 +123,7 @@
             </button>
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <button [disabled]="loading || element.LeaveStatus.toLowerCase()!='pending'" matTooltip="save" mat-mini-fab
+            <button [disabled]="loading || !element.Action || element.LeaveStatus.toLowerCase()!='pending'" matTooltip="save" mat-mini-fab
                 color="accent" (click)="UpdateOrSave(element)">
                 <mat-icon>save</mat-icon>
                 <mat-icon *ngIf="loading">

@@ -5,8 +5,10 @@ import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { AssignStudentclassdashboardComponent } from '../AssignStudentClass/Assignstudentclassdashboard.component';
 import { PromoteclassComponent } from '../promoteclass/promoteclass.component';
-import { InactivestudentComponent } from '../inactivestudent/inactivestudent.component';
-
+import { StudenthistoryComponent } from '../studenthistory/studenthistory.component';
+import { StudentDatadumpComponent } from '../studentdatadump/studentdatadump.component';
+import {ExcelDataManagementComponent} from '../excel-data-management/excel-data-management.component';
+import { AdmissionWithdrawnComponent } from '../admissionwithdrawn/admissionwithdrawn.component';
 @Component({
   selector: 'app-admissionboard',
   templateUrl: './admissionboard.component.html',
@@ -17,11 +19,17 @@ export class AdmissionboardComponent implements AfterViewInit {
   components:any = [
     PromoteclassComponent,
     AssignStudentclassdashboardComponent,
-    InactivestudentComponent  
+    AdmissionWithdrawnComponent,
+    StudenthistoryComponent,
+    StudentDatadumpComponent,
+    ExcelDataManagementComponent  
   ];
 
   tabNames = [
     { "label": "Subject Type", "faIcon": '' },
+    { "label": "Subject Detail", "faIcon": '' },  
+    { "label": "Subject Detail", "faIcon": '' },   
+    { "label": "Subject Detail", "faIcon": '' },   
     { "label": "Subject Detail", "faIcon": '' },  
     { "label": "Subject Detail", "faIcon": '' }   
   ];
@@ -61,8 +69,20 @@ export class AdmissionboardComponent implements AfterViewInit {
     comindx = this.components.indexOf(PromoteclassComponent);
     this.GetComponents(perObj, comindx)
     
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.INACTIVESTUDENT)
-    comindx = this.components.indexOf(InactivestudentComponent);
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.ADMISSIONWITHDRAWN)
+    comindx = this.components.indexOf(AdmissionWithdrawnComponent);
+    this.GetComponents(perObj, comindx)
+    
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.STUDENTCLASSHISTORY)
+    comindx = this.components.indexOf(StudenthistoryComponent);
+    this.GetComponents(perObj, comindx)
+    
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.DOWNLOAD)
+    comindx = this.components.indexOf(StudentDatadumpComponent);
+    this.GetComponents(perObj, comindx)
+    
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.UPLOAD);
+    comindx = this.components.indexOf(ExcelDataManagementComponent);
     this.GetComponents(perObj, comindx)
 
     this.shareddata.ChangePermissionAtParent(this.Permissions.AdmissionPermission);

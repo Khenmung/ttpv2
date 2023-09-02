@@ -1,0 +1,39 @@
+
+mat-header-cell{
+    border-right: 1px solid lightgray;
+    padding: 5px;
+}
+mat-cell{
+    border-right: 1px solid lightgray;
+}
+
+// .mat-column-GenderName{
+//     justify-content: center;
+//     padding-left: 5px;
+//     flex:1 0 80px;
+// }
+// .mat-column-ClassName,
+// .mat-column-RollNo,
+// .mat-column-Section,.mat-column-Semester{
+//     flex:1 0 100px;
+// }
+
+
+// .mat-column-AdmissionDate{
+//     flex:1 0 120px;
+
+// }
+.mat-column-Remark{
+    padding-left: 5px;
+    flex:1 0 140px;
+}
+.mat-column-StudentName{
+    flex: 1 0 200px;
+}
+
+mat-cell:first-of-type{
+    padding-left: 0px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding: 15px 0px 0px 8px !important;
+  }

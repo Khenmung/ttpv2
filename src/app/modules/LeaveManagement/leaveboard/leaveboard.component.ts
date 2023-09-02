@@ -7,6 +7,7 @@ import { ContentService } from '../../../shared/content.service';
 import { globalconstants } from '../../../shared/globalconstant';
 import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
+import { LeavehomeComponent } from '../leavehome/leavehome.component';
 
 @Component({
   selector: 'app-leaveboard',
@@ -16,8 +17,9 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 export class LeaveboardComponent implements AfterViewInit { 
   PageLoading = true;
   components: any = [
-    LeavepolicyComponent,
+    LeavehomeComponent,
     EmployeeLeaveComponent,
+    LeavepolicyComponent,
     LeaveBalanceComponent,
   ];
 
@@ -25,6 +27,7 @@ export class LeaveboardComponent implements AfterViewInit {
     { 'label': '1Exam Time Table', 'faIcon': '' },
     { 'label': '1Exam Result', 'faIcon': '' },
     { 'label': '1Fee Payment Status', 'faIcon': '' },
+    { 'label': '1Fee Payment Status', 'faIcon': '' }
   ];
 
   Permissions =
@@ -55,6 +58,10 @@ export class LeaveboardComponent implements AfterViewInit {
 
     }
 
+    
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.LEAVEHOME)
+    var comindx = this.components.indexOf(LeavehomeComponent);
+    this.AddRemoveComponent(perObj, comindx);
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.LEAVEPOLICY)
     var comindx = this.components.indexOf(LeavepolicyComponent);
     this.AddRemoveComponent(perObj, comindx);

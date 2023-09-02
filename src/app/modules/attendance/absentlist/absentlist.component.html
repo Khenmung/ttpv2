@@ -5,6 +5,7 @@
         <mat-form-field appearance="outline" [style.width.px]="150">
             <mat-label>Class</mat-label>
             <mat-select formControlName="searchClassId" (selectionChange)="bindClassSubject()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let item of Classes" [value]="item.ClassId">{{item.ClassName}}
                 </mat-option>
             </mat-select>
@@ -21,6 +22,7 @@
         <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
             <mat-label>Section</mat-label>
             <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">{{item.MasterDataName}}
                 </mat-option>
             </mat-select>
@@ -28,7 +30,7 @@
         <mat-form-field appearance="outline" [style.width.px]="150" (selectionChange)="ClearData()">
             <mat-label>Subject</mat-label>
             <mat-select formControlName="searchClassSubjectId">
-                <mat-option [value]="Defaultvalue">--select--</mat-option>
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let item of FilteredClassSubjects"
                     [value]="item.ClassSubjectId">{{item.ClassSubject}}
                 </mat-option>

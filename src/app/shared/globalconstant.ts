@@ -1,6 +1,5 @@
 //import { ListItemComponent } from "ng-material-multilevel-menu/lib/list-item/list-item.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { environment } from "../../environments/environment";
 import { TokenStorageService } from "../_services/token-storage.service";
 import { NaomitsuService } from "./databaseService";
 import { List } from "./interface";
@@ -171,6 +170,7 @@ export class globalconstants {
                 },
                 "employeeleave": {
                     "EMPLOYEELEAVE": "employee leave",
+                    "LEAVEHOME":"leave home",
                     "LEAVEPOLICY": "leave policy",                   
                     "LEAVE":"Leave",
                     "LEAVEBALANCE": "leave balance"
@@ -192,7 +192,10 @@ export class globalconstants {
                     'ADMISSION': 'Admission',
                     'PROMOTESTUDENT': 'Promote Student',
                     'AssignClass': 'Assign Class',
-                    'INACTIVESTUDENT': 'Inactive Student'
+                    'ADMISSIONWITHDRAWN': 'admission withdrawn',
+                    'STUDENTCLASSHISTORY': 'Student Class History',
+                    'DOWNLOAD': 'download data',
+                    'UPLOAD': 'upload data',
                 },
                 'STUDENT': {
                     'STUDENT': 'student',
@@ -308,11 +311,6 @@ export class globalconstants {
                     'CHARTREPORT': 'Chart Report',
                     'STUDENTPROFILEREPORT': 'student profile report',
                     'PRINTPROGRESSREPORT': 'print progress report'
-                },
-                'DATA': {
-                    'DATA': 'data',
-                    'DOWNLOAD': 'download data',
-                    'UPLOAD': 'upload data',
                 },
                 'REPORTCONFIGURATION': {
                     'REPORTCONFIGURATION': 'field configuration',

@@ -5,6 +5,7 @@ import { LeaveBalanceComponent } from './LeaveBalance/leavebalance.component';
 import { LeaveboardComponent } from './leaveboard/leaveboard.component';
 import { HomeComponent } from '../../shared/components/home/home.component';
 import { LeavepolicyComponent } from './leavepolicy/leavepolicy.component';
+import { LeavehomeComponent } from './leavehome/leavehome.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
 export class LeaveManagementRoutingModule { }
 export const LeaveManagementComponents=[
   LeaveBalanceComponent,
+  LeavehomeComponent,
   EmployeeLeaveComponent,
   LeaveboardComponent,
   LeavepolicyComponent

@@ -155,7 +155,7 @@ export class GetreportComponent implements OnInit {
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
-    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.DATA.DOWNLOAD);
+    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.DOWNLOAD);
     if (perObj.length > 0) {
       this.Permission = perObj[0].permission;
     }

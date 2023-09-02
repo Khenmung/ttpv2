@@ -43,10 +43,10 @@ const routes: Routes = [
     path: 'employee/reportconfig',
     loadChildren: () => import('./modules/fieldconfiguration/appconfigdata.module').then(m => m.AppconfigdataModule)
   },
-  {
-    path: 'edu/uploaddownload',
-    loadChildren: () => import('./modules/DataUploadDownload/generalreport.module').then(m=>m.GeneralreportModule)
-  },
+  // {
+  //   path: 'edu/uploaddownload',
+  //   loadChildren: () => import('./modules/DataUploadDownload/generalreport.module').then(m=>m.GeneralreportModule)
+  // },
  
   {
     path: 'edu',
@@ -112,10 +112,10 @@ const routes: Routes = [
     path: 'employee/leave',
     loadChildren: () => import('./modules/LeaveManagement/leave-management.module').then(m => m.LeaveManagementModule)
   },
-  {
-    path: 'employee/uploaddownload',
-    loadChildren: () => import('./modules/DataUploadDownload/generalreport.module').then(m=>m.GeneralreportModule)
-  },
+  // {
+  //   path: 'employee/uploaddownload',
+  //   loadChildren: () => import('./modules/DataUploadDownload/generalreport.module').then(m=>m.GeneralreportModule)
+  // },
   {
     path: 'employee/attendance',
     loadChildren: () => import('./modules/EmpAttendance/employeeattendance.module').then(m=>m.EmployeeattendanceModule)

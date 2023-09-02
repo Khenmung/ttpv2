@@ -1,0 +1,47 @@
+// mat-form-field{
+//     margin-right: 15px;
+//     width:99%;
+    
+    
+// }
+mat-header-cell,mat-cell{
+    border-right: 1px solid lightgray;
+    align-self: stretch;
+    padding: 5px;
+}
+:host{
+    width:100%;
+    //height:max-content;
+    margin: 0;
+    padding: 0;
+}
+.mat-card{
+    position: relative;
+    width: 99%;
+}
+.mat-column-LeaveTypeId,
+.mat-column-LeaveFrom,.mat-column-LeaveTo{
+    flex:1 0 125px;
+}
+.mat-column-NoOfDays{
+    flex:1 0 100px;
+}
+.mat-column-Active{
+    justify-content: center;
+    flex:1 0 100px;
+}
+
+.mat-column-Action,.mat-column-EmployeeLeaveId{
+   //justify-content: center;
+    flex:1 0 100px;
+}
+.mat-column-LeaveStatusId{
+    flex:1 0 120px;
+}
+.mat-column-Remarks,.mat-column-LeaveReason{
+    //justify-content: center;
+    flex:1 0 200px;
+}
+.mat-column-EmployeeLeaveId{
+    flex:1 0 60px;
+}

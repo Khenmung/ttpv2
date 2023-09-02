@@ -89,7 +89,7 @@ export class ExcelDataManagementComponent implements OnInit {
   PageLoad() {
     debugger;
     this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
-    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.DATA.UPLOAD);
+    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.UPLOAD);
     if (perObj.length > 0)
       this.Permission = perObj[0].permission;
     if (this.Permission == 'deny') {

@@ -15,8 +15,8 @@ import { List } from '../../../shared/interface';
 import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
-import { IStudentDownload } from '../../DataUploadDownload/studentdatadump/studentdatadump.component';
 import { TableUtil } from '../../../shared/TableUtil';
+import { IStudentDownload } from '../studentdatadump/studentdatadump.component';
 
 @Component({
   selector: 'app-AssignStudentclassdashboard',

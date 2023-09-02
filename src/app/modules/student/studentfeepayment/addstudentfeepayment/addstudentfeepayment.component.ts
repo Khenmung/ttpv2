@@ -399,8 +399,10 @@ export class AddstudentfeepaymentComponent implements OnInit {
     // });
   }
   getAccountingVoucher(pLedgerId) {
+    
+    //using the records for keeping track of balance which has feereceiptid=0
     let filterstr = this.FilterOrgSubOrg +
-      " and FeeReceiptId eq 0 and LedgerId eq " + pLedgerId + " and Balance gt 0";
+      " and FeeReceiptId eq 0 and LedgerId eq " + pLedgerId + " and Balance gt 0 and Active eq 1";
     this.loading = true;
     let list: List = new List();
     list.fields = [
@@ -708,31 +710,34 @@ export class AddstudentfeepaymentComponent implements OnInit {
       if (row.TotalDebit > 0 && row.TotalDebit != row.Balance1) {
         this.getAccountingVoucher(row.LedgerId).subscribe((data: any) => {
           //console.log("data.value", data.value);
-          data.value.forEach((accVoucher, indx) => {
+          let latestReceipt = data.value.sort((a, b) => b.AccountingVoucherId - a.AccountingVoucherId);
+          if (latestReceipt.length > 0)
+          //latestReceipt.forEach((accVoucher, indx) => 
+          {
             var _feeName = '';
-            var obj = this.StudentClassFees.filter((f: any) => f.ClassFeeId == accVoucher.ClassFeeId);
+            var obj = this.StudentClassFees.filter((f: any) => f.ClassFeeId == latestReceipt[0].ClassFeeId);
             if (obj.length > 0) {
 
               _feeName = obj[0].FeeName;
 
               this.MonthlyDueDetail.push({
-                SlNo: indx + 1,
-                AccountingVoucherId: accVoucher.AccountingVoucherId,
-                PostingDate: accVoucher.PostingDate,
-                Reference: accVoucher.Reference,
+                SlNo: 1,
+                AccountingVoucherId: latestReceipt[0].AccountingVoucherId,
+                PostingDate: latestReceipt[0].PostingDate,
+                Reference: latestReceipt[0].Reference,
                 LedgerId: row.LedgerId,
                 GeneralLedgerAccountId: this.TuitionFeeLedgerId,
                 Debit: false,
-                BaseAmount: accVoucher.Balance,
+                BaseAmount: latestReceipt[0].Balance,
                 FeeName: _feeName,
                 FeeCategory: obj[0].FeeCategory,
                 FeeSubCategory: obj[0].FeeSubCategory,
-                BaseAmountForCalc: accVoucher.Balance,
-                FeeAmount: accVoucher.Amount,
-                Amount: accVoucher.Balance,
+                BaseAmountForCalc: latestReceipt[0].Balance,
+                FeeAmount: latestReceipt[0].Amount,
+                Amount: latestReceipt[0].Balance,
                 Balance: 0,
-                Month: accVoucher.Month,
-                ClassFeeId: accVoucher.ClassFeeId,
+                Month: latestReceipt[0].Month,
+                ClassFeeId: latestReceipt[0].ClassFeeId,
                 AmountEditable: obj[0].AmountEditable,
                 ShortText: '',
                 BalancePayment: true,
@@ -742,7 +747,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
                 Action: true
               })
             }//if (obj.length > 0) {
-          })//data.value.forEac
+          }//data.value.forEac
 
           this.miscelenous();
           // this.loading = false; this.PageLoading = false;
@@ -810,6 +815,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
         //console.log("this.MonthlyDueDetail", this.MonthlyDueDetail)
         this.miscelenous();
       }//if (row.TotalDebit>0 && row.TotalDebit != row.Balance) 
+      this.MonthlyDueDetail = this.MonthlyDueDetail.filter(f => f.FeeName != '');
       if (row.BaseAmount == 0)
         event.checked = false;
     }
@@ -841,7 +847,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
     this.calculateTotal();
   }
   miscelenous() {
-    var _rowWithoutDiscount = this.MonthlyDueDetail.filter((f: any) => f.FeeName != 'Discount');
+
+    //calculating discount amount
+    var _rowWithoutDiscount = this.MonthlyDueDetail.filter((f: any) => f.FeeName != 'Discount' && !f.FeeName.includes('%'));
     this.DiscountAmount = _rowWithoutDiscount.reduce((accum, curr) => accum + (curr.BaseAmount - +curr.Amount), 0);
     var _discountAccountId = 0;
     var _obj = this.GeneralLedgerAccounts.filter((f: any) => f.GeneralLedgerName == this.DiscountText + " Allowed")
@@ -849,7 +857,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
       _discountAccountId = _obj[0].GeneralLedgerId;
 
     var DiscountRow = this.MonthlyDueDetail.filter((f: any) => f.FeeName == this.DiscountText);
-    // var _BalanceForACReceivable = JSON.parse(JSON.stringify(DiscountRow))
+
     if (DiscountRow.length == 0 && this.DiscountAmount > 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please define discount in feedefinition.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -865,6 +873,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
         DiscountRow[0].GeneralLedgerAccountId = _discountAccountId;
       }
       else {
+        //if discount amount is equal to zero, remove discount row.
         var discountRowToDelete = this.MonthlyDueDetail.filter((f: any) => f.FeeName == this.DiscountText);
         for (let row = 0; row < discountRowToDelete.length; row++) {
           var indx = this.MonthlyDueDetail.findIndex(x => x.FeeName == this.DiscountText);

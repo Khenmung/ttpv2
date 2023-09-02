@@ -24,3 +24,6 @@ mat-cell:first-of-type{
     min-width: 700px;
     max-width: 1000px;
 }
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding: 15px 0px 0px 8px !important;
+  }

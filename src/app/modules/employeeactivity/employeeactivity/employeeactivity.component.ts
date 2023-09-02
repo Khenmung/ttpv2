@@ -20,7 +20,8 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class EmployeeactivityComponent implements OnInit {
   PageLoading = true;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
+  Defaultvalue: number = 0;
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   EmployeeId = 0;
@@ -28,18 +29,18 @@ export class EmployeeactivityComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  EmployeeActivityList: IEmployeeActivity[]= [];
+  EmployeeActivityList: IEmployeeActivity[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
-  EmployeeActivity :any[]= [];
-  EmployeeActivitySession :any[]= [];
-  EmployeeActivityCategories :any[]= [];
-  EmployeeActivitySubCategories :any[]= [];
+  EmployeeActivity: any[] = [];
+  EmployeeActivitySession: any[] = [];
+  EmployeeActivityCategories: any[] = [];
+  EmployeeActivitySubCategories: any[] = [];
   //Classes :any[]= [];
-  Batches :any[]= [];
-  Employees: IEmployee[]= [];
+  Batches: any[] = [];
+  Employees: IEmployee[] = [];
   filteredOptions: Observable<IEmployee[]>;
   dataSource: MatTableDataSource<IEmployeeActivity>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
 
   EmployeeActivityData = {
     EmployeeActivityId: 0,
@@ -50,11 +51,11 @@ export class EmployeeactivityComponent implements OnInit {
     EmployeeId: 0,
     ActivityDate: new Date(),
     SessionId: 0,
-   // BatchId: 0,
+    // BatchId: 0,
     OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
-  EmployeeActivityForUpdate :any[]= [];
+  EmployeeActivityForUpdate: any[] = [];
   displayedColumns = [
     'EmployeeActivityId',
     'Employee',
@@ -90,7 +91,7 @@ export class EmployeeactivityComponent implements OnInit {
       searchEmployeeName: [0],
       searchActivity: [0],
       searchSession: [0],
-      searchCategoryId:[0]
+      searchCategoryId: [0]
     });
     this.filteredOptions = this.searchForm.get("searchEmployeeName")?.valueChanges
       .pipe(
@@ -169,6 +170,10 @@ export class EmployeeactivityComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.EmployeeActivityList);
     }
   }
+  ClearData() {
+    this.EmployeeActivityList = [];
+    this.dataSource = new MatTableDataSource(this.EmployeeActivityList);
+  }
   UpdateOrSave(row) {
 
     //debugger;
@@ -185,7 +190,7 @@ export class EmployeeactivityComponent implements OnInit {
       this.contentservice.openSnackBar("Please select session.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    let checkFilterString = this.FilterOrgSubOrg + " and Active eq true";// and OrgId eq " + this.LoginUserDetail[0]["orgId"];
+    let checkFilterString = this.FilterOrgSubOrg + " and Active eq 1";// and OrgId eq " + this.LoginUserDetail[0]["orgId"];
     if (row.EmployeeActivityCategoryId > 0)
       checkFilterString += " and EmployeeActivityCategoryId eq " + row.EmployeeActivityCategoryId
     if (row.EmployeeActivitySubCategoryId > 0)
@@ -217,7 +222,7 @@ export class EmployeeactivityComponent implements OnInit {
           //console.log("inserting-1",this.EmployeeActivityForUpdate);
 
           this.EmployeeActivityData.EmployeeActivityId = row.EmployeeActivityId;
-          this.EmployeeActivityData.ActivityNameId = _ActivityId;
+          this.EmployeeActivityData.ActivityNameId = row.ActivityNameId;
           this.EmployeeActivityData.EmployeeActivityCategoryId = row.EmployeeActivityCategoryId;
           this.EmployeeActivityData.EmployeeActivitySubCategoryId = row.EmployeeActivitySubCategoryId;
           this.EmployeeActivityData.ActivityDate = row.ActivityDate;
@@ -266,7 +271,7 @@ export class EmployeeactivityComponent implements OnInit {
   }
   update(row) {
     //console.log("updating",this.EmployeeActivityForUpdate);
-    this.dataservice.postPatch('EmployeeActivities', this.EmployeeActivityForUpdate[0], this.EmployeeActivityForUpdate[0].EmployeeActivityId, 'patch')
+    this.dataservice.postPatch('EmployeeActivities', this.EmployeeActivityData, this.EmployeeActivityData.EmployeeActivityId, 'patch')
       .subscribe(
         (data: any) => {
           row.Action = false;
@@ -338,10 +343,11 @@ export class EmployeeactivityComponent implements OnInit {
       });
 
   }
-  FilteredCategory:any[]=[];
-  SelectCategory(event){
+  FilteredCategory: any[] = [];
+  SelectCategory(event) {
     //debugger;
-    this.FilteredCategory= this.allMasterData.filter((f:any) => f.ParentId == event.value);
+    this.FilteredCategory = this.allMasterData.filter((f: any) => f.ParentId == event.value);
+    this.ClearData();
   }
   GetMasterData() {
 
@@ -360,7 +366,7 @@ export class EmployeeactivityComponent implements OnInit {
     debugger;
     row.Action = true;
     //row.SubCategories = this.Categories.filter((f:any)=>f.MasterDataId == row.CategoryId);
-    var item = this.EmployeeActivityList.filter((f:any) => f.EmployeeActivityId == row.EmployeeActivityId);
+    var item = this.EmployeeActivityList.filter((f: any) => f.EmployeeActivityId == row.EmployeeActivityId);
     //item[0].SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
 
     ////console.log("dat", this.EmployeeActivityList);
@@ -369,7 +375,7 @@ export class EmployeeactivityComponent implements OnInit {
 
   }
   UpdateActive(row, event) {
-    row.Active = event.checked;
+    row.Active = event.checked ? 1 : 0;
     row.Action = true;
   }
   getDropDownData(dropdowntype) {

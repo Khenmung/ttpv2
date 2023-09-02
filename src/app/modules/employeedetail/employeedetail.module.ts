@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedhomepageModule } from '../sharedhomepage.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SharedModule } from '../../shared/shared.module';
-import { GeneralreportModule } from '../DataUploadDownload/generalreport.module';
 
 @NgModule({
   declarations: [EmployeeDetailComponents],
@@ -19,7 +18,6 @@ import { GeneralreportModule } from '../DataUploadDownload/generalreport.module'
     SharedModule,
     SharedhomepageModule,
     FlexLayoutModule,
-    GeneralreportModule
   ],
   exports:[EmployeeDetailComponents]
 })

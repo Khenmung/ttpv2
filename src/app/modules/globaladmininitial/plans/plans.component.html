@@ -96,15 +96,15 @@
                 </ng-container>
                 <ng-container matColumnDef="Action">
                     <mat-header-cell *matHeaderCellDef>
-                        <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                        <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
+                            (click)="AddNew()">
                             <mat-icon>add</mat-icon>
                         </button>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
-                        <button [disabled]="loading || !element.Action" matTooltip="save" 
-mat-raised-button color="accent"
-                            (click)="UpdateOrSave(element)">
-                             <mat-icon>save</mat-icon>
+                        <button [disabled]="loading || !element.Action" matTooltip="save" mat-raised-button
+                            color="accent" (click)="UpdateOrSave(element)">
+                            <mat-icon>save</mat-icon>
                             <mat-icon *ngIf="loading">
                                 <mat-spinner diameter="20" color="Blue"></mat-spinner>
                             </mat-icon>
@@ -115,7 +115,8 @@ mat-raised-button color="accent"
                 <mat-row style="width: 100%;" *matRowDef="let row; columns: displayedColumns;" class="element-row">
                 </mat-row>
             </mat-table>
-            <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50]"></mat-paginator>
+            <mat-paginator style="display: flex;justify-content: center;"
+                [pageSizeOptions]="[10,20,50]"></mat-paginator>
         </div>
 
     </div>

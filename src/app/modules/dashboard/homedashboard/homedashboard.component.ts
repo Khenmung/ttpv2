@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -18,6 +18,21 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./homedashboard.component.scss']
 })
 export class HomeDashboardComponent implements OnInit {
+  @ViewChild('overlay') myoverlay: ElementRef;
+  ngAfterViewInit() {   
+    this.Loading();
+    this.LoadingFalse();
+  }
+  Loading() {
+    this.loading = true;
+    this.PageLoading = true;
+    //this.myoverlay.nativeElement.className = "overlay";
+  }
+  LoadingFalse() {
+    this.loading = false;
+    this.PageLoading = false;
+    //this.myoverlay.nativeElement.className = "";
+  }
   PageLoading = true;
   loading = false;
   searchForm: UntypedFormGroup;
@@ -117,7 +132,7 @@ export class HomeDashboardComponent implements OnInit {
             }
             //else {
             debugger;
-            this.loading = true;
+            this.Loading();
             this.userName = localStorage.getItem('username')!;
             var PermittedApps = this.LoginUserDetail[0]["applicationRolePermission"];
 
@@ -154,8 +169,8 @@ export class HomeDashboardComponent implements OnInit {
             }
             //}
           }
-          this.loading = false;
-          this.PageLoading = false;
+          this.LoadingFalse();
+          //this.PageLoading = false;
         });
 
     }
@@ -276,7 +291,7 @@ export class HomeDashboardComponent implements OnInit {
   }
   SubOrgChange() {
     debugger;
-    this.loading = true;
+    this.Loading();
     var _SubOrg = this.searchForm.get("searchSubOrgId")?.value;
 
     var _customerPlanId = 0;
@@ -302,7 +317,7 @@ export class HomeDashboardComponent implements OnInit {
       this.dataservice.postPatch("CustomerPlans", CustomerPlansData, 0, 'post')
         .subscribe(
           (data: any) => {
-            this.loading = false;
+            this.LoadingFalse();
             this.ValueChanged = true;
             //this.tokenStorage.saveSubOrgId(_SubOrg.SubOrgId);
           }, error => {
@@ -312,14 +327,14 @@ export class HomeDashboardComponent implements OnInit {
     }
     else {
       //this.tokenStorage.saveSubOrgId(_SubOrg.SubOrgId);
-      this.loading = false;
+      this.LoadingFalse();
       this.ValueChanged = true;
     }
     //this.tokenStorage.saveMenuData([]);
 
   }
   GetOrganization() {
-    this.loading = true;
+    this.Loading();
     let list: List = new List();
     list.fields = ["OrganizationId", "OrganizationName", "ValidTo", "ValidFrom"];
     list.PageName = "Organizations";
@@ -331,7 +346,7 @@ export class HomeDashboardComponent implements OnInit {
   ValueChanged = false;
   ChangeApplication() {
     //debugger;
-    this.loading = true;
+    this.Loading();
     var SelectedAppId = this.searchForm.get("searchApplicationId")?.value;
     this.SelectedAppName = this.PermittedApplications.filter((f: any) => f.applicationId == SelectedAppId)[0].applicationName
     this.ValueChanged = true;
@@ -359,12 +374,12 @@ export class HomeDashboardComponent implements OnInit {
           })
           var _orgSubOrg = this.SubOrganization.filter((f: any) => f.MasterDataId == this.SubOrgId);
           this.searchForm.patchValue({ "searchSubOrgId": _orgSubOrg[0] });
-          this.loading = false;
+          this.LoadingFalse();
         });
     }
 
   }
-  
+
   changebatch() {
     this.ValueChanged = true;
   }
@@ -376,9 +391,10 @@ export class HomeDashboardComponent implements OnInit {
     var _SubOrgId = SubOrg.MasterDataId;
     if (!_SubOrgId || _SubOrgId == 0) {
       this.contentservice.openSnackBar("Please select company.", globalconstants.ActionText, globalconstants.RedBackground);
-      this.loading = false;
+      this.LoadingFalse();
       return;
     }
+    this.PageLoading = true;
     this.SubOrgId = _SubOrgId;
     this.tokenStorage.saveSubOrgId(_SubOrgId);
     this.tokenStorage.saveCompanyName(SubOrg.MasterDataName);
@@ -386,13 +402,13 @@ export class HomeDashboardComponent implements OnInit {
     if (this.SelectedBatchId > 0)
       this.SaveBatchIds(this.SelectedBatchId);
     else {
-      this.loading = false; this.PageLoading = false;
+      this.LoadingFalse(); this.PageLoading = false;
       this.contentservice.openSnackBar("Please select batch.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
 
     if (SelectedAppId > 0) {
-      this.loading = true;
+      this.Loading();
       this.SelectedAppId = SelectedAppId;
       this.tokenStorage.saveSelectedAppId(SelectedAppId);
       var selectedApp = this.PermittedApplications.filter(a => a.applicationId == SelectedAppId);
@@ -426,14 +442,13 @@ export class HomeDashboardComponent implements OnInit {
       this.GetFeatureAndStudentDetail(SelectedAppId, selectedApp[0]);
     }
     else {
-      this.loading = false; this.PageLoading = false;
+      this.LoadingFalse();
+      this.PageLoading = false;
       this.contentservice.openSnackBar("Please select application.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
   }
-  AppSelected() {
-
-  }
+  
   allMasterData: any[] = [];
   SubOrganization: any[] = [];
   Semesters: any[] = [];
@@ -632,7 +647,7 @@ export class HomeDashboardComponent implements OnInit {
       // }
       /////////////
 
-      this.loading = false; this.PageLoading = false;
+      this.LoadingFalse(); this.PageLoading = false;
     });
   }
   compareWith(option, value): boolean {
@@ -658,8 +673,8 @@ export class HomeDashboardComponent implements OnInit {
       "GenderId,HouseId,ReasonForLeavingId,AdmissionStatusId)"];
 
     list.filter = [this.filterOrgSubOrgBatchId];
-    this.loading = true;
-    this.PageLoading = true;
+    this.Loading();
+    //this.PageLoading = true;
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //this.StudentClasses = [...data.value];
@@ -712,7 +727,7 @@ export class HomeDashboardComponent implements OnInit {
         });
         this.tokenStorage.saveStudents(this.Students);
         //console.log("previous students", this.Students);
-        this.loading = false;
+        this.LoadingFalse();
         this.PageLoading = false;
         if (this.Submitted) {
           if (this.RedirectionText.length == 0)
@@ -779,8 +794,8 @@ export class HomeDashboardComponent implements OnInit {
         debugger;
         this.tokenStorage.saveStudents(this.Students);
         //this.GetMasterData(SelectedAppId, selectedApp);
-        this.loading = false;
-        this.PageLoading = false;
+        this.LoadingFalse();
+        //this.PageLoading = false;
         if (this.Submitted)
           //this.route.navigate(['/', appShortName]);
           this.route.navigateByUrl("/" + this.RedirectionText);
@@ -798,7 +813,7 @@ export class HomeDashboardComponent implements OnInit {
     this.filterOrgSubOrgBatchId += " and IsCurrent eq true";
 
     list.filter = [this.filterOrgSubOrgBatchId];
-    this.loading = true;
+    this.Loading();
     this.PageLoading = true;
     return this.dataservice.get(list);
   }
@@ -832,7 +847,7 @@ export class HomeDashboardComponent implements OnInit {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }
     list.filter = [this.filterOrgSubOrgBatchId];
-    this.loading = true;
+    this.Loading();
     this.PageLoading = true;
     return this.dataservice.get(list);
 

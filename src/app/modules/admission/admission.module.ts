@@ -5,11 +5,13 @@ import { AdmissionComponents, AdmissionRoutingModule } from './admission-routing
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedhomepageModule } from '../sharedhomepage.module';
 import { MaterialModule } from '../../shared/material/material.module';
+import { StudenthistoryComponent } from './studenthistory/studenthistory.component';
 
 
 @NgModule({
   declarations: [
-    AdmissionComponents
+    AdmissionComponents,
+    
   ],
   imports: [
     CommonModule,

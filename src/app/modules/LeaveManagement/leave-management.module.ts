@@ -6,10 +6,11 @@ import { MaterialModule } from '../../shared/material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { LeavehomeComponent } from './leavehome/leavehome.component';
 
 
 @NgModule({
-  declarations: [LeaveManagementComponents],
+  declarations: [LeaveManagementComponents, LeavehomeComponent],
   imports: [
     CommonModule,
     LeaveManagementRoutingModule,

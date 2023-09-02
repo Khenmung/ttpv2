@@ -128,6 +128,7 @@ export class searchstudentComponent implements OnInit {
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.StudentsFromCache = this.tokenStorage.getStudents()!;
+      this.StudentsFromCache =this.AssignNameClassSection(this.StudentsFromCache)
       this.studentSearchForm = this.fb.group({
         searchSectionId: [0],
         searchSemesterId: [0],
@@ -780,6 +781,8 @@ export class searchstudentComponent implements OnInit {
       'StudentFamilyNFriendId',
       'StudentId',
       'Name',
+      'FatherName',
+      'MotherName',
       'ContactNo',
       'RelationshipId',
       'ParentStudentId',
@@ -850,8 +853,7 @@ export class searchstudentComponent implements OnInit {
       // if (this.StudentClasses.length == 0 && _fathername == undefined && _mothername == undefined) {
       //   _students = this.Students.filter((f:any) => f.StudentClasses.length == 0);
       // }
-      this.Students = [];
-      this.AssignNameClassSection(_students);
+      this.Students= this.AssignNameClassSection(_students);
 
       //  this.filteredStudents  = this.studentSearchForm.get("searchStudentName")?.valueChanges
       //     .pipe(
@@ -878,7 +880,7 @@ export class searchstudentComponent implements OnInit {
     //})
   }
   AssignNameClassSection(pStudents) {
-    this.Students = [];
+    let _students:any=[];
     pStudents.forEach(student => {
       var _RollNo = '';
       var _name = '';
@@ -921,13 +923,13 @@ export class searchstudentComponent implements OnInit {
       student.ClassId = _classId;
       student.RollNo = _RollNo;
       student.SectionId = _sectionId;
-      student.Name = _name;
+      student.Name = _fullDescription;
       student.ClassName = _className;
       student.Semester = _semester;
-      this.Students.push(student);
+      _students.push(student);
 
     })
-
+    return _students;
   }
 
 }
