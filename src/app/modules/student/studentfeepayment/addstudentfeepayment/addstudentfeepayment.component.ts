@@ -79,6 +79,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     SectionId: 0,
     SemesterId: 0,
     SectionName: '',
+    Semester: '',
     PayAmount: 0,
     StudentClassId: 0,
     ReceiptNo: 0,
@@ -100,6 +101,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   Months: any[] = [];
   StudentName = '';
   LoginUserDetail: any[] = [];
+  Semesters: any[] = [];
   Sections: any[] = [];
   FeeDefinitions: any[] = [];
   Classes: any[] = [];
@@ -373,6 +375,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     this.Batches = this.tokenStorage.getBatches()!;;
     this.Locations = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.shareddata.CurrentFeeType.subscribe(f => this.FeeTypes = f);
     this.AccountNature = this.getDropDownData(globalconstants.MasterDefinitions.accounting.ACCOUNTNATURE);
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);
@@ -465,8 +468,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
               this.studentInfoTodisplay.AdmissionNo = data.value[0].AdmissionNo;
               this.studentInfoTodisplay.PID = _studdetail[0].PID;
               this.studentInfoTodisplay.ClassId = data.value[0].ClassId;
-              this.studentInfoTodisplay.SectionId = (data.value[0].SectionId ? data.value[0].SectionId : 0);
-              this.studentInfoTodisplay.SemesterId = (data.value[0].SemesterId ? data.value[0].SemesterId : 0);
+              this.studentInfoTodisplay.SectionId = data.value[0].SectionId;
+              this.studentInfoTodisplay.SemesterId = data.value[0].SemesterId;
               this.studentInfoTodisplay.FeeTypeId = data.value[0].FeeTypeId;
               this.studentInfoTodisplay.FeeType = data.value[0].FeeType.FeeTypeName;
               this.studentInfoTodisplay.Formula = data.value[0].FeeType.Formula;
@@ -474,11 +477,15 @@ export class AddstudentfeepaymentComponent implements OnInit {
               this.studentInfoTodisplay.StudentName = _studdetail[0].FirstName + _lastname;
 
               var _sectionName = '';
-
               var obj = this.Sections.filter(cls => cls.MasterDataId == data.value[0].SectionId)
               if (obj.length > 0)
                 _sectionName = obj[0].MasterDataName;
               this.studentInfoTodisplay.SectionName = _sectionName;
+              var _semesterName = '';
+              var obj = this.Semesters.filter(cls => cls.MasterDataId == data.value[0].SemesterId)
+              if (obj.length > 0)
+              _semesterName = obj[0].MasterDataName;
+              this.studentInfoTodisplay.Semester = _semesterName;
 
               var clsObj = this.Classes.filter(cls => cls.MasterDataId == this.studentInfoTodisplay.ClassId)
               if (clsObj.length > 0)

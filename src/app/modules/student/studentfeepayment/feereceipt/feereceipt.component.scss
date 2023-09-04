@@ -30,6 +30,27 @@ mat-footer-row {
     justify-content: center;
     flex           : 1 1 50px;
 }
+.mat-column-ReceiptNo,.mat-column-PaymentType {
+    flex: 1 1 130px;
+}
+.mat-column-TotalAmount {
+    display        : flex;
+    justify-content: center;
+    flex           : 1 1 100px;
+}
+.mat-column-ReceiptDate
+{
+    display        : flex;
+    justify-content: center;
+    flex           : 1 1 160px;
+}
+.mat-column-Active,
+.mat-column-Action {
+    display        : flex;
+    justify-content: center;
+    flex           : 1  100px;
+}
+
 
 .mat-column-SlNo {
     display    : grid;
@@ -47,29 +68,20 @@ mat-footer-row {
 .mat-column-Balance{
     flex           : 1 1 100px;
 }
-.mat-column-ReceiptNo,.mat-column-PaymentType {
-    flex: 1 1 130px;
-}
+
 
 .mat-column-FeeName {
-    flex: 1 0 180px;
+    flex: 1 1 180px;
 }
 
 .mat-column-PaymentAmount,
-.mat-column-OfflineReceiptNo,
-.mat-column-TotalAmount {
+.mat-column-OfflineReceiptNo{
     display        : flex;
     justify-content: center;
     flex           : 1 0 150px;
 }
 
-.mat-column-ReceiptDate,
-.mat-column-Active,
-.mat-column-Action {
-    display        : flex;
-    justify-content: center;
-    flex           : 1 1 160px;
-}
+
 
 .divCls:nth-child(9) {
     //font-family: Arial, Helvetica, sans-serif; 

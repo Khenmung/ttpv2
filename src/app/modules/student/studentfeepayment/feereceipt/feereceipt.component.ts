@@ -22,30 +22,30 @@ export class FeereceiptComponent implements OnInit {
   @Input("OffLineReceiptNo") OffLineReceiptNo: any;
   @Input("StudentClassFees") StudentClassFees: any;
   @ViewChild(MatSort) sort: MatSort;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   loading = false;
   CancelReceiptMode = false;
-  LoginUserDetail :any[]= [];
+  LoginUserDetail: any[] = [];
   BillStatus = 0;
   CurrentBatchId = 0;
-  ReceiptHeading :any[]= [];
+  ReceiptHeading: any[] = [];
   NewReceipt = true;
   Saved = false;
-  PaymentIds :any[]= [];
-  Sections :any[]= [];
-  FeeDefinitions :any[]= [];
-  Classes :any[]= [];
-  Batches :any[]= [];
-  Locations :any[]= [];
-  clickPaymentDetails :any[]= [];
+  PaymentIds: any[] = [];
+  Sections: any[] = [];
+  FeeDefinitions: any[] = [];
+  Classes: any[] = [];
+  Batches: any[] = [];
+  Locations: any[] = [];
+  clickPaymentDetails: any[] = [];
   ELEMENT_DATA: IStudentFeePaymentReceipt[];
   StudentFeeReceiptListName = 'StudentFeeReceipts';
-  FeeReceipt :any[]= [];
+  FeeReceipt: any[] = [];
   StudentFeePaymentList: any[];
   Students: string[];
   dataSource: MatTableDataSource<any>;
   dataReceiptSource: MatTableDataSource<IReceipt>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   SelectedBatchId = 0;
   SubOrgId = 0;
   searchForm = new UntypedFormGroup({
@@ -130,7 +130,7 @@ export class FeereceiptComponent implements OnInit {
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         this.Classes = [...data.value];
-        var obj = this.Classes.filter((f:any) => f.ClassId == this.studentInfoTodisplay.ClassId)
+        var obj = this.Classes.filter((f: any) => f.ClassId == this.studentInfoTodisplay.ClassId)
         if (obj.length > 0)
           this.studentInfoTodisplay.StudentClassName = obj[0].ClassName;
       })
@@ -161,7 +161,7 @@ export class FeereceiptComponent implements OnInit {
   viewDetail(row) {
     debugger;
     this.ReceivedBy = row.ReceivedBy;
-    this.clickPaymentDetails = this.StudentFeePaymentList.filter((f:any) => f.FeeReceiptId == row.StudentFeeReceiptId)
+    this.clickPaymentDetails = this.StudentFeePaymentList.filter((f: any) => f.FeeReceiptId == row.StudentFeeReceiptId)
       .sort((a, b) => a.PaymentOrder - b.PaymentOrder);
     //console.log("PaymentOrder", this.clickPaymentDetails)
     this.studentInfoTodisplay.StudentFeeReceiptId = row.StudentFeeReceiptId;
@@ -188,7 +188,7 @@ export class FeereceiptComponent implements OnInit {
             this.loading = false; this.PageLoading = false;
             this.TotalAmount = 0;
             this.Balance = 0;
-            this.CreateInvoice(this.studentInfoTodisplay.StudentClassId);
+            this.CreateInvoice(this.studentInfoTodisplay.ClassId, this.studentInfoTodisplay.SemesterId, this.studentInfoTodisplay.SectionId, this.studentInfoTodisplay.StudentClassId, this.studentInfoTodisplay.FeeTypeId);
             // this.contentservice.openSnackBar("Receipt cancelled successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
             // this.CancelReceiptMode = false;
             // this.BillDetail = [];
@@ -204,18 +204,24 @@ export class FeereceiptComponent implements OnInit {
     this.CancelReceiptMode = false;
 
   }
-  CreateInvoice(pStudentClassId) {
+  CreateInvoice(pClassId, pSemesterId, pSectionId, pStudentClassId, pFeeTypeId) {
     debugger;
     this.loading = true;
 
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0)
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, pClassId)//,pSemesterId,pSectionId)
       .subscribe((datacls: any) => {
 
-        var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
+        var _clsfeeWithDefinitions: any = [];
+        let items = datacls.value.filter(m => m.FeeDefinition.Active == 1 && m.SemesterId == pSemesterId && m.SectionId == pSectionId);
+        if (items.length == 0) {
+          _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
+        }
+        else
+          _clsfeeWithDefinitions = [...items];
 
-        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, pStudentClassId, 0)
+        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, pClassId, pSemesterId, pSectionId, pStudentClassId, pFeeTypeId)
           .subscribe((data: any) => {
-            var studentfeedetail :any[]= [];
+            var studentfeedetail: any[] = [];
             data.value.forEach(studcls => {
               var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
@@ -228,11 +234,11 @@ export class FeereceiptComponent implements OnInit {
                 var _category = '';
                 var _subCategory = '';
 
-                var objcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat.length > 0)
                   _category = objcat[0].MasterDataName;
 
-                var objsubcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                var objsubcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
@@ -307,7 +313,7 @@ export class FeereceiptComponent implements OnInit {
       })
 
   }
-  Employees :any[]= [];
+  Employees: any[] = [];
   PaymentType = '';
   GetBills() {
     this.loading = true;
@@ -330,7 +336,7 @@ export class FeereceiptComponent implements OnInit {
     // FeeReceiptId =0 means for balance updating purpose. LedgerId =0 means accounting purpose.
     list.lookupFields = ["AccountingVouchers($filter=FeeReceiptId gt 0 and LedgerId gt 0;$select=Reference,BaseAmount,Balance,AccountingVoucherId,ShortText,LedgerId,FeeReceiptId,Amount,ClassFeeId)"];
     list.filter = ["StudentClassId eq " + this.studentInfoTodisplay.StudentClassId];
-    
+
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
@@ -348,7 +354,7 @@ export class FeereceiptComponent implements OnInit {
           f.AccountingVouchers.forEach(k => {
             var _ShortText = '';
 
-            var feeObj = this.StudentClassFees.filter((f:any) => f.ClassFeeId == k.ClassFeeId);
+            var feeObj = this.StudentClassFees.filter((f: any) => f.ClassFeeId == k.ClassFeeId);
             if (feeObj.length > 0) {
               if (k.ShortText && k.ShortText.length > 0 && feeObj[0].AmountEditable) {
                 _ShortText = " (" + k.ShortText + ")"
@@ -375,7 +381,7 @@ export class FeereceiptComponent implements OnInit {
         })
         this.calculateTotal();
         //console.log("this.FeeReceipt", this.FeeReceipt)
-       // this.FeeReceipt =this.FeeReceipt.filter(f=>f.FeeName!='');
+        // this.FeeReceipt =this.FeeReceipt.filter(f=>f.FeeName!='');
         this.StudentFeePaymentList = this.StudentFeePaymentList.sort((a, b) => a.indx - b.indx);
         this.dataReceiptSource = new MatTableDataSource<any>(this.FeeReceipt);
         this.dataReceiptSource.sort = this.sort;
@@ -387,8 +393,8 @@ export class FeereceiptComponent implements OnInit {
 
       })
   }
-  PaymentTypes :any[]= [];
-  FeeCategories :any[]= [];
+  PaymentTypes: any[] = [];
+  FeeCategories: any[] = [];
   GetMasterData() {
     this.loading = true;
     // let list: List = new List();
@@ -409,7 +415,7 @@ export class FeereceiptComponent implements OnInit {
     this.ReceiptHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.RECEIPTHEADING);
 
     this.ReceiptHeading.forEach(f => {
-        f.Description = f.Description ? JSON.parse("{" + f.Description + "}") : ''
+      f.Description = f.Description ? JSON.parse("{" + f.Description + "}") : ''
     })
     //console.log("this.ReceiptHeading",this.ReceiptHeading);
     this.PaymentTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.FEEPAYMENTTYPE);

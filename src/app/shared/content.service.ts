@@ -17,10 +17,10 @@ import { AuthService } from '../_services/auth.service';
 export class ContentService implements OnInit {
   PageLoading = true;
   RoleFilter = '';
-  Roles:any[]= [];
-  allMasterData:any[]= [];
-  Applications :any[]= [];
-  UserDetail:any[]= [];
+  Roles: any[] = [];
+  allMasterData: any[] = [];
+  Applications: any[] = [];
+  UserDetail: any[] = [];
   url: any;
   SelectedApplicationId = 0;
   HostUrl = globalconstants.apiUrl;
@@ -98,10 +98,8 @@ export class ContentService implements OnInit {
     var _classfilter = '';
     if (pClassId > 0)
       _classfilter = " and ClassId eq " + pClassId;
-    if (pSemesterId > 0)
-      _classfilter += " and SemesterId eq " + pSemesterId;
-    if (pSectionId > 0)
-      _classfilter += " and SectionId eq " + pSectionId;
+    _classfilter += " and SemesterId eq " + pSemesterId;
+    _classfilter += " and SectionId eq " + pSectionId;
     if (pBatchId > 0)
       _classfilter += " and BatchId eq " + pBatchId + " and IsCurrent eq true and Active eq 1";
 
@@ -183,15 +181,19 @@ export class ContentService implements OnInit {
 
     return this.dataservice.get(list);
   }
-  GetClassFeeWithFeeDefinition(pOrgSubOrgBatchIdFilter, pMonth) {
+  ///semesterid and sectionid is not passed because if record does not exist we need class wise class fee.
+  GetClassFeeWithFeeDefinition(pOrgSubOrgBatchIdFilter, pMonth, pClassId) {//, pSemesterId, pSectionId
     var filter = pOrgSubOrgBatchIdFilter + ' and Active eq 1';
+    if (pClassId)
+      filter += ' and ClassId eq ' + pClassId;
+
+    // filter += ' and SemesterId eq ' + pSemesterId;
+    // filter += ' and SectionId eq ' + pSectionId;
 
     if (pMonth > 0)
       filter += ' and Month eq ' + pMonth;
     else
       filter += ' and Month ge ' + pMonth;
-    // else
-    //   filter += ' and Month ge ' + minMonth + ' and Month le ' + maxMonth ;
 
     let list = new List();
     list.fields = ["ClassId", "Active", "Amount", "Month", "FeeDefinitionId", "PaymentOrder", "SectionId", "SemesterId"];
@@ -246,7 +248,7 @@ export class ContentService implements OnInit {
       "UserId",
       "Active"]
     list.PageName = 'ReportConfigItems';
-    list.filter = ["Deleted eq false and (OrgId eq 0 or (" + pOrgSubOrg +
+    list.filter = ["(OrgId eq 0 or (" + pOrgSubOrg +
       ")) and (ApplicationId eq 0 or ApplicationId eq " + pSelectedApplicationId + ')'];
 
     return this.dataservice.get(list)
@@ -317,7 +319,7 @@ export class ContentService implements OnInit {
     return this.dataservice.get(list);
   }
   getMasterText(arr, itemId) {
-    var filtered = arr.filter((f:any) => f.MasterDataId == itemId);
+    var filtered = arr.filter((f: any) => f.MasterDataId == itemId);
     if (filtered.length > 0)
       return filtered[0].MasterDataName;
     else
@@ -340,7 +342,7 @@ export class ContentService implements OnInit {
       'Nov',
       'Dec'
     ]
-    var monthArray:any[]= [];
+    var monthArray: any[] = [];
     debugger;
     _sessionStartEnd = JSON.parse(this.tokenService.getSelectedBatchStartEnd()!);
 
@@ -578,7 +580,7 @@ export class ContentService implements OnInit {
   //   Ids.push(item);
   // }
   /////
-  getInvoice(pOrgId, pSubOrgId, pSelectedBatchId, pStudentClassId) {
+  getInvoice(pOrgId, pSubOrgId, pSelectedBatchId, pStudentClassId, pClassId, pSemesterId, pSectionId) {
     //var selectedMonth = this.searchForm.get("searchMonth")?.value;
     var _function = "";
     if (pStudentClassId == 0)
@@ -587,6 +589,9 @@ export class ContentService implements OnInit {
       _function = 'getInvoiceSingle'
     var OrgIdAndbatchId = {
       StudentClassId: pStudentClassId,
+      ClassId: pClassId,
+      SemesterId: pSemesterId,
+      SectionId: pSectionId,
       OrgId: pOrgId,
       SubOrgId: pSubOrgId,
       BatchId: pSelectedBatchId,
@@ -618,7 +623,7 @@ export class ContentService implements OnInit {
     return this.dataservice.get(list);
 
   }
-  getStudentClassWithFeeType(pOrgSubOrgBatchId, pClassId, pStudentClassId, pFeeTypeId) {
+  getStudentClassWithFeeType(pOrgSubOrgBatchId, pClassId, pSemesterId, pSectionId, pStudentClassId, pFeeTypeId) {
 
     var filterstr = '';
     //new student class is inactive but should be able to pay fee and will become active.
@@ -626,8 +631,11 @@ export class ContentService implements OnInit {
 
     if (pStudentClassId > 0)
       filterstr += " and StudentClassId eq " + pStudentClassId;
-    if (pClassId > 0)
+    if (pClassId)
       filterstr += " and ClassId eq " + pClassId;
+    filterstr += " and SemesterId eq " + pSemesterId;
+    filterstr += " and SectionId eq " + pSectionId;
+
     if (pFeeTypeId > 0)
       filterstr += " and FeeTypeId eq " + pFeeTypeId;
 
@@ -649,10 +657,10 @@ export class ContentService implements OnInit {
   }
   createInvoice(data, pSelectedBatchId, pOrgId, pSubOrgId) {
     var AmountAfterFormulaApplied = 0;
-    var _VariableObjList:any[]= [];
-    var _LedgerData:any[]= [];
+    var _VariableObjList: any[] = [];
+    var _LedgerData: any[] = [];
     //console.log("data", data.filter((f:any) => f.StudentClassId == 3852))
-    data.forEach((inv:any) => {
+    data.forEach((inv: any) => {
       _VariableObjList.push(inv)
       if (inv.Formula.length > 0) {
         //      if (inv.Month == 202200)
@@ -660,7 +668,7 @@ export class ContentService implements OnInit {
 
         var formula = this.ApplyVariables(inv.Formula, _VariableObjList);
         //  if (inv.Month == 202200)
-        console.log("after applying Formula", formula);
+        //console.log("after applying Formula", formula);
         //after applying, remove again since it is for each student
         _VariableObjList.splice(_VariableObjList.indexOf(inv), 1);
         AmountAfterFormulaApplied = evaluate(formula);
@@ -790,8 +798,8 @@ export class ContentService implements OnInit {
         var Ids = [...data.value];
 
         if (Ids.length > 0) {
-          var ApplicationMasterDataId = Ids.filter((f:any) => f.MasterDataName.toLowerCase() == applicationtext)[0].MasterDataId;
-          var RoleMasterDataId = Ids.filter((f:any) => f.MasterDataName.toLowerCase() == roletext)[0].MasterDataId;
+          var ApplicationMasterDataId = Ids.filter((f: any) => f.MasterDataName.toLowerCase() == applicationtext)[0].MasterDataId;
+          var RoleMasterDataId = Ids.filter((f: any) => f.MasterDataName.toLowerCase() == roletext)[0].MasterDataId;
           let list: List = new List();
           list.fields = ["MasterDataId,MasterDataName,Description,ParentId,Confidential"];
           list.PageName = "MasterItems";
@@ -820,7 +828,7 @@ export class ContentService implements OnInit {
                     this.RoleFilter += ' or RoleId eq ' + roleuser.RoleId
                     var _role = '';
                     if (this.Roles.length > 0 && roleuser.RoleId != null)
-                      _role = this.Roles.filter((a:any) => a.MasterDataId == roleuser.RoleId)[0].MasterDataName;
+                      _role = this.Roles.filter((a: any) => a.MasterDataId == roleuser.RoleId)[0].MasterDataName;
                     return {
                       roleId: roleuser.RoleId,
                       role: _role,
@@ -854,7 +862,7 @@ export class ContentService implements OnInit {
       'ApplicationId'
     ];
     var _orgSubOrgFilter = "OrgId eq " + pOrgId + " and SubOrgId eq " + pSubOrgId; //globalconstants.getOrgSubOrgFilter(pOrgId,pSubOrgId);
-    var _denyPermissionId = globalconstants.PERMISSIONTYPES.filter((f:any) => f.type == 'deny')[0].val;
+    var _denyPermissionId = globalconstants.PERMISSIONTYPES.filter((f: any) => f.type == 'deny')[0].val;
     list.PageName = "CustomFeatureRolePermissions";
     list.lookupFields = ["CustomFeature($select=CustomFeatureName)"]
     list.filter = [_orgSubOrgFilter + " and ApplicationId eq " + pSelectedAppId + " and RoleId eq " + pRoleId + " and Active eq true"];
@@ -881,7 +889,7 @@ export class ContentService implements OnInit {
         debugger;
         //hilai hi ei.
         var LoginUserDetail = this.tokenService.getUserDetail();
-        var planfilteredFeature = data.value.filter((f:any) => f.PlanFeature.PlanId == LoginUserDetail[0]["planId"]);
+        var planfilteredFeature = data.value.filter((f: any) => f.PlanFeature.PlanId == LoginUserDetail[0]["planId"]);
         if (planfilteredFeature.length > 0) {
           var _applicationName = '';
           var _appShortName = '';
@@ -889,7 +897,7 @@ export class ContentService implements OnInit {
           planfilteredFeature.forEach(item => {
             _applicationName = '';
             _appShortName = '';
-            var appobj:any[] = this.Applications.filter((f:any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId);
+            var appobj: any[] = this.Applications.filter((f: any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId);
             if (appobj.length > 0) {
               _applicationName = appobj[0].Description;
               _appShortName = appobj[0].MasterDataName
@@ -917,20 +925,20 @@ export class ContentService implements OnInit {
           _customFeature.forEach(item => {
             _applicationName = '';
             _appShortName = '';
-            var appobj:any[] = this.Applications.filter((f:any) => f.MasterDataId == item.ApplicationId);
+            var appobj: any[] = this.Applications.filter((f: any) => f.MasterDataId == item.ApplicationId);
             if (appobj.length > 0) {
               _applicationName = appobj[0].Description;
               _appShortName = appobj[0].MasterDataName
             }
 
-            var feature = this.UserDetail[0]['applicationRolePermission'].filter((f:any) => f.applicationFeature == item.CustomFeature.CustomFeatureName)
+            var feature = this.UserDetail[0]['applicationRolePermission'].filter((f: any) => f.applicationFeature == item.CustomFeature.CustomFeatureName)
             if (feature.length == 0) {
               this.UserDetail[0]['applicationRolePermission'].push({
                 'planFeatureId': 0,
                 'applicationFeature': item.CustomFeature.CustomFeatureName,//_applicationFeature,
                 'roleId': item.RoleId,
                 'permissionId': item.PermissionId,
-                'permission': globalconstants.PERMISSIONTYPES.filter((f:any) => f.val == item.PermissionId)[0].type,
+                'permission': globalconstants.PERMISSIONTYPES.filter((f: any) => f.val == item.PermissionId)[0].type,
                 'applicationName': _applicationName,
                 'applicationId': item.ApplicationId,
                 'appShortName': _appShortName,
@@ -991,7 +999,7 @@ export class ContentService implements OnInit {
   GetPermittedAppId(appShortName) {
     var appId = 0;
     var apps = this.tokenService.getPermittedApplications();
-    var commonAppobj = apps.filter((f:any) => f.appShortName == appShortName)
+    var commonAppobj = apps.filter((f: any) => f.appShortName == appShortName)
     if (commonAppobj.length > 0)
       appId = commonAppobj[0].applicationId;
     return appId;

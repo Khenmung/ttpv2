@@ -26,7 +26,7 @@ export class FeecollectionreportComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   loading = false;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   SelectedApplicationId = 0;
   Permission = 'deny';
   LoginUserDetail: any[] = [];
@@ -110,13 +110,15 @@ export class FeecollectionreportComponent implements OnInit {
         this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
           this.Classes = [...data.value];
         });
-        this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0)
+        this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, 0)
           .subscribe((data: any) => {
             this.Months = [];
             data.value.forEach((d: any) => {
               this.Months.push({ Month: d.Month, FeeName: d.FeeDefinition.FeeName })
               return d;
             })
+           this.Months = alasql("select distinct Month,FeeName from ?",[this.Months]);
+            console.log('this.month',this.Months)
           })
 
         this.SearchForm = this.fb.group({

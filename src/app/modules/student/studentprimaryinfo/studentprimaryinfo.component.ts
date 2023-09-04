@@ -464,7 +464,7 @@ export class studentprimaryinfoComponent implements OnInit {
           // else
           //   all[1].value[0]["StudentClasses"] :any[]= [];
 
-          this.SetStudentClassForStore(_student, _studentclass);
+          this.SetStudentClassForStore(_student[0], _studentclass);
           _student.forEach(stud => {
             var _lastname = stud.LastName == null || stud.LastName == '' ? '' : " " + stud.LastName;
             var fatherName = stud.FatherName ? stud.FatherName : '';
@@ -785,7 +785,7 @@ export class studentprimaryinfoComponent implements OnInit {
     return globalconstants.isMyDateFormat(pickerInput);
   }
   CreateInvoice() {
-    this.contentservice.getInvoice(+this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedBatchId, this.StudentClassId)
+    this.contentservice.getInvoice(+this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedBatchId, this.StudentClassId,0,0,0)
       .subscribe((data: any) => {
 
         this.contentservice.createInvoice(data, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
@@ -957,7 +957,7 @@ export class studentprimaryinfoComponent implements OnInit {
           _Section = "-" + _sectionobj[0].MasterDataName;
         }
         var _Semester = '', _semesterName = '';
-        var _semesterobj = this.Semesters.filter((f:any) => f.MasterDataId == studcls[0].SectionId);
+        var _semesterobj = this.Semesters.filter((f:any) => f.MasterDataId == studcls[0].SemesterId);
         if (_semesterobj.length > 0) {
           _semesterName = _semesterobj[0].MasterDataName;
           _Semester = "-" + _semesterobj[0].MasterDataName;
@@ -976,8 +976,8 @@ export class studentprimaryinfoComponent implements OnInit {
       }
     })
 
-    var indx = this.Students.findIndex(s => s.StudentId == _student[0].StudentId);
-    if (indx == -1) {
+    var count = this.Students.filter(s => s.StudentId == _student[0].StudentId);
+    if (count.length ==0) {
       this.Students.push(_student[0]);
       this.tokenStorage.saveStudents(this.Students);
     }

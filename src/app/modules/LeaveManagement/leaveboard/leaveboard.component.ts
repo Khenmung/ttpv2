@@ -1,13 +1,13 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { LeaveBalanceComponent } from '../LeaveBalance/leavebalance.component';
-import { EmployeeLeaveComponent } from '../employee-leave/employee-leave.component';
+import { MyLeaveComponent } from '../myleave/myleave.component';
 import { LeavepolicyComponent } from '../leavepolicy/leavepolicy.component';
 import { SwUpdate } from '@angular/service-worker';
 import { ContentService } from '../../../shared/content.service';
 import { globalconstants } from '../../../shared/globalconstant';
 import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
-import { LeavehomeComponent } from '../leavehome/leavehome.component';
+import { LeaveRequestsComponent } from '../leaverequests/leaverequests.component';
 
 @Component({
   selector: 'app-leaveboard',
@@ -17,8 +17,8 @@ import { LeavehomeComponent } from '../leavehome/leavehome.component';
 export class LeaveboardComponent implements AfterViewInit { 
   PageLoading = true;
   components: any = [
-    LeavehomeComponent,
-    EmployeeLeaveComponent,
+    LeaveRequestsComponent,
+    MyLeaveComponent,
     LeavepolicyComponent,
     LeaveBalanceComponent,
   ];
@@ -52,15 +52,15 @@ export class LeaveboardComponent implements AfterViewInit {
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
 
-    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.EMPLOYEELEAVE)
+    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.LEAVE)
     if (perObj.length > 0) {
       this.Permissions.ParentPermission = perObj[0].permission;
 
     }
 
     
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.LEAVEHOME)
-    var comindx = this.components.indexOf(LeavehomeComponent);
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.LEAVEREQUESTS)
+    var comindx = this.components.indexOf(LeaveRequestsComponent);
     this.AddRemoveComponent(perObj, comindx);
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.LEAVEPOLICY)
     var comindx = this.components.indexOf(LeavepolicyComponent);
@@ -68,8 +68,8 @@ export class LeaveboardComponent implements AfterViewInit {
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.LEAVEBALANCE)
     var comindx = this.components.indexOf(LeaveBalanceComponent);
     this.AddRemoveComponent(perObj, comindx);
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.EMPLOYEELEAVE)
-    var comindx = this.components.indexOf(EmployeeLeaveComponent);
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.MYLEAVE)
+    var comindx = this.components.indexOf(MyLeaveComponent);
     this.AddRemoveComponent(perObj, comindx);
     
     this.shareddata.ChangePermissionAtParent(this.Permissions.ParentPermission);

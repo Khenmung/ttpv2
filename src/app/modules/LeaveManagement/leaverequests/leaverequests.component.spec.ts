@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LeavehomeComponent } from './leavehome.component';
+import { LeaveRequestsComponent } from './leaverequests.component';
 
 describe('LeavehomeComponent', () => {
-  let component: LeavehomeComponent;
-  let fixture: ComponentFixture<LeavehomeComponent>;
+  let component: LeaveRequestsComponent;
+  let fixture: ComponentFixture<LeaveRequestsComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [LeavehomeComponent]
+      declarations: [LeaveRequestsComponent]
     });
-    fixture = TestBed.createComponent(LeavehomeComponent);
+    fixture = TestBed.createComponent(LeaveRequestsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

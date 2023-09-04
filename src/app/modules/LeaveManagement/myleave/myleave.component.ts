@@ -1,25 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { SwUpdate } from '@angular/service-worker';
-import alasql from 'alasql';
-import { evaluate } from 'mathjs';
-import moment from 'moment';
-import { Observable, startWith, map, forkJoin } from 'rxjs';
-import { TokenStorageService } from '../../../_services/token-storage.service';
+import { forkJoin, Observable } from 'rxjs';
+//import { string } from 'mathjs';
+import { startWith, map } from 'rxjs/operators';
 import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
-import { IEmployee } from '../../employeeactivity/employeeactivity/employeeactivity.component';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+import { IEmployee } from '../../employeesalary/employee-gradehistory/employee-gradehistory.component';
+import * as moment from 'moment';
+import alasql from 'alasql';
+import { evaluate } from 'mathjs';
 
 @Component({
-  selector: 'app-leavehome',
-  templateUrl: './leavehome.component.html',
-  styleUrls: ['./leavehome.component.scss']
+  selector: 'app-myleave',
+  templateUrl: './myleave.component.html',
+  styleUrls: ['./myleave.component.scss']
 })
-export class LeavehomeComponent {
+export class MyLeaveComponent implements OnInit {
   PageLoading = true;
   LoginUserDetail:any[]= [];
   CurrentRow: any = {};
@@ -99,6 +101,7 @@ export class LeavehomeComponent {
   Permission = ''
   searchForm: UntypedFormGroup;
   SelectedApplicationId = 0;
+  EmployeeId=0;
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
     private dataservice: NaomitsuService,
@@ -116,16 +119,16 @@ export class LeavehomeComponent {
     //   })
     // })
     //debugger;
-    this.searchForm = this.fb.group({
-      searchEmployee: [0],
-    });
+    // this.searchForm = this.fb.group({
+    //   searchEmployee: [0],
+    // });
     this.PageLoad();
-    this.filteredOptions = this.searchForm.get("searchEmployee")?.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => typeof value === 'string' ? value : value.Name),
-        map(Name => Name ? this._filter(Name) : this.Employees.slice())
-      )!;
+    // this.filteredOptions = this.searchForm.get("searchEmployee")?.valueChanges
+    //   .pipe(
+    //     startWith(''),
+    //     map(value => typeof value === 'string' ? value : value.Name),
+    //     map(Name => Name ? this._filter(Name) : this.Employees.slice())
+    //   )!;
 
   }
   private _filter(name: string): IEmployee[] {
@@ -138,14 +141,14 @@ export class LeavehomeComponent {
     return user && user.Name ? user.Name : '';
   }
 
-EmployeeId=0;
+
   PageLoad() {
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employeeleave.LEAVEHOME);
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.emp.employee.EMPLOYEE);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
@@ -236,8 +239,8 @@ EmployeeId=0;
     }
     this.loading = true;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    var _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
-    let checkFilterString = this.FilterOrgSubOrgBatchId + " and EmployeeId eq " + _employeeId +
+    //var _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
+    let checkFilterString = this.FilterOrgSubOrgBatchId + " and EmployeeId eq " + this.EmployeeId +
       " and LeaveFrom eq " + moment(row.LeaveFrom).format('YYYY-MM-DD') +
       " and LeaveTo eq " + moment(row.LeaveTo).format('YYYY-MM-DD') +
       " and Active eq 1"
@@ -261,7 +264,7 @@ EmployeeId=0;
         else {
           list.fields = ["LeaveBalanceId,LeavePolicyId,OB,CB,Adjusted,EmployeeId,BatchId,Active"];
           list.PageName = "LeaveBalances";
-          list.filter = ["EmployeeId eq " + _employeeId + " and LeavePolicyId eq " + row.LeaveTypeId];
+          list.filter = ["EmployeeId eq " + this.EmployeeId + " and LeavePolicyId eq " + row.LeaveTypeId];
           this.dataservice.get(list)
             .subscribe((leavedata: any) => {
               var _NoOfLeaveClosingBalance = 0;
@@ -288,7 +291,7 @@ EmployeeId=0;
                   this.EmployeeLeaveData.ApprovedBy = +this.LoginUserDetail[0]["employeeId"];
                 }
                 this.EmployeeLeaveData.EmployeeLeaveId = row.EmployeeLeaveId;
-                this.EmployeeLeaveData.EmployeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
+                this.EmployeeLeaveData.EmployeeId = this.EmployeeId;// this.searchForm.get("searchEmployee")?.value.EmployeeId;
                 this.EmployeeLeaveData.Active = row.Active;
                 this.EmployeeLeaveData.LeaveTypeId = row.LeaveTypeId;
                 this.EmployeeLeaveData.LeaveFrom = row.LeaveFrom;
@@ -416,7 +419,6 @@ EmployeeId=0;
         this.loading = false; this.PageLoading = false;
         this.GetEmployees();
         this.GetLeavePolicy();
-        this.GetEmployeeLeave();
       });
   }
   GetEmployees() {
@@ -510,8 +512,7 @@ EmployeeId=0;
       ];
       this.loading = true;
       list.PageName = this.EmployeeLeaveListName;
-      list.lookupFields = ["EmpEmployee($expand=EmpEmployeeGradeSalHistories;$filter=ManagerId eq " + this.EmployeeId +";$select=EmployeeGradeHistoryId)"];
-      list.filter = [this.FilterOrgSubOrgBatchId];
+      list.filter = [this.FilterOrgSubOrgBatchId + " and EmployeeId eq " + this.EmployeeId];
       //list.orderBy = "ParentId";
       this.EmployeeLeaveList = [];
       this.dataservice.get(list)
@@ -530,7 +531,7 @@ EmployeeId=0;
           this.dataSource = new MatTableDataSource<IEmployeeLeave>(this.EmployeeLeaveList);
           this.loading = false;
         })
-    //}
+   // }
   }
 
   getDropDownData(dropdowntype) {
@@ -566,7 +567,7 @@ EmployeeId=0;
     var _leaveStatusId = this.LeaveStatus.filter(l => l.MasterDataName.toLowerCase() == 'pending')[0].MasterDataId;
     var newdata = {
       EmployeeLeaveId: 0,
-      EmployeeId: this.searchForm.get("searchEmployee")?.value.EmployeeId,
+      EmployeeId: this.EmployeeId,
       LeaveTypeId: 0,
       LeaveFrom: new Date(),
       LeaveTo: new Date(),
@@ -793,16 +794,16 @@ EmployeeId=0;
   }
   GetCurrentEmployeeVariableData() {
     //var _DepartmentId = this.searchForm.get("searchDepartmentId")?.value;
-    var _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
+    //var _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
 
     //var orgIdSearchstr = ' and OrgId eq ' + OrgId;
     var searchfilter = '';
-    if (!_employeeId)
-      this.contentservice.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
-    else {
-      searchfilter = " and EmployeeId eq " + _employeeId
-    }
-
+    // if (!_employeeId)
+    //   this.contentservice.openSnackBar("Please select employee.", globalconstants.ActionText, globalconstants.RedBackground);
+    // else {
+    //   searchfilter = " and EmployeeId eq " + _employeeId
+    // }
+    searchfilter = " and EmployeeId eq " + this.EmployeeId;
     let list: List = new List();
 
     list.fields = ["DesignationId,WorkAccountId,JobTitleId,DepartmentId,EmpGradeId,EmployeeId"];

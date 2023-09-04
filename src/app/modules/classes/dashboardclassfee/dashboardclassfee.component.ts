@@ -24,15 +24,15 @@ export class DashboardclassfeeComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   loading = false;
   InvoiceCreated = false;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   SelectedMonth = 0;
-  Months :any[]= [];
-  VariableObjList :any[]= [];
-  LedgerData :any[]= [];
-  ClassCategory :any[]= [];
+  Months: any[] = [];
+  VariableObjList: any[] = [];
+  LedgerData: any[] = [];
+  ClassCategory: any[] = [];
   FeeDefinitionListName = 'FeeDefinitions';
   DataCountToUpdate = -1;
-  LoginUserDetail :any[]= [];
+  LoginUserDetail: any[] = [];
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   StandardFilterWithPreviousBatchId = '';
@@ -41,19 +41,19 @@ export class DashboardclassfeeComponent implements OnInit {
   SelectedApplicationId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   PreviousBatchId = 0;
-  FeeDefinitions :any[]= [];
-  Classes :any[]= [];
-  Sections :any[]= [];
-  Semesters :any[]= [];
-  Batches :any[]= [];
+  FeeDefinitions: any[] = [];
+  Classes: any[] = [];
+  Sections: any[] = [];
+  Semesters: any[] = [];
+  Batches: any[] = [];
   Selectzero = 0;
   Permission = 'deny';
-  DataToSaveInLoop :any[]= [];
-  ClassStatuses :any[]= [];
-  ELEMENT_DATA: Element[]= [];
+  DataToSaveInLoop: any[] = [];
+  ClassStatuses: any[] = [];
+  ELEMENT_DATA: Element[] = [];
   dataSource: MatTableDataSource<Element>;
-  allMasterData :any[]= [];
-  FeeCategories :any[]= [];
+  allMasterData: any[] = [];
+  FeeCategories: any[] = [];
   searchForm: any;
   CurrentMonthYear = '';
   classFeeData = {
@@ -211,6 +211,8 @@ export class DashboardclassfeeComponent implements OnInit {
   CreateInvoice() {
     debugger;
     var _classId = this.searchForm.get("searchClassId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
     //var _selectedMonth = this.searchForm.get("searchMonth")?.value;
     if (_classId == 0) {
       this.contentservice.openSnackBar("Please select a class.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -220,14 +222,22 @@ export class DashboardclassfeeComponent implements OnInit {
     // }
     else {
       this.loading = true;
-      this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0)
+      this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, _classId)//, _semesterId, _sectionId)
         .subscribe((datacls: any) => {
 
-          var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
-
-          this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, _classId, 0, 0)
+          //var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
+          var _clsfeeWithDefinitions: any = [];
+          let items = datacls.value.filter(m => m.FeeDefinition.Active == 1 && m.SemesterId == _semesterId
+            && m.SectionId == _sectionId);
+          if (items.length == 0) {
+            _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
+          }
+          else
+            _clsfeeWithDefinitions = [...items];
+          
+          this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, _classId, _semesterId, _sectionId, 0, 0)
             .subscribe((data: any) => {
-              var studentfeedetail :any[]= [];
+              var studentfeedetail: any[] = [];
               data.value.forEach(studcls => {
                 var _feeName = '';
                 var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
@@ -240,11 +250,11 @@ export class DashboardclassfeeComponent implements OnInit {
                   var _category = '';
                   var _subCategory = '';
 
-                  var objcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                  var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                   if (objcat.length > 0)
                     _category = objcat[0].MasterDataName;
 
-                  var objsubcat = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                  var objsubcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
                   if (objsubcat.length > 0)
                     _subCategory = objsubcat[0].MasterDataName;
 
@@ -301,7 +311,7 @@ export class DashboardclassfeeComponent implements OnInit {
   }
   SaveAll() {
     this.loading = true;
-    this.DataToSaveInLoop = this.ELEMENT_DATA.filter((f:any) => f.Action);
+    this.DataToSaveInLoop = this.ELEMENT_DATA.filter((f: any) => f.Action);
     this.DataCountToUpdate = this.DataToSaveInLoop.length;
     this.DataToSaveInLoop.forEach((record) => {
       this.DataCountToUpdate--
@@ -327,7 +337,7 @@ export class DashboardclassfeeComponent implements OnInit {
       'Nov',
       'Dec'
     ]
-    var monthArray :any[]= [];
+    var monthArray: any[] = [];
     var selectedBatch = this.tokenStorage.getSelectedBatchStartEnd()!!;
     var b = JSON.parse(selectedBatch);
     debugger;
@@ -356,7 +366,7 @@ export class DashboardclassfeeComponent implements OnInit {
   }
   UpdateOrSave(row) {
     debugger;
-    var objDiscount = this.ELEMENT_DATA.filter((f:any) => f.FeeName == 'Discount');
+    var objDiscount = this.ELEMENT_DATA.filter((f: any) => f.FeeName == 'Discount');
     if (objDiscount.length == 0) {
       this.contentservice.openSnackBar("Discount should be activated and saved.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -427,7 +437,7 @@ export class DashboardclassfeeComponent implements OnInit {
           this.classFeeData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.classFeeData.SubOrgId = this.SubOrgId;
           if (objDiscount[0].ClassFeeId == 0) {
-            var insert :any[]= [];
+            var insert: any[] = [];
             insert.push({
               Active: 1,
               Amount: objDiscount[0].Amount,
@@ -542,8 +552,8 @@ export class DashboardclassfeeComponent implements OnInit {
     this.loading = true;
     let filterstr = " and ClassId eq " + _classId;
     //if (_semesterId) query should be specific to class,semesterid,sectionid
-      filterstr += " and SemesterId eq " + _semesterId;
-      filterstr += " and SectionId eq " + _sectionId;
+    filterstr += " and SemesterId eq " + _semesterId;
+    filterstr += " and SectionId eq " + _sectionId;
 
     this.SelectedMonth = this.searchForm.get("searchMonth")?.value;
     if (this.SelectedMonth > 0)
@@ -581,7 +591,7 @@ export class DashboardclassfeeComponent implements OnInit {
           list.filter = [this.FilterOrgSubOrgBatchId + filterstr];
           this.dataservice.get(list)
             .subscribe((existingclsfee: any) => {
-              _classFee = data.value.filter((f:any) => existingclsfee.value.filter(g => g.FeeDefinitionId == f.FeeDefinitionId).length == 0)
+              _classFee = data.value.filter((f: any) => existingclsfee.value.filter(g => g.FeeDefinitionId == f.FeeDefinitionId).length == 0)
               this.ProcessClassFee(_classFee, previousbatch)
             })
         }

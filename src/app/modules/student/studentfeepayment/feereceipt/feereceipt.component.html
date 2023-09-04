@@ -3,7 +3,7 @@
 <div style="display:flex;flex-direction:column">
 
     <div style="display: flex;flex-direction: row;align-items: start;">
-        <div style="display: flex;flex-direction: column;padding: 15px 15px 15px 0px;width:40%">
+        <div style="box-sizing: border-box; display: flex;flex-direction: column;padding: 15px 15px 15px 0px;width:40%">
             <div style="padding: 5px;"><b>Receipts</b></div>
             <div style="border:1px solid lightgray;">
                 <mat-table [dataSource]="dataReceiptSource" matSort>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div style="border-collapse: collapse;">
-                    <mat-table [dataSource]="dataSource">
+                    <mat-table [dataSource]="dataSource" style>
                         <ng-container matColumnDef="index">
                             <mat-header-cell *matHeaderCellDef> Sr.No. </mat-header-cell>
                             <mat-cell *matCellDef="let element;let i = index;"> {{i+1}} </mat-cell>
@@ -114,7 +114,7 @@
                             </mat-footer-cell>
                         </ng-container>
                         <ng-container matColumnDef="Balance">
-                            <mat-header-cell *matHeaderCellDef>Balance</mat-header-cell>
+                            <mat-header-cell *matHeaderCellDef>Bal</mat-header-cell>
                             <mat-cell *matCellDef="let element" style="justify-content:flex-end;">
                                 {{element.Balance}}
                             </mat-cell>

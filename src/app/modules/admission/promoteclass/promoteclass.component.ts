@@ -182,7 +182,7 @@ export class PromoteclassComponent implements OnInit {
       this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
       if (this.PreviousBatchId == -1) {
         this.loading = false;
-        this.PageLoading=false;
+        this.PageLoading = false;
         this.contentservice.openSnackBar("No previous batch exists!", globalconstants.ActionText, globalconstants.RedBackground);
       }
       else {
@@ -1049,12 +1049,19 @@ export class PromoteclassComponent implements OnInit {
   CreateInvoice(row) {
     debugger;
     this.loading = true;
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0)
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, this.StudentClassData.ClassId)//,this.StudentClassData.SemesterId,this.StudentClassData.SectionId)
       .subscribe((datacls: any) => {
 
-        var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
-
-        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, row.StudentClassId, 0)
+        var _clsfeeWithDefinitions: any = [];
+        let items = datacls.value.filter(m => m.FeeDefinition.Active == 1 && m.SemesterId == this.StudentClassData.SemesterId
+          && m.SectionId == this.StudentClassData.SectionId);
+        if (items.length == 0) {
+          _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
+        }
+        else
+          _clsfeeWithDefinitions = [...items];
+        
+        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, this.StudentClassData.ClassId, this.StudentClassData.SemesterId, this.StudentClassData.SectionId, row.StudentClassId, 0)
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
             data.value.forEach(studcls => {

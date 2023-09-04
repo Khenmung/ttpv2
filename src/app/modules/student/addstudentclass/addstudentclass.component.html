@@ -74,8 +74,9 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <mat-select [disabled]="!this.FeeTypePermission.includes('rw') && this.FeeTypePermission.includes('rwd')" [(ngModel)]="element.FeeTypeId" [value]="element.FeeTypeId" (selectionChange)="enableAction(element)">
-                    <mat-option *ngFor="let item of FeeType" [value]="item.FeeTypeId">
+                <mat-select matTooltip="{{element.FeeType}}" [disabled]="!this.FeeTypePermission.includes('rw') && this.FeeTypePermission.includes('rwd')" 
+                [(ngModel)]="element.FeeTypeId" [value]="element.FeeTypeId" (selectionChange)="enableAction(element)">
+                    <mat-option matTooltip="{{item.FeeTypeName}}" *ngFor="let item of FeeType" [value]="item.FeeTypeId">
                         {{item.FeeTypeName}}
                     </mat-option>
                 </mat-select>

@@ -248,12 +248,12 @@ export class SchoolFeeTypesComponent implements OnInit {
     debugger;
     this.loading = true;
 
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0)
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0,0)//,0,0)
       .subscribe((datacls: any) => {
 
-        var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
+       var _clsfeeWithDefinitions: any = datacls.value.filter(m => m.FeeDefinition.Active == 1);
 
-        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, 0, this.FeeTypeData.FeeTypeId)
+        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId,0,0,0,0, this.FeeTypeData.FeeTypeId)
           .subscribe((data: any) => {
             var studentfeedetail:any[]= [];
             data.value.forEach(studcls => {

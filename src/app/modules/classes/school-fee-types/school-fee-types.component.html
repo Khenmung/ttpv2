@@ -30,7 +30,7 @@
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-form-field appearance="outline">
-                        <input matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="30"
+                        <input matInput matTooltip="{{element.FeeTypeName}}" (blur)="onBlur(element)" autocomplete="Off" [maxlength]="30"
                             [value]="element.FeeTypeName" [(ngModel)]="element.FeeTypeName">
                     </mat-form-field>
                 </mat-cell>
@@ -40,8 +40,8 @@
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-form-field appearance="outline">
-                        <input matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="250"
-                            [value]="element.Description" [(ngModel)]="element.Description">
+                        <textarea matTooltip="{{element.Description}}" matInput (blur)="onBlur(element)" rows="1" autocomplete="Off" [maxlength]="250"
+                            [value]="element.Description" [(ngModel)]="element.Description"></textarea>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
@@ -50,7 +50,7 @@
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-form-field [style.width.pc]="50" appearance="outline">
-                        <textarea matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="250"
+                        <textarea rows="1"  matTooltip="{{element.Formula}}" matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="250"
                             [value]="element.Formula" [(ngModel)]="element.Formula"></textarea>
                     </mat-form-field>
                 </mat-cell>

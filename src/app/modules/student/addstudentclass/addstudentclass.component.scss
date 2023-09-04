@@ -24,7 +24,7 @@ button {
   flex:1 0 100px;
 }
 .mat-column-ClassId,.mat-column-SemesterId,
-.mat-column-FeeTypeId,.mat-column-Remarks{
+.mat-column-Remarks{
   flex:1 0 150px;
 }
 .mat-column-AdmissionDate{
@@ -32,4 +32,7 @@ button {
 }
 .mdc-data-table__cell, .mdc-data-table__header-cell{
   padding: 0px 15px 0px 0px;
+}
+.mat-column-FeeTypeId{
+  flex:1 0 200px;
 }

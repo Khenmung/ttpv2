@@ -19,8 +19,8 @@ mat-header-cell,mat-cell{
     position: relative;
     width: 99%;
 }
-.mat-column-LeaveTypeId,
-.mat-column-LeaveFrom,.mat-column-LeaveTo{
+.mat-column-Leave,
+.mat-column-LeaveFrom,.mat-column-LeaveTo,.mat-column-ApplyDate{
     flex:1 0 125px;
 }
 .mat-column-NoOfDays{

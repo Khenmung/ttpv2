@@ -762,7 +762,7 @@ AttendanceAbsentId=0;
       })
   }
   CreateInvoice() {
-    this.contentservice.getInvoice(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedBatchId, this.StudentClassId)
+    this.contentservice.getInvoice(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedBatchId, this.StudentClassId,0,0,0)
       .subscribe((data: any) => {
 
         this.contentservice.createInvoice(data, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
