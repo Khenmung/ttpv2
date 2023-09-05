@@ -249,7 +249,7 @@ export class AddstudentclassComponent implements OnInit {
           if (data.value.length > 0) {
             var studentcls = data.value.map(m => {
               var admissiondate = moment(m.AdmissionDate).isBefore("1970-01-01");
-              m.AdmissionDate = admissiondate ? moment() : data.value[0].AdmissionDate;
+              m.AdmissionDate = !admissiondate ? moment() : data.value[0].AdmissionDate;
 
               let obj = this.FeeType.filter(f => f.FeeTypeId == m.FeeTypeId);
               if (obj.length > 0)

@@ -13,7 +13,15 @@
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
-        <button [disabled]="loading" [style.width.px]="100" mat-raised-button (click)="GetEmployeeLeave()">
+        <mat-form-field style="width:250px;margin-right: 15px;" appearance="outline">
+            <mat-label>status</mat-label>
+            <mat-select formControlName="searchLeaveStatusId">
+                <mat-option *ngFor="let option of LeaveStatus" [value]="option.MasterDataId">
+                    {{option.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button [disabled]="loading" color="accent" [style.width.px]="100" mat-raised-button (click)="GetEmployeeLeave()">
             <mat-icon>search</mat-icon>
             <mat-icon *ngIf="loading">
                 <mat-spinner diameter="20" color="Blue"></mat-spinner>
@@ -27,6 +35,13 @@
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 {{element.EmployeeLeaveId}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Employee">
+            <mat-header-cell *matHeaderCellDef>Employee
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.Employee}}
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="Leave">
@@ -100,25 +115,25 @@
             <mat-header-cell *matHeaderCellDef> Remarks </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <textarea matInput autocomplete="Off" [value]="element.Remarks" (blur)="onBlur(element)"
+                    <textarea rows="1" matInput autocomplete="Off" [value]="element.Remarks" (blur)="onBlur(element)"
                         [(ngModel)]="element.Remarks"></textarea>
                 </mat-form-field>
             </mat-cell>
         </ng-container>
-        <!-- <ng-container matColumnDef="Active">
+        <ng-container matColumnDef="Active">
             <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
                     [checked]="element.Active==1?true:false">
                 </mat-checkbox>
             </mat-cell>
-        </ng-container> -->
+        </ng-container>
         <ng-container matColumnDef="Action">
             <mat-header-cell *matHeaderCellDef>
-                <button [disabled]="loading || f.searchEmployee.value.EmployeeId==undefined || Permission=='read'"
+                <!-- <button [disabled]="loading || f.searchEmployee.value.EmployeeId==undefined || Permission=='read'"
                     matTooltip="add new" mat-mini-fab (click)="addnew()">
                     <mat-icon>add</mat-icon>
-                </button>
+                </button> -->
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <button [disabled]="loading || !element.Action || element.LeaveStatus.toLowerCase()!='pending'" matTooltip="save" mat-mini-fab

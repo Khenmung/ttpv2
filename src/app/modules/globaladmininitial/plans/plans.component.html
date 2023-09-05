@@ -30,7 +30,7 @@
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <mat-form-field appearance="outline">
-                            <textarea matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="1000"
+                            <textarea rows="1" matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="1000"
                                 [value]="element.Description" [(ngModel)]="element.Description"></textarea>
                         </mat-form-field>
                     </mat-cell>

@@ -53,7 +53,7 @@
             </mat-header-cell>
             <mat-cell *matCellDef="let element ">
                 <mat-form-field appearance="outline">
-                    <textarea matInput cols="40" [maxlength]="256" autocomplete="Off" (blur)="onBlur(element,$event)"
+                    <textarea rows="1" matInput cols="40" [maxlength]="256" autocomplete="Off" (blur)="onBlur(element,$event)"
                         [value]="element.VariableFormula" [(ngModel)]="element.VariableFormula"></textarea>
                 </mat-form-field>
             </mat-cell>

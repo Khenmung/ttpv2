@@ -91,7 +91,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   displayedColumns = [
     'StudentName',
     'GenderName',
-    'Remark',
+    //'Remark',
     //'AdmissionNo',
     'ClassId',
     'SectionId',
@@ -779,7 +779,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       this.displayedColumns = [
         'StudentName',
         'GenderName',
-        'Remark',
+        //'Remark',
         //'AdmissionNo',
         'ClassId',
         'SectionId',
@@ -794,7 +794,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       this.displayedColumns = [
         'StudentName',
         'GenderName',
-        'Remark',
+        //'Remark',
         //'AdmissionNo',
         'ClassId',
         'SemesterId',

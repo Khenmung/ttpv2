@@ -38,7 +38,7 @@ export class LeaveRequestsComponent {
   Leaves: any[] = [];
   LeaveStatus: any[] = [];
   Employees: any[] = [];
-  dataSource: MatTableDataSource<IEmployeeLeave>;
+  dataSource: MatTableDataSource<IEmployeeLeave> = new MatTableDataSource<IEmployeeLeave>([]);
   filteredOptions: Observable<IEmployee[]>;
   allMasterData: any[] = [];
   //LeaveStatuses :any[]= [];
@@ -86,7 +86,7 @@ export class LeaveRequestsComponent {
   //LeaveManagement["LeaveBalance"]:any[]=[];
   displayedColumns = [
     "EmployeeLeaveId",
-    "LeaveTypeId",
+    "Leave",
     "LeaveFrom",
     "LeaveTo",
     "NoOfDays",
@@ -118,6 +118,7 @@ export class LeaveRequestsComponent {
     //debugger;
     this.searchForm = this.fb.group({
       searchEmployee: [0],
+      searchLeaveStatusId: [0]
     });
     this.PageLoad();
     this.filteredOptions = this.searchForm.get("searchEmployee")?.valueChanges
@@ -160,6 +161,7 @@ export class LeaveRequestsComponent {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.EmployeeId = this.tokenStorage.getEmployeeId()!;
         this.GetMasterData();
+        this.GetEmployeeLeave();
       }
     }
 
@@ -413,7 +415,7 @@ export class LeaveRequestsComponent {
         this.loading = false; this.PageLoading = false;
         this.GetEmployees();
         this.GetLeavePolicy();
-        this.GetEmployeeLeave();
+        //this.GetEmployeeLeave();
       });
   }
   GetEmployees() {
@@ -443,15 +445,31 @@ export class LeaveRequestsComponent {
       })
 
   }
-  
+
   GetEmployeeLeave() {
     debugger;
+    let _employeeId = this.searchForm.get("searchEmployee")?.value.EmployeeId;
+    let _leaveStatusId = this.searchForm.get("searchLeaveStatusId")?.value;
+    let empFilter = '';
+    if (_employeeId) {
+      empFilter = " and EmpEmployeeId eq " + _employeeId;
+    }
+    let statusIdfilter = '';
+    if (!_leaveStatusId)
+    {
+      let Id = this.LeaveStatus.filter(l=>l.MasterDataName.toLowerCase()=='pending')[0].MasterDataId;
+      statusIdfilter = "$filter=LeaveStatusId eq " + Id + ";";
+    }
+    else
+      statusIdfilter = "$filter=LeaveStatusId eq " + _leaveStatusId + ";";
+
     this.displayedColumns = [
       "EmployeeLeaveId",
+      "Employee",
       "Leave",
       "LeaveFrom",
       "LeaveTo",
-      "ApplyDate",    
+      "ApplyDate",
       "NoOfDays",
       "LeaveReason",
       //"ApproveRejecteDate",
@@ -465,12 +483,15 @@ export class LeaveRequestsComponent {
     let list: List = new List();
 
     list.fields = [
-      "EmpEmployeeId"
+      "EmpEmployeeId",
+      "FirstName",
+      "LastName",
+      "EmployeeCode"
     ];
     this.loading = true;
     list.PageName = "EmpEmployees";
-    list.lookupFields = ["LeaveEmployeeLeaves($select=" + fields+")"];
-    list.filter = [this.FilterOrgSubOrg + " and ManagerId eq " + this.EmployeeId];
+    list.lookupFields = ["LeaveEmployeeLeaves(" + statusIdfilter + "$select=" + fields + ")"];
+    list.filter = [this.FilterOrgSubOrg + empFilter + " and ManagerId eq " + this.EmployeeId];
     //list.orderBy = "ParentId";
     this.EmployeeLeaveList = [];
     this.dataservice.get(list)
@@ -480,15 +501,17 @@ export class LeaveRequestsComponent {
         if (data.value.length > 0)
           data.value.map(d => {
             d.LeaveEmployeeLeaves.forEach(el => {
+              el.Employee = d.EmployeeCode + "-" + d.FirstName + " " + d.LastName;
               el.LeaveStatus = this.LeaveStatus.filter(l => l.MasterDataId == el.LeaveStatusId)[0].MasterDataName;
-              el.Leave = this.LeavePolicies.filter(l=>l.LeavePolicyId == el.LeaveTypeId)[0].Leave;
+              el.Leave = this.LeavePolicies.filter(l => l.LeavePolicyId == el.LeaveTypeId)[0].Leave;
               this.EmployeeLeaveList.push(el);
             })
           })
-        else {
+        if (this.EmployeeLeaveList.length == 0) {
           this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        this.EmployeeLeaveList = this.EmployeeLeaveList.sort((a,b)=>a.LeaveStatusId -b.LeaveStatusId);
+        console.log("this.EmployeeLeaveList", this.EmployeeLeaveList)
+        this.EmployeeLeaveList = this.EmployeeLeaveList.sort((a, b) => a.LeaveStatusId - b.LeaveStatusId);
         this.dataSource = new MatTableDataSource<IEmployeeLeave>(this.EmployeeLeaveList);
         this.loading = false;
       })
@@ -499,42 +522,7 @@ export class LeaveRequestsComponent {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
 
   }
-  addnew() {
-    debugger;
-    this.displayedColumns = [
-      "EmployeeLeaveId",
-      "LeaveTypeId",
-      "LeaveFrom",
-      "LeaveTo",
-      "NoOfDays",
-      "LeaveReason",
-      "Active",
-      "Action"
-    ]
-    this.EmployeeLeaveList = [];
-    var _leaveStatusId = this.LeaveStatus.filter(l => l.MasterDataName.toLowerCase() == 'pending')[0].MasterDataId;
-    var newdata = {
-      EmployeeLeaveId: 0,
-      EmployeeId: this.searchForm.get("searchEmployee")?.value.EmployeeId,
-      LeaveTypeId: 0,
-      LeaveFrom: new Date(),
-      LeaveTo: new Date(),
-      NoOfDays: 1,
-      LeaveReason: '',
-      LeaveStatus: 'Pending',
-      ApplyDate: new Date(),
-      LeaveStatusId: _leaveStatusId,
-      ApproveRejecteDate: new Date(),
-      BatchId: this.SelectedBatchId,
-      ApprovedBy: 0,
-      Remarks: '',
-      Active: 0,
-      Action: true
-    }
-    this.EmployeeLeaveList.push(newdata)
-    this.newitem = true;
-    this.dataSource = new MatTableDataSource(this.EmployeeLeaveList);
-  }
+
   RawLeaveBalance: any[] = [];
   StoredForUpdate: any[] = [];
   LeavePolicies: any[] = [];

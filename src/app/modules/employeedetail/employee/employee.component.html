@@ -251,7 +251,7 @@
                         style="align-items: baseline;min-width: 1080px;margin-left: 0px;margin-bottom: 15px;padding:15px;border: 1px solid lightgray;">
                         <mat-form-field [style.width.px]="250" appearance="outline">
                             <mat-label>Present Address</mat-label>
-                            <textarea [maxlength]="256" (blur)="OnBlur()" matInput autocomplete="Off"
+                            <textarea rows="1" [maxlength]="256" (blur)="OnBlur()" matInput autocomplete="Off"
                                 formControlName="PresentAddress"></textarea>
                         </mat-form-field>
                         <mat-form-field appearance="outline">
@@ -296,7 +296,7 @@
                         style="align-items: baseline; min-width: 1080px; margin-left: 0px;margin-bottom: 15px;padding:15px;border: 1px solid lightgray;">
                         <mat-form-field [style.width.px]="250" appearance="outline">
                             <mat-label>Permanent Address</mat-label>
-                            <textarea [maxlength]="256" matInput (blur)="OnBlur()" autocomplete="Off"
+                            <textarea rows="1" [maxlength]="256" matInput (blur)="OnBlur()" autocomplete="Off"
                                 formControlName="PermanentAddress"></textarea>
                         </mat-form-field>
                         <mat-form-field appearance="outline">
@@ -521,7 +521,7 @@
             <div class="content" fxLayout="row wrap" fxLayoutGap="100px">
                 <mat-form-field appearance="outline" [style.width.px]="300">
                     <mat-label>Remarks</mat-label>
-                    <textarea formControlName="Remarks" (blur)="OnBlur()" autocomplete="Off" matInput
+                    <textarea rows="1" formControlName="Remarks" (blur)="OnBlur()" autocomplete="Off" matInput
                         [maxlength]="250"></textarea>
                 </mat-form-field>
                 <mat-checkbox (click)="deActivate($event)" formControlName="Active">

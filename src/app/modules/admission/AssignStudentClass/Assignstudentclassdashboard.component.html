@@ -215,9 +215,9 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header> Fee Type </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field>
-                    <mat-select (selectionChange)="onBlur(element)" [value]="element.FeeTypeId"
+                    <mat-select matTooltip="{{element.FeeType}}" (selectionChange)="onBlur(element)" [value]="element.FeeTypeId"
                         [(ngModel)]="element.FeeTypeId">
-                        <mat-option *ngFor="let item of FeeTypes" [value]="item.FeeTypeId">{{item.FeeTypeName}}
+                        <mat-option matTooltip="{{item.FeeTypeName}}" *ngFor="let item of FeeTypes" [value]="item.FeeTypeId">{{item.FeeTypeName}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -234,8 +234,8 @@
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field>
-                    <input matInput (blur)="onBlur(element)" [value]="element.Remarks" [(ngModel)]="element.Remarks"
-                        autocomplete="Off" [maxlength]="250">
+                    <textarea matInput rows="1" (blur)="onBlur(element)" [value]="element.Remarks" [(ngModel)]="element.Remarks"
+                        autocomplete="Off" [maxlength]="250"></textarea>
                 </mat-form-field>
             </mat-cell>
         </ng-container>

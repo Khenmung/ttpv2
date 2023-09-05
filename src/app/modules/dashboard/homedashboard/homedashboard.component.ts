@@ -19,7 +19,7 @@ import { forkJoin } from 'rxjs';
 })
 export class HomeDashboardComponent implements OnInit {
   @ViewChild('overlay') myoverlay: ElementRef;
-  ngAfterViewInit() {   
+  ngAfterViewInit() {
     this.Loading();
     this.LoadingFalse();
   }
@@ -448,7 +448,7 @@ export class HomeDashboardComponent implements OnInit {
       return;
     }
   }
-  
+
   allMasterData: any[] = [];
   SubOrganization: any[] = [];
   Semesters: any[] = [];
@@ -796,9 +796,12 @@ export class HomeDashboardComponent implements OnInit {
         //this.GetMasterData(SelectedAppId, selectedApp);
         this.LoadingFalse();
         //this.PageLoading = false;
-        if (this.Submitted)
+        if (this.Submitted) {
+          if (this.RedirectionText.length == 0)
+            this.RedirectionText = appShortName;
           //this.route.navigate(['/', appShortName]);
           this.route.navigateByUrl("/" + this.RedirectionText);
+        }
       })
   }
   GetStudentClasses() {

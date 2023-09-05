@@ -41,8 +41,28 @@
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-form-field [style.width.px]="350">
-                        <textarea matInput (blur)="onBlur(element)" [(ngModel)]="element.FormulaOrDays"
+                        <textarea rows="1" matInput (blur)="onBlur(element)" [(ngModel)]="element.FormulaOrDays"
                             [value]="element.FormulaOrDays"></textarea>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Description">
+                <mat-header-cell *matHeaderCellDef>Description
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field [style.width.px]="350">
+                        <textarea rows="1" matInput (blur)="onBlur(element)" [(ngModel)]="element.Description"
+                            [value]="element.Description"></textarea>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ExcludeDays">
+                <mat-header-cell *matHeaderCellDef>Exclude Days
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field [style.width.px]="350">
+                        <textarea rows="1" matInput (blur)="onBlur(element)" [(ngModel)]="element.ExcludeDays"
+                            [value]="element.ExcludeDays"></textarea>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
@@ -87,6 +107,7 @@
                 Grade, Department, WorkAccount, JobTitle, Designation, Gender, State, Country,
                 Category, EmploymentStatus, EmploymentType, EmploymentTerm, MaritalStatus, NoOfMonths, NoOfYears, Age, PreviousYearCB.
             </li>
+            <li>["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] can be included in the 'Exclude Days' column to exclude the days between 'Leave From' and 'Leave To' in calculating no of leaves.</li>
         </ul>
     </span>
 </div>

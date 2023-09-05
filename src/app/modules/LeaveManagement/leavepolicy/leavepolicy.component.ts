@@ -46,13 +46,18 @@ export class LeavepolicyComponent implements OnInit {
     LeavePolicyId: 0,
     LeaveNameId: 0,
     FormulaOrDays: '',
+    Description:'',
+    ExcludeDays:'',
     BatchId: 0,
-    OrgId: 0, SubOrgId: 0,
+    OrgId: 0, 
+    SubOrgId: 0,
     Active: 0
   };
   displayedColumns = [
     "Leave",
     "FormulaOrDays",
+    "Description",
+    "ExcludeDays",
     "Active",
     "Action"
   ];
@@ -200,6 +205,8 @@ export class LeavepolicyComponent implements OnInit {
           this.LeavePolicyData.LeavePolicyId = row.LeavePolicyId;
           this.LeavePolicyData.LeaveNameId = row.LeaveNameId;
           this.LeavePolicyData.FormulaOrDays = row.FormulaOrDays;
+          this.LeavePolicyData.Description = row.Description;
+          this.LeavePolicyData.ExcludeDays = row.ExcludeDays;
           this.LeavePolicyData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.LeavePolicyData.SubOrgId = this.SubOrgId;
           this.LeavePolicyData.BatchId = this.SelectedBatchId;
@@ -388,7 +395,11 @@ export class LeavepolicyComponent implements OnInit {
         })
 
         //console.log('LeavePolicyList',this.LeavePolicyList);
+        if(this.LeavePolicyList.length==0)
+        {
+          this.contentservice.openSnackBar("No Leave defined.",globalconstants.ActionText,globalconstants.RedBackground);
 
+        }
         this.loading = false; this.PageLoading = false;
         this.dataSource = new MatTableDataSource<ILeavePolicy>(this.LeavePolicyList);
       })
