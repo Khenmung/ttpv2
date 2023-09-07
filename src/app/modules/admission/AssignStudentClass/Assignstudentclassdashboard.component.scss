@@ -7,6 +7,7 @@ mat-header-cell{
     padding: 5px;
 }
 mat-cell{
+
     border-right: 1px solid lightgray;
 }
 .mat-column-AdmissionNo{
@@ -21,12 +22,12 @@ mat-cell{
 .mat-column-SectionId{
     flex:1 0 100px;
 }
-.mat-column-Active
+.mat-column-Active,.mat-column-Action
 {
     justify-content: center;
     flex:1 0 100px;
 }
-.mat-column-SemesterId,.mat-column-CourseYearId{
+.mat-column-SemesterId,.mat-column-CourseYearId,.mat-column-ExamStatus{
     flex:1 0 120px;
 }
 .mat-column-ClassId,
@@ -35,7 +36,7 @@ mat-cell{
     flex:1 0 140px;
 }
 
-.mat-column-Action,.mat-column-ExamStatus, .mat-column-StudentName,.mat-column-FeeTypeId,.mat-column-Remarks{
+ .mat-column-StudentName,.mat-column-FeeTypeId,.mat-column-Remarks{
     flex:1 0 150px;
 }
 mat-cell:first-of-type{

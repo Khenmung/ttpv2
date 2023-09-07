@@ -557,81 +557,81 @@ export class ExcelDataManagementComponent implements OnInit {
       // else
       //   element.ProbationPeriodDays = 0;
 
-      if (element.DOB != undefined && isNaN(Date.parse(element.DOB)))
+      if (element.DOB && isNaN(Date.parse(element.DOB)))
         this.ErrorMessage += 'Invalid DOB at row ' + indx;
-      // else if (element.DOB != undefined)
+      // else if (element.DOB )
       //   element.DOB = new Date(element.DOB).toISOString();
 
 
-      if (element.DOJ != undefined && isNaN(Date.parse(element.DOJ)))
+      if (element.DOJ && isNaN(Date.parse(element.DOJ)))
         this.ErrorMessage += 'Invalid DOJ at row ' + indx + ":" + element.DOJ + "; ";
-      // else if (element.DOJ != undefined)
+      // else if (element.DOJ )
       //   element.DOJ = new Date(element.DOJ).toISOString();
 
-      if (element.ConfirmationDate != undefined && !isNaN(Date.parse(element.ConfirmationDate)))
+      if (element.ConfirmationDate && !isNaN(Date.parse(element.ConfirmationDate)))
         this.ErrorMessage += 'Invalid ConfirmationDate at row ' + indx;
-      // else if (element.ConfirmationDate != undefined)
+      // else if (element.ConfirmationDate )
       //   element.ConfirmationDate = new Date(element.ConfirmationDate).toISOString();
 
-      if (element.MarriedDate != undefined && !isNaN(Date.parse(element.MarriedDate)))
+      if (element.MarriedDate && !isNaN(Date.parse(element.MarriedDate)))
         this.ErrorMessage += 'Invalid MarriedDate at row ' + indx;
-      // else if (element.MarriedDate != undefined)
+      // else if (element.MarriedDate )
       //   element.MarriedDate = new Date(element.MarriedDate).toISOString();
 
-      if (element.ShortName != undefined && element.ShortName.length > 10)
+      if (element.ShortName && element.ShortName.length > 10)
         this.ErrorMessage += 'ShortName must be less than 11 characters at row ' + indx + '.\n';
-      if (element.FirstName != undefined && element.FirstName.length > 30)
+      if (element.FirstName && element.FirstName.length > 30)
         this.ErrorMessage += 'FirstName must be less than 31 characters at row ' + indx + '.\n';
-      if (element.LastName != undefined && element.LastName.length > 30)
+      if (element.LastName && element.LastName.length > 30)
         this.ErrorMessage += 'LastName must be less than 31 characters at row ' + indx + '.\n';
 
-      if (element.MotherName != undefined && element.MotherName.length > 30)
+      if (element.MotherName && element.MotherName.length > 30)
         this.ErrorMessage += 'MotherName must be less than 31 characters at row ' + indx + '.\n';
-      if (element.FatherName != undefined && element.FatherName.length > 30)
+      if (element.FatherName && element.FatherName.length > 30)
         this.ErrorMessage += 'FatherName must be less than 31 characters at row ' + indx + '.\n';
-      if (element.MICRNo != undefined && element.MICRNo.length > 20)
+      if (element.MICRNo && element.MICRNo.length > 20)
         this.ErrorMessage += 'MICRNo must be less than 21 characters at row ' + indx + '.\n';
 
-      if (element.BankAccountNo != undefined && element.BankAccountNo.length > 20)
+      if (element.BankAccountNo && element.BankAccountNo.length > 20)
         this.ErrorMessage += 'BankAccountNo must be less than 21 characters at row ' + indx + '.\n';
-      if (element.IFSCCode != undefined && element.IFSCcode.length > 15)
+      if (element.IFSCCode && element.IFSCcode.length > 15)
         this.ErrorMessage += 'IFSCcode must be less than 16 characters at row ' + indx + '.\n';
-      if (element.MICRNo != undefined && element.MICRNo.length > 20)
+      if (element.MICRNo && element.MICRNo.length > 20)
         this.ErrorMessage += 'MICRNo must be less than 21 characters at row ' + indx + '.\n';
 
-      if (element.AdhaarNo != undefined && element.AdhaarNo.length > 15)
+      if (element.AdhaarNo && element.AdhaarNo.length > 15)
         this.ErrorMessage += 'AdhaarNo must be less than 16 characters at row ' + indx + '.\n';
-      if (element.PhotoPath != undefined && element.PhotoPath.length > 50)
+      if (element.PhotoPath && element.PhotoPath.length > 50)
         this.ErrorMessage += 'PhotoPath must be less than 51 characters at row ' + indx + '.\n';
-      if (element.PersonalNo != undefined && element.PersonalNo.length > 50)
+      if (element.PersonalNo && element.PersonalNo.length > 50)
         this.ErrorMessage += 'PersonalNo must be less than 51 characters at row ' + indx + '.\n';
-      if (element.WhatsappNo != undefined && element.WhatsappNo.length > 30)
+      if (element.WhatsappNo && element.WhatsappNo.length > 30)
         this.ErrorMessage += 'WhatsappNo must be less than 31 characters at row ' + indx + '.\n';
-      if (element.AlternateContactNo != undefined && element.AlternateContactNo.length > 30)
+      if (element.AlternateContactNo && element.AlternateContactNo.length > 30)
         this.ErrorMessage += 'AlternateContactNo should be less than 31 characters at row ' + indx + '.\n';
 
 
-      if (element.EmailAddress != undefined && element.EmailAddress.length > 50)
+      if (element.EmailAddress && element.EmailAddress.length > 50)
         this.ErrorMessage += 'EmailAddress must be less than 51 characters at row ' + indx + '.\n';
       else if (element.EmailAddress == undefined)
         element.EmailAddress = '';
 
-      if (element.EmergencyContactNo != undefined && element.EmergencyContactNo.length > 30)
+      if (element.EmergencyContactNo && element.EmergencyContactNo.length > 30)
         this.ErrorMessage += 'EmergencyContactNo must be less than 31 characters at row ' + indx + '.\n';
       else if (element.EmergencyContactNo == undefined)
         element.EmergencyContactNo = ''
 
-      if (element.PassportNo != undefined && element.PassportNo.length > 12)
+      if (element.PassportNo && element.PassportNo.length > 12)
         this.ErrorMessage += 'PassportNo must be less than 13 characters at row ' + indx + '.\n';
       else if (element.PassportNo == undefined)
         element.PassportNo = ''
 
-      if (element.PAN != undefined && element.PAN.length > 12)
+      if (element.PAN && element.PAN.length > 12)
         this.ErrorMessage += 'PAN must be less 13 characters than 12 at row ' + indx + '.\n';
       else if (element.PAN == undefined)
         element.PAN = ''
 
-      if (element.PFAccountNo != undefined && element.PFAccountNo.length > 20)
+      if (element.PFAccountNo && element.PFAccountNo.length > 20)
         this.ErrorMessage += 'PFAccountNo must be less 21 characters at row ' + indx + '.\n';
       else if (element.PFAccountNo == undefined)
         element.PFAccountNo = '';
@@ -639,7 +639,7 @@ export class ExcelDataManagementComponent implements OnInit {
       if (element["Remarks"] == undefined) {
         element["Remarks"] = '';
       }
-      if (element["Remarks"] != undefined && element.Remarks.length > 250)
+      if (element["Remarks"] && element.Remarks.length > 250)
         this.ErrorMessage += 'Remarks must be less 250 characters at row ' + indx + '.\n';
       if (element.PresentAddress.length > 256)
         this.ErrorMessage += 'PresentAddress must be less 257 characters at row ' + indx + '.\n';
@@ -843,7 +843,7 @@ export class ExcelDataManagementComponent implements OnInit {
     this.jsonData.forEach((element, indx) => {
       slno = parseInt(indx) + 1;
 
-      // if (element.DOB != undefined && element.DOB != '')
+      // if (element.DOB  && element.DOB != '')
       //   element.DOB = new Date(element.DOB);
       // else
       //   element.DOB = new Date();
@@ -851,11 +851,11 @@ export class ExcelDataManagementComponent implements OnInit {
         this.ErrorMessage += "Invalid date at row : " + indx;
       }
 
-      if (element.CreatedDate != undefined && element.CreatedDate != '')
+      if (element.CreatedDate && element.CreatedDate != '')
         element.CreatedDate = new Date(element.CreatedDate);
       else
         element.CreatedDate = new Date();
-      if (element.UpdatedDate != undefined && element.UpdatedDate != '')
+      if (element.UpdatedDate && element.UpdatedDate != '')
         element.UpdatedDate = new Date(element.UpdatedDate);
       else
         element.UpdatedDate = new Date();
@@ -864,7 +864,7 @@ export class ExcelDataManagementComponent implements OnInit {
       var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f: any) => f.Active == 1);
 
       _MandatoryColumns.forEach((b: any) => {
-        if (element[b.ReportName] == undefined || element[b.ReportName] == null || element[b.ReportName].length == 0) {
+        if (!element[b.ReportName]) {// == undefined || element[b.ReportName] == null || element[b.ReportName].length == 0) {
           //_MadatoryField = b.ReportName;
           this.ErrorMessage += b.ReportName + " is required at row " + slno + ".<br>";
         }
@@ -874,7 +874,7 @@ export class ExcelDataManagementComponent implements OnInit {
       //   this.ErrorMessage += _MadatoryField + " is required at row " + slno + ".<br>";
 
       //debugger;
-      if (element.Gender != undefined) {
+      if (element.Gender) {
         let GenderFilter: any = this.Genders.filter((g: any) => g.MasterDataName.toLowerCase() == element.Gender.toLowerCase());
         if (GenderFilter.length == 0)
           this.ErrorMessage += "Invalid Gender at row " + slno + ":" + element.Gender + "<br>";
@@ -884,7 +884,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.GenderId = 0;
 
-      if (element.House != undefined) {
+      if (element.House) {
         let houseFilter: any = this.Houses.filter((g: any) => g.MasterDataName.toLowerCase() == element.House.toLowerCase());
         if (houseFilter.length == 0)
           this.ErrorMessage += "Invalid House at row " + slno + ":" + element.House + "<br>";
@@ -894,7 +894,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.HouseId = 0;
 
-      if (element.Bloodgroup != undefined) {
+      if (element.Bloodgroup) {
         let BloodgroupFilter: any = this.Bloodgroup.filter((g: any) => g.MasterDataName.toLowerCase() == element.Bloodgroup.toLowerCase());
         if (BloodgroupFilter.length == 0)
           this.ErrorMessage += "Invalid Bloodgroup at row " + slno + ":" + element.Bloodgroup + "<br>";
@@ -904,7 +904,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.BloodgroupId = 0;
 
-      if (element.Section != undefined) {
+      if (element.Section) {
         let SectionFilter: any = this.Sections.filter((g: any) => g.MasterDataName.toLowerCase() == element.Section.toLowerCase());
         if (SectionFilter.length == 0)
           this.ErrorMessage += "Invalid Section at row " + slno + ":" + element.Section + "<br>";
@@ -925,7 +925,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.SemesterId = 0;
 
-      if (element.Category != undefined) {
+      if (element.Category) {
         let Categoryfilter: any = this.Category.filter((g: any) => g.MasterDataName.toLowerCase() == element.Category.toLowerCase());
         if (Categoryfilter.length == 0)
           this.ErrorMessage += "Invalid Category at row " + slno + ":" + element.Category + "<br>";
@@ -935,7 +935,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.CategoryId = 0;
 
-      if (element.Religion != undefined) {
+      if (element.Religion) {
         let ReligionFilter: any = this.Religion.filter((g: any) => g.MasterDataName.toLowerCase() == element.Religion.toLowerCase());
         if (ReligionFilter.length == 0)
           this.ErrorMessage += "Invalid Religion at row " + slno + ":" + element.Religion + "<br>";
@@ -945,7 +945,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.ReligionId = 0;
 
-      if (element.AdmissionStatus != undefined) {
+      if (element.AdmissionStatus) {
         let AdmissionStatusFilter: any = this.AdmissionStatuses.filter((g: any) => g.MasterDataName.toLowerCase() == element.AdmissionStatus.toLowerCase());
         if (AdmissionStatusFilter.length == 0)
           this.ErrorMessage += "Invalid admission status at row " + slno + ":" + element.AdmissionStatus + "<br>";
@@ -955,7 +955,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.AdmissionStatusId = 0;
 
-      if (element.PrimaryContactFatherOrMother != undefined) {
+      if (element.PrimaryContactFatherOrMother) {
         let PrimaryContactFatherOrMotherFilter: any = this.PrimaryContact.filter((g: any) => g.MasterDataName.toLowerCase() == element.PrimaryContactFatherOrMother.toLowerCase());
         if (PrimaryContactFatherOrMotherFilter.length == 0)
           this.ErrorMessage += "Invalid PrimaryContactFatherOrMother at row " + slno + ":" + element.PrimaryContactFatherOrMother + "<br>";
@@ -965,7 +965,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.PrimaryContactFatherOrMother = 0;
 
-      if (element.ClassAdmissionSought != undefined) {
+      if (element.ClassAdmissionSought) {
         let ClassAdmissionSoughtFilter = this.Classes.filter((g: any) => g.ClassName.toLowerCase() == element.ClassAdmissionSought.toLowerCase());
         if (ClassAdmissionSoughtFilter.length == 0)
           this.ErrorMessage += "Invalid ClassAdmissionSought at row " + slno + ":" + element.ClassAdmissionSought + "<br>";
@@ -976,7 +976,7 @@ export class ExcelDataManagementComponent implements OnInit {
         element.ClassAdmissionSought = 0;
 
 
-      if (element.Club != undefined) {
+      if (element.Club) {
         let ClubObj: any = this.Clubs.filter((g: any) => g.MasterDataName.toLowerCase() == element.Club.toLowerCase());
         if (ClubObj.length == 0)
           this.ErrorMessage += "Invalid Club at row " + slno + ":" + element.Club + "<br>";
@@ -986,7 +986,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.ClubId = 0;
 
-      if (element.House != undefined) {
+      if (element.House) {
         let houseObj: any = this.Houses.filter((g: any) => g.MasterDataName.toLowerCase() == element.House.toLowerCase());
         if (houseObj.length == 0)
           this.ErrorMessage += "Invalid house at row " + slno + ":" + element.House + "<br>";
@@ -996,7 +996,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.HouseId = 0;
 
-      if (element.Remarks != undefined) {
+      if (element.Remarks) {
         let remarkObj: any = this.Remarks.filter((g: any) => g.MasterDataName.toLowerCase() == element.Remarks.toLowerCase());
         if (remarkObj.length == 0)
           this.ErrorMessage += "Invalid remark at row " + slno + ":" + element.Remarks + "<br>";
@@ -1006,20 +1006,20 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.RemarkId = 0;
       debugger;
-      if (element.PermanentAddressCountry != undefined) {
+      if (element.PermanentAddressCountry) {
         let CountryObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressCountry.toLowerCase());
         if (CountryObj.length == 0)
           this.ErrorMessage += "Invalid country at row " + slno + ":" + element.PermanentAddressCountry + "<br>";
         else {
           element.PermanentAddressCountryId = CountryObj[0].MasterDataId;
-          if (element.PermanentAddressState != undefined) {
+          if (element.PermanentAddressState) {
             let stateObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressState.toLowerCase()
               && g.ParentId == element.PermanentAddressCountryId);
             if (stateObj.length == 0)
               this.ErrorMessage += "Invalid state at row " + slno + ":" + element.PermanentAddressState + "<br>";
             else {
               element.PermanentAddressStateId = stateObj[0].MasterDataId;
-              if (element.PermanentAddressCity != undefined) {
+              if (element.PermanentAddressCity) {
                 let CityObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressCity.toLowerCase()
                   && g.ParentId == element.PermanentAddressStateId);
                 if (CityObj.length == 0)
@@ -1043,20 +1043,20 @@ export class ExcelDataManagementComponent implements OnInit {
         element.PermanentAddressCityId = 0;
 
       }
-      if (element.PresentAddressCountry != undefined) {
+      if (element.PresentAddressCountry) {
         let CountryObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PresentAddressCountry.toLowerCase());
         if (CountryObj.length == 0)
           this.ErrorMessage += "Invalid country at row " + slno + ":" + element.PresentAddressCountry + "<br>";
         else {
           element.PresentAddressCountryId = CountryObj[0].MasterDataId;
-          if (element.PresentAddressState != undefined) {
+          if (element.PresentAddressState) {
             let stateObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PresentAddressState.toLowerCase()
               && g.ParentId == element.PresentAddressCountryId);
             if (stateObj.length == 0)
               this.ErrorMessage += "Invalid state at row " + slno + ":" + element.PresentAddressState + "<br>";
             else {
               element.PresentAddressStateId = stateObj[0].MasterDataId;
-              if (element.PresentAddressCity != undefined) {
+              if (element.PresentAddressCity) {
                 let CityObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PresentAddressCity.toLowerCase()
                   && g.ParentId == element.PresentAddressStateId);
                 if (CityObj.length == 0)
@@ -1081,91 +1081,91 @@ export class ExcelDataManagementComponent implements OnInit {
       }
 
 
-      if (element.PersonalNo != undefined && element.PersonalNo.length > 32) {
+      if (element.PersonalNo && element.PersonalNo.length > 32) {
         this.ErrorMessage += 'Contact no length is more than 32 characters.';
       }
-      if (element.FirstName != undefined && element.FirstName.length > 50) {
+      if (element.FirstName && element.FirstName.length > 50) {
         this.ErrorMessage += 'Firstname should not be greater than 50 characters.';
       }
-      if (element.LastName != undefined && element.LastName.length > 50) {
+      if (element.LastName && element.LastName.length > 50) {
         this.ErrorMessage += 'LastName should not be greater than 50 characters.';
       }
-      if (element.FatherName != undefined && element.FatherName.length > 50) {
+      if (element.FatherName && element.FatherName.length > 50) {
         this.ErrorMessage += 'FatherName should not be greater than 50 characters.';
       }
-      if (element.MotherName != undefined && element.MotherName.length > 50) {
+      if (element.MotherName && element.MotherName.length > 50) {
         this.ErrorMessage += 'MotherName should not be greater than 50 characters.';
       }
-      if (element.PermanentAddress != undefined && element.PermanentAddress.length > 250) {
+      if (element.PermanentAddress && element.PermanentAddress.length > 250) {
         this.ErrorMessage += 'PermanentAddress should not be greater than 250 characters.';
       }
-      if (element.PresentAddress != undefined && element.PresentAddress.length > 250) {
+      if (element.PresentAddress && element.PresentAddress.length > 250) {
         this.ErrorMessage += 'PresentAddress should not be greater than 250 characters.';
       }
-      if (element.WhatsAppNumber != undefined && element.WhatsAppNumber.length > 15) {
+      if (element.WhatsAppNumber && element.WhatsAppNumber.length > 15) {
         this.ErrorMessage += 'WhatsAppNumber should not be greater than 15 characters.';
       }
-      if (element.PermanentAddressPincode != undefined && element.PermanentAddressPincode.length > 15) {
+      if (element.PermanentAddressPincode && element.PermanentAddressPincode.length > 15) {
         this.ErrorMessage += 'PermanentAddressPincode should not be greater than 10 characters.';
       }
-      if (element.BankAccountNo != undefined && element.BankAccountNo.length > 30) {
+      if (element.BankAccountNo && element.BankAccountNo.length > 30) {
         this.ErrorMessage += 'BankAccountNo should not be greater than 30 characters.';
       }
-      if (element.IFSCCode != undefined && element.IFSCCode.length > 30) {
+      if (element.IFSCCode && element.IFSCCode.length > 30) {
         this.ErrorMessage += 'IFSCCode should not be greater than 30 characters.';
       }
 
-      if (element.MICRNo != undefined && element.MICRNo.length > 30) {
+      if (element.MICRNo && element.MICRNo.length > 30) {
         this.ErrorMessage += 'MICRNo should not be greater than 30 characters.';
       }
 
-      if (element.AdhaarNo != undefined && element.AdhaarNo.length > 15) {
+      if (element.AdhaarNo && element.AdhaarNo.length > 15) {
         this.ErrorMessage += 'AdhaarNo should not be greater than 15 characters.';
       }
-      if (element.Photo != undefined && element.Photo.length > 50) {
+      if (element.Photo && element.Photo.length > 50) {
         this.ErrorMessage += 'Photo should not be greater than 50 characters.';
       }
-      if (element.AlternateContact != undefined && element.AlternateContact.length > 32) {
+      if (element.AlternateContact && element.AlternateContact.length > 32) {
         this.ErrorMessage += 'AlternateContact should not be greater than 32 characters.';
       }
-      if (element.EmailAddress != undefined && element.EmailAddress.length > 50) {
+      if (element.EmailAddress && element.EmailAddress.length > 50) {
         this.ErrorMessage += 'EmailAddress should not be greater than 50 characters.';
       }
-      if (element.BoardRegistrationNo != undefined && element.BoardRegistrationNo.length > 15) {
+      if (element.BoardRegistrationNo && element.BoardRegistrationNo.length > 15) {
         this.ErrorMessage += 'Board Registration No. should not be greater than 15 characters.';
       }
-      if (element.LastSchoolPercentage != undefined && element.LastSchoolPercentage.length > 10) {
+      if (element.LastSchoolPercentage && element.LastSchoolPercentage.length > 10) {
         this.ErrorMessage += 'LastSchoolPercentage should not be greater than 10 characters.';
       }
 
-      if (element.TransferFromSchool != undefined && element.TransferFromSchool.length > 100) {
+      if (element.TransferFromSchool && element.TransferFromSchool.length > 100) {
         this.ErrorMessage += 'TransferFromSchool should not be greater than 100 characters.';
       }
-      if (element.TransferFromSchoolBoard != undefined && element.TransferFromSchoolBoard.length > 100) {
+      if (element.TransferFromSchoolBoard && element.TransferFromSchoolBoard.length > 100) {
         this.ErrorMessage += 'TransferFromSchoolBoard should not be greater than 100 characters.';
       }
-      if (element.FatherOccupation != undefined && element.FatherOccupation.length > 100) {
+      if (element.FatherOccupation && element.FatherOccupation.length > 100) {
         this.ErrorMessage += 'FatherOccupation should not be greater than 100 characters.';
       }
-      if (element.FatherContactNo != undefined && element.FatherContactNo.length > 20) {
+      if (element.FatherContactNo && element.FatherContactNo.length > 20) {
         this.ErrorMessage += 'FatherContactNo should not be greater than 20 characters.';
       }
-      if (element.MotherContactNo != undefined && element.MotherContactNo.length > 20) {
+      if (element.MotherContactNo && element.MotherContactNo.length > 20) {
         this.ErrorMessage += 'MotherContactNo should not be greater than 20 characters.';
       }
-      if (element.NameOfContactPerson != undefined && element.NameOfContactPerson.length > 30) {
+      if (element.NameOfContactPerson && element.NameOfContactPerson.length > 30) {
         this.ErrorMessage += 'NameOfContactPerson should not be greater than 30 characters.';
       }
-      if (element.RelationWithContactPerson != undefined && element.RelationWithContactPerson.length > 30) {
+      if (element.RelationWithContactPerson && element.RelationWithContactPerson.length > 30) {
         this.ErrorMessage += 'RelationWithContactPerson should not be greater than 30 characters.';
       }
-      if (element.ContactPersonContactNo != undefined && element.ContactPersonContactNo.length > 20) {
+      if (element.ContactPersonContactNo && element.ContactPersonContactNo.length > 20) {
         this.ErrorMessage += 'ContactPersonContactNo should not be greater than 20 characters.';
       }
-      if (element.RollNo != undefined && element.RollNo.length > 30) {
+      if (element.RollNo && element.RollNo.length > 30) {
         this.ErrorMessage += 'RollNo should not be greater than 30 characters.';
       }
-      if (element.AdmissionNo != undefined && element.AdmissionNo.length > 15) {
+      if (element.AdmissionNo && element.AdmissionNo.length > 15) {
         this.ErrorMessage += 'AdmissionNo should not be greater than 15 characters.';
       }
       if (element.Active == undefined) {

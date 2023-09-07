@@ -513,9 +513,10 @@ export class StudentSubjectReportComponent implements OnInit {
         let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-          this.Classes.push(m);
+         this.Classes.push(m);
         }
       });
+      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       this.GetClassSubject();
     });
     // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {

@@ -57,18 +57,18 @@ export class StudentboardComponent implements AfterViewInit {
     private tokenStorage: TokenStorageService,
     private shareddata: SharedataService) {
    
-    this.connectionService.monitor().subscribe(isConnected => {
-      debugger;
-      this.isConnected = isConnected.hasInternetAccess;
-      if (!this.isConnected) {
-        this.contentservice.openSnackBar("No internet connection.",globalconstants.ActionText,globalconstants.RedBackground);
-        this.noInternetConnection = false;
-      }
-      else {
-        this.noInternetConnection = true;
+    // this.connectionService.monitor().subscribe(isConnected => {
+    //   debugger;
+    //   this.isConnected = isConnected.hasInternetAccess;
+    //   if (!this.isConnected) {
+    //     this.contentservice.openSnackBar("No internet connection.",globalconstants.ActionText,globalconstants.RedBackground);
+    //     this.noInternetConnection = false;
+    //   }
+    //   else {
+    //     this.noInternetConnection = true;
        
-      }
-    })
+    //   }
+    // })
     this.StudentId = tokenStorage.getStudentId()!;
   }
   toggleRightSidenav() {
@@ -109,7 +109,7 @@ export class StudentboardComponent implements AfterViewInit {
   public tabChange(index: number) {
     setTimeout(() => {
       this.renderComponent(index);
-    }, 1000);
+    }, 1500);
 
   }
   selectedIndex = 0;

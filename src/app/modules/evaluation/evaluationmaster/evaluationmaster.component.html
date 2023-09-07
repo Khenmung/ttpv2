@@ -42,8 +42,9 @@
             </mat-header-cell>
             <mat-cell style="display: flex;" *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <input autocomplete="Off" matInput (blur)="onBlur(element)" [value]="element.EvaluationName"
-                        [(ngModel)]="element.EvaluationName" [maxlength]="50">
+                    <textarea rows="1" autocomplete="Off" matInput (blur)="onBlur(element)"
+                        [value]="element.EvaluationName" [(ngModel)]="element.EvaluationName"
+                        [maxlength]="50"></textarea>
                 </mat-form-field>
             </mat-cell>
         </ng-container>

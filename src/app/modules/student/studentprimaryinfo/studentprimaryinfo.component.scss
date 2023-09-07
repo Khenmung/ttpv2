@@ -1,14 +1,15 @@
-::ng-deep .mat-tab-body-content {
-    width   : 99% !important;
-    overflow: hidden !important;
-}
+// ::ng-deep .mat-tab-body-content {
+//     width   : 99% !important;
+//     overflow: hidden !important;
+// }
 button{
     margin-right: 15px;
 }
 mat-form-field {
     margin-right: 15px;
-    width       : 98%;
-    max-width   : 300px;
+    margin-left: 15px;
+    //width       : 98%;
+   // max-width   : 300px;
 }
 
 mat-radio-button {

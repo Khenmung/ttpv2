@@ -18,6 +18,7 @@ import { SwUpdate } from '@angular/service-worker';
 import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { forkJoin, Observable } from 'rxjs';
+import moment from 'moment';
 @Component({
   selector: 'app-studentprimaryinfo',
   templateUrl: './studentprimaryinfo.component.html',
@@ -691,7 +692,7 @@ export class studentprimaryinfoComponent implements OnInit {
       HouseId: this.studentForm.get("House")?.value,
       RemarkId: this.studentForm.get("Remarks")?.value,
       AdmissionStatusId: this.studentForm.get("AdmissionStatus")?.value,
-      AdmissionDate: this.studentForm.get("AdmissionDate")?.value,
+      AdmissionDate: this.adjustDateForTimeOffset(this.studentForm.get("AdmissionDate")?.value),
       Notes: this.studentForm.get("Notes")?.value,
       EmailAddress: _email,
       Active: this.studentForm.get("Active")?.value == true ? 1 : 0,
@@ -705,7 +706,7 @@ export class studentprimaryinfoComponent implements OnInit {
 
     });
     //debugger;
-    //console.log("studentData", this.studentData)
+    console.log("studentData", this.studentData)
     if (this.studentForm.get("StudentId")?.value == 0) {
       this.studentData[0].SectionId =0;
       this.studentData[0].SemesterId =0;

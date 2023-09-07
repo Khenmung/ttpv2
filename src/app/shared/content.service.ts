@@ -90,7 +90,7 @@ export class ContentService implements OnInit {
     list.fields = ["ClassId,ClassName,Sequence,BatchId,CategoryId,MinStudent,MaxStudent,StartDate,EndDate"];
     list.filter = [pOrgSubOrgFilter + " and Active eq 1"];
     list.PageName = "ClassMasters";
-    list.orderBy = "Sequence";
+    //list.orderBy = "Sequence";
     return this.dataservice.get(list);
   }
   GetStudentClassCount(pOrgSubOrgId, pClassId, pSectionId, pSemesterId, pBatchId) {

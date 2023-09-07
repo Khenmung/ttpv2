@@ -16,9 +16,9 @@ import { AdmissionWithdrawnComponent } from '../admissionwithdrawn/admissionwith
 })
 export class AdmissionboardComponent implements AfterViewInit {
 
-  components:any = [
-    PromoteclassComponent,
+  components:any = [   
     AssignStudentclassdashboardComponent,
+    PromoteclassComponent,
     AdmissionWithdrawnComponent,
     StudenthistoryComponent,
     StudentDatadumpComponent,
