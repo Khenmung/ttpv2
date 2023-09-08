@@ -93,6 +93,13 @@
                     {{element.FullName}}
                 </mat-cell>
             </ng-container>
+            <ng-container matColumnDef="Points">
+                <mat-header-cell *matHeaderCellDef>Mark
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Points}}
+                </mat-cell>
+            </ng-container>
             <ng-container matColumnDef="Submitted">
                 <mat-header-cell *matHeaderCellDef>Submitted
                 </mat-header-cell>

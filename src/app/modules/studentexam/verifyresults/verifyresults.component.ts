@@ -1083,7 +1083,8 @@ export class VerifyResultsComponent implements OnInit {
         else
           m.Category = '';
         return m;
-      });
+      })
+      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);;
       this.GetSubjectTypes();
     });
 

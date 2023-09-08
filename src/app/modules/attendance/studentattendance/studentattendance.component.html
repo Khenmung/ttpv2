@@ -88,9 +88,9 @@
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field>
-                    <mat-select (selectionChange)="UpdateActive(element,$event)" [(ngModel)]="element.AttendanceStatusId" 
+                    <mat-select (selectionChange)="UpdateActive(element)" [(ngModel)]="element.AttendanceStatusId" 
                     [value]="element.AttendanceStatusId">
-                        <mat-option [value]="0">select</mat-option>
+                        <mat-option [value]="Defaultvalue">select</mat-option>
                         <mat-option *ngFor="let item of AttendanceStatus"
                             [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
                     </mat-select>

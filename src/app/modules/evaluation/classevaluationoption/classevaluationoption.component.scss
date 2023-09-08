@@ -1,7 +1,4 @@
-mat-form-field{
-    margin-right:15px;
-    width: 98%;
-}
+
 button{
     margin-right:15px;
 }
@@ -19,7 +16,7 @@ mat-cell:first-of-type {
 }
 .mat-column-Point
 {
-    flex:1 0 80px;
+    flex:1 0 150px;
 }
 .mat-column-Correct,
 .mat-column-Active,
@@ -27,3 +24,6 @@ mat-cell:first-of-type {
     justify-content: center;
     flex:1 0 80px;
 }
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:10px 15px 0px 0px;
+  }

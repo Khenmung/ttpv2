@@ -21,9 +21,9 @@ export class EvaluationboardComponent implements AfterViewInit {
     EvaluationMasterComponent,
     ClassEvaluationComponent,
     EvaluationExamMapComponent,
-    EvaluationControlComponent,
     StudentEvaluationComponent,
-    EvaluationresultlistComponent    
+    EvaluationresultlistComponent,
+    EvaluationControlComponent
   ];
 
   tabNames = [

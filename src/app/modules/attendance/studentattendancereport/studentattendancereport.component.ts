@@ -786,6 +786,7 @@ export class StudentattendancereportComponent implements OnInit {
           m.Category = '';
         return m;
       })
+      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       this.Students = this.tokenStorage.getStudents()!;
       this.AssignNameClassSection(this.Students);
     })

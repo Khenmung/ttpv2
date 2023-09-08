@@ -5,7 +5,7 @@
 <!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
 <div style="width: 100%;">
     <form [formGroup]="searchForm">
-        <mat-form-field appearance="outline" style="width:300px">
+        <mat-form-field appearance="outline" style="width:300px;margin-right: 15px;">
             <mat-label>parent</mat-label>
             <input type="text" matInput formControlName="searchParent" [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="ClearData()">

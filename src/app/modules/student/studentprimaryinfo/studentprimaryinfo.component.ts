@@ -17,7 +17,7 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin, Observable } from 'rxjs';
+import { EMPTY, forkJoin, Observable } from 'rxjs';
 import moment from 'moment';
 @Component({
   selector: 'app-studentprimaryinfo',
@@ -30,10 +30,10 @@ export class studentprimaryinfoComponent implements OnInit {
   @ViewChild(AddstudentfeepaymentComponent) studentFeePayment: AddstudentfeepaymentComponent;
   @ViewChild(FeereceiptComponent) feeReceipt: FeereceiptComponent;
   Edit = false;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  LoginUserDetail :any[]= [];
+  LoginUserDetail: any[] = [];
   StudentLeaving = false;
   StudentName = '';
   StudentClassId = 0;
@@ -47,33 +47,33 @@ export class studentprimaryinfoComponent implements OnInit {
   formdata: FormData;
   StudentId = 0;
   loading = false;
-  Classes :any[]= [];
-  Clubs :any[]= [];
-  Genders :any[]= [];
-  Category :any[]= [];
-  Bloodgroup :any[]= [];
-  Religion :any[]= [];
+  Classes: any[] = [];
+  Clubs: any[] = [];
+  Genders: any[] = [];
+  Category: any[] = [];
+  Bloodgroup: any[] = [];
+  Religion: any[] = [];
   MaxPID = 0;
   Permission = '';
-  PrimaryContact :any[]= [];
-  Location :any[]= [];
-  allMasterData :any[]= [];
-  ReasonForLeaving :any[]= [];
-  studentData :any[]= [];
-  AdmissionStatuses :any[]= [];
-  ColumnsOfSelectedReports :any[]= [];
+  PrimaryContact: any[] = [];
+  Location: any[] = [];
+  allMasterData: any[] = [];
+  ReasonForLeaving: any[] = [];
+  studentData: any[] = [];
+  AdmissionStatuses: any[] = [];
+  ColumnsOfSelectedReports: any[] = [];
   CountryId = 0;
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   PrimaryContactDefaultId = 0;
   PrimaryContactOtherId = 0;
   displayContactPerson = false;
-  Houses :any[]= [];
-  Remarks :any[]= [];
+  Houses: any[] = [];
+  Remarks: any[] = [];
   studentForm: UntypedFormGroup;
   Edited = false;
   StudentActivatePermission = '';
-  public files: NgxFileDropEntry[]= [];
+  public files: NgxFileDropEntry[] = [];
   @ViewChild(ImageCropperComponent, { static: true }) imageCropper: ImageCropperComponent;
 
   preview(files) {
@@ -142,7 +142,7 @@ export class studentprimaryinfoComponent implements OnInit {
       this.Edit = false;
     });
   }
-  
+
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
     private dataservice: NaomitsuService,
@@ -360,16 +360,16 @@ export class studentprimaryinfoComponent implements OnInit {
     let studentclass = this.Students.filter(sid => sid.StudentId == this.StudentId);
     if (studentclass.length > 0) {
       var _clsName = '', rollNo = '';
-      var objcls = this.Classes.filter((f:any) => f.ClassId == studentclass[0].ClassId);
+      var objcls = this.Classes.filter((f: any) => f.ClassId == studentclass[0].ClassId);
       if (objcls.length > 0)
         _clsName = objcls[0].ClassName
       rollNo = studentclass[0].RollNo ? studentclass[0].RollNo : '';
       var _sectionName = '';
-      var sectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclass[0].SectionId)
+      var sectionObj = this.Sections.filter((f: any) => f.MasterDataId == studentclass[0].SectionId)
       if (sectionObj.length > 0)
         _sectionName = "-" + sectionObj[0].MasterDataName;
       var _semesterName = '';
-      var semesterObj = this.Semesters.filter((f:any) => f.MasterDataId == studentclass[0].SemesterId)
+      var semesterObj = this.Semesters.filter((f: any) => f.MasterDataId == studentclass[0].SemesterId)
       if (semesterObj.length > 0)
         _semesterName = "-" + semesterObj[0].MasterDataName;
       this.StudentClassId = studentclass[0].StudentClassId
@@ -384,8 +384,8 @@ export class studentprimaryinfoComponent implements OnInit {
     //this.shareddata.ChangeStudentId(element.StudentId);
 
   }
-  Sections :any[]= [];
-  Semesters :any[]= [];
+  Sections: any[] = [];
+  Semesters: any[] = [];
   GetMasterData() {
     this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
       .subscribe((data: any) => {
@@ -477,9 +477,9 @@ export class studentprimaryinfoComponent implements OnInit {
               var _sectionName = '', _semesterName = '', _className = '', _rollNo = '';
               _rollNo = _studentclass[0].RollNo ? _studentclass[0].RollNo : '';
               if (_studentclass[0].SectionId > 0)
-                _sectionName = "-" + this.Sections.filter((s:any) => s.MasterDataId == _studentclass[0].SectionId)[0].MasterDataName;
+                _sectionName = "-" + this.Sections.filter((s: any) => s.MasterDataId == _studentclass[0].SectionId)[0].MasterDataName;
               if (_studentclass[0].SemesterId > 0)
-                _semesterName = "-" + this.Semesters.filter((s:any) => s.MasterDataId == _studentclass[0].SemesterId)[0].MasterDataName;
+                _semesterName = "-" + this.Semesters.filter((s: any) => s.MasterDataId == _studentclass[0].SemesterId)[0].MasterDataName;
               _className = this.Classes.filter(c => c.ClassId == _studentclass[0].ClassId)[0].ClassName;
               StudentName += _className + _semesterName + _sectionName + "-" + _rollNo;
               this.StudentClassId = _studentclass[0].StudentClassId;
@@ -586,7 +586,7 @@ export class studentprimaryinfoComponent implements OnInit {
   ErrorMessage = '';
   UpdateOrSave() {
 
-    var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f:any) => f.Active == 1);
+    var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f: any) => f.Active == 1);
     this.ErrorMessage = '';
     _MandatoryColumns.forEach(b => {
       if (this.studentForm.get(b.ReportName)?.value == undefined
@@ -665,7 +665,7 @@ export class studentprimaryinfoComponent implements OnInit {
       GenderId: _genderId,
       PermanentAddress: this.studentForm.get("PermanentAddress")?.value,
       PresentAddress: this.studentForm.get("PresentAddress")?.value,
-      DOB: this.adjustDateForTimeOffset(this.studentForm.get("DOB")?.value),
+      DOB: this.adjustDateForTimeOffset(new Date(this.studentForm.get("DOB")?.value)),
       BloodgroupId: this.studentForm.get("Bloodgroup")?.value,
       CategoryId: this.studentForm.get("Category")?.value,
       AccountHolderName: this.studentForm.get("AccountHolderName")?.value,
@@ -692,7 +692,7 @@ export class studentprimaryinfoComponent implements OnInit {
       HouseId: this.studentForm.get("House")?.value,
       RemarkId: this.studentForm.get("Remarks")?.value,
       AdmissionStatusId: this.studentForm.get("AdmissionStatus")?.value,
-      AdmissionDate: this.adjustDateForTimeOffset(this.studentForm.get("AdmissionDate")?.value),
+      AdmissionDate: this.adjustDateForTimeOffset(new Date(this.studentForm.get("AdmissionDate")?.value)),
       Notes: this.studentForm.get("Notes")?.value,
       EmailAddress: _email,
       Active: this.studentForm.get("Active")?.value == true ? 1 : 0,
@@ -708,8 +708,8 @@ export class studentprimaryinfoComponent implements OnInit {
     //debugger;
     console.log("studentData", this.studentData)
     if (this.studentForm.get("StudentId")?.value == 0) {
-      this.studentData[0].SectionId =0;
-      this.studentData[0].SemesterId =0;
+      this.studentData[0].SectionId = 0;
+      this.studentData[0].SemesterId = 0;
       this.save();
     }
     else {
@@ -780,13 +780,13 @@ export class studentprimaryinfoComponent implements OnInit {
       })
   }
   getErrorMessage(pickerInput: string): string {
-    if (!pickerInput || pickerInput === '' ) {
+    if (!pickerInput || pickerInput === '') {
       return 'Please choose a date.';
     }
     return globalconstants.isMyDateFormat(pickerInput);
   }
   CreateInvoice() {
-    this.contentservice.getInvoice(+this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedBatchId, this.StudentClassId,0,0,0)
+    this.contentservice.getInvoice(+this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedBatchId, this.StudentClassId, 0, 0, 0)
       .subscribe((data: any) => {
 
         this.contentservice.createInvoice(data, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
@@ -804,10 +804,14 @@ export class studentprimaryinfoComponent implements OnInit {
           console.log("error in getinvoice", error);
         })
   }
-  adjustDateForTimeOffset(dateToAdjust) {
+  adjustDateForTimeOffset(dateToAdjust: Date) {
     ////console.log(dateToAdjust)
-    var offsetMs = dateToAdjust.getTimezoneOffset() * 60000;
-    return new Date(dateToAdjust.getTime() - offsetMs);
+    if (dateToAdjust) {
+      var offsetMs = dateToAdjust.getTimezoneOffset() * 60000;
+      return new Date(dateToAdjust.getTime() - offsetMs);
+    }
+    else
+      return EMPTY;
   }
   getFields(pModuleName) {
     this.contentservice.getSelectedReportColumn(this.FilterOrgSubOrg, this.SelectedApplicationId)
@@ -815,21 +819,21 @@ export class studentprimaryinfoComponent implements OnInit {
         debugger;
         var _baseReportId = 0;
         if (data.value.length > 0) {
-          _baseReportId = data.value.filter((f:any) => f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
-          var _studentModuleObj = data.value.filter((f:any) => f.ReportName == pModuleName && f.ParentId == _baseReportId)
+          _baseReportId = data.value.filter((f: any) => f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
+          var _studentModuleObj = data.value.filter((f: any) => f.ReportName == pModuleName && f.ParentId == _baseReportId)
           var _studentModuleId = 0;
           if (_studentModuleObj.length > 0) {
             _studentModuleId = _studentModuleObj[0].ReportConfigItemId;
           }
 
-          var _orgStudentModuleObj = data.value.filter((f:any) => f.ParentId == _studentModuleId
+          var _orgStudentModuleObj = data.value.filter((f: any) => f.ParentId == _studentModuleId
             && f.SubOrgId == this.SubOrgId && f.OrgId == this.LoginUserDetail[0]["orgId"] && f.Active == 1);
           var _orgStudentModuleId = 0;
           if (_orgStudentModuleObj.length > 0) {
             _orgStudentModuleId = _orgStudentModuleObj[0].ReportConfigItemId;
           }
 
-          this.ColumnsOfSelectedReports = data.value.filter((f:any) => f.ParentId == _orgStudentModuleId
+          this.ColumnsOfSelectedReports = data.value.filter((f: any) => f.ParentId == _orgStudentModuleId
             && f.SubOrgId == this.SubOrgId && f.OrgId == this.LoginUserDetail[0]["orgId"])
 
         }
@@ -915,7 +919,7 @@ export class studentprimaryinfoComponent implements OnInit {
 
 
   }
-  Students :any[]= [];
+  Students: any[] = [];
   SetStudentClassForStore(stud, studclass) {
 
     var _student = [{
@@ -938,13 +942,13 @@ export class studentprimaryinfoComponent implements OnInit {
       "AdmissionStatusId": stud.AdmissionStatusId,
       StudentClasses: studclass
     }];
-    var _classNameobj :any[]= [];
+    var _classNameobj: any[] = [];
     var _className = '', _class;
 
     _student.forEach((d: any) => {
-      _classNameobj= [];
+      _classNameobj = [];
       _className = ''; _class = '';
-      var studcls = d.StudentClasses.filter((f:any) => f.StudentId == d.StudentId);
+      var studcls = d.StudentClasses.filter((f: any) => f.StudentId == d.StudentId);
       if (studcls.length > 0) {
         _classNameobj = this.Classes.filter(c => c.ClassId == studcls[0].ClassId);
         if (_classNameobj.length > 0) {
@@ -952,13 +956,13 @@ export class studentprimaryinfoComponent implements OnInit {
           _class = "-" + _classNameobj[0].ClassName;
         }
         var _Section = '', _sectionName = '';
-        var _sectionobj = this.Sections.filter((f:any) => f.MasterDataId == studcls[0].SectionId);
+        var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studcls[0].SectionId);
         if (_sectionobj.length > 0) {
           _sectionName = _sectionobj[0].MasterDataName;
           _Section = "-" + _sectionobj[0].MasterDataName;
         }
         var _Semester = '', _semesterName = '';
-        var _semesterobj = this.Semesters.filter((f:any) => f.MasterDataId == studcls[0].SemesterId);
+        var _semesterobj = this.Semesters.filter((f: any) => f.MasterDataId == studcls[0].SemesterId);
         if (_semesterobj.length > 0) {
           _semesterName = _semesterobj[0].MasterDataName;
           _Semester = "-" + _semesterobj[0].MasterDataName;
@@ -978,7 +982,7 @@ export class studentprimaryinfoComponent implements OnInit {
     })
 
     var count = this.Students.filter(s => s.StudentId == _student[0].StudentId);
-    if (count.length ==0) {
+    if (count.length == 0) {
       this.Students.push(_student[0]);
       this.tokenStorage.saveStudents(this.Students);
     }
