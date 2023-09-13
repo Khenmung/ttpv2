@@ -97,7 +97,7 @@
                     || Permission=='read' 
                     || !element.EvaluationStarted
                     || element.TimeLapsed
-                    || element.StartTime!=''" matTooltip="save as draft" mat-mini-fab color="accent"
+                    || (element.StartTime!='00:00' && element.StartTime)" matTooltip="save as draft" mat-mini-fab color="accent"
                     (click)="SaveAsDraft()">
                     <mat-icon>edit</mat-icon>
                     <mat-icon *ngIf="loading">

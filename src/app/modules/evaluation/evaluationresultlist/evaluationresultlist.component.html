@@ -63,7 +63,8 @@
                 <mat-table style="width:300px" #table [dataSource]="AssessmentTypeDatasource"
                     *ngIf="EvaluatedStudent.length>0">
                     <ng-container matColumnDef="Name">
-                        <mat-header-cell *matHeaderCellDef>Students
+                        <mat-header-cell *matHeaderCellDef>
+                                Students
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <button style="margin-right: 15px;" [disabled]="loading" matTooltip="display"
@@ -72,22 +73,43 @@
                             </button>
                         </mat-cell>
                     </ng-container>
+                    <ng-container matColumnDef="TotalMark">
+                        <mat-header-cell *matHeaderCellDef style="display: flex;justify-content: space-around;">
+                            <div>Mark</div>
+                            <div style="display: flex;justify-content: flex-end;margin:15px">
+                                <button [disabled]="loading || Permission=='read'" *ngIf="EvaluatedStudent.length>0"
+                                    matTooltip="Verify All" mat-mini-fab color="accent"
+                                    (click)="GetAllEvaluatedStudentMarks()">
+                                    <mat-icon>all_out</mat-icon>
+                                    <mat-icon *ngIf="loading">
+                                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                                    </mat-icon>
+                                </button>
+                            </div>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                                {{element.TotalMark}}
+                        </mat-cell>
+                    </ng-container>
                     <mat-header-row *matHeaderRowDef="StudentEvaluationListColumns"></mat-header-row>
                     <mat-row *matRowDef="let row; columns: StudentEvaluationListColumns;let indx=index"
                         class="element-row" style="align-items: center;"></mat-row>
                 </mat-table>
-                <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,50,100]">
-                </mat-paginator>
+
             </div>
+
             <div id="printSection" style="display:flex;flex-direction: column;">
+
                 <div
                     style="margin:30px 15px 15px 0px; display:flex;flex-direction: column;justify-content: center; width:100%">
                     <span *ngFor="let item of PrintHeading">
                         <span style="font-size:larger;display: flex;justify-content: center;"
                             [innerHTML]="item.Description|encodeHTML"></span>
                     </span>
+
                 </div>
-                <mat-table style="width:100% !important;border:1px solid lightgray;padding: 15px;" #table
+
+                <mat-table style="width:100% !important;border-top:1px solid lightgray;padding: 15px;" #table
                     [dataSource]="dataSource" *ngIf="StudentEvaluationList.length>0">
                     <ng-container matColumnDef="StudentEvaluationResultId">
                         <mat-header-cell *matHeaderCellDef>Id
@@ -98,9 +120,9 @@
                     </ng-container>
                     <ng-container matColumnDef="Description">
                         <mat-header-cell *matHeaderCellDef style="display: flex;justify-content: flex-end;">
-                            <div><b>Full Mark </b>:{{FullMark}},&nbsp; </div>
-                            <div><b>Pass Mark </b>:{{PassMark}},&nbsp; </div>
-                            <div><b>Mark Obtain</b>:{{MarkObtain}}</div>
+                            <div><b>Full Mark </b>:&nbsp;{{FullMark}},&nbsp; </div>
+                            <div><b>Pass Mark </b>:&nbsp;{{PassMark}},&nbsp; </div>
+                            <div><b>Mark Obtain</b>:&nbsp;{{MarkObtain}}</div>
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element" [attr.colspan]="2"
                             style="display:flex; flex-direction: column;justify-content: start;">
@@ -154,14 +176,16 @@
                     </ng-container>
                     <ng-container matColumnDef="Points">
                         <mat-header-cell *matHeaderCellDef>
-                            
+
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
-                            
-                            <mat-form-field>
-                                <input matInput [(ngModel)]="element.Points" (blur)="onBlur(element)"
-                                    [value]="element.Points" max="250">
-                            </mat-form-field>
+                            <div
+                                *ngIf="element.QuestionnaireType!='Heading' && element.QuestionnaireType!='Sub Heading'">
+                                <mat-form-field>
+                                    <input matInput [(ngModel)]="element.Points" (blur)="onBlur(element)"
+                                        [value]="element.Points" max="250">
+                                </mat-form-field>
+                            </div>
                         </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="Action">
@@ -175,7 +199,9 @@
                             </button>
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
-                            <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="view/edit"
+                            <button
+                                *ngIf="element.QuestionnaireType!='Heading' && element.QuestionnaireType!='Sub Heading'"
+                                [disabled]="loading || !element.Action || Permission=='read'" matTooltip="view/edit"
                                 mat-raised-button color="accent" (click)="SaveRow(element)">
                                 <mat-icon>save</mat-icon>
                             </button>
@@ -185,6 +211,8 @@
                     <mat-row *matRowDef="let row; columns: displayedColumns;let indx=index" class="element-row"
                         style="align-items: center;"></mat-row>
                 </mat-table>
+                <mat-paginator [hidden]="StudentEvaluationList.length==0" style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,50,100]">
+                </mat-paginator>
             </div>
         </div>
         <span style="margin: 15px;display: flex;justify-content: center;" fxLayout="row"

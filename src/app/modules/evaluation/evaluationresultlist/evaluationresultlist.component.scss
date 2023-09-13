@@ -40,12 +40,9 @@ pre {
     margin: 30px 0px 0px 0px;
     flex: 1 0 100px !important;
 }
-
-// ::ng-deep .mat-column-Description div.mat-form-field-infix {
-//     width: 60% !important;
-// }
-
-// ::ng-deep .mat-column-Points div.mat-form-field-infix,
-// ::ng-deep .mat-column-Action div.mat-form-field-infix {
-//     width: 10% !important;
-// }
+.mat-column-TotalMark{
+    flex:1 0 100px;
+}
+.mat-column-Name{
+    flex:1 0 150px;
+}

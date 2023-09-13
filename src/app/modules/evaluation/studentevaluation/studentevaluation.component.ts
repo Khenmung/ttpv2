@@ -160,7 +160,7 @@ export class StudentEvaluationComponent implements OnInit {
             this.ClassGroupMappings = [...data.value];
           })
 
-        this.GetEvaluationNames();
+        
         this.GetMasterData();
         this.GetStudents();
 
@@ -525,10 +525,10 @@ export class StudentEvaluationComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger
-        if (data.value.length > 0) {
-          row.Submitted = data.value[0].Submitted;
-        }
-        console.log("row", row);
+        // if (data.value.length > 0) {
+        //   row.Submitted = data.value[0].Submitted;
+        // }
+        //console.log("row", row);
         if (!row.Updatable && row.Duration > 0 && data.value.length == 0) {
           //if (!row.TempDuration)
           //row.TempDuration = row.Duration;
@@ -737,13 +737,14 @@ export class StudentEvaluationComponent implements OnInit {
         let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.loading = false;
     });
-    this.GetExams();
+    this.GetEvaluationNames();
+    
     this.GetEvaluationOption();
 
   }
@@ -812,7 +813,8 @@ export class StudentEvaluationComponent implements OnInit {
 
         var result = [...data.value];
         this.EvaluationMaster = this.contentservice.getConfidentialData(this.tokenStorage, result, "EvaluationName");
-        this.loadingFalse();
+        //this.loadingFalse();
+        this.GetExams();
       });
 
   }
@@ -829,23 +831,21 @@ export class StudentEvaluationComponent implements OnInit {
   CheckIfEvaluationWasSubmitted() {
     var studentobj = this.searchForm.get("searchStudentName")?.value;
     var _studentClassId = studentobj.StudentClassId;
-    var _filter = 'OrgId eq ' + this.LoginUserDetail[0]['orgId'] +
+    var _filter = this.FilterOrgSubOrg +
       ' and StudentClassId eq ' + _studentClassId +
       //' and Submitted eq true' +
-      ' and Active eq 1';
+      ' and Active eq true';
 
     let list: List = new List();
     list.fields = [
-      'StudentEvaluationResultId',
+      'EvaluationResultMarkId',
       // 'StudentClassId',
       // 'StudentId',
       // 'ClassEvaluationId',
       'EvaluationExamMapId',
-      'Submitted',
-      // 'Active'
     ];
 
-    list.PageName = "StudentEvaluationResults";
+    list.PageName = "EvaluationResultMarks";
     list.filter = [_filter];
     return this.dataservice.get(list);
   }
@@ -878,10 +878,10 @@ export class StudentEvaluationComponent implements OnInit {
             ////////
             let _time = [0, 0];
             let StartDateAndTimeDuration: moment.Moment = moment('1970-01-01');
-            
+
 
             if (m.StartTime && m.StartDate) {
-              let _startDate =new Date(m.StartDate);
+              let _startDate = new Date(m.StartDate);
               m.StartDate = new Date(_startDate.getFullYear(), _startDate.getMonth(), _startDate.getDate(), 0, 0, 0);
               _time = m.StartTime.split(':')
               m.StartDateAndTime = moment(m.StartDate).add(+_time[0], 'hours').add(+_time[1], 'minutes');// + " " + m.StartTime, 'YYYY-MM-DD HH:mm');
@@ -896,11 +896,7 @@ export class StudentEvaluationComponent implements OnInit {
             else
               m.TimeLapsed = false;
             if (m.StartDateAndTime) {
-              //let diff = moment().diff(m.StartDateAndTime, 'minutes');
-              //console.log('moment()',moment(moment(),'YYYY-MM-DD HH:mm:ss'))
-              //console.log('m.StartDateAndTime',moment(m.StartDate).format('YYYY-MM-DD HH:mm:ss'))
-              //console.log('m.StartDateAndTime.diff(moment(),"minutes")',m.StartDateAndTime.diff(moment(),'minutes'))
-              if (m.StartDateAndTime.diff(moment(),'seconds')>0)
+              if (m.StartDateAndTime.diff(moment(), 'seconds') > 0)
                 m.CanStartNow = false;
               else
                 m.CanStartNow = true;
@@ -908,17 +904,31 @@ export class StudentEvaluationComponent implements OnInit {
             else
               m.CanStartNow = true;
             ///////
+
             var existing = this.StudentSubmittedEvaluations.filter((f: any) => f.EvaluationExamMapId == m.EvaluationExamMapId)
             if (existing.length > 0) {
-              if (!existing[0].Submitted || m.Updatable) {
-                m.StudentEvaluationResultId = existing[0].StudentEvaluationResultId
+              m.Submitted = true;
+              if (m.Updatable)
                 this.RelevantEvaluationListForSelectedStudent.push(m);
-              }
             }
-            else {
-              m.StudentEvaluationResultId = 0;
+            else
+            {
               this.RelevantEvaluationListForSelectedStudent.push(m);
+              m.Submitted = false;
             }
+              
+
+
+
+            // var existing = this.StudentSubmittedEvaluations.filter((f: any) => f.EvaluationExamMapId == m.EvaluationExamMapId)
+            // if (existing.length > 0 || m.Updatable) {
+            //     //m.EvaluationResultMarkId = existing[0].EvaluationResultMarkId
+            //     this.RelevantEvaluationListForSelectedStudent.push(m);
+            // }
+            // else {
+            //   m.EvaluationResultMarkId = 0;
+            //   this.RelevantEvaluationListForSelectedStudent.push(m);
+            // }
 
           });
         }
@@ -930,9 +940,7 @@ export class StudentEvaluationComponent implements OnInit {
         if (this.RelevantEvaluationListForSelectedStudent.length == 0) {
           this.contentservice.openSnackBar("No pending exam found for this student.", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        //console.log("this.RelevantEvaluationListForSelectedStudent", this.RelevantEvaluationListForSelectedStudent);
         this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.RelevantEvaluationListForSelectedStudent);
-       // console.log('this.RelevantEvaluationListForSelectedStudent', this.RelevantEvaluationListForSelectedStudent)
         this.StudentEvaluationList = [];
         this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);
         this.dataSource.paginator = this.paginator;
@@ -942,7 +950,7 @@ export class StudentEvaluationComponent implements OnInit {
       })
   }
   GetEvaluationOption() {
-    this.loading=true;
+    this.loading = true;
     let list: List = new List();
     list.fields = [
       'ClassEvaluationAnswerOptionsId',
@@ -1077,11 +1085,13 @@ export class StudentEvaluationComponent implements OnInit {
                 StudentClassId: _studentClassId,
                 StudentId: student.StudentId,
                 ClassId: _classId,
+                RollNo:_RollNo,
                 Name: _fullDescription,
               });
             }
           }
         })
+        this.Students = this.Students.sort((a,b)=>a.RollNo.localeCompare(b.RollNo))
       })
   }
   GetStudents() {

@@ -13,7 +13,6 @@
         <mat-header-cell *matHeaderCellDef> Batch </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <mat-label>batch</mat-label>
                 <input matInput [value]="element.BatchName" [(ngModel)]="element.BatchName" [maxlength]="50">
             </mat-form-field>
         </mat-cell>
@@ -30,7 +29,6 @@
         <mat-header-cell *matHeaderCellDef> Start </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <mat-label>Start</mat-label>
                 <input [(ngModel)]="element.StartDate" (dateChange)="onBlur(element)" [value]="element.StartDate"
                     matInput [matDatepicker]="StartDate" autocomplete="off">
                 <mat-datepicker-toggle matSuffix [for]="StartDate"></mat-datepicker-toggle>
@@ -42,7 +40,6 @@
         <mat-header-cell *matHeaderCellDef> End </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <mat-label>End</mat-label>
                 <input [(ngModel)]="element.EndDate" (dateChange)="onBlur(element)" [value]="element.EndDate" matInput
                     [matDatepicker]="EndDate" autocomplete="off">
                 <mat-datepicker-toggle matSuffix [for]="EndDate"></mat-datepicker-toggle>
@@ -77,3 +74,18 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
 </mat-table>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>
+                <div>Every time "current" column is ticked or unticked, the "Iscurrent" column of the corresponding 
+                    student class will be ticked or unticked accordingly.
+                </div>
+            </li>
+        </ul>
+    </span>
+</div>

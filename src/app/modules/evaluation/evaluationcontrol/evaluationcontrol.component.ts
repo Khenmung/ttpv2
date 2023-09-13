@@ -39,7 +39,7 @@ export class EvaluationControlComponent implements OnInit {
   FilterOrgSubOrgBatchId = "";
   loading = false;
   AssessmentTypeList: any[] = [];
-  StudentEvaluationList: any[] = [];
+  EvaluationResultMarkList: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
   QuestionnaireTypes: any[] = [];
   Sections: any[] = [];
@@ -64,9 +64,9 @@ export class EvaluationControlComponent implements OnInit {
   StudentEvaluationListColumns = [
     'Name',
   ];
-  StudentEvaluationData = {
-    'StudentEvaluationResultId': 0,
-    'Submitted': false
+  EvaluationResultMarkData = {
+    'EvaluationResultMarkId': 0,
+    'Active': false
   }
   AssessmentPrintHeading: any[] = [];
   ClassEvaluationOptionList: any[] = [];
@@ -74,8 +74,9 @@ export class EvaluationControlComponent implements OnInit {
   StudentEvaluationForUpdate: any[] = [];
   displayedColumns = [
     'FullName',
-    'Points',
-    'Submitted',
+    'TotalMark',
+    'Rank',
+    'Active',
     'Action'
   ];
   EvaluationExamMap: any[] = [];
@@ -172,20 +173,21 @@ export class EvaluationControlComponent implements OnInit {
     filterStr += ' and SemesterId eq ' + pSemesterId
     filterStr += ' and SectionId eq ' + pSectionId
     filterStr += ' and EvaluationExamMapId eq ' + pEvaluationExamMapId
+    filterStr += ' and Active eq true'
     let list: List = new List();
     list.fields = [
-      'StudentEvaluationResultId',
+      'EvaluationResultMarkId',
       'StudentClassId',
       'EvaluationExamMapId',
       'ClassId',
       'SectionId',
       'SemesterId',
-      'Points',
-      'Submitted',
+      'TotalMark',
+      'Rank',
       'Active'
     ];
 
-    list.PageName = "StudentEvaluationResults";
+    list.PageName = "EvaluationResultMarks";
     list.filter = [filterStr];
 
     this.dataservice.get(list)
@@ -198,24 +200,25 @@ export class EvaluationControlComponent implements OnInit {
         // else
         //   _filteredStudents = this.Students.filter(stud => data.value.findIndex(fi => fi.StudentClassId == stud.StudentClassId) > -1)
 
-        this.StudentEvaluationList = [];
+        this.EvaluationResultMarkList = [];
         _filteredStudents.forEach(v => {
           var match = data.value.filter(d => d.StudentClassId == v.StudentClassId);
-          v.Submitted = match[0].Submitted;
-          v.Points = match[0].Points;
-          v.StudentEvaluationResultId = match[0].StudentEvaluationResultId;
-          this.StudentEvaluationList.push(v);
+          v.Active = match[0].Active;
+          v.TotalMark = match[0].TotalMark;
+          v.Rank = match[0].Rank;
+          v.EvaluationResultMarkId = match[0].EvaluationResultMarkId;
+          this.EvaluationResultMarkList.push(v);
         })
 
-        if (this.StudentEvaluationList.length == 0) {
+        if (this.EvaluationResultMarkList.length == 0) {
           //this.StudentEvaluationList = [];
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         }
         else
-          this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.RollNo - b.RollNo)
+          this.EvaluationResultMarkList = this.EvaluationResultMarkList.sort((a, b) => a.Rank - b.Rank)
         //console.log("this.StudentEvaluationList", this.StudentEvaluationList)
         //row.EvaluationStarted = true;
-        this.dataSource = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);
+        this.dataSource = new MatTableDataSource<IStudentEvaluation>(this.EvaluationResultMarkList);
         this.dataSource.paginator = this.paginator;
         this.loading = false; this.PageLoading = false;
       })
@@ -224,8 +227,8 @@ export class EvaluationControlComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    this.StudentEvaluationData.StudentEvaluationResultId = row.StudentEvaluationResultId;
-    this.StudentEvaluationData.Submitted = row.Submitted;
+    this.EvaluationResultMarkData.EvaluationResultMarkId = row.EvaluationResultMarkId;
+    this.EvaluationResultMarkData.Active = row.Active;
     this.update(row);
 
   }
@@ -239,8 +242,8 @@ export class EvaluationControlComponent implements OnInit {
   }
 
   update(row) {
-    console.log("this.StudentEvaluationData", this.StudentEvaluationData)
-    this.dataservice.postPatch("StudentEvaluationResults", this.StudentEvaluationData, this.StudentEvaluationData.StudentEvaluationResultId, 'patch')
+    console.log("this.EvaluationResultMarkData", this.EvaluationResultMarkData)
+    this.dataservice.postPatch("EvaluationResultMarks", this.EvaluationResultMarkData, this.EvaluationResultMarkData.EvaluationResultMarkId, 'patch')
       .subscribe(
         (data: any) => {
           row.Action = false;
@@ -280,13 +283,13 @@ export class EvaluationControlComponent implements OnInit {
       UpdatedDate: new Date()
     }
 
-    this.dataservice.postPatch('StudentEvaluationResults', toUpdate, row.StudentEvaluationResultId, 'patch')
+    this.dataservice.postPatch('EvaluationResultMarks', toUpdate, row.EvaluationResultMarkId, 'patch')
       .subscribe(res => {
         row.Action = false;
         this.loading = false; this.PageLoading = false;
-        var idx = this.StudentEvaluationList.findIndex(x => x.StudentEvaluationResultId == row.StudentEvaluationResultId)
-        this.StudentEvaluationList.splice(idx, 1);
-        this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);
+        var idx = this.EvaluationResultMarkList.findIndex(x => x.StudentEvaluationResultId == row.StudentEvaluationResultId)
+        this.EvaluationResultMarkList.splice(idx, 1);
+        this.dataSource = new MatTableDataSource<any>(this.EvaluationResultMarkList);
         this.contentservice.openSnackBar(globalconstants.DeletedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
 
       });
@@ -305,7 +308,7 @@ export class EvaluationControlComponent implements OnInit {
 
   }
   trackCategories(indx, item) {
-    return this.StudentEvaluationList.filter((f: any) => f.ClassEvalCategoryId == item.ClassEvalCategoryId)
+    return this.EvaluationResultMarkList.filter((f: any) => f.ClassEvalCategoryId == item.ClassEvalCategoryId)
   }
   GetExams() {
     this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 2)
@@ -432,16 +435,16 @@ export class EvaluationControlComponent implements OnInit {
   onBlur(row) {
     row.Action = true;
   }
-  CategoryChanged(row) {
-    debugger;
-    row.Action = true;
-    var item = this.StudentEvaluationList.filter((f: any) => f.StudentEvaluationId == row.StudentEvaluationId);
-    item[0].SubCategories = this.allMasterData.filter((f: any) => f.ParentId == row.CategoryId);
+  // CategoryChanged(row) {
+  //   debugger;
+  //   row.Action = true;
+  //   var item = this.EvaluationResultMarkList.filter((f: any) => f.StudentEvaluationId == row.StudentEvaluationId);
+  //   item[0].SubCategories = this.allMasterData.filter((f: any) => f.ParentId == row.CategoryId);
 
-    this.dataSource = new MatTableDataSource(this.StudentEvaluationList);
-  }
+  //   this.dataSource = new MatTableDataSource(this.EvaluationResultMarkList);
+  // }
   updateSubmitted(row, event) {
-    row.Submitted = event.checked;
+    row.Active = event.checked;
     row.Action = true;
   }
   getDropDownData(dropdowntype) {

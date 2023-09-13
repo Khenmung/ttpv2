@@ -1,11 +1,4 @@
-// .mat-column-CurrentBatch,.mat-column-Active{
-//     display: flex;
-//     justify-content:center;
-// }
-mat-form-field{
-    margin-right: 15px;
-    width: 98%;
-}
+
 .mat-column-BatchId{
     flex: 0 0 70px;
 }
@@ -16,4 +9,8 @@ mat-form-field{
 }
 .mat-column-BatchName,.mat-column-StartDate,.mat-column-EndDate{
     flex: 1 1 120px;
+}
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+    padding: 10px 15px 0px 0px;
 }

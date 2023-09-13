@@ -85,7 +85,7 @@
         </form>
 
         <!-- <div style="border:1px solid lightgray; display:flex;align-items:flex-start"> -->
-        <mat-table [dataSource]="dataSource" *ngIf="StudentEvaluationList.length>0">
+        <mat-table [dataSource]="dataSource" *ngIf="EvaluationResultMarkList.length>0">
             <ng-container matColumnDef="FullName">
                 <mat-header-cell *matHeaderCellDef>
                 </mat-header-cell>
@@ -93,19 +93,26 @@
                     {{element.FullName}}
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="Points">
+            <ng-container matColumnDef="TotalMark">
                 <mat-header-cell *matHeaderCellDef>Mark
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    {{element.Points}}
+                    {{element.TotalMark}}
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="Submitted">
+            <ng-container matColumnDef="Rank">
+                <mat-header-cell *matHeaderCellDef>Rank
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.Rank}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Active">
                 <mat-header-cell *matHeaderCellDef>Submitted
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-checkbox (click)="$event.stopPropagation()" (change)="updateSubmitted(element,$event)"
-                        [checked]="element.Submitted">
+                        [checked]="element.Active">
                     </mat-checkbox>
                 </mat-cell>
             </ng-container>

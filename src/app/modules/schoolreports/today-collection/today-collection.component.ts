@@ -39,19 +39,20 @@ export class TodayCollectionComponent implements OnInit {
   isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
 
   loading = false;
-  allMasterData :any[]= [];
-  FeeDefinitions :any[]= [];
-  FeeCategories :any[]= [];
-  Classes :any[]= [];
-  Batches :any[]= [];
-  Sections :any[]= [];
-  Students :any[]= [];
-  GroupByPaymentType :any[]= [];
-  ELEMENT_DATA :any[]= [];
+  allMasterData: any[] = [];
+  FeeDefinitions: any[] = [];
+  FeeCategories: any[] = [];
+  Classes: any[] = [];
+  Batches: any[] = [];
+  Sections: any[] = [];
+  Students: any[] = [];
+  GroupByPaymentType: any[] = [];
+  ELEMENT_DATA: any[] = [];
   GrandTotalAmount = 0;
   CancelledAmount = 0;
-  PaymentTypes :any[]= [];
+  PaymentTypes: any[] = [];
   DisplayColumns = [
+    "PID",
     "ReceiptNo",
     "ReceiptDate",
     "Name",
@@ -65,9 +66,9 @@ export class TodayCollectionComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   SelectedApplicationId = 0;
   Permission = 'deny';
-  DateWiseCollection :any[]= [];
-  HeadsWiseCollection :any[]= [];
-  LoginUserDetail :any[]= [];
+  DateWiseCollection: any[] = [];
+  HeadsWiseCollection: any[] = [];
+  LoginUserDetail: any[] = [];
   dataSource: MatTableDataSource<ITodayReceipt>;
   SearchForm: UntypedFormGroup;
   ErrorMessage: string = '';
@@ -128,7 +129,7 @@ export class TodayCollectionComponent implements OnInit {
       }
     }
   }
-  Employees :any[]= [];
+  Employees: any[] = [];
   GetEmployees() {
     this.loading = true;
     let list: List = new List();
@@ -144,8 +145,8 @@ export class TodayCollectionComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.Employees = [...data.value];
-        this.PageLoading=false;
-        this.loading=false;
+        this.PageLoading = false;
+        this.loading = false;
       })
 
   }
@@ -168,6 +169,7 @@ export class TodayCollectionComponent implements OnInit {
     let fromDate = this.SearchForm.get("FromDate")?.value;
     let toDate = this.SearchForm.get("ToDate")?.value;
     let _classId = this.SearchForm.get("searchClassId")?.value;
+    let _studentClassId = this.SearchForm.get("searchStudentName")?.value.StudentClassId;
     let filterstring = this.FilterOrgSubOrg;
     this.loading = true;
     //filterstring = " eq 1" 
@@ -177,8 +179,8 @@ export class TodayCollectionComponent implements OnInit {
 
 
 
-    if (this.SearchForm.get("searchStudentName")?.value.StudentClassId > 0)
-      filterstring += " and StudentClassId eq " + this.SearchForm.get("searchStudentName")?.value.StudentClassId;
+    if (_studentClassId > 0)
+      filterstring += " and StudentClassId eq " + _studentClassId;
     if (_classId > 0) {
       filterstring += " and ClassId eq " + _classId;
     }
@@ -205,10 +207,10 @@ export class TodayCollectionComponent implements OnInit {
       .subscribe((data: any) => {
         //debugger;
         //console.log('paymentd ata', data.value);
-        var result :any[]= [];
-        var _students :any[]= [];
+        var result: any[] = [];
+        var _students: any[] = [];
         if (_classId > 0)
-          _students = this.Students.filter((s:any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.ClassId == _classId) > -1);
+          _students = this.Students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.ClassId == _classId) > -1);
         else
           _students = [...this.Students];
 
@@ -216,20 +218,28 @@ export class TodayCollectionComponent implements OnInit {
           var obj = this.Employees.filter(e => e.UserId == db.CreatedBy);
           if (obj.length > 0)
             db.ReceivedBy = obj[0].ShortName;
-          var studcls = _students.filter((s:any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.StudentClassId == db.StudentClassId) > -1);
+          var studcls = _students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.StudentClassId == db.StudentClassId) > -1);
           if (studcls.length > 0) {
+
             db.StudentClasses = studcls;
+            db.PID = studcls[0].PID;
             result.push(db);
           }
           //return db;
         });
 
 
-        var activebill = result.filter((f:any) => f.Active == 1);
-        this.GrandTotalAmount = activebill.reduce((acc, current) => acc + current.TotalAmount, 0);
-
-        var cancelledBill = result.filter((f:any) => f.Active == 0)
-        this.CancelledAmount = cancelledBill.reduce((acc, current) => acc + current.TotalAmount, 0);
+        var activebill = result.filter((f: any) => f.Active == 1);
+        this.GrandTotalAmount = 0;//activebill.reduce((acc, current) => acc + current.TotalAmount, 0);
+        result.forEach(t=>{
+          this.GrandTotalAmount += t.AccountingVouchers.reduce((acc, current) => acc + current.Amount, 0);
+        })
+        console.log("activebill",activebill)
+        var cancelledBill = result.filter((f: any) => f.Active == 0)
+        this.CancelledAmount = 0;        
+        cancelledBill.forEach(t=>{
+          this.CancelledAmount += t.AccountingVouchers.reduce((acc, current) => acc + current.Amount, 0);
+        })
 
         this.DateWiseCollection = result.map(d => {
           var pm = this.PaymentTypes.filter(p => p.MasterDataId == d.PaymentTypeId);
@@ -247,13 +257,13 @@ export class TodayCollectionComponent implements OnInit {
         })
 
         var groupbyPaymentType = alasql("Select PaymentType, Sum(TotalAmount) TotalAmount from ? group by PaymentType", [this.DateWiseCollection]);
-
+        this.HeadsWiseCollection = [];
         activebill.forEach(d => {
           d.AccountingVouchers.forEach(v => {
             var _feeCategoryName = '';
             if (v.ClassFee != null) {
               var _feeCategoryId = v.ClassFee.FeeDefinition.FeeCategoryId;
-              var objCategory = this.FeeCategories.filter((f:any) => f.MasterDataId == _feeCategoryId)
+              var objCategory = this.FeeCategories.filter((f: any) => f.MasterDataId == _feeCategoryId)
               if (objCategory.length > 0)
                 _feeCategoryName = objCategory[0].MasterDataName;
               //var _lastname = d.StudentClass.Student.LastName == null ? '' : " " + d.StudentClass.Student.LastName;
@@ -279,7 +289,7 @@ export class TodayCollectionComponent implements OnInit {
         if (this.DateWiseCollection.length == 0)
           this.contentservice.openSnackBar("No collection found.", globalconstants.ActionText, globalconstants.RedBackground);
 
-        const rows :any[]= [];
+        const rows: any[] = [];
         this.DateWiseCollection.forEach(element => rows.push(element, { detailRow: true, element }));
         //console.log("rows", rows)
         this.dataSource = new MatTableDataSource(rows);

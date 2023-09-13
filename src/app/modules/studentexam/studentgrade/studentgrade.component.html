@@ -97,7 +97,7 @@
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <mat-form-field appearance="outline">
-                            <textarea matInput (blur)="onBlur(element)" [value]="element.Formula"
+                            <textarea rows="1" matInput (blur)="onBlur(element)" [value]="element.Formula"
                                 [(ngModel)]="element.Formula" [maxlength]="256"></textarea>
                         </mat-form-field>
                     </mat-cell>

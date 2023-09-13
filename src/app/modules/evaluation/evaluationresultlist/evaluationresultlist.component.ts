@@ -39,6 +39,7 @@ export class EvaluationresultlistComponent implements OnInit {
   AssessmentTypeList: any[] = [];
   StudentEvaluationList: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
+  //EvaluationStatuses :any =[];
   QuestionnaireTypes: any[] = [];
   Sections: any[] = [];
   Classes: any[] = [];
@@ -61,6 +62,7 @@ export class EvaluationresultlistComponent implements OnInit {
   EvaluatedStudent: any[] = [];
   StudentEvaluationListColumns = [
     'Name',
+    'TotalMark'
   ];
   AssessmentPrintHeading: any[] = [];
   ClassEvaluationOptionList: any[] = [];
@@ -190,7 +192,7 @@ export class EvaluationresultlistComponent implements OnInit {
       filterStr += ' and EvaluationExamMapId eq ' + row.EvaluationExamMapId
     }
     var _classEvaluations = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == row.EvaluationMasterId
-      && (f.ExamId == null || f.ExamId == 0 || f.ExamId == row.ExamId));
+      && (!f.ExamId || f.ExamId == row.ExamId));
     let list: List = new List();
     list.fields = [
       'StudentEvaluationResultId',
@@ -239,7 +241,7 @@ export class EvaluationresultlistComponent implements OnInit {
             let _markobtained = 0;
             if (existing[0].StudentEvaluationAnswers.length > 0) {
               answerId = existing[0].StudentEvaluationAnswers[0].ClassEvaluationAnswerOptionsId;
-              _markobtained= clseval.ClassEvaluationOptions.filter(g => g.ClassEvaluationAnswerOptionsId == answerId)[0].Point;
+              _markobtained = clseval.ClassEvaluationOptions.filter(g => g.ClassEvaluationAnswerOptionsId == answerId)[0].Point;
             }
             item = {
               ClassEvaluationOptions: clseval.ClassEvaluationOptions,
@@ -309,10 +311,113 @@ export class EvaluationresultlistComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
+  GetAllEvaluatedStudentMarks() {
+    debugger;
+    this.loading = true;
+    let StudentResultList: any = [];
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+
+    let _searchEvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
+    let _sectionId = this.searchForm.get("searchSectionId")?.value;
+    let _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    let _examId = this.searchForm.get("searchExamId")?.value;
+    let _FullMark = 0, _PassMark = 0;
+    var _evaluationobj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _searchEvaluationMasterId)
+    if (_evaluationobj.length > 0) {
+      _FullMark = _evaluationobj[0].FullMark;
+      _PassMark = _evaluationobj[0].PassMark;
+    }
+
+    let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
+    let _evaluationExamMapIdObj = this.EvaluationExamMap.filter((f: any) => f.EvaluationMasterId == _searchEvaluationMasterId
+      && f.ExamId == _examId);
+    if (_evaluationExamMapIdObj.length > 0)
+      filterStr += ' and EvaluationExamMapId eq ' + _evaluationExamMapIdObj[0].EvaluationExamMapId;
+
+    var _classEvaluations = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == _searchEvaluationMasterId
+      && (!f.ExamId || f.ExamId == _examId));
+    let list: List = new List();
+    list.fields = [
+      'StudentEvaluationResultId',
+      'StudentClassId',
+      'StudentId',
+      'ClassEvaluationId',
+      'Points',
+    ];
+
+    list.PageName = "StudentEvaluationResults";
+
+    list.filter = [filterStr];
+    this.StudentEvaluationList = [];
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        debugger
+        this.Result = [...data.value]
+        //console.log("data.value", data.value);
+        //console.log("_classEvaluations", _classEvaluations);
+        var item;
+        this.EvaluatedStudent.forEach(st => {
+          let _mark = 0;
+          _classEvaluations.forEach(clseval => {
+
+            var existing = this.Result.filter((f: any) => f.StudentClassId == st.StudentClassId
+              && f.ClassEvaluationId == clseval.ClassEvaluationId);
+
+            if (existing.length > 0) {
+              _mark += existing[0].Points;
+            }
+
+          })
+          item = {
+            EvaluationResultMarkId: st.EvaluationResultMarkId,
+            StudentClassId: st.StudentClassId,
+            ClassId: _classId,
+            SectionId: _sectionId,
+            SemesterId: _semesterId,
+            //ExamId: _examId,
+            EvaluationExamMapId: _evaluationExamMapIdObj[0].EvaluationExamMapId,
+            //EvaluationMasterId: _searchEvaluationMasterId,
+            TotalMark: _mark,
+            Rank: 0,
+            //Division: '',
+            TestStatusId: 0,
+            Pc: 0,
+            Active: true,
+            SubOrgId: this.SubOrgId,
+            OrgId: this.LoginUserDetail[0]["orgId"],
+            CreatedDate: new Date(),
+            CreatedBy: this.LoginUserDetail[0]['orgId']
+          }
+          StudentResultList.push(item);
+
+        })
+        StudentResultList = StudentResultList.sort((a, b) => a.TotalMark - b.TotalMark);
+        let _previousMark = 0;
+        StudentResultList.forEach((r, indx) => {
+          if (_previousMark != r.TotalMark)
+            r.Rank = indx + 1;
+          r.TestStatusId = 0;
+          // if(r.TotalMark<_PassMark)
+          // {
+          //   r.TestStatusId =this.EvaluationStatuses.filter(s=>s.MasterDataName.toLowerCase()) 
+          // }
+          if (_FullMark > 0)
+            r.Pc = +(r.TotalMark / _FullMark * 100).toFixed(2);
+          _previousMark = r.TotalMark;
+        })
+       // console.log("StudentResultList", StudentResultList);
+        this.NoOfRecordToUpdate=0;
+        this.insert(StudentResultList);
+        // this.loading = false;
+        // this.PageLoading = false;
+      })
+  }
   GetMarkObtain() {
     let _mark = 0;
     this.StudentEvaluationList.forEach(f => {
-      _mark += f.Points ? f.Points : 0;
+      _mark += f.Points ? +f.Points : 0;
     })
     return _mark;
   }
@@ -437,6 +542,7 @@ export class EvaluationresultlistComponent implements OnInit {
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
+    //this.EvaluationStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONSTATUS);
     this.AssessmentPrintHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.ASSESSMENTPRINTHEADING);
     //console.log("this.AssessmentPrintHeading",this.AssessmentPrintHeading)
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
@@ -471,7 +577,13 @@ export class EvaluationresultlistComponent implements OnInit {
 
   }
   onBlur(row) {
-    row.Action = true;
+    debugger;
+    let _MarkObtain = this.GetMarkObtain();
+    if (this.FullMark < _MarkObtain) {
+      this.contentservice.openSnackBar("Mark obtained can not be greater than full mark.", globalconstants.ActionText, globalconstants.RedBackground);
+    }
+    else
+      row.Action = true;
   }
   CategoryChanged(row) {
     debugger;
@@ -511,15 +623,17 @@ export class EvaluationresultlistComponent implements OnInit {
   UpdateOrSave(row) {
     debugger;
     //this.NoOfRecordToUpdate = 0;
-    this.EvaluationResultData.StudentEvaluationResultId = row.StudentEvaluationResultId;
-    this.EvaluationResultData.Points = +row.Points;
-    delete this.EvaluationResultData["CreatedDate"];
-    delete this.EvaluationResultData["CreatedBy"];
-    this.EvaluationResultData["UpdatedDate"] = new Date();
-    this.EvaluationResultData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-    console.log("StudentAttendanceData update", this.EvaluationResultData);
-    this.update(row);
+    if (row.Points <= this.FullMark) {
+      this.EvaluationResultData.StudentEvaluationResultId = row.StudentEvaluationResultId;
+      this.EvaluationResultData.Points = +row.Points;
+      delete this.EvaluationResultData["CreatedDate"];
+      delete this.EvaluationResultData["CreatedBy"];
+      this.EvaluationResultData["UpdatedDate"] = new Date();
+      this.EvaluationResultData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
+      console.log("StudentAttendanceData update", this.EvaluationResultData);
+      this.update(row);
 
+    }
   }
 
   // insert(row) {
@@ -543,6 +657,19 @@ export class EvaluationresultlistComponent implements OnInit {
         (data: any) => {
           //this.edited = false;
           row.Action = false;
+          if (this.NoOfRecordToUpdate == 0) {
+            this.NoOfRecordToUpdate = -1;
+            this.loading = false;
+            this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
+          }
+        });
+  }
+  insert(data) {
+    this.dataservice.postPatch('EvaluationResultMarks', data, 0, 'post')
+      .subscribe(
+        (data: any) => {
+          //this.edited = false;
+          // row.Action = false;
           if (this.NoOfRecordToUpdate == 0) {
             this.NoOfRecordToUpdate = -1;
             this.loading = false;
@@ -643,20 +770,20 @@ export class EvaluationresultlistComponent implements OnInit {
     filterStr += ' and SectionId eq ' + pSectionId
     filterStr += ' and SemesterId eq ' + pSemesterId
     filterStr += ' and EvaluationExamMapId eq ' + pEvaluationExamMapId
-    filterStr += ' and Submitted eq true';
+    filterStr += ' and Active eq true';
     let list: List = new List();
     list.fields = [
-      'StudentEvaluationResultId',
+      'EvaluationResultMarkId',
       'StudentClassId',
       'EvaluationExamMapId',
       'ClassId',
       'SectionId',
       'SemesterId',
-      'AnswerText',
+      'TotalMark',
       'Active'
     ];
 
-    list.PageName = "StudentEvaluationResults";
+    list.PageName = "EvaluationResultMarks";
     list.filter = [filterStr];
 
     this.dataservice.get(list)
@@ -735,12 +862,13 @@ export class EvaluationresultlistComponent implements OnInit {
       'EvaluationMasterId',
       'DisplayOrder',
       'Description',
+      'ExamId',
       'ClassEvaluationAnswerOptionParentId',
       'MultipleAnswer',
     ];
 
     list.PageName = "ClassEvaluations";
-    list.filter = ['Active eq 1 and OrgId eq ' + this.LoginUserDetail[0]["orgId"]];
+    list.filter = [this.FilterOrgSubOrg + ' and Active eq 1'];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
