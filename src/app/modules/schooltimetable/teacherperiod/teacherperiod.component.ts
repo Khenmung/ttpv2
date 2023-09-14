@@ -351,7 +351,7 @@ export class TeacherperiodComponent implements OnInit {
                 && d.ClassId == distinctcls.ClassId)
               if (existing.length > 0) {
                 existing.forEach(alreadyassignedclassperiod => {
-                  var _teacherId = alreadyassignedclassperiod.TeacherSubjects == null ? 0 : alreadyassignedclassperiod.TeacherSubjects.EmployeeId
+                  var _teacherId = alreadyassignedclassperiod.TeacherSubject == null ? 0 : alreadyassignedclassperiod.TeacherSubject.EmployeeId
                   var clsObj = this.Classes.filter(c => c.ClassId == clsperiod.ClassId);
                   var clsName = '';
                   if (clsObj.length > 0) {
@@ -475,7 +475,7 @@ export class TeacherperiodComponent implements OnInit {
       "Active"
     ];
     list.PageName = this.SchoolTimeTableListName;
-    list.lookupFields = ["TeacherSubjects($select=TeacherSubjectId,EmployeeId),SchoolClassPeriod($select=PeriodId)"]
+    list.lookupFields = ["TeacherSubject($select=TeacherSubjectId,EmployeeId),SchoolClassPeriod($select=PeriodId)"]
     list.filter = [filterstr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -487,8 +487,8 @@ export class TeacherperiodComponent implements OnInit {
         this.AllTimeTable = [];
         dbTimeTable.forEach(f => {
           var _teacherId = 0;
-          if (f.TeacherSubjects)
-            _teacherId = f.TeacherSubjects.EmployeeId;
+          if (f.TeacherSubject)
+            _teacherId = f.TeacherSubject.EmployeeId;
 
           var _section = ''
           var objsection = this.Sections.filter((s:any) => s.MasterDataId == f.SectionId);

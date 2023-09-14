@@ -119,15 +119,7 @@ export class SchooltimetableComponent implements OnInit {
         //   this.GetMasterData();
         // });
         this.GetMasterData();
-        this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          data.value.forEach(m => {
-            let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
-            if (obj.length > 0) {
-              m.Category = obj[0].MasterDataName.toLowerCase();
-              this.Classes.push(m);
-            }
-          });
-        });
+        
       }
     }
   }
@@ -510,7 +502,7 @@ export class SchooltimetableComponent implements OnInit {
       "Active"
     ];
     list.PageName = this.SchoolTimeTableListName;
-    list.lookupFields = ["TeacherSubjects($select=TeacherSubjectId,EmployeeId),SchoolClassPeriod($select=PeriodId)"]
+    list.lookupFields = ["TeacherSubject($select=TeacherSubjectId,EmployeeId),SchoolClassPeriod($select=PeriodId)"]
     list.filter = [filterstr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -941,9 +933,19 @@ export class SchooltimetableComponent implements OnInit {
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.Batches = this.tokenStorage.getBatches()!;
 
-    this.GetAllClassPeriods();
-    this.GetClassSubject();
+    this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
+      data.value.forEach(m => {
+        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
+        if (obj.length > 0) {
+          m.Category = obj[0].MasterDataName.toLowerCase();
+          this.Classes.push(m);
+        }
+      });
+      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.GetClassSubject();
+    });
 
+    this.GetAllClassPeriods();
   }
 
   getDropDownData(dropdowntype) {

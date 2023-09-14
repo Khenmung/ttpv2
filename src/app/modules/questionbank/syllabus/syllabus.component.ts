@@ -51,8 +51,8 @@ export class SyllabusComponent implements OnInit {
   filteredOptions: Observable<ISyllabus[]>;
   dataSource: MatTableDataSource<ISyllabus>;
   allMasterData: any[] = [];
-  Sections:any[] =[];
-  Semesters:any[] =[];
+  Sections: any[] = [];
+  Semesters: any[] = [];
   SyllabusData = {
     SyllabusId: 0,
     ClassId: 0,
@@ -63,7 +63,7 @@ export class SyllabusComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: false
   };
-  ClassCategory :any =[];
+  ClassCategory: any = [];
   EvaluationMasterForClassGroup: any[] = [];
   SyllabusForUpdate: any[] = [];
   displayedColumns = [
@@ -75,7 +75,7 @@ export class SyllabusComponent implements OnInit {
     'Action'
   ];
   searchForm: UntypedFormGroup;
-  Defaultvalue =0;
+  Defaultvalue = 0;
   constructor(
     private servicework: SwUpdate,
     private contentservice: ContentService,
@@ -99,8 +99,8 @@ export class SyllabusComponent implements OnInit {
     this.StudentClassId = this.tokenStorage.getStudentClassId()!;
     this.searchForm = this.fb.group({
       searchClassId: [0],
-      searchSectionId:[0],
-      searchSemesterId:[0],
+      searchSectionId: [0],
+      searchSemesterId: [0],
       searchSubjectId: [0],
       searchContentUnitId: [0],
       searchSubContentUnitId: [0],
@@ -131,25 +131,24 @@ export class SyllabusComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         //this.GetEvaluationNames();
         this.GetMasterData();
-        if (this.Classes.length == 0) {
-          var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-          this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-            data.value.forEach(m => {
-              let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
-              if (obj.length > 0) {
-                m.Category = obj[0].MasterDataName.toLowerCase();
-                this.Classes.push(m);
-              }
-            });
-            this.loading = false; this.PageLoading = false;
+        var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+        this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+          data.value.forEach(m => {
+            let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
+            if (obj.length > 0) {
+              m.Category = obj[0].MasterDataName.toLowerCase();
+              this.Classes.push(m);
+            }
           });
-          //this.GetSyllabus();
-        }
-        this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
-          .subscribe((data: any) => {
-            this.ClassGroups = [...data.value];
-          });
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          this.loading = false; this.PageLoading = false;
+        });
+        //this.GetSyllabus();
       }
+      this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
+        .subscribe((data: any) => {
+          this.ClassGroups = [...data.value];
+        });
     }
   }
   EscapeSpecialCharacter(str) {
@@ -653,10 +652,10 @@ export class SyllabusComponent implements OnInit {
       });
 
   }
-  getCollegeCategory(){
+  getCollegeCategory() {
     return globalconstants.CategoryCollege;
   }
-  getHighSchoolCategory(){
+  getHighSchoolCategory() {
     return globalconstants.CategoryHighSchool;
   }
   GetClassSubjects() {

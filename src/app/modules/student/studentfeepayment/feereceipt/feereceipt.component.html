@@ -76,9 +76,9 @@
                     </div>
                 </div>
                 <div style="border-collapse: collapse;">
-                    <mat-table [dataSource]="dataSource" style>
+                    <mat-table [dataSource]="dataSource">
                         <ng-container matColumnDef="index">
-                            <mat-header-cell *matHeaderCellDef> Sr.No. </mat-header-cell>
+                            <mat-header-cell *matHeaderCellDef> Sl.No. </mat-header-cell>
                             <mat-cell *matCellDef="let element;let i = index;"> {{i+1}} </mat-cell>
                             <mat-footer-cell *matFooterCellDef></mat-footer-cell>
                             <mat-footer-cell *matFooterCellDef></mat-footer-cell>

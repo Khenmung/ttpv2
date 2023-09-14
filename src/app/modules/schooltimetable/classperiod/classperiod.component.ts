@@ -111,6 +111,7 @@ export class ClassperiodComponent implements OnInit {
         // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
         //   this.Classes = [...data.value];
         // });
+        this.GetMasterData();
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
           data.value.forEach(m => {
             let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
@@ -119,9 +120,9 @@ export class ClassperiodComponent implements OnInit {
               this.Classes.push(m);
             }
           });
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence)
         });
-
-        this.GetMasterData();
+       
         this.GetAllClassPeriods();
       }
     }

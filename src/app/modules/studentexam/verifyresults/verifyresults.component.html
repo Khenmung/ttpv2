@@ -21,7 +21,8 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;" *ngIf="SelectedClassCategory==getCollegeCategory()">
+    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;"
+        *ngIf="SelectedClassCategory==getCollegeCategory()">
         <mat-label>semester</mat-label>
         <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
             <mat-option [value]="Defaultvalue">select</mat-option>
@@ -30,7 +31,8 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;" *ngIf="SelectedClassCategory==getHighSchoolCategory()">
+    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;"
+        *ngIf="SelectedClassCategory==getHighSchoolCategory()">
         <mat-label>Section</mat-label>
         <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
             <mat-option [value]="Defaultvalue">select</mat-option>
@@ -39,7 +41,7 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-   
+
     <!-- <mat-checkbox style="margin-right:15px" formControlName="viewMarkPercentCheckBox" (click)="$event.stopPropagation()"
         [checked]="false"> View in Percent
     </mat-checkbox> -->
@@ -50,8 +52,7 @@
             <mat-spinner diameter="20" color="Blue"></mat-spinner>
         </mat-icon>
     </button>
-    <button style="margin-right: 30px;" [disabled]="loading" matTooltip="clear all" mat-raised-button
-        (click)="clear()">
+    <button style="margin-right: 30px;" [disabled]="loading" matTooltip="clear all" mat-raised-button (click)="clear()">
         <mat-icon>clear_all</mat-icon>
     </button>
     <button [disabled]="loading || ClickedVerified || !SectionSelected || ExamReleased==1" matTooltip="verified"
@@ -95,9 +96,10 @@
             <mat-row *matRowDef="let row; columns: displayedColumns;" style="align-items: baseline;"></mat-row>
 
         </mat-table>
-        <mat-paginator #nonGradingPaginator="matPaginator" style="display: flex;justify-content: center;"
-            [pageSizeOptions]="[10,25,100]"></mat-paginator>
     </div>
+    <mat-paginator [hidden]="ExamStudentSubjectResult.length==0" #nonGradingPaginator="matPaginator" style="display: flex;justify-content: center;"
+        [pageSizeOptions]="[10,25,100]"></mat-paginator>
+
     <div *ngIf="ExamStudentSubjectGrading.length>0" style="flex-direction: column;">
         <div style="font-weight: bold;">Grading Subject</div>
         <mat-table #table [dataSource]="GradingDataSource" matSort>

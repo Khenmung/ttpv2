@@ -37,7 +37,8 @@ export class globalconstants {
     public static ExamGrading = 'Grading';
     public static ExamMarkingNGrading = 'MarkingNGrading';
     public static ServeCommand ="node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve"
-    public static BuildCommand = "ng build --configuration production --aot=true --build-optimizer=true --output-Hashing=all";
+    public static BuildCommand_old = "ng build --configuration production --aot=true --build-optimizer=true --output-Hashing=all";
+    public static BuildCommand_new = "ng build --configuration production";
     public static AppAndMenuAndFeatures =
         {
             'edu': {

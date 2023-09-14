@@ -438,7 +438,7 @@ export class EvaluationresultlistComponent implements OnInit {
     return this.StudentEvaluationList.filter((f: any) => f.ClassEvalCategoryId == item.ClassEvalCategoryId)
   }
   GetExams() {
-    this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 1)
+    this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 2)
       .subscribe((data: any) => {
         this.Exams = [];
         data.value.map(e => {

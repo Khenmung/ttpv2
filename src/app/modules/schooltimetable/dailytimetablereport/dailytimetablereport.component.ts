@@ -117,6 +117,7 @@ export class DailytimetablereportComponent implements OnInit {
               this.Classes.push(m);
             }
           });
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
         });
 
       }
@@ -158,7 +159,7 @@ export class DailytimetablereportComponent implements OnInit {
       "Active"
     ];
     list.PageName = this.SchoolTimeTableListName;
-    list.lookupFields = ["TeacherSubjects($select=EmployeeId),SchoolClassPeriod($select=PeriodId)"]
+    list.lookupFields = ["TeacherSubject($select=EmployeeId),SchoolClassPeriod($select=PeriodId)"]
     list.filter = [filterstr];
     this.displayedColumns = [
       'Day'
@@ -210,7 +211,7 @@ export class DailytimetablereportComponent implements OnInit {
                   exist.PeriodId = clsperiod.PeriodId;
                   exist.Period = _period;
                   exist.Action = false;
-                  exist.TeacherId = exist.TeacherSubjects.EmployeeId;
+                  exist.TeacherId = exist.TeacherSubject.EmployeeId;
                   exist.Sequence = clsperiod.Sequence;
 
                   this.StoredForUpdate.push(exist);

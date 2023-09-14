@@ -240,6 +240,8 @@ export class TodayCollectionComponent implements OnInit {
         cancelledBill.forEach(t=>{
           this.CancelledAmount += t.AccountingVouchers.reduce((acc, current) => acc + current.Amount, 0);
         })
+        
+        this.GrandTotalAmount = this.GrandTotalAmount - this.CancelledAmount;
 
         this.DateWiseCollection = result.map(d => {
           var pm = this.PaymentTypes.filter(p => p.MasterDataId == d.PaymentTypeId);

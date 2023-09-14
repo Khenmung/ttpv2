@@ -165,6 +165,7 @@ export class QuestionComponent implements OnInit {
               this.Classes.push(m);
             }
           });
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
         });
         this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
           .subscribe((data: any) => {

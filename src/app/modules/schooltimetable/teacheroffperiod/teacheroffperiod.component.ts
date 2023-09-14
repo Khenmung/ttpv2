@@ -471,7 +471,7 @@ export class TeacheroffperiodComponent implements OnInit {
       "Active"
     ];
     list.PageName = this.SchoolTimeTableListName;
-    list.lookupFields = ["TeacherSubjects($select=TeacherSubjectId,EmployeeId),SchoolClassPeriod($select=PeriodId)"]
+    list.lookupFields = ["TeacherSubject($select=TeacherSubjectId,EmployeeId),SchoolClassPeriod($select=PeriodId)"]
     list.filter = [filterstr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -483,8 +483,8 @@ export class TeacheroffperiodComponent implements OnInit {
         this.AllTimeTable = [];
         dbTimeTable.forEach(f => {
           var _teacherId = 0;
-          if (f.TeacherSubjects != null)
-            _teacherId = f.TeacherSubjects.EmployeeId;
+          if (f.TeacherSubject != null)
+            _teacherId = f.TeacherSubject.EmployeeId;
 
           var _section = ''
           var objsection = this.Sections.filter((s:any) => s.MasterDataId == f.SectionId);

@@ -668,18 +668,18 @@ export class VerifyResultsComponent implements OnInit {
         //3. Get all existing or entered component mark from no. 2
         //4. Get All individual students of the select class, semester, section.
         //5. Loop through individual students
-            // Loop through subjects of each student
-            ///Loop through each subject Component With Passmark greater than Zero to decide pass or failed.
-            // loop through each subject Components
+        // Loop through subjects of each student
+        ///Loop through each subject Component With Passmark greater than Zero to decide pass or failed.
+        // loop through each subject Components
         StudentOwnSubjects = this.StudentSubjects.filter(studentsubject => {
           return studentsubject.ClassId == pClassId
             && studentsubject.SectionId == pSectionId
             && studentsubject.SemesterId == pSemesterId
             && studentsubject.SelectHowMany > 0;
         });
-        
+
         var _examAllSelectedClsSectionSemSubjectsMarkCompntDefn: any[] = [];
-          _examAllSelectedClsSectionSemSubjectsMarkCompntDefn = this.ClassSubjectComponents.filter(c =>
+        _examAllSelectedClsSectionSemSubjectsMarkCompntDefn = this.ClassSubjectComponents.filter(c =>
           c.ClassId == pClassId
           && c.ExamId == pExamId
           && c.SectionId == pSectionId// ? pSectionId : c.SectionId
@@ -689,7 +689,7 @@ export class VerifyResultsComponent implements OnInit {
             c.ClassId == pClassId
             && c.ExamId == pExamId);
         }
-       
+
         var filteredExistingComponentMarks: any[] = [];
 
         examComponentResult.value.forEach(d => {
@@ -805,7 +805,7 @@ export class VerifyResultsComponent implements OnInit {
                   failedInComponent = true;
               })
               var eachComponentOfCurrentSubjectFromDefn = _examAllSelectedClsSectionSemSubjectsMarkCompntDefn.filter(comp => comp.ClassSubjectId == eachsubj.ClassSubjectId)
-              
+
               eachComponentOfCurrentSubjectFromDefn.forEach(compmarkFromDefn => {
                 let componentObtainedmark = filteredExistingComponentMarks.filter(eres => eres.StudentClassSubjectId == eachsubj.StudentClassSubjectId
                   && eres.ClassSubjectMarkComponentId == compmarkFromDefn.ClassSubjectMarkComponentId)
@@ -1020,10 +1020,36 @@ export class VerifyResultsComponent implements OnInit {
         rankzero.forEach(zerorank => {
           sortedresult.push(zerorank);
         })
-
-        this.ExamStudentSubjectResult = sortedresult;
+        // this.ExamStudentSubjectResult = JSON.parse(JSON.stringify(sortedresult));
+        // let _rank, lastDigit;
+        // sortedresult.forEach(item => {
+        //   _rank = item.Rank + "";
+        //   lastDigit = _rank.substring(_rank.length - 1)
+        //   switch (lastDigit) {
+        //     case "1":
+        //       if (_rank == "11")
+        //         _rank = _rank + "th"
+        //       else
+        //         _rank = _rank + "st"
+        //       break;
+        //     case "2":
+        //       if (_rank == "12")
+        //         _rank = _rank + "th"
+        //       else
+        //         _rank = _rank + "nd"
+        //       break;
+        //     case "3":
+        //       _rank = _rank + "rd"
+        //       break;
+        //     default:
+        //       _rank = _rank + "th"
+        //       break;
+        //   }
+        //   item.Rank = _rank;
+        // })
+        this.ExamStudentSubjectResult =sortedresult;
         this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(this.ExamStudentSubjectResult);
-        //this.dataSource.paginator = this.nonGradingPaginator;//.toArray()[0];
+        this.dataSource.paginator = this.nonGradingPaginator;//.toArray()[0];
         //this.dataSource.sort = this.sort.toArray()[0];
         //console.log("this.ExamStudentSubjectResult",this.ExamStudentSubjectResult);
         //console.log("columns",this.displayedColumns);
@@ -1039,6 +1065,34 @@ export class VerifyResultsComponent implements OnInit {
         //console.log("this.ExamReleased",this.ExamReleased)
       })
     //})
+  }
+  GetRank(pSortedresult) {
+    let _rank, lastDigit;
+    pSortedresult.forEach(item => {
+      _rank = item.Rank + "";
+      lastDigit = _rank.substring(_rank.length - 1)
+      switch (lastDigit) {
+        case "1":
+          if (_rank == "11")
+            _rank = _rank + "th"
+          else
+            _rank = _rank + "st"
+          break;
+        case "2":
+          if (_rank == "12")
+            _rank = _rank + "th"
+          else
+            _rank = _rank + "nd"
+          break;
+        case "3":
+          _rank = _rank + "rd"
+          break;
+        default:
+          _rank = _rank + "th"
+          break;
+      }
+      item.Rank = _rank;
+    })
   }
   SetGrade(pMarks: any[], gradingTypeId) {
     var _StudentGrade = '';
@@ -1084,7 +1138,7 @@ export class VerifyResultsComponent implements OnInit {
           m.Category = '';
         return m;
       })
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);;
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);;
       this.GetSubjectTypes();
     });
 
