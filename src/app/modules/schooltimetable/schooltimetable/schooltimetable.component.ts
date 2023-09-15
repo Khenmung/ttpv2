@@ -107,7 +107,7 @@ export class SchooltimetableComponent implements OnInit {
       this.nav.navigate(['/auth/login']);
     else {
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.TIMETABLE.CLASSTIMETABLE)
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.TIMETABLE.SETTIMETABLE)
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
@@ -147,10 +147,10 @@ export class SchooltimetableComponent implements OnInit {
 
     //if (duplicateCheck.length > 1) {
     //console.log("duplicateCheck",duplicateCheck);
-    var _detail = '';
-    var _dupdetail = this.DataForAllClasses.filter((f:any) => f.DayId == row.DayId
-      && f.PeriodId == row.PeriodId
-      && row.TeacherId == row.TeacherId);
+    // var _detail = '';
+    // var _dupdetail = this.DataForAllClasses.filter((f:any) => f.DayId == row.DayId
+    //   && f.PeriodId == row.PeriodId
+    //   && row.TeacherId == row.TeacherId);
 
     // if (_dupdetail.length > 1) {
     //   _dupdetail.forEach(d => {

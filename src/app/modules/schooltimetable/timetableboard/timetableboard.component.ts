@@ -64,7 +64,7 @@ export class TimetableboardComponent implements AfterViewInit {
     var comindx = this.components.indexOf(ClassperiodComponent);
     this.addRemovecomponent(perObj,comindx);
 
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.TIMETABLE.CLASSTIMETABLE)
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.TIMETABLE.SETTIMETABLE)
     var comindx = this.components.indexOf(SchooltimetableComponent);
     this.addRemovecomponent(perObj,comindx);
 

@@ -138,11 +138,11 @@
                                         style="font-weight: bold; width: 100%;padding: 15px 15px 10px 0px;color:#76ba1b">
                                         {{element[disCol]}}</span>
                                     <span *ngIf="element.QuestionnaireType=='Questionnaire' && disCol =='Description'"
-                                        style="width: 100%;padding: 15px 15px 10px 0px;">
+                                        style="width: 100%;padding: 7px 7px 7px 0px;">
                                         <li> {{element[disCol]}}</li>
                                     </span>
                                     <span [innerHTML]="element[disCol]|encodeHTML"
-                                        style="align-self:stretch; width: 100%;padding: 15px 15px 15px 0px;" *ngIf="element['QuestionnaireType']!='Evaluation Master' 
+                                        style="align-self:stretch; width: 100%;padding: 7px 7px 7px 0px;" *ngIf="element['QuestionnaireType']!='Evaluation Master' 
                                    && disCol!='Description' 
                                    && disCol!='QuestionnaireType' 
                                    && disCol!='EvaluationMasterId'

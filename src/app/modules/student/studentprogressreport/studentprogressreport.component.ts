@@ -133,7 +133,7 @@ export class StudentprogressreportComponent implements OnInit {
       if (this.Permission != 'deny') {
         //console.log("localStorage.getItem(StudentDetail)",localStorage.getItem("StudentDetail"))
         var studentdetail = [JSON.parse("{" + localStorage.getItem("StudentDetail") + "}")];
-        var _studentId = this.tokenStorage.getStudentId()!;;
+        var _studentId = this.tokenStorage.getStudentId()!;
         var _student = this.tokenStorage.getStudents()!;
         this.CurrentStudent = _student.filter((f: any) => f.StudentId == _studentId)[0];
         var obj = this.Houses.filter(h => h.MasterDataId == this.CurrentStudent.HouseId);
@@ -153,8 +153,10 @@ export class StudentprogressreportComponent implements OnInit {
         }
 
         this.StudentClassId = this.tokenStorage.getStudentClassId()!;
-        var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+        //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+        this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+        this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+        this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
           this.Classes = [...data.value];
         });
         this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, 0)
@@ -163,8 +165,7 @@ export class StudentprogressreportComponent implements OnInit {
             //var objExamClassGroups = this.ExamClassGroups.filter(g => g.ExamId == _examId);
             //this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
           });
-        this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-        this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+        
         this.GetMasterData();
         this.GetStudentGradeDefn();
         //this.GetStudentAttendance();

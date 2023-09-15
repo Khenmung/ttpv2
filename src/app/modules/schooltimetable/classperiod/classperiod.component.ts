@@ -107,10 +107,7 @@ export class ClassperiodComponent implements OnInit {
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        // var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-        //   this.Classes = [...data.value];
-        // });
+       
         this.GetMasterData();
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
           data.value.forEach(m => {
