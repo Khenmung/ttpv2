@@ -577,7 +577,7 @@ export class LeaveRequestsComponent {
         var _NoOfMonths = 0;
         var _NoOfYears = 0;
         var _Age = 0;
-        var _sessionStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!!);
+        var _sessionStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
         var startMonth = new Date(_sessionStartEnd["StartDate"]).getMonth();
         var _currentMonth = new Date().getMonth();
         var ConfirmationMonth = 0;

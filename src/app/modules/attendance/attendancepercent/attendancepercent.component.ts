@@ -77,6 +77,7 @@ export class AttendancepercentComponent implements OnInit {
   Defaultvalue = 0;
   Semesters: any[] = [];
   ClassCategory: any[] = [];
+  MinFromDate:Date;
   constructor(private servicework: SwUpdate,
 
     private fb: UntypedFormBuilder,
@@ -120,13 +121,15 @@ export class AttendancepercentComponent implements OnInit {
         // this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         //   this.Classes = [...data.value];
         // })
-
+        var _sessionStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
+        var startDate = new Date(_sessionStartEnd["StartDate"]);
+        this.MinFromDate = new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate());
       }
     }
 
   }
   PageLoad() {
-
+   
   }
   bindClassSubject() {
     debugger;
@@ -180,6 +183,8 @@ export class AttendancepercentComponent implements OnInit {
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
     let _semesterId = this.searchForm.get("searchSemesterId")?.value;
+
+
     if (_classId > 0) {
       filterStr += ' and ClassId eq ' + _classId;
     }
@@ -197,6 +202,15 @@ export class AttendancepercentComponent implements OnInit {
     var _toDate = new Date(this.searchForm.get("searchToDate")?.value)
     _fromDate.setHours(0, 0, 0, 0);
     _toDate.setHours(0, 0, 0, 0);
+    var dateDiff = (_toDate.getTime() -_fromDate.getTime())/(1000*60*60*24) 
+    if(dateDiff>210)
+    {
+      this.loading=false;
+      this.contentservice.openSnackBar("Date period should be less than 180 days",globalconstants.ActionText,globalconstants.RedBackground);
+      return;
+    }
+    //console.log('dateDiff',dateDiff);
+    if(_fromDate.getTime())
     if (_fromDate.getTime() > today.getTime()) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("From date cannot be greater than today's date.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -231,6 +245,8 @@ export class AttendancepercentComponent implements OnInit {
     list.PageName = "Attendances";
     //list.lookupFields = ["Attendances($filter=" + datefilterStr + ";$select=AttendanceId,StudentClassId,AttendanceDate,AttendanceStatusId,ClassSubjectId)"];
     list.filter = [filterStr + datefilterStr];
+    //list.skip = (pPageNo -1) * PpageSize;
+    //list.limitTo = PpageSize;
     this.StudentClassList = [];
     this.dataservice.get(list)
       .subscribe((attendance: any) => {

@@ -24,31 +24,31 @@ export class StudentattendancereportComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   // @ViewChild(MatSort) sort: MatSort;
   @ViewChild("table") mattable;
-  Students :any[]= [];
+  Students: any[] = [];
   StudentDetail: any = {};
   rowCount = 0;
   edited = false;
-  LoginUserDetail: any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
-  SelectedStudentSubjectCount :any[]= [];
+  SelectedStudentSubjectCount: any[] = [];
   StudentDetailToDisplay = '';
   SelectedApplicationId = 0;
   StudentClassId = 0;
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  ClassSubjectList:any[]= [];
-  Sections :any[]= [];
-  Classes :any[]= [];
-  Subjects :any[]= [];
+  ClassSubjectList: any[] = [];
+  Sections: any[] = [];
+  Classes: any[] = [];
+  Subjects: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
-  Batches :any[]= [];
-  StudentClassSubjects :any[]= [];
+  Batches: any[] = [];
+  StudentClassSubjects: any[] = [];
 
   //StudentSubjectList: IStudentSubject[]= [];
   dataSource: MatTableDataSource<IStudentAttendance>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
 
   nameFilter = new UntypedFormControl('');
   filterValues = {
@@ -77,7 +77,7 @@ export class StudentattendancereportComponent implements OnInit {
     private nav: Router,
     private shareddata: SharedataService,
   ) { }
-  Months :any[]= [];
+  Months: any[] = [];
   ngOnInit(): void {
 
     this.nameFilter.valueChanges
@@ -122,7 +122,7 @@ export class StudentattendancereportComponent implements OnInit {
       }
     }
   }
-  FilteredClassSubjects :any[]= [];
+  FilteredClassSubjects: any[] = [];
   bindClassSubject() {
     debugger;
     var classId = this.searchForm.get("searchClassId")!.value;
@@ -130,14 +130,14 @@ export class StudentattendancereportComponent implements OnInit {
     this.SelectedClassCategory = '';
 
     if (classId > 0) {
-      let obj:any[] = this.Classes.filter((f:any) => f.ClassId == classId);
+      let obj: any[] = this.Classes.filter((f: any) => f.ClassId == classId);
       if (obj.length > 0)
         this.SelectedClassCategory = obj[0].Category;
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
     this.ClearData();
   }
-  ClassSubjects :any[]= [];
+  ClassSubjects: any[] = [];
   GetClassSubject() {
     debugger;
     let list: List = new List();
@@ -157,11 +157,11 @@ export class StudentattendancereportComponent implements OnInit {
     this.ClassSubjects = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        this.ClassSubjects= [];
+        this.ClassSubjects = [];
         data.value.forEach(item => {
-          var objsubject:any[] = this.Subjects.filter((f:any) => f.MasterDataId == item.SubjectId)
+          var objsubject: any[] = this.Subjects.filter((f: any) => f.MasterDataId == item.SubjectId)
           if (objsubject.length > 0) {
-            var type = this.SubjectTypes.filter((s:any) => s.SubjectTypeId == item.SubjectTypeId && s.SelectHowMany != 0);
+            var type = this.SubjectTypes.filter((s: any) => s.SubjectTypeId == item.SubjectTypeId && s.SelectHowMany != 0);
             if (type.length > 0) {
               this.ClassSubjects.push({
                 ClassSubjectId: item.ClassSubjectId,
@@ -177,9 +177,9 @@ export class StudentattendancereportComponent implements OnInit {
   }
   Defaultvalue = 0;
   SelectedClassCategory = '';
-  StudentAttendanceList :any[]= [];
-  Semesters :any[]= [];
-  ClassCategory :any[]= [];
+  StudentAttendanceList: any[] = [];
+  Semesters: any[] = [];
+  ClassCategory: any[] = [];
   getCollegeCategory() {
     return globalconstants.CategoryCollege;
   }
@@ -219,7 +219,7 @@ export class StudentattendancereportComponent implements OnInit {
       this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    this.StudentAttendanceList= [];
+    this.StudentAttendanceList = [];
     this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
     SelectedMonth = SelectedMonth + "";
     var fromDate = new Date(SelectedMonth.substr(0, 4), SelectedMonth.substr(4, 5), 1);
@@ -255,7 +255,7 @@ export class StudentattendancereportComponent implements OnInit {
         var lastDateOfMonth = new Date(moment(fromDate).endOf('month').format('YYYY-MM-DD')).getDate();
         for (let day = 1; day <= lastDateOfMonth; day++) {
           tempdate = new Date(SelectedMonth.substr(0, 4), SelectedMonth.substr(4, 2), day);
-          var inHoliday = this.HolidayList.filter((h:any) => new Date(h.StartDate).getTime() >= tempdate.getTime() && new Date(h.EndDate).getTime() <= tempdate.getTime())
+          var inHoliday = this.HolidayList.filter((h: any) => new Date(h.StartDate).getTime() >= tempdate.getTime() && new Date(h.EndDate).getTime() <= tempdate.getTime())
           if (inHoliday.length > 0)
             Holidays += 1;
           if (tempdate.getDay() == 6 || tempdate.getDay() == 0) {
@@ -264,21 +264,22 @@ export class StudentattendancereportComponent implements OnInit {
         }
         let absent = 0, Present = 0;
         this.displayedColumns = ["Student"];
-        this.StudentAttendanceList = this.Students.filter((s:any) => s.ClassId == SelectedClassId
+        this.StudentAttendanceList = this.Students.filter((s: any) => s.ClassId == SelectedClassId
+          && s.SemesterId == SelectedSemesterId
           && s.SectionId == SelectedSectionId);
 
         debugger;
         if (SelectedClassSubjectId > 0)
-          this.StudentAttendanceList = this.StudentAttendanceList.filter((s:any) => this.StudentClassSubjects.findIndex(d => d.StudentClassId == s.StudentClassId) > -1);
+          this.StudentAttendanceList = this.StudentAttendanceList.filter((s: any) => this.StudentClassSubjects.findIndex(d => d.StudentClassId == s.StudentClassId) > -1);
         var today = new Date().getDay();
-        this.StudentAttendanceList.forEach((stud:any) => {
+        this.StudentAttendanceList.forEach((stud: any) => {
           absent = 0;
           Present = 0;
           var dayHead = '';
           let existing = StudentAttendance.value.filter(db => db.StudentClassId == stud.StudentClassId);
+          //attendance taken
           if (existing.length > 0) {
             //the whole month for an employee.
-
             for (let dayCount = 1; dayCount <= lastDateOfMonth; dayCount++) {
               tempdate = new Date(SelectedMonth.substr(0, 4), SelectedMonth.substr(4, 2), dayCount);
               var wd = tempdate.getDay();
@@ -290,16 +291,18 @@ export class StudentattendancereportComponent implements OnInit {
               var dayattendance = existing.filter(e => new Date(e.AttendanceDate).getDate() == dayCount);
               if (dayattendance.length > 0) {
                 stud[dayHead] = dayattendance[0].AttendanceStatusId == this.AttendancePresentId ? 'P' : dayattendance[0].Approved ? 'L' : '-';
-                if (today <= dayCount && this.WeekDays[wd] != 'Sat' && this.WeekDays[wd] != 'Sun' && (dayattendance[0].AttendanceStatusId == this.AttendanceAbsentId || !dayattendance[0].AttendanceStatusId))
-                  absent += 1;
-                else if (this.WeekDays[wd] != 'Sat' && this.WeekDays[wd] != 'Sun')
+                //count only dates less than today.
+                //if (today <= dayCount && this.WeekDays[wd] != 'Sat' && this.WeekDays[wd] != 'Sun' && (dayattendance[0].AttendanceStatusId == this.AttendanceAbsentId || !dayattendance[0].AttendanceStatusId))
+                if (dayattendance[0].AttendanceStatusId == this.AttendancePresentId)
                   Present += 1;
+                 else if (today >= dayCount && dayattendance[0].AttendanceStatusId == this.AttendanceAbsentId)
+                   absent += 1;
               }
-              else {
-                stud[dayHead] = '-';
-                if (today <= dayCount && this.WeekDays[wd] != 'Sat' && this.WeekDays[wd] != 'Sun')
-                  absent += 1;
-              }
+              // else {
+              //   stud[dayHead] = '-';
+              //   if (today <= dayCount && this.WeekDays[wd] != 'Sat' && this.WeekDays[wd] != 'Sun')
+              //     absent += 1;
+              // }
             }
           }
           else {
@@ -315,7 +318,7 @@ export class StudentattendancereportComponent implements OnInit {
                   }
 
                   stud[dayHead] = '-';
-                  if (today <= day && this.WeekDays[wd] != 'Sat' && this.WeekDays[wd] != 'Sun')
+                  if (today <= day)// && this.WeekDays[wd] != 'Sat' && this.WeekDays[wd] != 'Sun')
                     absent += 1;
                 }
               }
@@ -336,11 +339,11 @@ export class StudentattendancereportComponent implements OnInit {
           }
           if (this.displayedColumns.indexOf("Pre") == -1)
             this.displayedColumns.push("Pre");
-          if (this.displayedColumns.indexOf("Ab") == -1)
-            this.displayedColumns.push("Ab");
+          // if (this.displayedColumns.indexOf("Ab") == -1)
+          //   this.displayedColumns.push("Ab");
           stud["Pre"] = Present;
-          var _ab = (absent - (weekdaysCount + Holidays));
-          stud["Ab"] = _ab < 0 ? 0 : _ab;
+          // var _ab = (absent - (weekdaysCount + Holidays));
+          // stud["Ab"] = _ab < 0 ? 0 : _ab;
         })
         //console.log("employee",this.Employees)
         this.StudentAttendanceList = this.StudentAttendanceList.sort((a, b) => a.RollNo - b.RollNo)
@@ -359,11 +362,11 @@ export class StudentattendancereportComponent implements OnInit {
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     this.FilteredClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
 
-    this.StudentAttendanceList= [];
+    this.StudentAttendanceList = [];
     this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
   }
   HolidayListName = 'Holidays';
-  HolidayList :any[]= [];
+  HolidayList: any[] = [];
   GetHoliday() {
     debugger;
 
@@ -375,7 +378,7 @@ export class StudentattendancereportComponent implements OnInit {
 
     list.PageName = this.HolidayListName;
     list.filter = [filterStr];
-    this.HolidayList= [];
+    this.HolidayList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -436,6 +439,7 @@ export class StudentattendancereportComponent implements OnInit {
       var _classId = 0;
       var _section = '';
       var _sectionId = 0;
+      var _semesterId=0;
       var _studentClassId = 0;
       //var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
       //if (studentclassobj.length > 0) {
@@ -445,13 +449,14 @@ export class StudentattendancereportComponent implements OnInit {
 
         if (_classNameobj.length > 0)
           _className = _classNameobj[0].ClassName;
-        var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == student.StudentClasses[0].SectionId)
+        var _SectionObj = this.Sections.filter((f: any) => f.MasterDataId == student.StudentClasses[0].SectionId)
 
         if (_SectionObj.length > 0)
           _section = _SectionObj[0].MasterDataName;
         _RollNo = student.StudentClasses[0].RollNo == null ? '' : student.StudentClasses[0].RollNo;
         _classId = student.StudentClasses[0].ClassId;
         _sectionId = student.StudentClasses[0].SectionId;
+        _semesterId = student.StudentClasses[0].SemesterId;
       }
       student.PersonalNo = student.PersonalNo == null ? '' : student.PersonalNo;
       var _lastname = student.LastName == null ? '' : " " + student.LastName;
@@ -461,6 +466,7 @@ export class StudentattendancereportComponent implements OnInit {
       student.ClassId = _classId;
       student.RollNo = _RollNo;
       student.SectionId = _sectionId;
+      student.SemesterId = _semesterId;
       student.Student = _fullDescription;
       student.ClassName = _className;
       this.Students.push(student);
@@ -472,9 +478,7 @@ export class StudentattendancereportComponent implements OnInit {
     let filterFunction = function (data, filter): boolean {
       let searchTerms = JSON.parse(filter);
       return data.Student.toLowerCase().indexOf(searchTerms.Student) !== -1
-      // && data.id.toString().toLowerCase().indexOf(searchTerms.id) !== -1
-      // && data.colour.toLowerCase().indexOf(searchTerms.colour) !== -1
-      // && data.pet.toLowerCase().indexOf(searchTerms.pet) !== -1;
+
     }
     return filterFunction;
   }
@@ -485,7 +489,7 @@ export class StudentattendancereportComponent implements OnInit {
 
     topush = this.StudentDetail;
 
-    _subjectName = this.Subjects.filter((s:any) => s.MasterDataId == clssubject.SubjectId)[0].MasterDataName;
+    _subjectName = this.Subjects.filter((s: any) => s.MasterDataId == clssubject.SubjectId)[0].MasterDataName;
     if (this.displayedColumns.indexOf(_subjectName) == -1)
       this.displayedColumns.push(_subjectName);
 
@@ -517,126 +521,7 @@ export class StudentattendancereportComponent implements OnInit {
       //searchBatchId: this.SelectedBatchId
     });
   }
-  // SelectColumn(element,colName) {
-  //   this.SelectAllInRow(element, col);
-  // }
-  // SelectAllRowInColumn(event, colName) {
-  //   debugger;
-  //   this.StudentSubjectList.forEach(element => {
-  //     var currentrow = this.StoreForUpdate.filter((f:any) => f.Subject == colName && f.StudentClassId == element.StudentClassId);
-  //     if (event.checked) {
-  //       currentrow[colName] = 1;
-  //       element[colName] = 1;
-  //     }
-  //     else {
-  //       currentrow[colName] = 0;
-  //       element[colName] = 0;
-  //       currentrow[0].SubjectCount = 0;
-  //     }
-  //     element.Action = true;
-  //   });
-  // }
-  // SelectAllInRow(element, event, colName) {
-  //   debugger;
-  //   var columnexist :any[]= [];
-  //   if (colName == 'Action') {
-  //     for (var prop in element) {
-  //       columnexist = this.displayedColumns.filter((f:any) => f == prop)
-  //       if (columnexist.length > 0 && event.checked && prop != 'Student' && prop != 'Action') {
-  //         element[prop] = 1;
-  //       }
-  //       else if (columnexist.length > 0 && !event.checked && prop != 'Student' && prop != 'Action') {
-  //         element[prop] = 0;
-  //       }
-  //       element.Action = true;
-  //     }
-  //   }
-  //   else {
-  //     var currentrow = this.StoreForUpdate.filter((f:any) => f.Subject == colName && f.StudentClassId == element.StudentClassId);
-  //     if (event.checked) {
-  //       currentrow[colName] = 1;
-  //       element[colName] = 1;
-  //     }
-  //     else {
-  //       currentrow[colName] = 0;
-  //       element[colName] = 0;
-  //       currentrow[0].SubjectCount = 0;
-  //     }
-  //     element.Action = true;
-  //   }
-  // }
-  // SaveRow(element) {
-  //   //debugger;
-  //   this.loading = true;
-  //   this.rowCount = 0;
-  //   this.SelectedStudentSubjectCount :any[]= [];
-  //   ////////
-  //   //console.log("this.StudentSubjectList", this.StudentSubjectList);
-  //   let StudentSubjects = this.StoreForUpdate.filter((s:any) => s.StudentClassId == element.StudentClassId);
-  //   var groupbySubjectType = alasql("select distinct SubjectTypeId,SubjectType,SelectHowMany from ? ", [StudentSubjects])
-  //   var matchrow;
-  //   for (var prop in element) {
-  //     matchrow = StudentSubjects.filter(x => x.Subject == prop)
-  //     if (matchrow.length > 0) {
-  //       var resultarray = groupbySubjectType.filter((f:any) => f.SubjectTypeId == matchrow[0].SubjectTypeId);
-  //       if (element[prop] == 1) {
-  //         //assuming greater than 20 means compulsory subject types
-  //         // if (resultarray[0].SelectHowMany > 30)
-  //         //   matchrow[0].SubjectCount = resultarray[0].SelectHowMany;
-  //         // //resultarray[0].SubjectCount = resultarray[0].SelectHowMany;
-  //         // else
-  //         resultarray[0].SubjectCount = resultarray[0].SubjectCount == undefined ? 1 : resultarray[0].SubjectCount + 1;
-  //       }
-  //       else {
-  //         resultarray[0].SubjectCount = resultarray[0].SubjectCount == undefined ? 0 : resultarray[0].SubjectCount;
-  //       }
-  //     }
-  //   }
-  //   var _compulsory = groupbySubjectType.filter((f:any) => f.SubjectType.toLowerCase() == 'compulsory')
-  //   var _otherThanCompulsory = groupbySubjectType.filter((f:any) => f.SubjectType.toLowerCase() != 'compulsory')
-  //   var subjectCounterr = '';
-  //   _otherThanCompulsory.forEach(noncompulsory => {
-  //     //element.SelectHowMany =0 meeans optional
-  //     if (noncompulsory.SubjectCount != noncompulsory.SelectHowMany) {
-  //       subjectCounterr += " Subject type " + noncompulsory.SubjectType + " must have " + noncompulsory.SelectHowMany + " subject(s) selected.";
-  //     }
-  //   });
-  //   var compulsorysubjectCount = StudentSubjects.filter(c => c.SubjectType.toLowerCase() == 'compulsory')
 
-  //   if (compulsorysubjectCount.length > _compulsory[0].SubjectCount) {
-  //     subjectCounterr += " Subject type " + _compulsory[0].SubjectType + " must have " + _compulsory[0].SelectHowMany + " subject(s) selected";
-  //   }
-  //   // _compulsory.forEach(s => {
-  //   //   if (s.SelectHowMany > 30 && s.SubjectCount != s.SelectHowMany) {
-  //   //     debugger;
-  //   //     subjectCounterr += " Subject type " + s.SubjectType + " must have " + s.SelectHowMany + " subject(s) selected.";
-  //   //   }
-  //   // })
-  //   /////////
-  //   if (subjectCounterr.length > 0) {
-  //     this.loading = false; this.PageLoading = false;
-  //     this.contentservice.openSnackBar(subjectCounterr, globalconstants.ActionText, globalconstants.RedBackground);
-  //     return;
-  //   }
-  //   else {
-  //     for (var prop in element) {
-  //       var row: any = StudentSubjects.filter((s:any) => s.Subject == prop);
-
-  //       if (row.length > 0 && prop != 'Student' && prop != 'Action') {
-  //         var data = {
-  //           Active: element[prop],
-  //           StudentClassSubjectId: row[0].StudentClassSubjectId,
-  //           StudentClassId: row[0].StudentClassId,
-  //           ClassSubjectId: row[0].ClassSubjectId,
-  //           SubjectId: row[0].SubjectId
-  //         }
-  //         ////console.log('data to update',data)
-  //         if (row.length > 0)
-  //           this.UpdateOrSave(data, element);
-  //       }
-  //     }
-  //   }
-  // }
   delete(element) {
     let toupdate = {
       Active: element.Active == 1 ? 0 : 1
@@ -649,102 +534,13 @@ export class StudentattendancereportComponent implements OnInit {
 
         });
   }
-  // UpdateOrSave(row, element) {
-  //   //debugger;
-  //   let checkFilterString = "ClassSubjectId eq " + row.ClassSubjectId +
-  //     " and StudentClassId eq " + row.StudentClassId +
-  //     " and BatchId eq " + this.SelectedBatchId
 
-
-  //   if (row.StudentClassSubjectId > 0)
-  //     checkFilterString += " and StudentClassSubjectId ne " + row.StudentClassSubjectId;
-  //   checkFilterString += " and " + this.StandardFilter
-  //   let list: List = new List();
-  //   list.fields = ["ClassSubjectId"];
-  //   list.PageName = "StudentClassSubjects";
-  //   list.filter = [checkFilterString];
-
-  //   this.dataservice.get(list)
-  //     .subscribe((data: any) => {
-  //       //debugger;
-  //       if (data.value.length > 0) {
-  //         console.log("row.ClassSubjectId", row.ClassSubjectId)
-  //         this.contentservice.openSnackBar("Record already exists!", globalconstants.ActionText, globalconstants.RedBackground);
-  //         return;
-  //       }
-  //       else {
-
-  //         this.StudentSubjectData.Active = row.Active;
-  //         this.StudentSubjectData.StudentClassSubjectId = row.StudentClassSubjectId;
-  //         this.StudentSubjectData.OrgId = this.LoginUserDetail[0]["orgId"];.SubOrgId = this.SubOrgId
-  //         this.StudentSubjectData.BatchId = this.SelectedBatchId;
-  //         this.StudentSubjectData.StudentClassId = row.StudentClassId;
-  //         this.StudentSubjectData.SubjectId = row.SubjectId;
-  //         this.StudentSubjectData.ClassSubjectId = row.ClassSubjectId;
-  //         this.StudentSubjectData.ClassId = row.ClassId;
-  //         this.StudentSubjectData.SectionId = row.SectionId;
-  //         ////console.log('data', this.StudentSubjectData);
-  //         if (this.StudentSubjectData.StudentClassSubjectId == 0) {
-  //           this.StudentSubjectData["CreatedDate"] = new Date();
-  //           this.StudentSubjectData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
-  //           delete this.StudentSubjectData["UpdatedDate"];
-  //           delete this.StudentSubjectData["UpdatedBy"];
-  //           ////console.log('insert', this.StudentSubjectData);
-  //           this.insert(row, element);
-  //         }
-  //         else {
-  //           delete this.StudentSubjectData["CreatedDate"];
-  //           delete this.StudentSubjectData["CreatedBy"];
-  //           this.StudentSubjectData["UpdatedDate"] = new Date();
-  //           this.StudentSubjectData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-  //           this.update(row, element);
-  //         }
-  //         row.Action = false;
-
-  //       }
-  //     });
-  // }
-
-  // insert(row, element) {
-
-  //   //debugger;
-  //   this.dataservice.postPatch('StudentClassSubjects', this.StudentSubjectData, 0, 'post')
-  //     .subscribe(
-  //       (data: any) => {
-  //         this.edited = false;
-  //         this.rowCount += 1;
-  //         row.StudentClassSubjectId = data.StudentClassSubjectId;
-
-  //         if (this.rowCount == Object.keys(row).length - 3) {
-  //           this.loading = false; this.PageLoading = false;
-  //           element.Action = false;
-  //           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-  //         }
-  //       });
-  // }
-  // update(row, element) {
-
-  //   this.dataservice.postPatch('StudentClassSubjects', this.StudentSubjectData, this.StudentSubjectData.StudentClassSubjectId, 'patch')
-  //     .subscribe(
-  //       (data: any) => {
-  //         this.edited = false;
-
-  //         this.rowCount += 1;
-  //         if (this.rowCount == Object.keys(row).length - 3) {
-  //           element.Action = false;
-  //           this.loading = false; this.PageLoading = false;
-  //           //this.GetStudentClassSubject();
-  //           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-  //         }
-  //         //this.contentservice.openSnackBar(globalconstants.UpdatedMessage,globalconstants.ActionText,globalconstants.BlueBackground);
-  //       });
-  // }
   isNumeric(str: number) {
     if (typeof str != "string") return false // we only process strings!  
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
       !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
-  SubjectTypes :any[]= [];
+  SubjectTypes: any[] = [];
   GetSubjectTypes() {
 
     var orgIdSearchstr = this.FilterOrgSubOrg + ' and Active eq 1';
@@ -762,7 +558,7 @@ export class StudentattendancereportComponent implements OnInit {
         this.GetClassSubject();
       })
   }
-  AttendanceStatus :any[]= [];
+  AttendanceStatus: any[] = [];
   AttendancePresentId = 0;
   AttendanceAbsentId = 0;
   GetMasterData() {
@@ -773,9 +569,9 @@ export class StudentattendancereportComponent implements OnInit {
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
-    this.AttendancePresentId = this.AttendanceStatus.filter((s:any) => s.MasterDataName.toLowerCase() == 'present')[0].MasterDataId;
-    this.AttendanceAbsentId = this.AttendanceStatus.filter((s:any) => s.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
-    
+    this.AttendancePresentId = this.AttendanceStatus.filter((s: any) => s.MasterDataName.toLowerCase() == 'present')[0].MasterDataId;
+    this.AttendanceAbsentId = this.AttendanceStatus.filter((s: any) => s.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
+
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       this.Classes = data.value.map(m => {
         let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
@@ -786,7 +582,7 @@ export class StudentattendancereportComponent implements OnInit {
           m.Category = '';
         return m;
       })
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.Students = this.tokenStorage.getStudents()!;
       this.AssignNameClassSection(this.Students);
     })

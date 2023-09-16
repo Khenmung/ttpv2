@@ -32,7 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
     //     }
     //   })
     // })
-    this.isLoggedIn = !!this.tokenStorageService.getToken();
+    this.isLoggedIn = !this.tokenStorageService.getToken();
 
   }
   ngOnDestroy() {

@@ -53,6 +53,9 @@ export class NaomitsuService {
     if (list.hasOwnProperty('limitTo') && list.limitTo > 0) {
       url += "&$top=" + list.limitTo.toString();
     }
+    if (list.hasOwnProperty('skip') && list.skip > 0) {
+      url += "&$skip=" + list.skip.toString();
+    }
     if (list.hasOwnProperty('orderBy') && list.orderBy) {
       url += "&$orderby=" + list.orderBy.toString();
     }

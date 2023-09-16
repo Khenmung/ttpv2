@@ -42,15 +42,14 @@
         <div>
             <mat-form-field appearance="outline">
                 <mat-label>from</mat-label>
-                <input formControlName="searchFromDate" matInput [matDatepicker]="FromDate" (dateChange)="ClearData()"
-                    autocomplete="off">
+                <input formControlName="searchFromDate" [min]="MinFromDate" 
+                matInput [matDatepicker]="FromDate" (dateChange)="ClearData()">
                 <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
                 <mat-datepicker #FromDate></mat-datepicker>
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>to</mat-label>
-                <input formControlName="searchToDate" matInput (dateChange)="ClearData()" [matDatepicker]="ToDate"
-                    autocomplete="off">
+                <input formControlName="searchToDate" matInput (dateChange)="ClearData()" [matDatepicker]="ToDate">
                 <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>
                 <mat-datepicker #ToDate></mat-datepicker>
             </mat-form-field>

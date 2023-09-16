@@ -38,6 +38,7 @@ export class List {
     fields: string[];
     lookupFields: string[];
     limitTo: number;
+    skip: number;
     filter: string[];
     orderBy: string;
     groupby:string;

@@ -338,7 +338,7 @@ export class DashboardclassfeeComponent implements OnInit {
       'Dec'
     ]
     var monthArray: any[] = [];
-    var selectedBatch = this.tokenStorage.getSelectedBatchStartEnd()!!;
+    var selectedBatch = this.tokenStorage.getSelectedBatchStartEnd()!;
     var b = JSON.parse(selectedBatch);
     debugger;
     if (b.length != 0) {
