@@ -276,7 +276,7 @@ export class VerifyResultsComponent implements OnInit {
           }
         })
         this.ClassSubjects = this.contentservice.getConfidentialData(this.tokenStorage, this.ClassSubjects, "ClassSubject");
-        this.loading = false;
+        //this.loading = false;
         this.GetSubjectComponents();
       })
   }
@@ -456,6 +456,7 @@ export class VerifyResultsComponent implements OnInit {
   }
   GetExamNCalculate() {
     this.loading = true;
+    debugger;
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";
     let list: List = new List();
     list.fields = ["*"];
@@ -478,6 +479,7 @@ export class VerifyResultsComponent implements OnInit {
             this.ExamNCalculate.push(f);
           }
         })
+        this.loading=false;
       })
   }
   GetStudentSubjects() {
@@ -1020,35 +1022,44 @@ export class VerifyResultsComponent implements OnInit {
         rankzero.forEach(zerorank => {
           sortedresult.push(zerorank);
         })
-        // this.ExamStudentSubjectResult = JSON.parse(JSON.stringify(sortedresult));
-        // let _rank, lastDigit;
-        // sortedresult.forEach(item => {
-        //   _rank = item.Rank + "";
-        //   lastDigit = _rank.substring(_rank.length - 1)
-        //   switch (lastDigit) {
-        //     case "1":
-        //       if (_rank == "11")
-        //         _rank = _rank + "th"
-        //       else
-        //         _rank = _rank + "st"
-        //       break;
-        //     case "2":
-        //       if (_rank == "12")
-        //         _rank = _rank + "th"
-        //       else
-        //         _rank = _rank + "nd"
-        //       break;
-        //     case "3":
-        //       _rank = _rank + "rd"
-        //       break;
-        //     default:
-        //       _rank = _rank + "th"
-        //       break;
-        //   }
-        //   item.Rank = _rank;
-        // })
-        this.ExamStudentSubjectResult =sortedresult;
-        this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(this.ExamStudentSubjectResult);
+        this.ExamStudentSubjectResult = JSON.parse(JSON.stringify(sortedresult));
+        let _rank, lastDigit;
+        sortedresult.forEach(item => {
+          _rank = item.Rank + "";
+          lastDigit = _rank.substring(_rank.length - 1)
+          switch (lastDigit) {
+            case "0":
+              if (_rank == "0")
+                _rank = ""
+              else
+                _rank = _rank + "th"
+              break;
+            case "1":
+              if (_rank == "11")
+                _rank = _rank + "th"
+              else
+                _rank = _rank + "st"
+              break;
+            case "2":
+              if (_rank == "12")
+                _rank = _rank + "th"
+              else
+                _rank = _rank + "nd"
+              break;
+            case "3":
+              if (_rank == "13")
+                _rank = _rank + "th"
+              else
+                _rank = _rank + "rd"
+              break;
+            default:
+              _rank = _rank + "th"
+              break;
+          }
+          item.Rank = _rank;
+        })
+        //this.ExamStudentSubjectResult =sortedresult;
+        this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(sortedresult);
         this.dataSource.paginator = this.nonGradingPaginator;//.toArray()[0];
         //this.dataSource.sort = this.sort.toArray()[0];
         //console.log("this.ExamStudentSubjectResult",this.ExamStudentSubjectResult);
@@ -1116,7 +1127,7 @@ export class VerifyResultsComponent implements OnInit {
 
   ClassCategory: any[] = [];
   GetMasterData() {
-
+    this.loading=true;
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
@@ -1152,13 +1163,16 @@ export class VerifyResultsComponent implements OnInit {
     this.PageLoading = false;
   }
   GetClassGroup() {
+    this.loading=true;
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
         this.ClassGroups = [...data.value];
+        this.loading=false;
       })
   }
   ClassGroupMapping: any[] = [];
   GetClassGroupMapping() {
+    this.loading=true;
     this.contentservice.GetClassGroupMapping(this.FilterOrgSubOrg, 1)
       .subscribe((data: any) => {
         //debugger;
@@ -1171,11 +1185,12 @@ export class VerifyResultsComponent implements OnInit {
           }
 
         });
+        this.loading=false;
       })
   }
   GetStudentGradeDefn() {
-    var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-    this.contentservice.GetStudentGrade(filterOrgSubOrg)
+    //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+    this.contentservice.GetStudentGrade(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
         this.StudentGrades = [...data.value];
         this.loading = false;
@@ -1264,7 +1279,7 @@ export class VerifyResultsComponent implements OnInit {
     }
   }
   GetExams() {
-
+    this.loading=true;
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId + " and Active eq 1";
 
     let list: List = new List();
@@ -1382,7 +1397,7 @@ export class VerifyResultsComponent implements OnInit {
     list.PageName = "SubjectTypes";
     list.filter = [orgIdSearchstr];
     //list.orderBy = "ParentId";
-
+    this.loading=true;
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -1399,7 +1414,7 @@ export class VerifyResultsComponent implements OnInit {
     list.fields = ["ClassSubjectMarkComponentId", "ExamId", "SubjectComponentId", "ClassSubjectId", "FullMark", "PassMark", "OverallPassMark"];
     list.PageName = "ClassSubjectMarkComponents";
     //list.lookupFields = ["ClassSubject($filter=Active eq 1;$select=SubjectCategoryId,SubjectTypeId,ClassId,Active)"];
-    list.filter = [this.FilterOrgSubOrgBatchId + " and ExamId ne null and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrgBatchId + " and ExamId gt 0 and Active eq 1"];
     //list.orderBy = "ParentId";
 
     this.dataservice.get(list)

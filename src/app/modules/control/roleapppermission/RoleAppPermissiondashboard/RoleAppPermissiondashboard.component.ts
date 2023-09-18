@@ -39,10 +39,11 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
   AppRoleData = {
     ApplicationFeatureRoleId: 0,
     PlanFeatureId: 0,
-    //ParentId: 0,
+   // PlanId: 0,
     RoleId: 0,
     PermissionId: 0,
-    OrgId: 0, SubOrgId: 0,
+    OrgId: 0, 
+    SubOrgId: 0,
     Active: 0
   };
   SelectedApplicationId = 0;
@@ -454,7 +455,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
           this.AppRoleData.Active = row.Active;
           this.AppRoleData.ApplicationFeatureRoleId = row.ApplicationFeatureRoleId;
           this.AppRoleData.PlanFeatureId = row.PlanFeatureId;
-          //this.AppRoleData.ParentId = _ParentId;
+          //this.AppRoleData.PlanId = this.UserDetails[0]["planId"];
           this.AppRoleData.RoleId = row.RoleId;
           this.AppRoleData.PermissionId = row.PermissionId;
           this.AppRoleData.OrgId = this.UserDetails[0]["orgId"];

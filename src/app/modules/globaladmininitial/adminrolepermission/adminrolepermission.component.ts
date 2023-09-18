@@ -21,18 +21,18 @@ export class AdminrolepermissionComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  TopMenu :any[]= [];
-  MasterData :any[]= [];
-  Roles :any[]= [];
-  Permissions :any[]= [];
+  TopMenu: any[] = [];
+  MasterData: any[] = [];
+  Roles: any[] = [];
+  Permissions: any[] = [];
   Permission = 'deny';
-  Organizations :any[]= [];
-  ApplicationRoleList :any[]= [];
-  TopPageFeatures :any[]= [];
-  DefinedMaster :any[]= [];
+  Organizations: any[] = [];
+  ApplicationRoleList: any[] = [];
+  TopPageFeatures: any[] = [];
+  DefinedMaster: any[] = [];
   NoOfRowsToUpdate = -1;
-  PlanFeaturePages :any[]= [];
-  FilteredPageFeatures :any[]= [];
+  PlanFeaturePages: any[] = [];
+  FilteredPageFeatures: any[] = [];
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   oldvalue = '';
@@ -42,16 +42,17 @@ export class AdminrolepermissionComponent implements OnInit {
   AppRoleData = {
     ApplicationFeatureRoleId: 0,
     PlanFeatureId: 0,
+    PlanId: 0,
     RoleId: 0,
     PermissionId: 0,
     OrgId: 0,
     SubOrgId: 0,
     Active: 0
   };
-  CustomerApps :any[]= [];
+  CustomerApps: any[] = [];
   SelectedApplicationId = 0;
-  ApplicationDataStatus :any[]= [];
-  SchoolDataStatus :any[]= [];
+  ApplicationDataStatus: any[] = [];
+  SchoolDataStatus: any[] = [];
   DisplayColumns = [
     "ApplicationFeatureRoleId",
     "FeatureName",
@@ -59,7 +60,7 @@ export class AdminrolepermissionComponent implements OnInit {
     "Active",
     "Action"
   ];
-  UserDetails :any[]= [];
+  UserDetails: any[] = [];
 
   constructor(private servicework: SwUpdate,
     private fb: UntypedFormBuilder,
@@ -87,7 +88,7 @@ export class AdminrolepermissionComponent implements OnInit {
   enableTopEdit = false;
   loading: boolean = false;
   error: string = '';
-  Applications :any[]= [];
+  Applications: any[] = [];
   //CustomerApplications :any[]= [];
   searchForm = this.fb.group(
     {
@@ -141,7 +142,7 @@ export class AdminrolepermissionComponent implements OnInit {
   }
 
   GetTopMenu() {
-    this.TopMenu = this.PlanFeaturePages.filter((f:any) => f.ApplicationId == this.SelectedApplicationId
+    this.TopMenu = this.PlanFeaturePages.filter((f: any) => f.ApplicationId == this.SelectedApplicationId
       && f.ParentId == 0)
     this.TopMenu = this.TopMenu.sort((a, b) => a.DisplayOrder - b.DisplayOrder);
   }
@@ -185,7 +186,7 @@ export class AdminrolepermissionComponent implements OnInit {
     debugger;
     this.EmptyData();
     this.getCustomersData();
-    this.SelectedCustomerPlanId = this.Organizations.filter((f:any) => f.OrganizationId == event.value.Org.OrganizationId)[0].PlanId;
+    this.SelectedCustomerPlanId = this.Organizations.filter((f: any) => f.OrganizationId == event.value.Org.OrganizationId)[0].PlanId;
     var list = new List();
     list.fields = [
       "ApplicationId"
@@ -263,7 +264,7 @@ export class AdminrolepermissionComponent implements OnInit {
             d.DisplayOrder = d.Page.DisplayOrder;
             return d;
           });
-          this.TopPageFeatures = this.PlanFeaturePages.filter((f:any) => f.ParentId == 0);
+          this.TopPageFeatures = this.PlanFeaturePages.filter((f: any) => f.ParentId == 0);
         }
         else
           this.PlanFeaturePages = [];
@@ -273,7 +274,7 @@ export class AdminrolepermissionComponent implements OnInit {
   }
   FilterPageFeatures() {
     //debugger;
-    this.FilteredPageFeatures = this.PlanFeaturePages.filter((f:any) => f.ApplicationId == this.SelectedApplicationId);
+    this.FilteredPageFeatures = this.PlanFeaturePages.filter((f: any) => f.ApplicationId == this.SelectedApplicationId);
 
   }
   EmptyData() {
@@ -302,7 +303,7 @@ export class AdminrolepermissionComponent implements OnInit {
     var _ParentId = 0;
     if (_planFeatureId > 0) {
 
-      var obj = this.PlanFeaturePages.filter((f:any) => f.PlanFeatureId == _planFeatureId)
+      var obj = this.PlanFeaturePages.filter((f: any) => f.PlanFeatureId == _planFeatureId)
       if (obj.length > 0)
         _ParentId = obj[0].PageId;
     }
@@ -332,12 +333,12 @@ export class AdminrolepermissionComponent implements OnInit {
     this.ApplicationRoleList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var ResultedPermittedPageFeatures :any[]= [];
+        var ResultedPermittedPageFeatures: any[] = [];
         //var _roleId = this.searchForm.get("RoleId")?.value;
         //var roleFilteredAssigned = data.value.filter(db => db.RoleId == _roleId);
-        var filteredFeature :any[]= [];
+        var filteredFeature: any[] = [];
         //if (_ParentId > 0)
-        filteredFeature = this.PlanFeaturePages.filter((f:any) => f.ParentId == _ParentId);
+        filteredFeature = this.PlanFeaturePages.filter((f: any) => f.ParentId == _ParentId);
         //else
         //  filteredFeature = [...this.PlanFeaturePages];
         // console.log("filteredFeature")
@@ -346,8 +347,8 @@ export class AdminrolepermissionComponent implements OnInit {
         // console.table(data.value)
 
         filteredFeature.forEach(p => {
-          if(p.PlanFeatureId==421 || p.PlanFeatureId==393)
-              debugger;
+          if (p.PlanFeatureId == 421 || p.PlanFeatureId == 393)
+            debugger;
           var existing = data.value.filter(r => r.PlanFeatureId == p.PlanFeatureId);
           if (existing.length > 0) {
             existing.forEach(item => {
@@ -436,7 +437,7 @@ export class AdminrolepermissionComponent implements OnInit {
     this.datasource = new MatTableDataSource<IApplicationRolePermission>(this.ApplicationRoleList);
   }
   UpdateAll() {
-    var toUpdate = this.ApplicationRoleList.filter((f:any) => f.Action);
+    var toUpdate = this.ApplicationRoleList.filter((f: any) => f.Action);
     this.NoOfRowsToUpdate = toUpdate.length;
     toUpdate.forEach((a, indx) => {
       this.NoOfRowsToUpdate -= 1;
@@ -448,7 +449,7 @@ export class AdminrolepermissionComponent implements OnInit {
     this.UpdateOrSave(row);
   }
   UpdateOrSave(row) {
-
+    let _planId = this.searchForm.get("searchCustomerId")?.value.PlanId;
     if (row.PermissionId == 0) {
       this.contentservice.openSnackBar("Please select permission", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -486,7 +487,7 @@ export class AdminrolepermissionComponent implements OnInit {
           this.AppRoleData.Active = row.Active;
           this.AppRoleData.ApplicationFeatureRoleId = row.ApplicationFeatureRoleId;
           this.AppRoleData.PlanFeatureId = row.PlanFeatureId;
-          //this.AppRoleData.ParentId = _ParentId;
+          this.AppRoleData.PlanId = _planId;
           this.AppRoleData.RoleId = row.RoleId;
           this.AppRoleData.PermissionId = row.PermissionId;
           this.AppRoleData.OrgId = this.searchForm.get("searchCustomerId")?.value.Org.OrganizationId;

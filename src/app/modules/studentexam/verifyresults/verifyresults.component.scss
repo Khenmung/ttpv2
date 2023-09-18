@@ -41,6 +41,9 @@ mat-cell{
     justify-content:center;
     min-width: 50px;
 }
+mat-row, mat-footer-row{
+    min-height: 35px;
+}
 // .element-row{
 //     align-items: baseline;
 // }

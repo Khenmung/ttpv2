@@ -264,9 +264,11 @@ export class StudentattendancereportComponent implements OnInit {
         }
         let absent = 0, Present = 0;
         this.displayedColumns = ["Student"];
-        this.StudentAttendanceList = this.Students.filter((s: any) => s.ClassId == SelectedClassId
+        console.log("this.StudentAttendanceList", this.StudentAttendanceList)
+        console.log("this.Students", this.Students)
+        this.StudentAttendanceList = JSON.parse(JSON.stringify(this.Students.filter((s: any) => s.ClassId == SelectedClassId
           && s.SemesterId == SelectedSemesterId
-          && s.SectionId == SelectedSectionId);
+          && s.SectionId == SelectedSectionId)));
 
         debugger;
         if (SelectedClassSubjectId > 0)
@@ -295,8 +297,8 @@ export class StudentattendancereportComponent implements OnInit {
                 //if (today <= dayCount && this.WeekDays[wd] != 'Sat' && this.WeekDays[wd] != 'Sun' && (dayattendance[0].AttendanceStatusId == this.AttendanceAbsentId || !dayattendance[0].AttendanceStatusId))
                 if (dayattendance[0].AttendanceStatusId == this.AttendancePresentId)
                   Present += 1;
-                 else if (today >= dayCount && dayattendance[0].AttendanceStatusId == this.AttendanceAbsentId)
-                   absent += 1;
+                else if (today >= dayCount && dayattendance[0].AttendanceStatusId == this.AttendanceAbsentId)
+                  absent += 1;
               }
               // else {
               //   stud[dayHead] = '-';
@@ -439,7 +441,7 @@ export class StudentattendancereportComponent implements OnInit {
       var _classId = 0;
       var _section = '';
       var _sectionId = 0;
-      var _semesterId=0;
+      var _semesterId = 0;
       var _studentClassId = 0;
       //var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
       //if (studentclassobj.length > 0) {

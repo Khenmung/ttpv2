@@ -12,6 +12,7 @@ import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 import { AnyObject } from 'chart.js/dist/types/basic';
+import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-exams',
@@ -22,40 +23,52 @@ export class ExamsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   PageLoading = true;
-  AttendanceModes :any[]= [];
-  LoginUserDetail:any[]= [];
+  AttendanceModes: any[] = [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
-  Students :any[]= [];
+  Students: any[] = [];
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  Exams: IExams[]= [];
+  Exams: IExams[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
-  ClassGroups :any[]= [];
+  ClassGroups: any[] = [];
   SelectedApplicationId = 0;
-  StudentGradeFormula :any[]= [];
-  ClassSubjectComponents :any[]= [];
-  ExamNames :any[]= [];
-  Batches :any[]= [];
-  ExamModes :any[]= [];
-  ExamStudentSubjectResult :any[]= [];
+  StudentGradeFormula: any[] = [];
+  ClassSubjectComponents: any[] = [];
+  ExamNames: any[] = [];
+  Batches: any[] = [];
+  ExamModes: any[] = [];
+  ExamStudentSubjectResult: any[] = [];
   dataSource: MatTableDataSource<IExams>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   Permission = 'deny';
   ExamId = 0;
-  ExamsData = {
-    ExamId: 0,
-    ExamNameId: 0,
-    StartDate: Date,
-    EndDate: Date,
-    ClassGroupId: 0,
-    ReleaseResult: 0,
-    ReleaseDate: null,
-    AttendanceStartDate: null,
-    OrgId: 0, SubOrgId: 0,
-    BatchId: 0,
-    Active: 1
-  };
+  ExamsData: {
+    ExamId: number,
+    ExamNameId: number,
+    StartDate: any,
+    EndDate: any,
+    ClassGroupId: number,
+    ReleaseResult: number,
+    ReleaseDate: any,
+    AttendanceStartDate: any,
+    OrgId: number, SubOrgId: number,
+    BatchId: number,
+    Active: number
+  } = {
+      ExamId: 0,
+      ExamNameId: 0,
+      StartDate: null,
+      EndDate: Date,
+      ClassGroupId: 0,
+      ReleaseResult: 0,
+      ReleaseDate: null,
+      AttendanceStartDate: null,
+      OrgId: 0, SubOrgId: 0,
+      BatchId: 0,
+      Active: 1
+    };
   displayedColumns = [
     'ExamId',
     'ExamName',
@@ -67,8 +80,8 @@ export class ExamsComponent implements OnInit {
     'Active',
     'Action'
   ];
-  StudentSubjects :any[]= [];
-  StudentGrades :any[]= [];
+  StudentSubjects: any[] = [];
+  StudentGrades: any[] = [];
   constructor(private servicework: SwUpdate,
     private dataservice: NaomitsuService,
     private tokenStorage: TokenStorageService,
@@ -107,7 +120,7 @@ export class ExamsComponent implements OnInit {
       if (this.Permission == 'deny')
         this.nav.navigate(['/auth/login']);
       else {
-        
+
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -120,7 +133,7 @@ export class ExamsComponent implements OnInit {
   }
   addnew() {
 
-    let toadd:any = {
+    let toadd: any = {
       ExamId: 0,
       ExamNameId: 0,
       ExamName: '',
@@ -169,7 +182,7 @@ export class ExamsComponent implements OnInit {
     this.loading = true;
 
     let checkFilterString = this.FilterOrgSubOrgBatchId + " and ExamNameId eq " + row.ExamNameId;
-   
+
     if (row.ExamId > 0)
       checkFilterString += " and ExamId ne " + row.ExamId;
 
@@ -198,10 +211,10 @@ export class ExamsComponent implements OnInit {
           this.ExamsData.BatchId = this.SelectedBatchId;
           if (row.ReleaseResult == 1) {
             row.ReleaseDate = this.datepipe.transform(new Date(), 'dd/MM/yyyy');
-            this.ExamsData.ReleaseDate = new Date();
+            this.ExamsData.ReleaseDate = new Date()  //new Date();
           }
-          else
-            this.ExamsData.ReleaseDate = null;
+          // else
+          //   this.ExamsData.ReleaseDate = ;
 
           this.ExamsData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ExamsData.SubOrgId = this.SubOrgId;
@@ -248,7 +261,7 @@ export class ExamsComponent implements OnInit {
         });
   }
   GetExams() {
-debugger;
+    debugger;
     //var orgIdSearchstr = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
 
     let list: List = new List();
@@ -269,7 +282,7 @@ debugger;
           if (existing.length > 0) {
             if (existing[0].ReleaseDate != null)
               existing[0].ReleaseDate = moment(existing[0].ReleaseDate).format("DD/MM/yyyy");
-            existing[0].ExamName = this.ExamNames.filter((f:any) => f.MasterDataId == existing[0].ExamNameId)[0].MasterDataName;
+            existing[0].ExamName = this.ExamNames.filter((f: any) => f.MasterDataId == existing[0].ExamNameId)[0].MasterDataName;
             existing[0].Sequence = e.Sequence;
             existing[0].Action = false;
             return existing[0];

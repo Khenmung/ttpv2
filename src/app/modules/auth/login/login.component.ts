@@ -299,7 +299,8 @@ export class LoginComponent implements OnInit {
     list.PageName = "ApplicationFeatureRolesPerms";
     list.lookupFields = ["PlanFeature($select=PageId,Active,PlanId;$expand=Page($select=Active,PageTitle,label,link,faIcon,ApplicationId,ParentId))"]
 
-    list.filter = [this.FilterOrgSubOrg + this.RoleFilter + " and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrg + this.RoleFilter + " and PlanId eq "+ localStorage.getItem("planId") +" and Active eq 1"];
+    // and PlanId eq "+ localStorage.getItem("planId") +" 
     debugger;
     this.dataservice.get(list)
       .subscribe((data: any) => {

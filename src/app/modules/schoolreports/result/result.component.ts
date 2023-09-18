@@ -24,9 +24,9 @@ export class ResultComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
-  SelectedClassStudentGrades :any[]= [];
+  SelectedClassStudentGrades: any[] = [];
   SelectedApplicationId = 0;
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
@@ -34,30 +34,30 @@ export class ResultComponent implements OnInit {
   rowCount = 0;
   ExamName = '';
   ClassName = '';
-  ExamStudentResult: IExamStudentResult[]= [];
+  ExamStudentResult: IExamStudentResult[] = [];
   ClassFullMark = 0;
-  ClassSubjectComponents :any[]= [];
+  ClassSubjectComponents: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
-  StoredForUpdate :any[]= [];
-  SubjectMarkComponents :any[]= [];
-  MarkComponents :any[]= [];
-  StudentGrades :any[]= [];
-  Students :any[]= [];
-  Classes :any[]= [];
-  ClassGroups :any[]= [];
-  Subjects :any[]= [];
-  Sections :any[]= [];
-  ExamStatuses :any[]= [];
-  ExamNames :any[]= [];
-  Exams :any[]= [];
-  Batches :any[]= [];
-  SubjectCategory :any[]= [];
-  StudentSubjects :any[]= [];
+  StoredForUpdate: any[] = [];
+  SubjectMarkComponents: any[] = [];
+  MarkComponents: any[] = [];
+  StudentGrades: any[] = [];
+  Students: any[] = [];
+  Classes: any[] = [];
+  ClassGroups: any[] = [];
+  Subjects: any[] = [];
+  Sections: any[] = [];
+  ExamStatuses: any[] = [];
+  ExamNames: any[] = [];
+  Exams: any[] = [];
+  Batches: any[] = [];
+  SubjectCategory: any[] = [];
+  StudentSubjects: any[] = [];
   passdataSource: MatTableDataSource<IExamStudentResult>;
-  promoteddataSource: MatTableDataSource<IExamStudentResult>=new MatTableDataSource();
-  faildataSource: MatTableDataSource<IExamStudentResult>=new MatTableDataSource();
+  promoteddataSource: MatTableDataSource<IExamStudentResult> = new MatTableDataSource();
+  faildataSource: MatTableDataSource<IExamStudentResult> = new MatTableDataSource();
   AtAGlanceDatasource: MatTableDataSource<any>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   Permission = 'deny';
   ExamId = 0;
   ExamStudentResultData = {
@@ -113,7 +113,7 @@ export class ResultComponent implements OnInit {
       searchExamId: [0],
       searchClassId: [0],
       searchSectionId: [0],
-      searchSemesterId:[0]
+      searchSemesterId: [0]
     });
     this.PageLoad();
   }
@@ -219,7 +219,7 @@ export class ResultComponent implements OnInit {
   //   return this.dataservice.get(list);
 
   // }
-  ResultAtAGlance :any[]= [];
+  ResultAtAGlance: any[] = [];
   GetExamStudentResults() {
 
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -236,24 +236,24 @@ export class ResultComponent implements OnInit {
       this.contentservice.openSnackBar("Please select exam", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    
+
     if (_classId == 0) {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     var _section = '';
     if (_sectionId > 0) {
-      _section = " " + this.Sections.filter((s:any) => s.MasterDataId == _sectionId)[0].MasterDataName;
+      _section = " " + this.Sections.filter((s: any) => s.MasterDataId == _sectionId)[0].MasterDataName;
     }
     this.ClassName = this.Classes.filter(c => c.ClassId == _classId)[0].ClassName + _section;
     this.ExamName = "Exam: " + this.Exams.filter(c => c.ExamId == _examId)[0].ExamName;
     this.loading = true;
 
     filterstr = " and ClassId eq " + _classId;
-    if(_semesterId) filterstr += " and SemesterId eq " + _semesterId;
-    if(_sectionId) filterstr += " and SectionId eq " + _sectionId;
+    filterstr += " and SemesterId eq " + _semesterId;
+    filterstr += " and SectionId eq " + _sectionId;
     filterstr += " and Active eq 1";
-    
+
     let list: List = new List();
     list.fields = [
       //"StudentId,ClassId,SectionId,RollNo"
@@ -276,22 +276,24 @@ export class ResultComponent implements OnInit {
         data.value.forEach(studcls => {
           var stud = _students.filter(st => st.StudentClasses.length > 0 && st.StudentClasses[0].StudentClassId == studcls.StudentClassId)
           //studcls.forEach(res => {
-          this.ExamStudentResult.push({
-            ExamStudentResultId: studcls.ExamStudentResultId,
-            ExamId: studcls.ExamId,
-            StudentClassId: studcls.StudentClassId,
-            Student: stud[0].FirstName + " " + (stud[0].LastName == null ? '' : stud[0].LastName),
-            SectionId: studcls.SectionId,
-            RollNo: stud[0].StudentClasses[0].RollNo,
-            TotalMarks: studcls.TotalMarks,
-            Division: studcls.Division,
-            MarkPercent: studcls.MarkPercent,
-            Rank: studcls.Rank,
-            Active: studcls.Active,
-            StudentClass: "",
-            GradeId: 0,
-            GradeType: ''
-          })
+          if (stud.length > 0) {
+            this.ExamStudentResult.push({
+              ExamStudentResultId: studcls.ExamStudentResultId,
+              ExamId: studcls.ExamId,
+              StudentClassId: studcls.StudentClassId,
+              Student: stud[0].FirstName + " " + (stud[0].LastName == null ? '' : stud[0].LastName),
+              SectionId: studcls.SectionId,
+              RollNo: stud[0].StudentClasses[0].RollNo,
+              TotalMarks: studcls.TotalMarks,
+              Division: studcls.Division,
+              MarkPercent: studcls.MarkPercent,
+              Rank: studcls.Rank,
+              Active: studcls.Active,
+              StudentClass: "",
+              GradeId: 0,
+              GradeType: ''
+            })
+          }
           //})
         })
 
@@ -299,13 +301,13 @@ export class ResultComponent implements OnInit {
         this.ExamStudentResult = this.ExamStudentResult.map((d: any) => {
           var _section = '';
           //var _gradeObj = this.SelectedClassStudentGrades[0].grades.filter((f:any) => f.StudentGradeId == d.Grade);
-          var _sectionObj = this.Sections.filter((s:any) => s.MasterDataId == d["SectionId"]);
+          var _sectionObj = this.Sections.filter((s: any) => s.MasterDataId == d["SectionId"]);
           if (_sectionObj.length > 0)
             _section = _sectionObj[0].MasterDataName;
           d["Section"] = _section;
           d["Percent"] = d["MarkPercent"];
           var _className = '';
-          var _classObj = this.Classes.filter((s:any) => s.ClassId == d.ClassId);
+          var _classObj = this.Classes.filter((s: any) => s.ClassId == d.ClassId);
           if (_classObj.length > 0)
             _className = _classObj[0].ClassName;
           d["ClassName"] = _className;
@@ -344,6 +346,7 @@ export class ResultComponent implements OnInit {
           p.Rank = _rank;
           _previouspercent = p["Percent"];
         })
+        this.ExamStudentResult = this.GetRank(this.ExamStudentResult);
         this.ExamStudentResult = PassStudent.sort((a, b) => a.Rank - b.Rank)
         this.passdataSource = new MatTableDataSource(this.ExamStudentResult);
         this.passdataSource.paginator = this.paginator;
@@ -354,21 +357,44 @@ export class ResultComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
-  // GetClassGroupMapping() {
-  //   var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"]
-  //   //classgrouping is not batch wise
-  //   //+ ' and BatchId eq ' + this.SelectedBatchId;
-
-  //   let list: List = new List();
-
-  //   list.fields = ["ClassId,ClassGroupId"];
-  //   list.PageName = "ClassGroupMappings";
-  //   list.filter = ["Active eq 1" + orgIdSearchstr];
-  //   this.dataservice.get(list)
-  //     .subscribe((data: any) => {
-  //       this.GetStudentGradeDefn(data.value);
-  //     })
-  // }
+  GetRank(pSortedresult) {
+    let _rank, lastDigit;
+    pSortedresult.forEach(item => {
+      _rank = item.Rank + "";
+      lastDigit = _rank.substring(_rank.length - 1)
+      switch (lastDigit) {
+        case "0":
+          if (_rank == "0")
+            _rank = ""
+          else
+            _rank = _rank + "th"
+          break;
+        case "1":
+          if (_rank == "11")
+            _rank = _rank + "th"
+          else
+            _rank = _rank + "st"
+          break;
+        case "2":
+          if (_rank == "12")
+            _rank = _rank + "th"
+          else
+            _rank = _rank + "nd"
+          break;
+        case "3":
+          if (_rank == "13")
+            _rank = _rank + "th"
+          else
+            _rank = _rank + "rd"
+          break;
+        default:
+          _rank = _rank + "th"
+          break;
+      }
+      item.Rank = _rank;
+    })
+    return pSortedresult;
+  }
   GetStudentGradeDefn() {
     this.StudentGrades = [];
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -377,14 +403,14 @@ export class ResultComponent implements OnInit {
         debugger;
         this.ClassGroupMapping.forEach(f => {
           var mapped = data.value.filter(d => d.ClassGroupId == f.ClassGroupId)
-          var _grades :any[]= [];
+          var _grades: any[] = [];
           mapped.forEach(m => {
             _grades.push(
               {
                 StudentGradeId: m.StudentGradeId,
                 GradeName: m.GradeName,
                 SubjectCategoryId: m.SubjectCategoryId,
-                GradeType: this.SubjectCategory.filter((f:any) => f.MasterDataId == m.SubjectCategoryId)[0].MasterDataName,
+                GradeType: this.SubjectCategory.filter((f: any) => f.MasterDataId == m.SubjectCategoryId)[0].MasterDataName,
                 Formula: m.Formula,
                 ClassGroupId: m.ClassGroupId
               })
@@ -404,24 +430,24 @@ export class ResultComponent implements OnInit {
     this.faildataSource = new MatTableDataSource();
   }
   SelectedClassCategory = '';
-  ClassCategory :any[]= [];
+  ClassCategory: any[] = [];
   Defaultvalue = 0;
-  Semesters :any[]=[];
+  Semesters: any[] = [];
   GetSelectedClassStudentGrade() {
     debugger;
     var _classId = this.searchForm.get("searchClassId")?.value;
     this.SelectedClassCategory = '';
 
     if (_classId > 0) {
-      let obj = this.Classes.filter((f:any) => f.ClassId == _classId);
+      let obj = this.Classes.filter((f: any) => f.ClassId == _classId);
       if (obj.length > 0)
         this.SelectedClassCategory = obj[0].Category;
-      this.SelectedClassStudentGrades = this.StudentGrades.filter((f:any) => f.ClassId == _classId);
+      this.SelectedClassStudentGrades = this.StudentGrades.filter((f: any) => f.ClassId == _classId);
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
   }
-  ClassGroupMapping :any[]= [];
-  FilteredClasses :any[]= [];
+  ClassGroupMapping: any[] = [];
+  FilteredClasses: any[] = [];
   GetClassGroupMapping() {
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClassGroupMapping(filterOrgSubOrg, 1)
@@ -443,7 +469,7 @@ export class ResultComponent implements OnInit {
   //   this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => f.ClassGroupId == _classGroupId);
   // }
   ExamReleased = 0;
-  ExamClassGroups :any[]= [];
+  ExamClassGroups: any[] = [];
   FilterClass() {
     debugger;
     var _examId = this.searchForm.get("searchExamId")?.value
@@ -452,10 +478,10 @@ export class ResultComponent implements OnInit {
     this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _examId)
       .subscribe((data: any) => {
         this.ExamClassGroups = [...data.value];
-        this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => this.ExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        this.FilteredClasses = this.ClassGroupMapping.filter((f: any) => this.ExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
       });
 
-    var obj = this.Exams.filter((f:any) => f.ExamId == _examId);
+    var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
     if (obj.length > 0) {
       this.ExamReleased = obj[0].ReleaseResult;
     }
@@ -466,7 +492,7 @@ export class ResultComponent implements OnInit {
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
-    this.Sections = this.Sections.filter((s:any) => s.MasterDataName != 'N/A');
+    this.Sections = this.Sections.filter((s: any) => s.MasterDataName != 'N/A');
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.ExamStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSTATUS);
     this.MarkComponents = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTMARKCOMPONENT);
@@ -482,13 +508,13 @@ export class ResultComponent implements OnInit {
     this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [];
       data.value.map(m => {
-        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
     });
     this.GetExams();
     //this.GetStudentSubjects();
@@ -500,7 +526,7 @@ export class ResultComponent implements OnInit {
     this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 1)
       .subscribe((data: any) => {
         this.Exams = [];
-        var result = data.value.filter((f:any) => f.ReleaseResult == 1);
+        var result = data.value.filter((f: any) => f.ReleaseResult == 1);
         result.map(e => {
           var obj = this.ExamNames.filter(n => n.MasterDataId == e.ExamNameId);
           if (obj.length > 0)
