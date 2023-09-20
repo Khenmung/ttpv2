@@ -1,4 +1,4 @@
-<div style="font-weight: bold;padding: 20px;">Upload Image</div>
+<div style="font-weight: bold;padding: 20px;">Upload File/Image</div>
 <mat-spinner *ngIf="Processing" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
 <div style="display:flex;flex-direction: column;">
     <div style="margin-bottom: 15px;justify-content: center;">
@@ -10,34 +10,33 @@
     </div>
     <form [formGroup]="folderForm">
         <div style="display:flex;">
-            <mat-form-field appearance="outline" fxFlex="50">
+            <mat-form-field appearance="outline" style="width:200px">
                 <mat-label>new folder</mat-label>
                 <input formControlName="folderName" #album matInput [maxlength]="100" autocomplete="off">
                 <mat-hint style="margin-top: 5px;" align="end">{{album.value?.length || 0}}/100</mat-hint>
             </mat-form-field>
             <span style="margin:5px;margin:15px">or</span>
-            <mat-form-field appearance="outline" fxFlex="30">
+            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                 <mat-label>Existing folder</mat-label>
                 <mat-select formControlName="parentId">
                     <mat-option *ngFor="let album of Albums" [value]="album.FileId">{{album.UpdatedFileFolderName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+                <mat-label>Category</mat-label>
+                <mat-select formControlName="searchFileCategoryId">
+                    <mat-option *ngFor="let option of FileCategory" [value]="option.MasterDataId">
+                        {{option.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+                <mat-label>description</mat-label>
+                <textarea matInput [maxlength]="250" formControlName="searchDescription" rows="1">                    
+                </textarea>
+            </mat-form-field>
         </div>
-        <!-- <div style="margin-top:15px">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody class="upload-name-style">
-                    <tr *ngFor="let item of files; let i=index">
-                        <td>{{ item.relativePath }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div> -->
         <div style="margin: 15px;justify-content: center;display: flex">
             <button [disabled]="loading || Permission=='read'" mat-flat-button color="accent" matTooltip="select file"
                 (click)="inputfile.click()">

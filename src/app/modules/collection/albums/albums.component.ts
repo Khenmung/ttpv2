@@ -21,7 +21,7 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./albums.component.scss']
 })
 export class AlbumsComponent implements OnInit {
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   PageLoading = true;
   @ViewChild('button') button: ElementRef;
   FileOrImage: number = 1;
@@ -30,23 +30,28 @@ export class AlbumsComponent implements OnInit {
   }
   filteredAlbum: Observable<IAlbum[]>;
   dataSource: MatTableDataSource<IAlbum>;
-  displayedColumns = ["UpdatedFileFolderName", "UploadDate", "Copy", "View"]
+  displayedColumns = ["UpdatedFileFolderName",
+    "Description",
+    "Category",
+    "UploadDate",
+    "Copy",
+    "View"]
   ParentId = 0;
   folderHierarachy: string = 'Image/';
   folderDisplayHierachy: string = 'Image/';
   title: string = '';
   loading: boolean = false;
   error: string = '';
-  searchForm:UntypedFormGroup;
-  
+  searchForm: UntypedFormGroup;
+
   images: any[];
-  Albums:any[]= [];
-  AllAlbums: any[]=[];
+  Albums: any[] = [];
+  AllAlbums: any[] = [];
   unique: any[];
   selectedAlbum: string;
   oldvalue: string;
   absoluteurl = '';
-  
+  FilterOrgSubOrg = '';
   constructor(private servicework: SwUpdate,
     private dataservice: NaomitsuService,
     private route: Router,
@@ -67,8 +72,10 @@ export class AlbumsComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
+        this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.searchForm = this.fb.group(
           {
+            searchFileCategoryId: [0],
             UpdatedFileFolderName: [''],
             parentId: [0]
           }
@@ -80,7 +87,9 @@ export class AlbumsComponent implements OnInit {
             map(Name => Name ? this._filter(Name) : this.AllAlbums.slice())
           )!;
         //this.checklogin();
+        this.GetMasterData();
         this.getAlbums();
+
       }
     }
   }
@@ -99,6 +108,17 @@ export class AlbumsComponent implements OnInit {
       });
     }
   }
+
+  allMasterData: any[] = [];
+  FileCategory = [];
+  GetMasterData() {
+    debugger;
+    this.allMasterData = this.tokenStorage.getMasterData()!;
+    this.FileCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.FILECATEGORY);
+  }
+  getDropDownData(dropdowntype) {
+    return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
+  }
   checklogin() {
     let options = {
       autoClose: true,
@@ -114,7 +134,7 @@ export class AlbumsComponent implements OnInit {
   getAlbums() {
     debugger;
     let list: List = new List();
-    list.fields = ["FileId", "FileName", "UpdatedFileFolderName", "FileOrFolder", "UploadDate", "ParentId", "Active"];
+    list.fields = ["FileId", "FileName", "UpdatedFileFolderName", "FileOrFolder", "CategoryId", "UploadDate", "ParentId", "Active"];
     list.PageName = "StorageFnPs";
     list.filter = ['FileOrFolder eq 1 and OrgId eq ' + this.LoginUserDetail[0]['orgId'] + ' and Active eq 1'];// and FileOrPhoto eq ' + this.searchForm.get("FilesNPhoto")?.value];
     list.orderBy = "UploadDate desc";
@@ -122,6 +142,7 @@ export class AlbumsComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AllAlbums = [...data.value];
+
         this.PageLoading = false;
       })
   }
@@ -142,9 +163,10 @@ export class AlbumsComponent implements OnInit {
   }
   getFiles(album, mode) {
     debugger;
-    let folderSearch = '';
+    let folderSearch = this.FilterOrgSubOrg;
     var _folderName = this.searchForm.get("UpdatedFileFolderName")?.value.UpdatedFileFolderName;
-    if (album != undefined) {
+    var _categoryId = this.searchForm.get("searchFileCategoryId")?.value;
+    if (album) {
       if (album.FileOrFolder == 0 && mode == 'open') {
         //let folderHierarachy='Image/';
         //this.getNestedFolders(album.ParentId);
@@ -153,28 +175,33 @@ export class AlbumsComponent implements OnInit {
         window.open(album.FilePath, "_blank");
         return;
       }
-      
-      if (album.FileId == undefined && _folderName == "") {
+
+      if (!album.FileId && _folderName == "") {
         this.contentservice.openSnackBar("Please enter folder name to search", globalconstants.ActionText, globalconstants.BlueBackground);
         return;
       }
 
-      if (album.FileId != undefined)
-        folderSearch = " and ParentId eq " + album.FileId;
-      else if (album.FileId == undefined && _folderName != "")
-        folderSearch = " and UpdatedFileFolderName eq '" + _folderName + "'";
+      if (album.FileId)
+        folderSearch += " and ParentId eq " + album.FileId;
+      else if (!album.FileId && _folderName != "")
+        folderSearch += " and UpdatedFileFolderName eq '" + _folderName + "'";
     }
-    else if (_folderName != '') {
-      folderSearch = " and UpdatedFileFolderName eq '" + _folderName + "'";
+
+    if (_folderName) {
+      folderSearch += " and UpdatedFileFolderName eq '" + _folderName + "'";
     }
-    else {
-      return;
+    if (_categoryId > 0) {
+      folderSearch += " and CategoryId eq " + _categoryId;
     }
+
+    // else {
+    //   return;
+    // }
     let list: List = new List();
-    list.fields = ["FileId", "FileName", "FileOrFolder", "Description", "ParentId", "UpdatedFileFolderName", "UploadDate"];
+    list.fields = ["FileId", "FileName", "CategoryId", "FileOrFolder", "Description", "ParentId", "UpdatedFileFolderName", "UploadDate"];
     list.PageName = "StorageFnPs";
-    list.filter = ["Active eq 1" + folderSearch];
-    list.orderBy = "UploadDate desc";
+    list.filter = [folderSearch + " and Active eq 1"];
+    //list.orderBy = "UploadDate desc";
     this.loading = true;
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -182,19 +209,26 @@ export class AlbumsComponent implements OnInit {
           //debugger;
           var browsePath = '';
           this.Albums = data.value.map(item => {
-            this.folderHierarachy = 'Uploads/'+this.LoginUserDetail[0]['org']+ '/';
-            this.folderDisplayHierachy = 'Uploads/'+this.LoginUserDetail[0]['org']+ '/';
+            this.folderHierarachy = 'Uploads/' + this.LoginUserDetail[0]['org'] + '/';
+            this.folderDisplayHierachy = 'Uploads/' + this.LoginUserDetail[0]['org'] + '/';
             this.getNestedFolders(item.ParentId);
 
             if (this.folderHierarachy.length > 0)
               browsePath = globalconstants.apiUrl + "/" + this.folderHierarachy + item.FileName;
+
+            let obj: any = this.FileCategory.filter(c => c["MasterDataId"] == item.CategoryId);
+            let _category = '';
+            if (obj.length > 0)
+              _category = obj[0].MasterDataName;
+            
             return {
               FileId: item.FileId,
               FilePath: browsePath,
               DisplayPath: globalconstants.apiUrl + "/" + this.folderDisplayHierachy + item.FileName,
-              imgURL:globalconstants.apiUrl + "/" + this.folderHierarachy + item.FileName,
+              imgURL: globalconstants.apiUrl + "/" + this.folderHierarachy + item.FileName,
               FileName: item.FileName,
               Description: item.Description,
+              Category: _category,
               UploadDate: item.UploadDate,
               FileOrFolder: item.FileOrFolder,
               ParentId: item.ParentId,
@@ -281,12 +315,12 @@ export class AlbumsComponent implements OnInit {
   UpdateAsDeleted(row) {
     debugger;
     let toUpdate = {
-      FileId:row.FileId,
+      FileId: row.FileId,
       Active: 0,
       Deleted: true
       //UpdatedDate: new Date()
     }
-    console.log("toupdate",toUpdate)
+    console.log("toupdate", toUpdate)
     this.dataservice.postPatch('StorageFnPs', toUpdate, row.FileId, 'patch')
       .subscribe(res => {
         row.Action = false;
@@ -337,7 +371,7 @@ export class AlbumsComponent implements OnInit {
   display(albumId) {
     this.route.navigate(["/home/photos"], { queryParams: { "AlbumId": albumId } });
   }
-  
+
 }
 export interface IAlbum {
   FileId: number;

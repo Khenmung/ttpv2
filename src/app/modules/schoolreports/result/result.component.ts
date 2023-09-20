@@ -220,6 +220,8 @@ export class ResultComponent implements OnInit {
 
   // }
   ResultAtAGlance: any[] = [];
+  PromotedStudent :any[]=[];
+  FailStudent :any[]=[];
   GetExamStudentResults() {
 
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -250,8 +252,12 @@ export class ResultComponent implements OnInit {
     this.loading = true;
 
     filterstr = " and ClassId eq " + _classId;
-    filterstr += " and SemesterId eq " + _semesterId;
-    filterstr += " and SectionId eq " + _sectionId;
+    if (_semesterId == 0 && _sectionId == 0) {
+    }
+    else {
+      filterstr += " and SemesterId eq " + _semesterId;
+      filterstr += " and SectionId eq " + _sectionId;
+    }
     filterstr += " and Active eq 1";
 
     let list: List = new List();
@@ -320,17 +326,17 @@ export class ResultComponent implements OnInit {
 
         //this.ResultAtAGlance.push(atAGlance)
         var PassStudent = this.ExamStudentResult.filter(p => p.Division.toLowerCase() != 'promoted' && p.Division.toLowerCase() != 'fail');
-        var PromotedStudent = this.ExamStudentResult.filter(p => p.Division.toLowerCase() == 'promoted');
-        var FailStudent = this.ExamStudentResult.filter(p => p.Division.toLowerCase() == 'fail');
+        this.PromotedStudent = this.ExamStudentResult.filter(p => p.Division.toLowerCase() == 'promoted');
+        this.FailStudent = this.ExamStudentResult.filter(p => p.Division.toLowerCase() == 'fail');
         var NOOFSTUDENT = this.ExamStudentResult.length;
-        var passPercentWSP = parseFloat("" + ((PassStudent.length + PromotedStudent.length) / NOOFSTUDENT) * 100).toFixed(2);
+        var passPercentWSP = parseFloat("" + ((PassStudent.length + this.PromotedStudent.length) / NOOFSTUDENT) * 100).toFixed(2);
         var passPercentWithoutSP = parseFloat("" + (PassStudent.length / NOOFSTUDENT) * 100).toFixed(2);
         this.ResultAtAGlance = [];
         this.ResultAtAGlance.push(
           { "Text": "No. Of Student", "Val": NOOFSTUDENT },
           { "Text": "No. Of Student Pass", "Val": PassStudent.length },
-          { "Text": "No. Of Student Fail", "Val": FailStudent.length },
-          { "Text": "No. Of Student Simple Pass", "Val": PromotedStudent.length },
+          { "Text": "No. Of Student Fail", "Val": this.FailStudent.length },
+          { "Text": "No. Of Student Simple Pass", "Val": this.PromotedStudent.length },
           { "Text": "Pass Percentage with s.p", "Val": passPercentWSP },
           { "Text": "Pass Percentage without s.p", "Val": passPercentWithoutSP }
         );
@@ -352,8 +358,8 @@ export class ResultComponent implements OnInit {
         this.passdataSource.paginator = this.paginator;
         this.passdataSource.sort = this.sort;
 
-        this.promoteddataSource = new MatTableDataSource(PromotedStudent);
-        this.faildataSource = new MatTableDataSource(FailStudent);
+        this.promoteddataSource = new MatTableDataSource(this.PromotedStudent);
+        this.faildataSource = new MatTableDataSource(this.FailStudent);
         this.loading = false; this.PageLoading = false;
       })
   }

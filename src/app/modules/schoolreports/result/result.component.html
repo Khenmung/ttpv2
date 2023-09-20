@@ -78,7 +78,7 @@
                     </mat-table>
                     <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,100,200]">
                     </mat-paginator>
-                    <mat-table #table [dataSource]="promoteddataSource" matSort>
+                    <mat-table #table [dataSource]="promoteddataSource" matSort *ngIf="PromotedStudent.length>0">
 
                         <ng-container *ngFor="let disCol of failpromoteddisplayedColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
@@ -98,7 +98,7 @@
                         </mat-row>
 
                     </mat-table>
-                    <mat-table #table [dataSource]="faildataSource" matSort>
+                    <mat-table #table [dataSource]="faildataSource" matSort *ngIf="FailStudent.length>0">
 
                         <ng-container *ngFor="let disCol of failpromoteddisplayedColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
@@ -107,9 +107,7 @@
                                 {{disCol=='Student'?'Fail Students':disCol}}
                             </mat-header-cell>
                             <mat-cell *matCellDef="let element" [ngStyle]="{'justify-content':
-                        disCol=='Division' 
-                        || disCol=='Student'?'start':'center'}">
-
+                        disCol=='Division' || disCol=='Student'?'start':'center'}">
                                 {{disCol=='Percent'?[element[disCol]| number : '1.2-2']:element[disCol]}}
                             </mat-cell>
                         </ng-container>

@@ -33,20 +33,20 @@ export class StudentDocumentComponent implements OnInit {
   StudentId: number = 0;
   SelectedApplicationId = 0;
   StudentClassId: number = 0;
-  StudentDocuments :any[]= [];
+  StudentDocuments: any[] = [];
   Edit: boolean;
-  SelectedBatchId = 0;SubOrgId = 0;
-  allMasterData :any[]= [];
-  DocumentTypes :any[]= [];
-  Batches :any[]= [];
-  LoginUserDetail :any[]= [];
-  Students :any[]= [];
-  StudentClasses :any[]= [];
-  Classes :any[]= [];
-  Sections :any[]= [];
+  SelectedBatchId = 0; SubOrgId = 0;
+  allMasterData: any[] = [];
+  DocumentTypes: any[] = [];
+  Batches: any[] = [];
+  LoginUserDetail: any[] = [];
+  Students: any[] = [];
+  StudentClasses: any[] = [];
+  Classes: any[] = [];
+  Sections: any[] = [];
   EnableUploadButton = false;
   uploadForm: UntypedFormGroup;
-  public files: NgxFileDropEntry[]= [];
+  public files: NgxFileDropEntry[] = [];
   UploadDisplayedColumns = [
     //"FileId",
     "UpdatedFileFolderName",
@@ -120,8 +120,8 @@ export class StudentDocumentComponent implements OnInit {
     return user && user.Name ? user.Name : '';
   }
   PageLoad() {
-    var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-          this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+    var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+    this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [...data.value];
       this.GetMasterData();
     });
@@ -139,6 +139,20 @@ export class StudentDocumentComponent implements OnInit {
     if (files.length === 0)
       return;
     this.selectedFile = files[0];
+    var extensions = ["image", "text/plain", "application/vnd.ms-excel", "application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+    var mimeType = files[0].type;
+    //if (mimeType.match(/image\/*/) == null) {
+    if (extensions.indexOf(mimeType) == -1) {
+      this.contentservice.openSnackBar("The file type is not supported.", globalconstants.ActionText, globalconstants.RedBackground);
+      this.selectedFile = undefined;
+      return;
+    }
+    if (this.selectedFile.size > 1000000) {
+      this.loading = false; this.PageLoading = false;
+      this.selectedFile = undefined;
+      this.contentservice.openSnackBar("File size should be less than 1mb", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
   }
   uploadFile() {
 
@@ -160,27 +174,28 @@ export class StudentDocumentComponent implements OnInit {
 
     this.StudentId = this.uploadForm.get("searchStudentName")?.value.StudentId;
     this.StudentClassId = this.uploadForm.get("searchStudentName")?.value.StudentClassId;
+    if (this.selectedFile) {
+      this.formdata = new FormData();
+      this.formdata.append("batchId", this.SelectedBatchId.toString());
+      this.formdata.append("fileOrPhoto", "0");
+      this.formdata.append("folderName", "StudentDocuments/" + this.SelectedBatchId.toString());
+      this.formdata.append("parentId", "-1");
+      this.formdata.append("description", "StudentDocuments");
+      this.formdata.append("categoryId", "0");
+      this.formdata.append("orgName", this.LoginUserDetail[0]["org"]);
+      this.formdata.append("orgId", this.LoginUserDetail[0]["orgId"]);
+      this.formdata.append("subOrgId", this.SubOrgId + "");
+      this.formdata.append("pageId", "0");
 
-    this.formdata = new FormData();
-    this.formdata.append("batchId", this.SelectedBatchId.toString());
-    this.formdata.append("fileOrPhoto", "0");
-    this.formdata.append("folderName", "StudentDocuments/" + this.SelectedBatchId.toString());
-    this.formdata.append("parentId", "-1");
-    this.formdata.append("description", "");
-    this.formdata.append("orgName", this.LoginUserDetail[0]["org"]);
-    this.formdata.append("orgId", this.LoginUserDetail[0]["orgId"]);
-    this.formdata.append("subOrgId", this.SubOrgId+"");
-    this.formdata.append("pageId", "0");
-
-    if (this.StudentId != null && this.StudentId != 0)
-      this.formdata.append("studentId", this.StudentId + "");
-    this.formdata.append("studentClassId", this.StudentClassId.toString());
-    this.formdata.append("docTypeId", this.uploadForm.get("DocTypeId")?.value);
-    ////console.log('this.uploadForm.get("DocTypeId")?.value")',this.uploadForm.get("DocTypeId")?.value);
-    this.formdata.append("image", this.selectedFile, this.selectedFile.name);
-    this.uploadImage();
+      if (this.StudentId != null && this.StudentId != 0)
+        this.formdata.append("studentId", this.StudentId + "");
+      this.formdata.append("studentClassId", this.StudentClassId.toString());
+      this.formdata.append("docTypeId", this.uploadForm.get("DocTypeId")?.value);
+      ////console.log('this.uploadForm.get("DocTypeId")?.value")',this.uploadForm.get("DocTypeId")?.value);
+      this.formdata.append("image", this.selectedFile, this.selectedFile.name);
+      this.uploadImage();
+    }
   }
-
   uploadImage() {
     let options = {
       autoClose: true,
@@ -242,8 +257,8 @@ export class StudentDocumentComponent implements OnInit {
       });
 
   }
-  ClearData(){
-    this.StudentDocuments=[];
+  ClearData() {
+    this.StudentDocuments = [];
     this.documentUploadSource = new MatTableDataSource<IUploadDoc>(this.StudentDocuments);
   }
   pageview(path) {
@@ -308,14 +323,14 @@ export class StudentDocumentComponent implements OnInit {
         var _className = '';
         var _section = '';
         var _studentClassId = 0;
-        var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student["StudentId"]);
+        var studentclassobj = this.StudentClasses.filter((f: any) => f.StudentId == student["StudentId"]);
         if (studentclassobj.length > 0) {
           _studentClassId = studentclassobj[0].StudentClassId;
           var _classNameobj = this.Classes.filter(c => c.ClassId == studentclassobj[0].ClassId);
 
           if (_classNameobj.length > 0)
             _className = _classNameobj[0].ClassName;
-          var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclassobj[0].SectionId)
+          var _SectionObj = this.Sections.filter((f: any) => f.MasterDataId == studentclassobj[0].SectionId)
 
           if (_SectionObj.length > 0)
             _section = _SectionObj[0].MasterDataName;

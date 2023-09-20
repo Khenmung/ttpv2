@@ -16,7 +16,8 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
   templateUrl: './employeedocuments.component.html',
   styleUrls: ['./employeedocuments.component.scss']
 })
-export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
+export class EmployeedocumentsComponent implements OnInit {
+  PageLoading = true;
   loading = false;
   optionsNoAutoClose = {
     autoClose: false,
@@ -26,7 +27,7 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
     autoClose: true,
     keepAfterRouteChange: true
   };
-  SelectedApplicationId=0;
+  SelectedApplicationId = 0;
   Permission = '';
   FilterOrgnBatchId = '';
   FilterOrgIdOnly = '';
@@ -34,15 +35,15 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
   selectedFile: any;
   EmployeeId: number = 0;
   SubOrgId: number = 0;
-  StudentDocuments :any[]= [];
+  StudentDocuments: any[] = [];
   Edit: boolean;
   SelectedBatchId = 0;
-  allMasterData :any[]= [];
-  DocumentTypes :any[]= [];
-  Batches :any[]= [];
-  LoginUserDetail :any[]= [];
+  allMasterData: any[] = [];
+  DocumentTypes: any[] = [];
+  Batches: any[] = [];
+  LoginUserDetail: any[] = [];
   uploadForm: UntypedFormGroup;
-  public files: NgxFileDropEntry[]= [];
+  public files: NgxFileDropEntry[] = [];
   UploadDisplayedColumns = [
     //"FileId",
     "UpdatedFileFolderName",
@@ -52,7 +53,7 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
   ]
   documentUploadSource: MatTableDataSource<IUploadDoc>;
   constructor(private servicework: SwUpdate,
-    private contentservice:ContentService,
+    private contentservice: ContentService,
     private fileUploadService: FileUploadService,
     private dataservice: NaomitsuService,
     private fb: UntypedFormBuilder,
@@ -77,8 +78,8 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
     this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
 
     if (this.EmployeeId == 0) {
-      
-      this.contentservice.openSnackBar("Please define employee first.",globalconstants.ActionText,globalconstants.RedBackground);
+
+      this.contentservice.openSnackBar("Please define employee first.", globalconstants.ActionText, globalconstants.RedBackground);
       //this.nav.navigate(['/employee/info']);
     }
     else {
@@ -108,17 +109,39 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
     if (files.length === 0)
       return;
     this.selectedFile = files[0];
+    if (this.selectedFile) {
+      var mimeType = this.selectedFile.type;
+      //if (mimeType.match(/image\/*/) == null) {
+      var extensions = ["image", "text/plain", "application/vnd.ms-excel", "application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+      if (extensions.indexOf(mimeType) == -1) {
+        this.contentservice.openSnackBar("The file type is not supported.", globalconstants.ActionText, globalconstants.RedBackground);
+        this.selectedFile = undefined;
+        return;
+      }
+      if (this.selectedFile.size > 1000000) {
+        this.loading = false; this.PageLoading = false;
+        this.selectedFile = [];
+        this.contentservice.openSnackBar("File size should be less than 1mb", globalconstants.ActionText, globalconstants.RedBackground);
+        return;
+      }
+
+    }
+    else
+      this.selectedFile = [];
   }
   uploadFile() {
 
     if (this.selectedFile.length == 0) {
-      this.contentservice.openSnackBar('Please select a file!', globalconstants.ActionText,globalconstants.RedBackground);
+      this.contentservice.openSnackBar('Please select a file!', globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     if (this.uploadForm.get("DocTypeId")?.value == 0) {
-      this.contentservice.openSnackBar('Please select document type!', globalconstants.ActionText,globalconstants.RedBackground);
+      this.contentservice.openSnackBar('Please select document type!', globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
+    //this.selectedFile = files[0];
+
+
     debugger;
     let error: boolean = false;
     this.formdata = new FormData();
@@ -129,22 +152,22 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
     this.formdata.append("description", "");
     this.formdata.append("orgName", this.LoginUserDetail[0]["org"]);
     this.formdata.append("orgId", this.LoginUserDetail[0]["orgId"]);
-    this.formdata.append("subOrgId", this.SubOrgId+"");
+    this.formdata.append("subOrgId", this.SubOrgId + "");
     this.formdata.append("pageId", "0");
     this.formdata.append("studentId", "0");
     this.formdata.append("employeeId", this.EmployeeId.toString());
     this.formdata.append("docTypeId", this.uploadForm.get("DocTypeId")?.value);
     this.formdata.append("image", this.selectedFile, this.selectedFile.name);
     this.uploadImage();
-  }
 
+  }
   uploadImage() {
     let options = {
       autoClose: true,
       keepAfterRouteChange: true
     };
     this.fileUploadService.postFiles(this.formdata).subscribe(res => {
-      this.contentservice.openSnackBar("File uploaded successfully.", globalconstants.ActionText,globalconstants.BlueBackground);
+      this.contentservice.openSnackBar("File uploaded successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
       this.Edit = false;
     });
   }
@@ -189,7 +212,7 @@ export class EmployeedocumentsComponent implements OnInit { PageLoading=true;
     return;
   }
   GetMasterData() {
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"],this.SubOrgId, this.SelectedApplicationId)
+    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
       .subscribe((data: any) => {
         this.allMasterData = [...data.value];
         this.DocumentTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.DOCUMENTTYPE);

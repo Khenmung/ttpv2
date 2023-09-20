@@ -357,6 +357,7 @@ export class OrganizationComponent implements OnInit {
     this.formdata = new FormData();
     this.formdata.append("description", "organization logo");
     this.formdata.append("fileOrPhoto", "0");
+    this.formdata.append("categoryId", "0");
     this.formdata.append("folderName", "organization logo");
     this.formdata.append("parentId", _parentId);
 

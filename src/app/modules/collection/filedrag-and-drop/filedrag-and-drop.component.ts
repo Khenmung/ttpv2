@@ -26,12 +26,13 @@ export class FiledragAndDropComponent implements OnInit {
   folderForm = new UntypedFormGroup({
     folderName: new UntypedFormControl(''),
     FileId: new UntypedFormControl(0),
-    parentId: new UntypedFormControl(0)
-
+    parentId: new UntypedFormControl(0),
+    searchFileCategoryId: new UntypedFormControl(0),
+    searchDescription:new UntypedFormControl('')
   });
-  FilterOrgSubOrgBatchId='';
-  FilterOrgSubOrg='';
-  LoginUserDetail :any[]= [];
+  FilterOrgSubOrgBatchId = '';
+  FilterOrgSubOrg = '';
+  LoginUserDetail: any[] = [];
   constructor(private servicework: SwUpdate,
     private fileUploadService: FileUploadService,
     private naomitsuService: NaomitsuService,
@@ -54,12 +55,23 @@ export class FiledragAndDropComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        this.FilterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        this.FilterOrgSubOrgBatchId= globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+        this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+        this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.formdata = new FormData();
         this.getAlbums();
+        this.GetMasterData();
       }
     }
+  }
+  allMasterData: any[] = [];
+  FileCategory = [];
+  GetMasterData() {
+    debugger;
+    this.allMasterData = this.tokenStorage.getMasterData()!;
+    this.FileCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.FILECATEGORY);
+  }
+  getDropDownData(dropdowntype) {
+    return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
   }
   checklogin() {
 
@@ -70,7 +82,7 @@ export class FiledragAndDropComponent implements OnInit {
       this.route.navigate(['/home']);
     }
   }
-  public files: NgxFileDropEntry[]= [];
+  public files: NgxFileDropEntry[] = [];
 
   public dropped(files: NgxFileDropEntry[]) {
     this.files = files;
@@ -148,7 +160,7 @@ export class FiledragAndDropComponent implements OnInit {
       this.formdata.append("parentId", this.folderForm.get("parentId") != null ? this.folderForm.get("parentId")?.value : "0");
       this.formdata.append("description", "");
       this.formdata.append("fileOrPhoto", "0");
-      let filteredAlbum:any[]= [];
+      let filteredAlbum: any[] = [];
       if (this.Albums.length > 0) {
         filteredAlbum = this.Albums.filter(item => {
           return item.UpdatableName == selectedAlbum
@@ -167,10 +179,13 @@ export class FiledragAndDropComponent implements OnInit {
   preview(files) {
     if (files.length === 0)
       return;
-
+    debugger;
+    
+    var extensions = ["image", "text/plain","application/vnd.ms-excel", "application/pdf", "csv","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
     var mimeType = files[0].type;
-    if (mimeType.match(/image\/*/) == null) {
-      this.message = "Only images are supported.";
+    //if (mimeType.match(/image\/*/) == null) {
+    if (extensions.indexOf(mimeType) == -1) {
+      this.message = "The file type is not supported.";
       return;
     }
     debugger;
@@ -178,7 +193,7 @@ export class FiledragAndDropComponent implements OnInit {
     console.log("this.selectedFile.size", this.selectedFile.size)
     if (this.selectedFile.size > 2000000) {
       this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar("Image size should be less than 2mb", globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar("File size should be less than 2mb", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     var reader = new FileReader();
@@ -191,12 +206,14 @@ export class FiledragAndDropComponent implements OnInit {
   uploadFile() {
     debugger;
     let error: boolean = false;
-    if (this.selectedFile == undefined) {
+    if (!this.selectedFile) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please select a file.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     var _folderName = this.folderForm.get("folderName")?.value;
+    var _categoryId = this.folderForm.get("searchFileCategoryId")?.value;
+    var _description = this.folderForm.get("searchDescription")?.value;
     var _parentId = this.folderForm.get("parentId")?.value;
     var _existingFolder = '';
     if (_parentId > 0)
@@ -209,17 +226,24 @@ export class FiledragAndDropComponent implements OnInit {
       this.contentservice.openSnackBar("Please enter folder name.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
+    if(_categoryId==0)
+    {
+      this.loading = false;
+      this.contentservice.openSnackBar("Please select category.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
     this.formdata = new FormData();
-    this.formdata.append("description", "album");
+    this.formdata.append("description", _description);
     this.formdata.append("fileOrPhoto", "1");
     //this.formdata.append("FileOrFolder", "1");
     this.formdata.append("folderName", _folderName);
-    this.formdata.append("parentId",_parentId);
+    this.formdata.append("parentId", _parentId);
+    this.formdata.append("categoryId", _categoryId);
 
     this.formdata.append("batchId", "0");
     this.formdata.append("orgName", this.LoginUserDetail[0]["org"]);
-    this.formdata.append("subOrgId", this.tokenStorage.getSubOrgId()+"");
-    this.formdata.append("orgId", this.LoginUserDetail[0]["subOrgId"]);
+    this.formdata.append("subOrgId", this.tokenStorage.getSubOrgId() + "");
+    this.formdata.append("orgId", this.LoginUserDetail[0]["orgId"]);
     this.formdata.append("pageId", "0");
 
     this.formdata.append("studentId", "0");
@@ -229,7 +253,7 @@ export class FiledragAndDropComponent implements OnInit {
 
     this.formdata.append("image", this.selectedFile, this.selectedFile.name);
     this.loading = true;
-    
+
     this.uploadImage();
   }
 
@@ -259,8 +283,8 @@ export class FiledragAndDropComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FileId", "UpdatedFileFolderName"];
     list.PageName = "StorageFnPs";
-    list.filter = [this.FilterOrgSubOrg + 
-    " and Active eq 1 and FileOrFolder eq 1"];
+    list.filter = [this.FilterOrgSubOrg +
+      " and Active eq 1 and FileOrFolder eq 1"];
 
     this.naomitsuService.get(list)
       .subscribe((data: any) => {

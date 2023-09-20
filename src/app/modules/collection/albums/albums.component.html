@@ -2,9 +2,18 @@
     <mat-card-title style="padding: 20px;">Manage Files/Folders</mat-card-title>
     <mat-card-content> -->
 <div style="padding: 20px;font-weight: bold;">Folder</div>
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<mat-spinner *ngIf="PageLoading" diameter="25"
+    style="margin-bottom:15px;position:relative;margin-left: 50%;"></mat-spinner>
 <form [formGroup]="searchForm">
     <div class="example-header" fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-form-field appearance="outline" [style.width.px]="350">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="searchFileCategoryId">
+                <mat-option *ngFor="let option of FileCategory" [value]="option.MasterDataId">
+                    {{option.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
         <mat-form-field appearance="outline" [style.width.px]="350">
             <mat-label>search folder</mat-label>
             <input type="text" matInput formControlName="UpdatedFileFolderName" [matAutocomplete]="auto">
@@ -14,12 +23,11 @@
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
-
         <!-- <mat-form-field fxFlex="30" appearance="outline">
             <mat-label>Enter folder name</mat-label>
             <input matInput formControlName="UpdatedFileFolderName" autocomplete="off">
         </mat-form-field> -->
-        <button [disabled]="loading" mat-raised-button color="accent" (click)="getFiles(null,'search')">
+        <button [disabled]="loading" mat-raised-button color="accent" (click)="getFiles(undefined,'search')">
             <mat-icon>search</mat-icon>
             <mat-icon *ngIf="loading">
                 <mat-spinner diameter="20" color="Blue"></mat-spinner>
@@ -50,11 +58,23 @@
                             [value]="element.UpdatedFileFolderName" autocomplete="Off">
                     </mat-form-field> -->
                     <div style="margin-top:10px">{{element.UpdatedFileFolderName}}</div>
-                    <div *ngIf="element.FileOrFolder==0"
+                    <div *ngIf="element.FileOrFolder==0 && 'jpg,png,jpeg,gif'.includes(element.imgURL)"
                         style="width:auto;border:1px solid lightgray; padding:0px;margin-top: 0px;margin-bottom: 10px;">
                         <img [src]="element.imgURL" style="width:50%; height:90px;" *ngIf="element.imgURL.length>0">
                     </div>
                 </div>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Description">
+            <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+            <mat-cell mat-cell *matCellDef="let element">
+                    {{element.Description}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Category">
+            <mat-header-cell *matHeaderCellDef> Category </mat-header-cell>
+            <mat-cell mat-cell *matCellDef="let element">
+                    {{element.Category}}
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="UploadDate">
