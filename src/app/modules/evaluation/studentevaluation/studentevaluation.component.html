@@ -85,6 +85,7 @@
                 <button style="margin-right: 15px;" [disabled]="loading 
                     || !element.Action1 
                     || Permission=='read' 
+                    || !element.AllowStudent
                     || element.EvaluationStarted
                     || element.TimeLapsed
                     || !element.CanStartNow" matTooltip="start" mat-mini-fab color="accent"

@@ -7,7 +7,6 @@ import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
-import { SharedataService } from '../../../shared/sharedata.service';
 import { FileUploadService } from '../../../shared/upload.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 
@@ -19,18 +18,10 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 export class EmployeedocumentsComponent implements OnInit {
   PageLoading = true;
   loading = false;
-  optionsNoAutoClose = {
-    autoClose: false,
-    keepAfterRouteChange: true
-  };
-  optionsAutoClose = {
-    autoClose: true,
-    keepAfterRouteChange: true
-  };
   SelectedApplicationId = 0;
   Permission = '';
-  FilterOrgnBatchId = '';
-  FilterOrgIdOnly = '';
+  FilterOrgSubOrgIdBatchId = '';
+  FilterOrgSubOrgIdOnly = '';
   formdata: FormData;
   selectedFile: any;
   EmployeeId: number = 0;
@@ -70,8 +61,7 @@ export class EmployeedocumentsComponent implements OnInit {
     //   })
     // })
     this.uploadForm = this.fb.group({
-      BatchId: [0],
-      DocTypeId: [0, Validators.required]
+      searchDocTypeId: [0, Validators.required]
     })
     debugger;
     this.EmployeeId = this.tokenStorage.getEmployeeId()!;
@@ -92,8 +82,8 @@ export class EmployeedocumentsComponent implements OnInit {
         this.LoginUserDetail = this.tokenStorage.getUserDetail();
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
-        this.FilterOrgnBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-        this.FilterOrgIdOnly = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+        this.FilterOrgSubOrgIdBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+        this.FilterOrgSubOrgIdOnly = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.PageLoad();
       }
     }
@@ -112,7 +102,7 @@ export class EmployeedocumentsComponent implements OnInit {
     if (this.selectedFile) {
       var mimeType = this.selectedFile.type;
       //if (mimeType.match(/image\/*/) == null) {
-      var extensions = ["image", "text/plain", "application/vnd.ms-excel", "application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+      var extensions = ["image/png", "image/jpg", "image/jpeg", "image/gif", "text/plain", "application/vnd.ms-excel", "application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
       if (extensions.indexOf(mimeType) == -1) {
         this.contentservice.openSnackBar("The file type is not supported.", globalconstants.ActionText, globalconstants.RedBackground);
         this.selectedFile = undefined;
@@ -172,6 +162,14 @@ export class EmployeedocumentsComponent implements OnInit {
     });
   }
   GetDocuments() {
+
+    let _docTypeId = this.uploadForm.get("searchDocTypeId")?.value;
+    let filterstr = this.FilterOrgSubOrgIdOnly;
+    filterstr += " and EmployeeId eq " + this.EmployeeId
+    if (_docTypeId > 0) {
+      filterstr += " and DocTypeId eq " + _docTypeId
+    }
+
     let list: List = new List();
     this.StudentDocuments = [];
     list.fields = [
@@ -181,7 +179,7 @@ export class EmployeedocumentsComponent implements OnInit {
       "UploadDate",
       "DocTypeId"];
     list.PageName = "StorageFnPs";
-    list.filter = [this.FilterOrgnBatchId + " and Active eq 1 and EmployeeId eq " + this.EmployeeId];
+    list.filter = [filterstr + " and Active eq 1"];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
@@ -219,7 +217,7 @@ export class EmployeedocumentsComponent implements OnInit {
         //this.Batches = this.getDropDownData(globalconstants.MasterDefinitions.school.BATCH);
         //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
         this.Batches = this.tokenStorage.getBatches()!;;
-        this.GetDocuments();
+       // this.GetDocuments();
       });
 
   }

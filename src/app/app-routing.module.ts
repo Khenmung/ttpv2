@@ -8,7 +8,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
-    path: 'edu/photo',
+    path: 'employee/doc',
     loadChildren: () => import('./modules/collection/photogallery.module').then(m => m.PhotogalleryModule)
   },
   {

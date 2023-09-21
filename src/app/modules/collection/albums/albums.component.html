@@ -97,10 +97,10 @@
                 </button>
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <button [disabled]="loading" mat-mini-fab color="accent" matTooltip="delete" #button
+                <button style="margin-right: 15px;" [disabled]="loading" mat-mini-fab color="accent" matTooltip="delete" #button
                     (click)="softDelete(element)">
                     <mat-icon aria-label="delete">delete</mat-icon>
-                </button>&nbsp;
+                </button>
                 <button [disabled]="loading" [id]="element.FileId" mat-mini-fab color="accent"
                     [name]="element.UpdatedFileFolderName" matTooltip="view" #view (click)="getFiles(element,'open')">
                     <mat-icon aria-label="photo">pageview</mat-icon>

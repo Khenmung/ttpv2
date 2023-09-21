@@ -70,7 +70,9 @@
                                        || element.MasterDataName=='Cash'
                                        || element.MasterDataName=='Helper'  
                                        || element.MasterDataName=='Teaching'  
-                                       || element.MasterDataName=='Non Teaching')" matInput
+                                       || element.MasterDataName=='Exam'  
+                                       || element.MasterDataName=='Non Teaching')" 
+                                       matInput
                         [value]="element.MasterDataName" [(ngModel)]="element.MasterDataName" autocomplete="Off"
                         placeholder="" (blur)="onBlur(element)" [minlength]="1" [maxlength]="50">
                 </mat-form-field>

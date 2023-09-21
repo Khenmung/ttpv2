@@ -205,7 +205,7 @@ export class FiledragAndDropComponent implements OnInit {
   }
   uploadFile() {
     debugger;
-    let error: boolean = false;
+    this.loading=true;
     if (!this.selectedFile) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please select a file.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -232,6 +232,7 @@ export class FiledragAndDropComponent implements OnInit {
       this.contentservice.openSnackBar("Please select category.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
+    
     this.formdata = new FormData();
     this.formdata.append("description", _description);
     this.formdata.append("fileOrPhoto", "1");
@@ -261,7 +262,8 @@ export class FiledragAndDropComponent implements OnInit {
 
     this.loading = true;
     this.fileUploadService.postFiles(this.formdata).subscribe(res => {
-      this.loading = false; this.PageLoading = false;
+      this.loading = false; 
+      this.PageLoading = false;
       this.contentservice.openSnackBar("Files uploaded successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
     });
   }

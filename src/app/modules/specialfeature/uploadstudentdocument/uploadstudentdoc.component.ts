@@ -15,6 +15,8 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { FileUploadService } from '../../../shared/upload.service';
 import { IStudent } from '../StudentActivity/studentactivity.component';
+import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'upload-student-document',
@@ -55,13 +57,13 @@ export class StudentDocumentComponent implements OnInit {
     "Action"
   ]
   documentUploadSource: MatTableDataSource<IUploadDoc>;
-  constructor(private servicework: SwUpdate,
+  constructor(
+    private servicework: SwUpdate,
     private contentservice: ContentService,
     private fileUploadService: FileUploadService,
-    private shareddata: SharedataService,
+    private dialog: MatDialog,
     private dataservice: NaomitsuService,
     private fb: UntypedFormBuilder,
-    private nav: Router,
     private tokenStorage: TokenStorageService,
 
   ) { }
@@ -138,11 +140,14 @@ export class StudentDocumentComponent implements OnInit {
   uploadchange(files) {
     if (files.length === 0)
       return;
+    debugger;
     this.selectedFile = files[0];
-    var extensions = ["image", "text/plain", "application/vnd.ms-excel", "application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+    var allowedFiles = ["image/jpeg", "image/gif", "image/jpg", "image/png", "text/plain", "application/vnd.ms-excel", "application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+    //var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(" + allowedFiles.join('|') + ")$");
     var mimeType = files[0].type;
     //if (mimeType.match(/image\/*/) == null) {
-    if (extensions.indexOf(mimeType) == -1) {
+    //  if (!regex.test(mimeType.toLowerCase())) {
+    if (allowedFiles.indexOf(mimeType) == -1) {
       this.contentservice.openSnackBar("The file type is not supported.", globalconstants.ActionText, globalconstants.RedBackground);
       this.selectedFile = undefined;
       return;
@@ -171,7 +176,7 @@ export class StudentDocumentComponent implements OnInit {
     }
     debugger;
     let error: boolean = false;
-
+    this.loading = true;
     this.StudentId = this.uploadForm.get("searchStudentName")?.value.StudentId;
     this.StudentClassId = this.uploadForm.get("searchStudentName")?.value.StudentClassId;
     if (this.selectedFile) {
@@ -197,27 +202,33 @@ export class StudentDocumentComponent implements OnInit {
     }
   }
   uploadImage() {
-    let options = {
-      autoClose: true,
-      keepAfterRouteChange: true
-    };
+
     //this.formData.append("Image", <File>base64ToFile(this.croppedImage),this.fileName);
     this.fileUploadService.postFiles(this.formdata).subscribe(res => {
-      //this.alertMessage.success("File uploaded successfully.", options);
+      this.loading = false;
       this.contentservice.openSnackBar("File uploaded successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
       this.Edit = false;
     });
   }
   GetDocuments() {
+    debugger;
+    let filterstr = this.FilterOrgnBatchId;
+
+    var _docTypeId = this.uploadForm.get("DocTypeId")?.value;
+    if (_docTypeId == 0) {
+      this.contentservice.openSnackBar("Please select document type.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
 
     var _studentClassId = this.uploadForm.get("searchStudentName")?.value.StudentClassId;
     if (_studentClassId == 0) {
       this.contentservice.openSnackBar("Please select student.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    else {
-      this.StudentClassId = _studentClassId;
-    }
+
+    filterstr += " and StudentClassId eq " + _studentClassId;
+    filterstr += " and DocTypeId eq " + _docTypeId;
+
     let list: List = new List();
     this.StudentDocuments = [];
     list.fields = [
@@ -227,7 +238,7 @@ export class StudentDocumentComponent implements OnInit {
       "UploadDate",
       "DocTypeId"];
     list.PageName = "StorageFnPs";
-    list.filter = [this.FilterOrgnBatchId + " and Active eq 1 and StudentClassId eq " + this.StudentClassId];
+    list.filter = [filterstr + " and Active eq 1"];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
@@ -256,6 +267,59 @@ export class StudentDocumentComponent implements OnInit {
         this.documentUploadSource = new MatTableDataSource<IUploadDoc>(this.StudentDocuments);
       });
 
+  }
+  softDelete(row) {
+
+    this.openDialog(row)
+  }
+  openDialog(row) {
+    debugger;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        message: 'Are you sure want to delete?',
+        buttonText: {
+          ok: 'Save',
+          cancel: 'No'
+        }
+      }
+    });
+
+    dialogRef.afterClosed()
+      .subscribe((confirmed: boolean) => {
+        debugger;
+        if (confirmed) {
+          this.UpdateAsDeleted(row);
+        }
+      });
+  }
+
+  UpdateAsDeleted(row) {
+    debugger;
+    let toUpdate = {
+      FileId: row.FileId,
+      Active: 0,
+      Deleted: true
+      //UpdatedDate: new Date()
+    }
+    console.log("toupdate", toUpdate)
+    this.dataservice.postPatch('StorageFnPs', toUpdate, row.FileId, 'patch')
+      .subscribe(res => {
+        row.Action = false;
+        this.loading = false; this.PageLoading = false;
+        var idx = this.StudentDocuments.findIndex(x => x.FileId == row.FileId)
+        this.StudentDocuments.splice(idx, 1);
+        this.documentUploadSource = new MatTableDataSource<any>(this.StudentDocuments);
+        this.documentUploadSource.filterPredicate = this.createFilter();
+        this.contentservice.openSnackBar(globalconstants.DeletedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
+
+      });
+  }
+  createFilter(): (data: any, filter: string) => boolean {
+    let filterFunction = function (data, filter): boolean {
+      let searchTerms = JSON.parse(filter);
+      return data.MasterDataName.toLowerCase().indexOf(searchTerms.MasterDataName) !== -1
+    }
+    return filterFunction;
   }
   ClearData() {
     this.StudentDocuments = [];

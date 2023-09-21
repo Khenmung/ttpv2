@@ -3,6 +3,16 @@
 <!-- <alert></alert> -->
 <div class="divCls" fxLayout="row wrap">
     <form [formGroup]="uploadForm" fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-form-field appearance="outline" [style.width.px]="200">
+            <mat-label>Document type</mat-label>
+            <mat-select formControlName="DocTypeId" (selectionChange)="enableUpload($event)">
+                <mat-option *ngFor="let p of DocumentTypes" [value]="p.MasterDataId">
+                    {{p.MasterDataName}}
+                </mat-option>
+            </mat-select>
+            <span class="text-danger" *ngIf='f.DocTypeId.touched && f.DocTypeId.hasError("required")'>
+                Document type is required.</span>
+        </mat-form-field>
         <mat-form-field appearance="outline" [style.width.px]="350">
             <mat-label>Student</mat-label>
             <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
@@ -22,28 +32,16 @@
         <div
             style="border: 1px solid lightgray;width:400px;padding:15px 15px 0px 15px;display: flex;justify-content: center;align-items: center;flex-direction: column;">
             <div style="margin-bottom: 15px;">Upload New Document</div>
-            <div style="display:flex;flex-direction:column">
+            <div style="display:flex;flex-direction:row">
                 <input style="margin-bottom: 10px;" #uploadfile type="file" (change)="uploadchange(uploadfile.files)" />
-                <div style="display:flex">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Document type</mat-label>
-                        <mat-select formControlName="DocTypeId" (selectionChange)="enableUpload($event)">
-                            <mat-option *ngFor="let p of DocumentTypes" [value]="p.MasterDataId">
-                                {{p.MasterDataName}}
-                            </mat-option>
-                        </mat-select>
-                        <span class="text-danger"
-                            *ngIf='f.DocTypeId.touched && f.DocTypeId.hasError("required")'>Document
-                            type
-                            is required.</span>
-                    </mat-form-field>
-                    <span style="margin-top: 15px;">
-                        <button [disabled]="loading || Permission=='read' || !EnableUploadButton" type="submit"
-                            (click)="uploadFile()" matTooltip="upload file" mat-raised-button color="accent">
-                            <mat-icon aria-label="file_upload">file_upload</mat-icon>
-                        </button>&nbsp;&nbsp;
-                    </span>
-                </div>
+                <!-- <div style="display:flex"> -->
+                <!-- <span style="margin-top: 15px;"> -->
+                    <button [disabled]="loading || Permission=='read' || !EnableUploadButton" type="submit"
+                        (click)="uploadFile()" matTooltip="upload file" mat-raised-button color="accent">
+                        <mat-icon aria-label="file_upload">file_upload</mat-icon>
+                    </button>&nbsp;&nbsp;
+                <!-- </span> -->
+                <!-- </div> -->
             </div>
         </div>
     </form>
@@ -75,8 +73,12 @@
         <ng-container matColumnDef="Action">
             <mat-header-cell *matHeaderCellDef> </mat-header-cell>
             <mat-cell (click)="pageview(element.path)" *matCellDef="let element">
-                <button [disabled]="loading" mat-mini-fab>
+                <button style="margin-right: 15px;" [disabled]="loading" mat-mini-fab>
                     <mat-icon>pageview</mat-icon>
+                </button>
+                <button [disabled]="loading" mat-mini-fab color="accent" matTooltip="delete" #button
+                    (click)="softDelete(element)">
+                    <mat-icon aria-label="delete">delete</mat-icon>
                 </button>
             </mat-cell>
         </ng-container>

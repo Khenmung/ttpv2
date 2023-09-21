@@ -6,19 +6,24 @@
         <div style="padding: 15px 15px 0px 15px;">
             <mat-form-field appearance="outline" fxFlex>
                 <mat-label>Document type</mat-label>
-                <mat-select formControlName="DocTypeId">
+                <mat-select formControlName="searchDocTypeId">
                     <mat-option *ngFor="let p of DocumentTypes" [value]="p.MasterDataId">
                         {{p.MasterDataName}}
                     </mat-option>
                 </mat-select>
-                <span class="text-danger" *ngIf='f.DocTypeId.touched && f.DocTypeId.hasError("required")'>Document type
-                    is required.</span>
             </mat-form-field>
         </div>
         <span fxLayout="row" fxLayoutAlign="space-between center">
-            <button [disabled]="loading || Permission=='read' || EmployeeId==0" type="submit" (click)="uploadFile()" matTooltip="upload file" mat-raised-button>
+            <button style="margin-right: 15px;" [disabled]="loading || Permission=='read' || EmployeeId==0" type="submit" (click)="uploadFile()" matTooltip="upload file" mat-raised-button>
                 <mat-icon aria-label="file_upload">file_upload</mat-icon>
-            </button>&nbsp;&nbsp;
+            </button>
+            <button [disabled]="loading || Permission=='read'" (click)="GetDocuments()" style="margin-right: 30px;"
+            matTooltip="get documents" mat-raised-button color="accent">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
         </span>
     </form>
 </div>

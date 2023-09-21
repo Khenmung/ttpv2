@@ -5,7 +5,7 @@
     <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
     <div style="padding: 15px;" fxLayout="row wrap">
         <div style="width: 100%;">
-           
+
             <mat-table #table [dataSource]="dataSource">
                 <ng-container matColumnDef="ClassGroupId">
                     <mat-header-cell *matHeaderCellDef>Sr. No.
@@ -48,13 +48,14 @@
                 </ng-container>
                 <ng-container matColumnDef="Action">
                     <mat-header-cell *matHeaderCellDef>
-                        <button [disabled]="loading || Permission=='read' || Permission=='deny'"
-                            matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                        <button [disabled]="loading || Permission=='read' || Permission=='deny'" matTooltip="add new"
+                            mat-mini-fab (click)="AddNew()">
                             <mat-icon>add</mat-icon>
                         </button>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button style="margin-right:15px" [disabled]="loading || !element.Action || Permission=='read' || Permission=='deny'"
+                        <button style="margin-right:15px"
+                            [disabled]="loading || !element.Action || Permission=='read' || Permission=='deny'"
                             matTooltip="save" mat-raised-button color="accent" (click)="UpdateOrSave(element)">
                             <mat-icon>save</mat-icon>
                             <mat-icon *ngIf="loading">
@@ -74,4 +75,18 @@
             </mat-table>
         </div>
     </div>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>
+                If class group type is 'exam', students are allowed to execute the evaluation type for this class group or else 'start' button
+                will be disabled for students.
+            </li>
+        </ul>
+    </span>
 </div>

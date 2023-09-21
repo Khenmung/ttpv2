@@ -29,6 +29,7 @@ export class StudentEvaluationComponent implements OnInit {
   LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   ClassGroups: any[] = [];
+  ClassGroupTypes: any[] = [];
   ClassGroupMappings: any[] = [];
   EvaluationExamMaps: any[] = [];
   ClassSubjects: any[] = [];
@@ -160,7 +161,7 @@ export class StudentEvaluationComponent implements OnInit {
             this.ClassGroupMappings = [...data.value];
           })
 
-        
+
         this.GetMasterData();
         this.GetStudents();
 
@@ -684,7 +685,7 @@ export class StudentEvaluationComponent implements OnInit {
                 this.EvaluationExamMaps.push(m);
               }
             })
-            console.log("EvaluationExamMaps", this.EvaluationExamMaps)
+            //console.log("EvaluationExamMaps", this.EvaluationExamMaps)
             this.loading = false;
             this.PageLoading = false;
           })
@@ -716,16 +717,26 @@ export class StudentEvaluationComponent implements OnInit {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
-    //this.ClassGroups = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUP);
-    this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
-      .subscribe((data: any) => {
-        this.ClassGroups = [...data.value];
-      })
+    this.ClassGroupTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUPTYPE);
+
+    
     this.RatingOptions = this.getDropDownData(globalconstants.MasterDefinitions.school.RATINGOPTION);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
+    this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
+    .subscribe((data: any) => {
+      this.ClassGroups = data.value.map(m => {
+
+        let obj = this.ClassGroupTypes.filter(f => f.MasterDataId == m.ClassGroupTypeId)
+        if (obj.length > 0) {
+          m.ClassGroupType = obj[0].MasterDataName;
+        }
+        return m;
+      })
+      this.GetEvaluationNames();
+    })
 
     // var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
@@ -743,8 +754,8 @@ export class StudentEvaluationComponent implements OnInit {
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.loading = false;
     });
-    this.GetEvaluationNames();
     
+
     this.GetEvaluationOption();
 
   }
@@ -856,7 +867,7 @@ export class StudentEvaluationComponent implements OnInit {
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     var studentobj = this.searchForm.get("searchStudentName")?.value;
-    if (studentobj.ClassId == undefined) {
+    if (!studentobj.ClassId) {
       this.loading = false;
       this.contentservice.openSnackBar("Please select student.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -872,7 +883,17 @@ export class StudentEvaluationComponent implements OnInit {
         this.RelevantEvaluationListForSelectedStudent = [];
         if (_EvaluationExamMapSelectedStudentObj.length > 0) {
           _EvaluationExamMapSelectedStudentObj.forEach(m => {
-            m.ClassGroup = this.ClassGroups.filter((f: any) => f.ClassGroupId == m.ClassGroupId)[0].GroupName;
+            let obj = this.ClassGroups.filter((f: any) => f.ClassGroupId == m.ClassGroupId);
+            
+            if (obj.length > 0) {
+              m.ClassGroup = obj[0].GroupName;
+              //Class group type is exam, students are allowed to execute else not allowed.
+              if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student'
+                && obj[0].ClassGroupType.toLowerCase() != 'exam')
+                m.AllowStudent = false;
+              else
+                m.AllowStudent = true;
+            }
             m.EvaluationStarted = false;
 
             ////////
@@ -911,12 +932,11 @@ export class StudentEvaluationComponent implements OnInit {
               if (m.Updatable)
                 this.RelevantEvaluationListForSelectedStudent.push(m);
             }
-            else
-            {
+            else {
               this.RelevantEvaluationListForSelectedStudent.push(m);
               m.Submitted = false;
             }
-              
+
 
 
 
@@ -1085,13 +1105,13 @@ export class StudentEvaluationComponent implements OnInit {
                 StudentClassId: _studentClassId,
                 StudentId: student.StudentId,
                 ClassId: _classId,
-                RollNo:_RollNo,
+                RollNo: _RollNo,
                 Name: _fullDescription,
               });
             }
           }
         })
-        this.Students = this.Students.sort((a,b)=>a.RollNo.localeCompare(b.RollNo))
+        this.Students = this.Students.sort((a, b) => a.RollNo.localeCompare(b.RollNo))
       })
   }
   GetStudents() {
