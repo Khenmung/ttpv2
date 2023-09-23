@@ -178,10 +178,11 @@ export class PlanFeatureComponent implements OnInit {
       row.Action = false;
       return;
     }
-    let checkFilterString = "PageId eq " + row.PageId +
-      " and PlanId eq " + this.searchForm.get("searchPlanId")?.value +
+    let checkFilterString = 
+      "PlanId eq " + this.searchForm.get("searchPlanId")?.value +
       " and ApplicationId eq " + row.ApplicationId +
-      " and Active eq 1"
+      " and Active eq 1" +
+      " and PageId eq " + row.PageId
 
     if (row.PlanFeatureId > 0)
       checkFilterString += " and PlanFeatureId ne " + row.PlanFeatureId;
@@ -298,7 +299,7 @@ export class PlanFeatureComponent implements OnInit {
     ];
 
     list.PageName = "Pages";
-    list.filter = ["Active eq 1 and ApplicationId eq " + appId];
+    list.filter = ["ApplicationId eq " + appId + " and Active eq 1"];
     return this.dataservice.get(list)
     // .subscribe((data: any) => {
     //   this.Features = [...data.value];

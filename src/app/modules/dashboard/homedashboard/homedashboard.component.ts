@@ -90,6 +90,7 @@ export class HomeDashboardComponent implements OnInit {
       this.route.navigate(['/auth/login']);
     }
     else {
+      this.loading=true;
       this.Role = this.LoginUserDetail[0]['RoleUsers'][0]['role'];
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
       this.CheckLocalStorage();
@@ -209,7 +210,7 @@ export class HomeDashboardComponent implements OnInit {
     //let containAdmin = window.location.href.toLowerCase().indexOf('admin');
     let strFilter = '';
     //console.log("in dashboard")
-    strFilter = "PlanId eq " + this.LoginUserDetail[0]["planId"] + " and Active eq 1 and ApplicationId eq " + pSelectedAppId;
+    strFilter = "PlanId eq " + this.LoginUserDetail[0]["planId"] + " and ApplicationId eq " + pSelectedAppId + " and Active eq 1";
 
     let list: List = new List();
     list.fields = [
@@ -345,7 +346,7 @@ export class HomeDashboardComponent implements OnInit {
   }
   ValueChanged = false;
   ChangeApplication() {
-    //debugger;
+    debugger;
     this.Loading();
     var SelectedAppId = this.searchForm.get("searchApplicationId")?.value;
     this.SelectedAppName = this.PermittedApplications.filter((f: any) => f.applicationId == SelectedAppId)[0].applicationName

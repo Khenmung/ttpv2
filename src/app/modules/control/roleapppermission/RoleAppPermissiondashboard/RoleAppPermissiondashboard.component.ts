@@ -35,11 +35,12 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
   oldvalue = '';
   selectedData = '';
   FilterOrgSubOrg = '';
+  Defaultvalue=0;
   datasource: MatTableDataSource<IApplicationRolePermission>;
   AppRoleData = {
     ApplicationFeatureRoleId: 0,
     PlanFeatureId: 0,
-   // PlanId: 0,
+    PlanId: 0,
     RoleId: 0,
     PermissionId: 0,
     OrgId: 0, 
@@ -203,7 +204,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
     list.PageName = "PlanFeatures";
     list.lookupFields = ["Page($select=ParentId,label,PageTitle,DisplayOrder)"]
     list.filter = ["PlanId eq " + this.UserDetails[0]["planId"] +
-      " and Active eq 1 and ApplicationId eq " + this.SelectedApplicationId];
+    " and ApplicationId eq " + this.SelectedApplicationId + " and Active eq 1"];
     this.PageFeatures = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -277,6 +278,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
       this.contentservice.openSnackBar("Please select role.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
+    this.loading=true;
     var _adminRoleId = this.Roles.filter(r => r.MasterDataName.toLowerCase() == 'admin')[0].MasterDataId;
     rolefilter += " and (RoleId eq " + _adminRoleId + " or RoleId eq " + _selectedRoleId + ")"; //this.searchForm.get("RoleId")?.value;
 
@@ -354,6 +356,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
         this.datasource = new MatTableDataSource<IApplicationRolePermission>(this.ApplicationRoleList);
         this.datasource.sort = this.sort;
         this.datasource.paginator = this.paginator;
+        this.loading=false;
       });
   }
   ClearData() {
@@ -455,7 +458,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
           this.AppRoleData.Active = row.Active;
           this.AppRoleData.ApplicationFeatureRoleId = row.ApplicationFeatureRoleId;
           this.AppRoleData.PlanFeatureId = row.PlanFeatureId;
-          //this.AppRoleData.PlanId = this.UserDetails[0]["planId"];
+          this.AppRoleData.PlanId = this.UserDetails[0]["planId"];
           this.AppRoleData.RoleId = row.RoleId;
           this.AppRoleData.PermissionId = row.PermissionId;
           this.AppRoleData.OrgId = this.UserDetails[0]["orgId"];

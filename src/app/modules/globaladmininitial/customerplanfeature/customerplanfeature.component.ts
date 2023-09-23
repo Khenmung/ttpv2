@@ -287,7 +287,7 @@ export class CustomerPlanFeatureComponent implements OnInit { PageLoading=true;
     ];
 
     list.PageName = "Pages";
-    list.filter = ["Active eq 1 and ApplicationId eq " + appId];
+    list.filter = ["ApplicationId eq " + appId + " and Active eq 1"];
     return this.dataservice.get(list)
     // .subscribe((data: any) => {
     //   this.Features = [...data.value];

@@ -41,16 +41,14 @@
             "sourceMap": false,
             "optimization": true,
             "namedChunks": true,
-            "serviceWorker": true,
-            "ngswConfigPath": "ngsw-config.json",
+           
             "baseHref": "/"
           },
           "configurations": {
             "production": {
               "buildOptimizer": true,
               "aot": true,
-              "commonChunk": true,
-              
+              "commonChunk": true,              
               "budgets": [
                 {
                   "type": "initial",
@@ -63,6 +61,8 @@
                   "maximumError": "8kb"
                 }
               ],
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json",
               "outputHashing": "all"
             },
             "development": {

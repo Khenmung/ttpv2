@@ -201,7 +201,7 @@
                 || Permission=='read' 
                 || !Edited 
                 || EmployeeCodeDuplicate.length>0
-                || ShortNameDuplicate.length>0" (click)="SaveOrUpdate()" matTooltip="save" mat-raised-button
+                || ShortNameDuplicate.length>0" (click)="UpdateOrSave()" matTooltip="save" mat-raised-button
                     color="accent">
                     <mat-icon>save</mat-icon>
                     <mat-icon *ngIf="loading">
@@ -346,7 +346,7 @@
                     matTooltip="next tab" mat-raised-button>
                     <mat-icon>navigate_next</mat-icon>
                 </button>
-                <button [disabled]="loading || Permission=='read' || !Edited" (click)="SaveOrUpdate()" matTooltip="save"
+                <button [disabled]="loading || Permission=='read' || !Edited" (click)="UpdateOrSave()" matTooltip="save"
                     mat-raised-button color="accent">
                     <mat-icon>save</mat-icon>
                     <mat-icon *ngIf="loading">
@@ -386,7 +386,7 @@
                     mat-raised-button>
                     <mat-icon>navigate_next</mat-icon>
                 </button>
-                <button [disabled]="loading || Permission=='read' || !Edited" (click)="SaveOrUpdate()" matTooltip="save"
+                <button [disabled]="loading || Permission=='read' || !Edited" (click)="UpdateOrSave()" matTooltip="save"
                     mat-raised-button color="accent">
                     <mat-icon>save</mat-icon>
                     <mat-icon *ngIf="loading">
@@ -435,7 +435,7 @@
                     mat-raised-button>
                     <mat-icon>navigate_next</mat-icon>
                 </button>
-                <button [disabled]="loading || Permission=='read' || !Edited" (click)="SaveOrUpdate()" matTooltip="save"
+                <button [disabled]="loading || Permission=='read' || !Edited" (click)="UpdateOrSave()" matTooltip="save"
                     mat-raised-button color="accent">
                     <mat-icon>save</mat-icon>
                     <mat-icon *ngIf="loading">
@@ -535,7 +535,7 @@
                 <button [disabled]="loading" (click)="back()" matTooltip="next tab" mat-raised-button>
                     <mat-icon>arrow_back</mat-icon>
                 </button>
-                <button [disabled]="loading || Permission=='read' || !Edited" (click)="SaveOrUpdate()" matTooltip="save"
+                <button [disabled]="loading || Permission=='read' || !Edited" (click)="UpdateOrSave()" matTooltip="save"
                     mat-raised-button color="accent">
                     <mat-icon>save</mat-icon>
                     <mat-icon *ngIf="loading">

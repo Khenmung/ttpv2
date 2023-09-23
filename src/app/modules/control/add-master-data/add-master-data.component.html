@@ -73,7 +73,10 @@
                                        || element.MasterDataName=='Exam'  
                                        || element.MasterDataName=='Non Teaching')" 
                                        matInput
-                        [value]="element.MasterDataName" [(ngModel)]="element.MasterDataName" autocomplete="Off"
+                        [value]="element.MasterDataName" 
+                        [(ngModel)]="element.MasterDataName" 
+                        autocomplete="Off"
+                        matTooltip="{{element.MasterDataName}}"
                         placeholder="" (blur)="onBlur(element)" [minlength]="1" [maxlength]="50">
                 </mat-form-field>
             </mat-cell>
@@ -113,7 +116,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Description/Home Page/CSS</mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <textarea rows="1" matInput [value]="element.Description" [(ngModel)]="element.Description"
+                    <textarea matTooltip="{{element.Description}}" rows="1" matInput [value]="element.Description" [(ngModel)]="element.Description"
                         autocomplete="Off" (blur)="onBlur(element)" [maxlength]="2000"></textarea>
                 </mat-form-field>
             </mat-cell>

@@ -33,7 +33,7 @@ export class roleuserdashboardComponent implements OnInit {
   exceptionColumns: boolean;
   CurrentRow: any = {};
   FeePayable = true;
-
+  Defaultvalue=0;
   SelectedApplicationId = 0;
   Departments :any[]= [];
   Locations :any[]= [];

@@ -1013,8 +1013,8 @@ export class ContentService implements OnInit {
     })
 
     var commonAppId = this.GetPermittedAppId('common');
-    var orgIdSearchstr = '(ApplicationId eq ' + commonAppId + applicationparam + ")" +
-      ' and (ParentId eq 0  or (OrgId eq ' + orgId + ' and SubOrgId eq ' + SubOrgId + ')) and Active eq 1 ';
+    var orgIdSearchstr ="((OrgId eq " + orgId + " and SubOrgId eq " + SubOrgId + ") or ParentId eq 0 )" +     
+      " and (ApplicationId eq " + commonAppId + applicationparam + ") and Active eq 1 ";
 
     let list: List = new List();
 

@@ -145,7 +145,8 @@ export class HomeComponent implements OnInit {
     //let containAdmin = window.location.href.toLowerCase().indexOf('admin');
     console.log("in home")
     let strFilter = '';
-    strFilter = "PlanId eq " + this.LoginUserDetail[0]["planId"] + " and Active eq 1 and ApplicationId eq " + this.SelectedApplicationId;
+    strFilter = "PlanId eq " + this.LoginUserDetail[0]["planId"] + 
+    " and ApplicationId eq " + this.SelectedApplicationId + " and Active eq 1";
 
     let list: List = new List();
     list.fields = [

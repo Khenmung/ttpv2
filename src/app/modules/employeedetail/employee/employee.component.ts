@@ -21,7 +21,7 @@ export class EmployeeComponent implements OnInit {
   PageLoading = true;
   ShortNameDuplicate = '';
   EmployeeCodeDuplicate = '';
-  Edited = false;
+  Edited:boolean = false;
   FilterOrgSubOrg='';
   Defaultvalue=0;
   SelectedApplicationId = 0;
@@ -227,6 +227,7 @@ export class EmployeeComponent implements OnInit {
         this.contentservice.openSnackBar(globalconstants.PermissionDeniedMessage, globalconstants.ActionText, globalconstants.RedBackground);
       }
       else {
+        this.Edited=false;
         this.FilterOrgSubOrg=globalconstants.getOrgSubOrgFilter(this.tokenService);
         this.getFields('Employee Module');
         if (this.EmployeeId > 0)
@@ -341,7 +342,7 @@ export class EmployeeComponent implements OnInit {
     }
 
   }
-  SaveOrUpdate() {
+  UpdateOrSave() {
     debugger;
     this.loading = true;
     //setTimeout(()=>{

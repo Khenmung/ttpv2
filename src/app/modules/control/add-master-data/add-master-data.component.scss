@@ -32,7 +32,7 @@ div {
 // }
 
 button {
-    //   margin : 5px;
+    margin-right : 15px;
     outline: none;
 }
 // mat-cell:first-of-type{
@@ -40,7 +40,7 @@ button {
 // }
 mat-form-field {
     margin-right: 5px;
-    width: 98%;
+    
 }
 // .mat-table{
 //     min-width:960px;
@@ -63,7 +63,6 @@ mat-form-field {
 .mat-column-Sequence,.mat-column-MasterDataId {
     flex:1 0 70px;
 }
-
-// mat-cell:first-of-type{
-//     padding-left: 0px;
-// }
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

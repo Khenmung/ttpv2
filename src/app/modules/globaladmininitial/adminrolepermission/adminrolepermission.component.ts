@@ -194,7 +194,7 @@ export class AdminrolepermissionComponent implements OnInit {
     list.PageName = "PlanFeatures";
     //list.lookupFields = "MasterItem($select=MasterDataName)";
     this.CustomerApps = [];
-    list.filter = ["Active eq 1 and PlanId eq " + this.SelectedCustomerPlanId];
+    list.filter = ["PlanId eq " + this.SelectedCustomerPlanId + " and Active eq 1"];
     this.dataservice.get(list).subscribe((data: any) => {
       debugger;
       var DistinctAppIds = alasql("select distinct ApplicationId from ?", [data.value]);
@@ -252,7 +252,7 @@ export class AdminrolepermissionComponent implements OnInit {
     list.PageName = "PlanFeatures";
     list.lookupFields = ["Page($select=ParentId,label,PageTitle,DisplayOrder)"]
     list.filter = ["PlanId eq " + this.SelectedCustomerPlanId +
-      " and Active eq 1 and ApplicationId eq " + this.SelectedApplicationId];
+    " and ApplicationId eq " + this.SelectedApplicationId + " and Active eq 1"];
     this.PlanFeaturePages = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {

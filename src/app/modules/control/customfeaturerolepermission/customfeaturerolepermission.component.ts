@@ -261,7 +261,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
     list.PageName = "PlanFeatures";
     list.lookupFields = ["Page($select=ParentId,label,PageTitle,DisplayOrder)"]
     list.filter = ["PlanId eq " + this.UserDetails[0]["planId"] +
-      " and Active eq 1 and ApplicationId eq " + this.SelectedApplicationId];
+      " and ApplicationId eq " + this.SelectedApplicationId + " and Active eq 1"];
     this.PageFeatures = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -300,7 +300,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
     var _featureId = this.searchForm.get("searchFeatureName")?.value.CustomFeatureId;
     if(_tableNameId==0 )
     {
-      this.contentservice.openSnackBar("Please select table name.", globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar("Please select feature type.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     else
@@ -452,7 +452,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
   UpdateOrSave(row) {
     if(!row.TableNameId)
     {
-      this.contentservice.openSnackBar("Please select table name.", globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar("Please select feature type.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     if (row.FeatureName.length == 0) {
