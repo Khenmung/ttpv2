@@ -104,6 +104,7 @@ export class SchoolFeeTypesComponent implements OnInit {
         this.contentservice.GetClasses(this.FilterOrgSubOrg)
           .subscribe((data: any) => {
             this.Classes = [...data.value];
+            this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
           })
         this.GetMasterData();
         this.GetStudents();

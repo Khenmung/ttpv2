@@ -129,6 +129,7 @@ export class StudentDatadumpComponent implements OnInit {
 
       this.contentservice.GetClasses(this.filterOrgSubOrgIdOnly).subscribe((data: any) => {
         this.Classes = [...data.value];
+        this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       });
 
 

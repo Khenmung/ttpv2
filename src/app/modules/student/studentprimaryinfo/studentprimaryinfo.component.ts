@@ -432,6 +432,7 @@ export class studentprimaryinfoComponent implements OnInit {
           var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
             this.Classes = [...data.value];
+            this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
             if (this.Classes.length == 0) {
               this.contentservice.openSnackBar("Please define classes first.", globalconstants.ActionText, globalconstants.RedBackground);
               this.loading = false;
@@ -459,7 +460,7 @@ export class studentprimaryinfoComponent implements OnInit {
         var _photo = all[2].value;
         if (_student.length > 0) {
           this.Students = this.tokenStorage.getStudents()!;
-          var studcls = this.Students.filter(store => store.StudentId == this.StudentId);
+          //var studcls = this.Students.filter(store => store.StudentId == this.StudentId);
           // if (studcls.length > 0)
           //   all[0].value[0].StudentClasses = studcls[0].StudentClasses ? studcls[0].StudentClasses : [];
           // else
@@ -748,6 +749,11 @@ export class studentprimaryinfoComponent implements OnInit {
             this.tokenStorage.saveStudentId(this.StudentId + "")
             this.tokenStorage.saveStudentClassId(this.StudentClassId + "");
 
+            let _student: any[] = this.tokenStorage.getStudents()!;
+            let _studCls = this.studentData[0]["StudentClasses"].push(result);
+            _student?.push(_studCls);
+            this.tokenStorage.saveStudents(_student);
+
             this.CreateInvoice();
             this.GetStudentClassPhoto();
             this.Edited = false;
@@ -770,11 +776,21 @@ export class studentprimaryinfoComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
         this.Edited = false;
         this.GetStudentClassPhoto();
-        if (result != null && result.UserId != "")
-          this.contentservice.openSnackBar(globalconstants.UserLoginCreated, globalconstants.ActionText, globalconstants.BlueBackground);
+
+        let _student: any[] = this.tokenStorage.getStudents()!;
+        let _stud = _student.filter(c => c.StudentId == this.StudentId);
+        let studcls = JSON.parse(JSON.stringify(_stud[0].StudentClasses));
+        _stud[0] = JSON.parse(JSON.stringify(this.studentData[0]));
+        _stud[0].StudentClasses = studcls;
+        this.tokenStorage.saveStudents(_student);        
+
+        if (result != null && result.UserId != "") {
+           this.contentservice.openSnackBar(globalconstants.UserLoginCreated, globalconstants.ActionText, globalconstants.BlueBackground);
+        }
         else
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-      }, error => {
+         
+        }, error => {
         this.loading = false;
         console.log("student update", error);
       })

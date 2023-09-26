@@ -296,6 +296,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
         var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
           this.Classes = [...data.value];
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
           this.GetMasterData();
         });
         this.GetStudentClass();

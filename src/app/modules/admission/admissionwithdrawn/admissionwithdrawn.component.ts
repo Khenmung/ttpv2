@@ -71,7 +71,7 @@ export class AdmissionWithdrawnComponent {
   Semesters: any[] = [];
   Students: IStudent[] = [];
   Batches: any = [];
-  Months:any=[];
+  Months: any = [];
   filteredOptions: Observable<IStudentClass[]>;
   constructor(private servicework: SwUpdate,
     private dialog: MatDialog,
@@ -92,7 +92,10 @@ export class AdmissionWithdrawnComponent {
     debugger;
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-
+    this.searchForm = this.fb.group({
+      searchPID: [0],
+      searchName: ['']
+    })
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -107,7 +110,7 @@ export class AdmissionWithdrawnComponent {
         this.Permission = perObj[0].permission;
       //  this.Months = this.contentservice.GetSessionFormattedMonths()!;
       this.GetMasterData();
-      this.GetStudents();
+      //this.GetStudents();
     }
   }
 
@@ -203,17 +206,24 @@ export class AdmissionWithdrawnComponent {
     //     this.allMasterData = [...data.value];
     this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
     this.Batches = this.tokenStorage.getBatches()!;
-    this.PageLoading=false;
-    this.loading=false;
+    this.PageLoading = false;
+    this.loading = false;
   }
 
   GetStudents() {
     //let _batchId = this.searchForm.get('searchBatchId')?.value;
-    let filterStr = this.FilterOrgSubOrg;
-    // if (_batchId)
-    //   this.contentservice.openSnackBar('Please select batch.', globalconstants.ActionText, globalconstants.RedBackground);
-    // else
-    //  filterStr += ' and BatchId eq ' + _batchId;
+    let filterStr = '';
+    let _pid = this.searchForm.get("searchPID")?.value;
+    let _name = this.searchForm.get("searchName")?.value;
+
+    if (_pid > 0)
+      filterStr += " and PID eq " + _pid;
+    if (_name.length > 0)
+      filterStr += " and (FirstName eq '" + _name + "' or LastName eq '" + _name + "')";
+    if (filterStr.length == 0 || filterStr.length <3)
+      this.contentservice.openSnackBar('Please enter search criteria.', globalconstants.ActionText, globalconstants.RedBackground);
+    else
+      filterStr = this.FilterOrgSubOrg + filterStr;
 
 
     this.Students = [];
@@ -224,13 +234,19 @@ export class AdmissionWithdrawnComponent {
       'LastName',
       'FatherName',
       'MotherName',
-      'UpdatedDate',
-      "ReasonForLeavingId",
-      "Notes",
+      'PersonalNo',
       "PID",
+      "Active",
+      "RemarkId",
+      "GenderId",
+      "HouseId",
+      "EmailAddress",
+      "ReasonForLeavingId",
+      "AdmissionStatusId",
       "Active"
     ];
     list.PageName = "Students";
+    list.lookupFields = ["StudentClasses($select=StudentClassId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,BatchId,IsCurrent,HouseId,StudentId)"];
 
     list.filter = [filterStr + " and (Active eq 0 or BatchId eq 0)"];
     this.loading = true;

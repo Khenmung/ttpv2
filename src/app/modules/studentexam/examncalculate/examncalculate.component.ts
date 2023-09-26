@@ -19,32 +19,32 @@ import { SwUpdate } from '@angular/service-worker';
 export class ExamncalculateComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  ClassGroups :any[]= [];
+  ClassGroups: any[] = [];
   //SubjectCategory :any[]= [];
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   ExamNCalculateListName = 'ExamNCalculates';
-  Applications :any[]= [];
+  Applications: any[] = [];
   loading = false;
-  SelectedBatchId = 0;SubOrgId = 0;
-  FilterOrgSubOrg='';
-  FilterOrgSubOrgBatchId='';
-  ExamNCalculateList: IExamNCalculate[]= [];
+  SelectedBatchId = 0; SubOrgId = 0;
+  FilterOrgSubOrg = '';
+  FilterOrgSubOrgBatchId = '';
+  ExamNCalculateList: IExamNCalculate[] = [];
   filteredOptions: Observable<IExamNCalculate[]>;
   dataSource: MatTableDataSource<IExamNCalculate>;
-  allMasterData :any[]= [];
-  ExamNCalculate :any[]= [];
+  allMasterData: any[] = [];
+  ExamNCalculate: any[] = [];
   Permission = 'deny';
-  Classes :any[]= [];
-  ExamStatus :any[]= [];
+  Classes: any[] = [];
+  ExamStatus: any[] = [];
   ExamNCalculateData = {
     ExamNCalculateId: 0,
     ExamId: 0,
     CalculateResultPropertyId: 0,
-    OrgId: 0,SubOrgId: 0,
+    OrgId: 0, SubOrgId: 0,
     Active: false
   };
-  MonthYears :any[]= [];
+  MonthYears: any[] = [];
   displayedColumns = [
     "ExamNCalculateId",
     "PropertyName",
@@ -75,8 +75,8 @@ export class ExamncalculateComponent implements OnInit {
     });
     this.PageLoad();
   }
-  Exams :any[]= [];
-  ExamNames :any[]= [];
+  Exams: any[] = [];
+  ExamNames: any[] = [];
   PageLoad() {
 
     debugger;
@@ -89,7 +89,7 @@ export class ExamncalculateComponent implements OnInit {
     else {
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EXAM.EXAMNCALCULATE);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
@@ -211,7 +211,7 @@ export class ExamncalculateComponent implements OnInit {
         });
   }
   Getclassgroups() {
-    var filterOrgSubOrg=globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+    var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClassGroups(filterOrgSubOrg)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
@@ -239,7 +239,7 @@ export class ExamncalculateComponent implements OnInit {
       return;
     }
     //var ExamReleaseResult =true; 
-    var examObj = this.Exams.filter((f:any) => f.ExamId == _examId);
+    var examObj = this.Exams.filter((f: any) => f.ExamId == _examId);
     if (examObj.length > 0) {
       this.ExamReleaseResult = examObj[0].ReleaseResult == 1 ? true : false;
     }
@@ -284,14 +284,13 @@ export class ExamncalculateComponent implements OnInit {
         this.loadingFalse();
       });
   }
-  ClearData()
-  {
-    this.ExamNCalculateList=[];
+  ClearData() {
+    this.ExamNCalculateList = [];
     this.dataSource = new MatTableDataSource<IExamNCalculate>(this.ExamNCalculateList);
   }
   RowsToUpdate = 0;
   SaveAll() {
-    var toupdate = this.ExamNCalculateList.filter((f:any) => f.Action);
+    var toupdate = this.ExamNCalculateList.filter((f: any) => f.Action);
     this.RowsToUpdate = toupdate.length;
     toupdate.forEach(f => {
       this.RowsToUpdate--;
@@ -305,7 +304,7 @@ export class ExamncalculateComponent implements OnInit {
       f.Action = true;
     })
   }
-  ExamResultProperties :any[]= [];
+  ExamResultProperties: any[] = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -313,12 +312,13 @@ export class ExamncalculateComponent implements OnInit {
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME)
     this.ExamResultProperties = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMRESULTPROPERTY)
 
-    var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-          this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+    var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+    this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [...data.value];
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.loading = false; this.PageLoading = false;
     });
-    this.contentservice.GetExams(this.FilterOrgSubOrgBatchId,2)
+    this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 2)
       .subscribe((data: any) => {
         this.Exams = [];
         data.value.forEach(f => {

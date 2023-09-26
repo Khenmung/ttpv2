@@ -79,7 +79,7 @@
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
                     <mat-select matTooltip="{{element.FeeType}}"
-                        [disabled]="!this.FeeTypePermission.includes('rw') && this.FeeTypePermission.includes('rwd')"
+                        [disabled]="this.FeeTypePermission.includes('read') || this.FeeTypePermission=='' || this.FeeTypePermission.includes('deny')"
                         [(ngModel)]="element.FeeTypeId" [value]="element.FeeTypeId"
                         (selectionChange)="enableAction(element)">
                         <mat-option matTooltip="{{item.FeeTypeName}}" *ngFor="let item of FeeType"

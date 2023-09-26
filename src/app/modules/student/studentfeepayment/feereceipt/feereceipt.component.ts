@@ -130,6 +130,7 @@ export class FeereceiptComponent implements OnInit {
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         this.Classes = [...data.value];
+        this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
         var obj = this.Classes.filter((f: any) => f.ClassId == this.studentInfoTodisplay.ClassId)
         if (obj.length > 0)
           this.studentInfoTodisplay.StudentClassName = obj[0].ClassName;

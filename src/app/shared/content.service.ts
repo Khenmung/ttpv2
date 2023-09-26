@@ -633,8 +633,10 @@ export class ContentService implements OnInit {
       filterstr += " and StudentClassId eq " + pStudentClassId;
     if (pClassId)
       filterstr += " and ClassId eq " + pClassId;
-    filterstr += " and SemesterId eq " + pSemesterId;
-    filterstr += " and SectionId eq " + pSectionId;
+    if (pSemesterId)
+      filterstr += " and SemesterId eq " + pSemesterId;
+    if (pSectionId)
+      filterstr += " and SectionId eq " + pSectionId;
 
     if (pFeeTypeId > 0)
       filterstr += " and FeeTypeId eq " + pFeeTypeId;
@@ -1013,7 +1015,7 @@ export class ContentService implements OnInit {
     })
 
     var commonAppId = this.GetPermittedAppId('common');
-    var orgIdSearchstr ="((OrgId eq " + orgId + " and SubOrgId eq " + SubOrgId + ") or ParentId eq 0 )" +     
+    var orgIdSearchstr = "((OrgId eq " + orgId + " and SubOrgId eq " + SubOrgId + ") or ParentId eq 0 )" +
       " and (ApplicationId eq " + commonAppId + applicationparam + ") and Active eq 1 ";
 
     let list: List = new List();

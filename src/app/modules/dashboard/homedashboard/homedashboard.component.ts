@@ -90,7 +90,7 @@ export class HomeDashboardComponent implements OnInit {
       this.route.navigate(['/auth/login']);
     }
     else {
-      this.loading=true;
+      this.loading = true;
       this.Role = this.LoginUserDetail[0]['RoleUsers'][0]['role'];
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
       this.CheckLocalStorage();
@@ -429,11 +429,11 @@ export class HomeDashboardComponent implements OnInit {
 
 
 
-      this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedAppId)
-        .subscribe((data: any) => {
-          this.tokenStorage.saveMasterData([...data.value]);
-          this.allMasterData = [...data.value];
-        });
+      // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedAppId)
+      //   .subscribe((data: any) => {
+      //     this.tokenStorage.saveMasterData([...data.value]);
+      //     this.allMasterData = [...data.value];
+      //   });
       this.GetMenuData(SelectedAppId);
       // if (selectedApp[0].applicationName.toLowerCase() == 'education management')
       //   this.GetStudentClass(SelectedAppId, selectedApp[0]);
@@ -490,16 +490,22 @@ export class HomeDashboardComponent implements OnInit {
           this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
           this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
           var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-          this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-            this.Classes = [...data.value];
-
-            let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
-            //if selected batch is current batch.
-            if (this.CurrentBatchId == this.SelectedBatchId)
-              this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
-            else
-              this.GetClassJoinStudent(obj.appShortName);
-          })
+          // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+          //   this.Classes = [...data.value];
+          //   this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          //   let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
+          //   //if selected batch is current batch.
+          //   if (this.CurrentBatchId == this.SelectedBatchId)
+          //     this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
+          //   else
+          //     this.GetClassJoinStudent(obj.appShortName);
+          // })
+          let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
+          //if selected batch is current batch.
+          if (this.CurrentBatchId == this.SelectedBatchId)
+            this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
+          else
+            this.GetClassJoinStudent(obj.appShortName);
         }
         else {
           if (this.Submitted)
@@ -604,35 +610,61 @@ export class HomeDashboardComponent implements OnInit {
       //   })
 
       if (this.SelectedAppId > 0) {
+        this.allMasterData = this.tokenStorage.getMasterData()!;
+        if (this.allMasterData.length > 0) {
 
-        this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedAppId)
-          .subscribe((data: any) => {
-            this.tokenStorage.saveMasterData([...data.value]);
-            this.allMasterData = [...data.value];
-            this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
+          this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
 
-            let _obj = this.Roles.filter(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
-            if (_obj.length > 0 && _obj[0].Description)
-              this.RedirectionText = _obj[0].Description;
+          let _obj = this.Roles.filter(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
+          if (_obj.length > 0 && _obj[0].Description)
+            this.RedirectionText = _obj[0].Description;
 
-            this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-            this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
-            var selectedItem = this.SubOrganization.filter((s: any) => s.MasterDataId == this.SubOrgId);
-            this.searchForm.patchValue({ "searchSubOrgId": selectedItem[0] });
+          this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+          this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
+          var selectedItem = this.SubOrganization.filter((s: any) => s.MasterDataId == this.SubOrgId);
+          this.searchForm.patchValue({ "searchSubOrgId": selectedItem[0] });
 
-            if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
-              this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
-                this.Classes = [...data.value];
-                let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
-                if (this.CurrentBatchId == this.SelectedBatchId)
-                  this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
-                else
-                  this.GetClassJoinStudent(obj.appShortName);
-              });
-            }
-            //this.searchForm.patchValue({ "searchSubOrgId": this.SubOrgId });
-          });
+          if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
+            this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
+              this.Classes = [...data.value];
+              this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+              let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
+              if (this.CurrentBatchId == this.SelectedBatchId)
+                this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
+              else
+                this.GetClassJoinStudent(obj.appShortName);
+            });
+          }
+          // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedAppId)
+          // .subscribe((data: any) => {
+          //   this.tokenStorage.saveMasterData([...data.value]);
+          //   this.allMasterData = [...data.value];
+          //   this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
 
+          //   let _obj = this.Roles.filter(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
+          //   if (_obj.length > 0 && _obj[0].Description)
+          //     this.RedirectionText = _obj[0].Description;
+
+          //   this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+          //   this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
+          //   var selectedItem = this.SubOrganization.filter((s: any) => s.MasterDataId == this.SubOrgId);
+          //   this.searchForm.patchValue({ "searchSubOrgId": selectedItem[0] });
+
+          //   if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
+          //     this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
+          //       this.Classes = [...data.value];
+          //       this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          //       let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
+          //       if (this.CurrentBatchId == this.SelectedBatchId)
+          //         this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
+          //       else
+          //         this.GetClassJoinStudent(obj.appShortName);
+          //     });
+          //   }
+          //   //this.searchForm.patchValue({ "searchSubOrgId": this.SubOrgId });
+          // });
+        }
+        
         this.GetMenuData(this.SelectedAppId);
       }
       //  });

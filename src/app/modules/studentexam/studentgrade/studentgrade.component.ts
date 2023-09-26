@@ -510,6 +510,7 @@ export class StudentgradeComponent implements OnInit {
     //var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [...data.value];
+      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       this.loading = false; this.PageLoading = false;
     });
     this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 2)

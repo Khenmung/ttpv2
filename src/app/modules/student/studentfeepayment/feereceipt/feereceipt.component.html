@@ -41,7 +41,7 @@
         </div>
         <div style="display: flex; flex-direction: column; width: 60%;padding: 15px 0px 15px 0px;">
             <div style="padding: 5px;"><b>Print/Cancel Receipt</b></div>
-            <div style="border:1px solid lightgray;padding: 15px;" class="divCls" id="printSection">
+            <div style="border:1px solid lightgray;" class="divCls" id="printSection">
                 <div fxLayout="column" fxLayoutAlign="space-around center">
                     <div style="width:100%;display:flex;justify-content: center;flex-direction: column;"
                         *ngFor="let item of ReceiptHeading;let i=index">
@@ -133,7 +133,7 @@
                         <!-- <mat-footer-row class="sticky-footer" *matFooterRowDef="displayedColumns">
                         </mat-footer-row> -->
                     </mat-table>
-                    <div style="display:flex;margin:15px">
+                    <div style="display:flex;">
                         <div>Payment Type:</div>
                         <div style="margin-left:15px">{{PaymentType}}</div>
                     </div>
@@ -142,7 +142,7 @@
                         <div style="font-weight:bold;"> {{ReceivedBy}}</div>
                     </div>
                 </div>
-                <div style="margin:15px;justify-content: center;width: 100%;display: flex;">
+                <div style="justify-content: center;width: 100%;display: flex;">
                     <div style="font-size:smaller;font-style: italic;">This is a computer-generated document. No
                         signature is required.</div>
                 </div>

@@ -123,6 +123,7 @@ export class TodayCollectionComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
           this.Classes = [...data.value];
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
         });
         this.GetMasterData();
         this.GetEmployees();
@@ -167,15 +168,15 @@ export class TodayCollectionComponent implements OnInit {
     debugger;
     this.ErrorMessage = '';
     let fromDate = this.SearchForm.get("FromDate")?.value;
-    let toDate = this.SearchForm.get("ToDate")?.value;
+    let toDate = new Date(this.SearchForm.get("ToDate")?.value);
     let _classId = this.SearchForm.get("searchClassId")?.value;
     let _studentClassId = this.SearchForm.get("searchStudentName")?.value.StudentClassId;
     let filterstring = this.FilterOrgSubOrg;
     this.loading = true;
     //filterstring = " eq 1" 
-
+    toDate.setDate(toDate.getDate() + 1);
     filterstring += " and ReceiptDate ge " + this.formatdate.transform(fromDate, 'yyyy-MM-dd') +
-      " and ReceiptDate le " + this.formatdate.transform(toDate, 'yyyy-MM-dd');
+      " and ReceiptDate lt " + this.formatdate.transform(toDate, 'yyyy-MM-dd');
 
 
 
@@ -223,24 +224,25 @@ export class TodayCollectionComponent implements OnInit {
 
             db.StudentClasses = studcls;
             db.PID = studcls[0].PID;
-            result.push(db);
+
           }
+          result.push(db);
           //return db;
         });
 
 
         var activebill = result.filter((f: any) => f.Active == 1);
         this.GrandTotalAmount = 0;//activebill.reduce((acc, current) => acc + current.TotalAmount, 0);
-        result.forEach(t=>{
+        result.forEach(t => {
           this.GrandTotalAmount += t.AccountingVouchers.reduce((acc, current) => acc + current.Amount, 0);
         })
-        console.log("activebill",activebill)
+        console.log("activebill", activebill)
         var cancelledBill = result.filter((f: any) => f.Active == 0)
-        this.CancelledAmount = 0;        
-        cancelledBill.forEach(t=>{
+        this.CancelledAmount = 0;
+        cancelledBill.forEach(t => {
           this.CancelledAmount += t.AccountingVouchers.reduce((acc, current) => acc + current.Amount, 0);
         })
-        
+
         this.GrandTotalAmount = this.GrandTotalAmount - this.CancelledAmount;
 
         this.DateWiseCollection = result.map(d => {
@@ -249,8 +251,10 @@ export class TodayCollectionComponent implements OnInit {
           if (pm.length > 0)
             _paymentType = pm[0].MasterDataName;
           //var _lastname = d.StudentClass.Student.LastName == null ? '' : " " + d.StudentClass.Student.LastName;
-          d.Name = d.StudentClasses[0].Name;
-          d.ClassName = d.StudentClasses[0].ClassName
+          if (d.StudentClasses) {
+            d.Name = d.StudentClasses[0].Name;
+            d.ClassName = d.StudentClasses[0].ClassName
+          }
           d.PaymentType = _paymentType;
           d.Status = d.Active == 0 ? 'Cancelled' : 'Active';
           //d.ReceiptDate = this.datepipe.transform(d.ReceiptDate,'dd/MM/yyyy') 
@@ -273,7 +277,7 @@ export class TodayCollectionComponent implements OnInit {
                 ClassFeeId: v.ClassFeeId,
                 Amount: v.Amount,
                 PaymentType: this.PaymentTypes.filter(p => p.MasterDataId == d.PaymentTypeId)[0].MasterDataName,
-                Student: d.StudentClasses[0].Name, //d.StudentClass.Student.FirstName + _lastname,
+                Student: d.StudentClasses ? d.StudentClasses[0].Name : '', //d.StudentClass.Student.FirstName + _lastname,
                 //ClassName: d.StudentClass.Class.ClassName,
                 ClassName: d.ClassName,
                 FeeCategoryId: _feeCategoryId,
@@ -297,8 +301,20 @@ export class TodayCollectionComponent implements OnInit {
         this.dataSource = new MatTableDataSource(rows);
         //this.dataSource.paginator = this.paginator;
         //this.dataSource.sort = this.sort;
-        this.loading = false; this.PageLoading = false;
+        this.loading = false;
+        this.PageLoading = false;
+        this.Reload = false;
       })
+  }
+  Reload = true;
+  datechange() {
+    this.Reload = true;
+    this.DateWiseCollection = [];
+    this.dataSource = new MatTableDataSource(this.DateWiseCollection);
+    this.HeadsWiseCollection =[];
+    this.GroupByPaymentType =[];
+    this.GrandTotalAmount =0;
+    this.CancelledAmount =0;
   }
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;

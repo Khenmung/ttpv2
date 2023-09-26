@@ -133,6 +133,10 @@ export class EvaluationresultlistComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
+        if(this.Permission=='read')
+        {
+          this.displayedColumns=["Description"];
+        }
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);

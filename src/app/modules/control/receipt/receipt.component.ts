@@ -132,6 +132,7 @@ export class ReceiptComponent implements OnInit {
         var obj = this.Classes.filter((f:any) => f.ClassId == this.studentInfoTodisplay.ClassId)
         if (obj.length > 0)
           this.studentInfoTodisplay.StudentClassName = obj[0].ClassName;
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       })
       //this.shareddata.CurrentBatch.subscribe(lo => (this.Batches = lo));
       this.Batches = this.tokenStorage.getBatches()!;;

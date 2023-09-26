@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InactivestudentComponent } from './inactivestudent.component';
+import { AdmissionWithdrawnComponent } from './admissionwithdrawn.component';
 
 describe('InactivestudentComponent', () => {
-  let component: InactivestudentComponent;
-  let fixture: ComponentFixture<InactivestudentComponent>;
+  let component: AdmissionWithdrawnComponent;
+  let fixture: ComponentFixture<AdmissionWithdrawnComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [InactivestudentComponent]
+      declarations: [AdmissionWithdrawnComponent]
     });
-    fixture = TestBed.createComponent(InactivestudentComponent);
+    fixture = TestBed.createComponent(AdmissionWithdrawnComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

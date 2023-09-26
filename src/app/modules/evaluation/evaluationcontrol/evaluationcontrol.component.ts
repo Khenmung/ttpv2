@@ -135,11 +135,19 @@ export class EvaluationControlComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATIONRESULT)
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATIONMARK)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
+        if(this.Permission =='read')
+        {
+          this.displayedColumns = [
+            'FullName',
+            'TotalMark',
+            'Rank'           
+          ];
+        }
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);

@@ -168,7 +168,12 @@ export class StudentEvaluationComponent implements OnInit {
       }
     }
   }
-
+  enablePaste() {
+    if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student')
+      return false;
+    else
+      return true;
+  }
   delete(element) {
     let toupdate = {
       Active: element.Active == 1 ? 0 : 1
@@ -719,24 +724,24 @@ export class StudentEvaluationComponent implements OnInit {
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
     this.ClassGroupTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUPTYPE);
 
-    
+
     this.RatingOptions = this.getDropDownData(globalconstants.MasterDefinitions.school.RATINGOPTION);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
-    .subscribe((data: any) => {
-      this.ClassGroups = data.value.map(m => {
+      .subscribe((data: any) => {
+        this.ClassGroups = data.value.map(m => {
 
-        let obj = this.ClassGroupTypes.filter(f => f.MasterDataId == m.ClassGroupTypeId)
-        if (obj.length > 0) {
-          m.ClassGroupType = obj[0].MasterDataName;
-        }
-        return m;
+          let obj = this.ClassGroupTypes.filter(f => f.MasterDataId == m.ClassGroupTypeId)
+          if (obj.length > 0) {
+            m.ClassGroupType = obj[0].MasterDataName;
+          }
+          return m;
+        })
+        this.GetEvaluationNames();
       })
-      this.GetEvaluationNames();
-    })
 
     // var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
@@ -754,7 +759,7 @@ export class StudentEvaluationComponent implements OnInit {
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.loading = false;
     });
-    
+
 
     this.GetEvaluationOption();
 
@@ -884,7 +889,7 @@ export class StudentEvaluationComponent implements OnInit {
         if (_EvaluationExamMapSelectedStudentObj.length > 0) {
           _EvaluationExamMapSelectedStudentObj.forEach(m => {
             let obj = this.ClassGroups.filter((f: any) => f.ClassGroupId == m.ClassGroupId);
-            
+
             if (obj.length > 0) {
               m.ClassGroup = obj[0].GroupName;
               //Class group type is exam, students are allowed to execute else not allowed.

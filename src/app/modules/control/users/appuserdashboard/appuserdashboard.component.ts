@@ -137,6 +137,7 @@ export class AppuserdashboardComponent implements OnInit {
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         this.Classes = [...data.value];
+        this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       });
       this.GetMasterData();
     }
@@ -623,7 +624,7 @@ export class AppuserdashboardComponent implements OnInit {
     this.loading = true;
     this.AppUsersData.Active = row.Active;
     this.AppUsersData.Id = row.Id;
-    this.AppUsersData.UserName = row.UserName.replaceAll(' ', '');
+    this.AppUsersData.UserName = row.EmailAddress;
     this.AppUsersData.Email = row.EmailAddress;
     this.AppUsersData.PhoneNumber = row.PhoneNumber;
     this.AppUsersData.OrganizationName = this.LoginDetail[0]['org'];
@@ -649,7 +650,7 @@ export class AppuserdashboardComponent implements OnInit {
       .subscribe(
         (data: any) => {
           row.Action = false;
-          row.Id = data.Id;
+          row.Id = data.UserId;
           this.loading = false; this.PageLoading = false;
           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
 

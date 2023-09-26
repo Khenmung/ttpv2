@@ -402,14 +402,21 @@ export class AddstudentclassComponent implements OnInit {
         if (temp.length > 0) {
           let studcls = temp[0].StudentClasses.filter(c => c.StudentClassId == this.studentclassData.StudentClassId)
           if (studcls.length > 0) {
-            studcls[0].Active = this.studentclassData.Active;
-            studcls[0].RollNo = this.studentclassData.RollNo;
-            studcls[0].SectionId = this.studentclassData.SectionId;
-            studcls[0].SemesterId = this.studentclassData.SemesterId;
-            studcls[0].FeeTypeId = this.studentclassData.FeeTypeId;
-            studcls[0].Remarks = this.studentclassData.Remarks;
-            studcls[0].AdmissionDate = this.studentclassData.AdmissionDate;
-            studcls[0].IsCurrent = this.studentclassData.IsCurrent;
+            if (this.studentclassData.Active == 0 && studcls[0].IsCurrent==true) {
+              let indx = _Students.indexOf(temp);
+              _Students.splice(indx, 1);
+            }
+            else {
+              studcls[0].Active = this.studentclassData.Active;
+              studcls[0].RollNo = this.studentclassData.RollNo;
+              studcls[0].SectionId = this.studentclassData.SectionId;
+              studcls[0].SemesterId = this.studentclassData.SemesterId;
+              studcls[0].FeeTypeId = this.studentclassData.FeeTypeId;
+              studcls[0].Remarks = this.studentclassData.Remarks;
+              studcls[0].AdmissionDate = this.studentclassData.AdmissionDate;
+              studcls[0].IsCurrent = this.studentclassData.IsCurrent;              
+            }
+
             this.tokenStorage.saveStudents(_Students);
           }
         }
@@ -426,7 +433,7 @@ export class AddstudentclassComponent implements OnInit {
       .subscribe((datacls: any) => {
 
         // var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
-        var objClassFee = datacls.value.filter(def => def.FeeDefinition.Active == 1 
+        var objClassFee = datacls.value.filter(def => def.FeeDefinition.Active == 1
           && def.ClassId == row.ClassId
           && def.SemesterId == row.SemesterId
           && def.SectionId == row.SectionId);

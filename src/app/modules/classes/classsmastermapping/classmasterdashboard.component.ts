@@ -166,6 +166,7 @@ export class ClassmasterdashboardComponent implements OnInit {
               m.Category = obj[0].MasterDataName.toLowerCase();
             return m;
           })
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
         });
 
       }

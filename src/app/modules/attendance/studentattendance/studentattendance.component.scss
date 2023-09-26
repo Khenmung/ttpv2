@@ -1,33 +1,49 @@
-mat-card{
+mat-card {
     //margin-top: 100px;
     margin-left: auto;
     width: 100%;
 }
 
-mat-cell:first-of-type{
-    padding-left: 0px;
+mat-cell:first-of-type {
+    //padding: 0px 8px 0px 20px;
+    @media screen and (max-width: 700px) {
+        padding: 0px 8px 0px 10px;
+    }
+
+    @media screen and (min-width: 701px) {
+        padding: 0px 8px 0px 20px;
+    }
+
 }
-.mat-column-AttendanceStatusId{
-    justify-content: center;
-    flex:1 0 140px;
+
+.mat-column-AttendanceStatusId {
+
+    flex: 1 0 140px;
 }
-.mat-column-Action{
+
+.mat-column-Action {
     justify-content: center;
     //flex:1 1 100px;
     min-width: 100px;
 }
-.mat-column-RollNo{
-    justify-content: flex-end;
-    flex:1 0 60px;
+
+.mat-column-RollNo {
+    //justify-content: flex-end;
+    flex: 1 0 80px;
+    max-width: 80px;
+    word-wrap: break-word;
 }
-.mat-column-Student{
-    flex:1 0 180px;
-    
+
+.mat-column-Student {
+    flex: 1 0 180px;
+
 }
-.mat-column-Remarks{
-    justify-content: center;
-    flex:1 0 150px;
+
+.mat-column-Remarks {
+    flex: 1 0 150px;
 }
-.mdc-data-table__cell, .mdc-data-table__header-cell{
-    padding:0px 15px 0px 0px;
-  }
+
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+    padding: 8px 15px 0px 0px;
+}

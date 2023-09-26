@@ -109,6 +109,7 @@ export class FeecollectionreportComponent implements OnInit {
         var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
           this.Classes = [...data.value];
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
         });
         this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, 0)
           .subscribe((data: any) => {
@@ -117,8 +118,8 @@ export class FeecollectionreportComponent implements OnInit {
               this.Months.push({ Month: d.Month, FeeName: d.FeeDefinition.FeeName })
               return d;
             })
-           this.Months = alasql("select distinct Month,FeeName from ?",[this.Months]);
-            console.log('this.month',this.Months)
+            this.Months = alasql("select distinct Month,FeeName from ?", [this.Months]);
+            console.log('this.month', this.Months)
           })
 
         this.SearchForm = this.fb.group({
@@ -333,27 +334,30 @@ export class FeecollectionreportComponent implements OnInit {
         if (data.value.length > 0) {
           var _students: any = this.tokenStorage.getStudents()!;
           var _filteredStudents = _students.filter((s: any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
-          this.Students = data.value.map(studentcls => {
+          this.Students = [];
+          data.value.forEach(studentcls => {
             var matchstudent = _filteredStudents.filter(stud => stud.StudentId == studentcls.StudentId)
-            var _classNameobj = this.Classes.filter(c => c.ClassId == studentcls.ClassId);
-            var _className = '';
-            if (_classNameobj.length > 0)
-              _className = _classNameobj[0].ClassName;
+            if (matchstudent.length > 0) {
+              var _classNameobj = this.Classes.filter(c => c.ClassId == studentcls.ClassId);
+              var _className = '';
+              if (_classNameobj.length > 0)
+                _className = _classNameobj[0].ClassName;
 
-            var _Section = '';
-            var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studentcls.SectionId);
-            if (_sectionobj.length > 0)
-              _Section = _sectionobj[0].MasterDataName;
+              var _Section = '';
+              var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studentcls.SectionId);
+              if (_sectionobj.length > 0)
+                _Section = _sectionobj[0].MasterDataName;
 
-            var _RollNo = studentcls.RollNo;
-
-            var _lastname = matchstudent[0].LastName == null ? '' : " " + matchstudent[0].LastName;
-            var _name = matchstudent[0].FirstName + _lastname;
-            var _fullDescription = _name + " - " + _className + " - " + _Section + " - " + _RollNo;
-            return {
-              StudentClassId: studentcls.StudentClassId,
-              StudentId: studentcls.StudentId,
-              Name: _fullDescription
+              var _RollNo = studentcls.RollNo;
+              //console.log('matchstudent[0].LastName', matchstudent[0].LastName)
+              var _lastname = matchstudent[0].LastName ? " " + matchstudent[0].LastName : '';
+              var _name = matchstudent[0].FirstName + _lastname;
+              var _fullDescription = _name + " - " + _className + " - " + _Section + " - " + _RollNo;
+              this.Students.push({
+                StudentClassId: studentcls.StudentClassId,
+                StudentId: studentcls.StudentId,
+                Name: _fullDescription
+              })
             }
           })
         }
