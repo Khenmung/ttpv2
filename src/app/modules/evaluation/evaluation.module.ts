@@ -13,7 +13,8 @@ import { NgxMatMomentModule } from '@angular-material-components/moment-adapter'
 import {NgxMatTimepickerModule} from 'ngx-mat-timepicker';
 @NgModule({
   declarations: [
-    EvaluationComponents      
+    EvaluationComponents,
+          
   ],
   imports: [
     CommonModule,

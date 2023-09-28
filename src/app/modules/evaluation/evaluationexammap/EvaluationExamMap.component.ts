@@ -12,6 +12,7 @@ import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { EventEmitter } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
+import alasql from 'alasql';
 
 @Component({
   selector: 'app-EvaluationExamMap',
@@ -210,20 +211,20 @@ export class EvaluationExamMapComponent implements OnInit {
 
       if (row.ExamId > 0)
         checkFilterString += " and ExamId eq " + row.ExamId;
-      else {
+      else if(row.Active==1) {
         this.loading = false; this.PageLoading = false;
         this.contentservice.openSnackBar("Please select evaluation session or examination.", globalconstants.ActionText, globalconstants.RedBackground);
         return;
       }
     }
 
-    if (_EvaluationMasterId > 0)
-      checkFilterString += " and EvaluationMasterId eq " + _EvaluationMasterId;
-    else {
-      this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar("Please select evaluation.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
+    //if (_EvaluationMasterId > 0)
+      checkFilterString += " and EvaluationMasterId eq " + row.EvaluationMasterId;
+    // else {
+    //   this.loading = false; this.PageLoading = false;
+    //   this.contentservice.openSnackBar("Please select evaluation.", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
     if (row.EvaluationExamMapId > 0)
       checkFilterString += " and EvaluationExamMapId ne " + row.EvaluationExamMapId;
     let list: List = new List();
@@ -246,7 +247,7 @@ export class EvaluationExamMapComponent implements OnInit {
             {
               EvaluationExamMapId: row.EvaluationExamMapId,
               ExamId: row.ExamId == null ? 0 : row.ExamId,
-              EvaluationMasterId: this.searchForm.get("searchEvaluationMasterId")?.value,
+              EvaluationMasterId: row.EvaluationMasterId,
               Active: row.Active,
               Deleted: false,
               OrgId: this.LoginUserDetail[0]["orgId"],
@@ -354,9 +355,10 @@ export class EvaluationExamMapComponent implements OnInit {
   }
   getClassGroupForExam() {
     var _searchClassGroupId = this.searchForm.get("searchClassGroupId")?.value;
-    //var _classesForSelectedClassGroup = this.ClassGroupMappings.filter(m => m.ClassGroupId == _searchClassGroupId);
-    //var allGroupsForAllTheSelectedClasses = this.ClassGroupMappings.filter(g => _classesForSelectedClassGroup.filter(i => i.ClassId == g.ClassId).length > 0)
-    this.EvaluationMasterForClassGroup = this.EvaluationNames.filter(d => d.ClassGroupId == _searchClassGroupId)
+    var _classesForSelectedClassGroup = this.ClassGroupMappings.filter(m => m.ClassGroupId == _searchClassGroupId);
+    var allGroupsForAllTheSelectedClasses = this.ClassGroupMappings.filter(g => _classesForSelectedClassGroup.filter(i => i.ClassId == g.ClassId).length > 0)
+    let distinctClassGroupIds= alasql("select distinct ClassGroupId from ?",[allGroupsForAllTheSelectedClasses])
+    this.EvaluationMasterForClassGroup = this.EvaluationNames.filter(d => distinctClassGroupIds.map(e=>e.ClassGroupId).indexOf(d.ClassGroupId)>-1)
     var _searchExamId = this.searchForm.get("searchExamId")?.value;
     this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _searchExamId)
       .subscribe((data: any) => {
@@ -410,14 +412,16 @@ export class EvaluationExamMapComponent implements OnInit {
     }
     var _evaluationMappedForSelectedClassGroup :any[]= [];
     if (_EvaluationMasterId > 0) {
-      _evaluationMappedForSelectedClassGroup = this.EvaluationMasterForClassGroup.filter(e => e.EvaluationMasterId == _EvaluationMasterId)
+      _evaluationMappedForSelectedClassGroup = JSON.parse(JSON.stringify(this.EvaluationMasterForClassGroup.filter(e => e.EvaluationMasterId == _EvaluationMasterId)))
     }
-    else {
-      this.loading = false;
-      this.PageLoading = false;
-      this.contentservice.openSnackBar("Please select evaluation type.", globalconstants.ActionText, globalconstants.BlueBackground);
-      return;
-    }
+     else {
+      _evaluationMappedForSelectedClassGroup = JSON.parse(JSON.stringify(this.EvaluationMasterForClassGroup));
+     }
+      //   this.loading = false;
+    //   this.PageLoading = false;
+    //   this.contentservice.openSnackBar("Please select evaluation type.", globalconstants.ActionText, globalconstants.BlueBackground);
+    //   return;
+    // }
     //  filterStr += " and EvaluationMasterId eq " + _EvaluationMasterId;
 
     // if (_searchExamId > 0)
@@ -425,9 +429,9 @@ export class EvaluationExamMapComponent implements OnInit {
 
     let list: List = new List();
 
-    if (this.EvaluationMasterForClassGroup.length > 0) {
+    if (_evaluationMappedForSelectedClassGroup.length > 0) {
       var _evaluationExamMapForSelectedEval = this.EvaluationExamMap.filter((f:any) => {
-        return _evaluationMappedForSelectedClassGroup.filter(e => e.EvaluationMasterId == f.EvaluationMasterId).length > 0
+        return _evaluationMappedForSelectedClassGroup.map(e => e.EvaluationMasterId).indexOf(f.EvaluationMasterId)>-1
       });
       //var _filter = this.FilterOrgSubOrg;// "OrgId eq " + this.LoginUserDetail[0]["orgId"];
       // var subfilter = '';

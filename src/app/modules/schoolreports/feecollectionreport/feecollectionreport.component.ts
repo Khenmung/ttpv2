@@ -182,7 +182,7 @@ export class FeecollectionreportComponent implements OnInit {
       return;
     }
     this.loading = true;
-    nestedFilter = "$filter=Balance eq 0 and Month eq " + selectedMonth + ";";
+    nestedFilter = "$filter=TotalCredit gt 0 and Balance eq 0 and Month eq " + selectedMonth + ";";
 
     if (_selectedClassId > 0) {
       filterstring += ' and ClassId eq ' + _selectedClassId;

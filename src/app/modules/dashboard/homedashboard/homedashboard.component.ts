@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -227,7 +227,7 @@ export class HomeDashboardComponent implements OnInit {
     var permission;
     this.dataservice.get(list).subscribe((data: any) => {
 
-
+      this.sideMenu =[];
       data.value.forEach(m => {
         // if(m.Page.PageTitle=="Question Bank")
         // {
@@ -489,7 +489,7 @@ export class HomeDashboardComponent implements OnInit {
         if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
           this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
           this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
-          var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+          //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
           //   this.Classes = [...data.value];
           //   this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);

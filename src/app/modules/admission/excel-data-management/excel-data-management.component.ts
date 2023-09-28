@@ -243,6 +243,7 @@ export class ExcelDataManagementComponent implements OnInit {
         "IdentificationMark"
       ];
     }
+    //this.clear();
     //  this.readExcel();
     //    this.uploadedFile(event);
   }
@@ -281,12 +282,12 @@ export class ExcelDataManagementComponent implements OnInit {
     let readFile = new FileReader();
     this.ErrorMessage = '';
     readFile.onload = (e) => {
-      this.storeData = readFile.result;
+      let _storeData:any = readFile.result;
       //var _rowCount = this.storeData.length;
       // if (_rowCount > globalconstants.RowUploadLimit) {
       //   this.storeData.slice(globalconstants.RowUploadLimit);
       // }
-      var data = new Uint8Array(this.storeData);
+      var data = new Uint8Array(_storeData);
       ////console.log('data',data)
       var arr = new Array();
       for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
@@ -1195,8 +1196,7 @@ export class ExcelDataManagementComponent implements OnInit {
     //console.log("this.ELEMENT_DATA",this.ELEMENT_DATA)
   }
   clear() {
-    //this.fileUploaded=;
-    this.selectedFile = '';
+   this.uploadForm.reset();
   }
   readAsCSV() {
     this.csvData = XLSX.utils.sheet_to_csv(this.worksheet);
@@ -1490,8 +1490,8 @@ export class ExcelDataManagementComponent implements OnInit {
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var _students: any = [...data.value];// this.tokenStorage.getStudents()!;
-        this.StudentList = _students.filter((s: any) => s.Active == 1);
+        this.StudentList = [...data.value];// this.tokenStorage.getStudents()!;
+        //this.StudentList = _students.filter((s: any) => s.Active == 1);
         this.StudentList = this.StudentList.sort((a: any, b: any) => a.ParentId - b.ParentId);
         this.NoOfStudent = this.StudentList.length;
         this.GetStudentClasses();
@@ -1500,10 +1500,10 @@ export class ExcelDataManagementComponent implements OnInit {
   }
 
   GetMasterData() {
-    this.contentservice.GetCommonMasterData(this.loginDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
+    //this.contentservice.GetCommonMasterData(this.loginDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //  .subscribe((data: any) => {
         //var SelectedApplicationName = '';
-        this.AllMasterData = [...data.value];
+        this.AllMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
 
         this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
         this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
@@ -1545,7 +1545,7 @@ export class ExcelDataManagementComponent implements OnInit {
         this.loading = false;
         this.PageLoading = false;
 
-      });
+      //});
 
   }
 

@@ -133,9 +133,8 @@ export class EvaluationresultlistComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        if(this.Permission=='read')
-        {
-          this.displayedColumns=["Description"];
+        if (this.Permission == 'read') {
+          this.displayedColumns = ["Description"];
         }
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
@@ -411,18 +410,20 @@ export class EvaluationresultlistComponent implements OnInit {
             r.Pc = +(r.TotalMark / _FullMark * 100).toFixed(2);
           _previousMark = r.TotalMark;
         })
-       // console.log("StudentResultList", StudentResultList);
-        this.NoOfRecordToUpdate=0;
+        // console.log("StudentResultList", StudentResultList);
+        this.NoOfRecordToUpdate = 0;
         this.insert(StudentResultList);
         // this.loading = false;
         // this.PageLoading = false;
       })
   }
+  MarkObtainDisplay = 0;
   GetMarkObtain() {
     let _mark = 0;
     this.StudentEvaluationList.forEach(f => {
       _mark += f.Points ? +f.Points : 0;
     })
+   
     return _mark;
   }
   ApplyVariables(studentInfo) {
@@ -588,6 +589,7 @@ export class EvaluationresultlistComponent implements OnInit {
     }
     else
       row.Action = true;
+    
   }
   CategoryChanged(row) {
     debugger;
@@ -636,7 +638,7 @@ export class EvaluationresultlistComponent implements OnInit {
       this.EvaluationResultData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
       console.log("StudentAttendanceData update", this.EvaluationResultData);
       this.update(row);
-
+      
     }
   }
 

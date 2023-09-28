@@ -9,6 +9,7 @@ import { EvaluationMasterComponent } from '../evaluationmaster/evaluationmaster.
 import { EvaluationControlComponent } from '../evaluationcontrol/evaluationcontrol.component';
 import { EvaluationresultlistComponent } from '../evaluationresultlist/evaluationresultlist.component';
 import { StudentEvaluationComponent } from '../studentevaluation/studentevaluation.component';
+import { EvaluationstatusComponent } from '../evaluationstatus/evaluationstatus.component';
 
 @Component({
   selector: 'app-evaluationboard',
@@ -23,7 +24,8 @@ export class EvaluationboardComponent implements AfterViewInit {
     EvaluationExamMapComponent,
     StudentEvaluationComponent,
     EvaluationresultlistComponent,
-    EvaluationControlComponent
+    EvaluationControlComponent,
+    EvaluationstatusComponent
   ];
 
   tabNames = [
@@ -33,6 +35,7 @@ export class EvaluationboardComponent implements AfterViewInit {
     { 'label': '1Exam Result', 'faIcon': '' },
     { 'label': '1Exam Result', 'faIcon': '' },
     { 'label': '1Exam Result', 'faIcon': '' },
+    { 'label': '1Exam Result', 'faIcon': '' }
   ];
 
   Permissions =
@@ -86,6 +89,10 @@ export class EvaluationboardComponent implements AfterViewInit {
     
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATIONMARK)
     var comindx = this.components.indexOf(EvaluationControlComponent);
+    this.AddRemoveComponent(perObj, comindx);
+    
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.ESTATUS)
+    var comindx = this.components.indexOf(EvaluationstatusComponent);
     this.AddRemoveComponent(perObj, comindx);
     
     this.shareddata.ChangePermissionAtParent(this.Permissions.ParentPermission);

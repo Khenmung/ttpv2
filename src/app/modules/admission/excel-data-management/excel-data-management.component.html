@@ -5,7 +5,7 @@
     
     <form [formGroup]="uploadForm">        
         <div class="row">
-            <input [hidden]="true" #inputfile type="file" class="form-control" (change)="browseOnChange($event)"
+            <input [hidden]="true" formControlName="inputFile" #inputfile type="file" class="form-control" (change)="browseOnChange($event)"
                 placeholder="Upload file" accept=".xlsx">
         </div>        
         <span>
@@ -32,8 +32,8 @@
                 <mat-icon>file_upload</mat-icon>
                 <mat-icon *ngIf="loading"><mat-spinner diameter="20"></mat-spinner></mat-icon>
             </button>&nbsp;&nbsp;
-            <!-- <button [disabled]="loading || ErrorMessage.length>0" type="submit" (click)="clear()"
-                matTooltip="upload file" mat-mini-fab>
+            <!-- <button [disabled]="loading" (click)="clear()"
+                matTooltip="clear" mat-mini-fab color="accent">
                 <mat-icon aria-label="file_upload">clear</mat-icon>
             </button> -->
         </span>

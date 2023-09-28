@@ -122,7 +122,7 @@ export class EvaluationMasterComponent implements OnInit {
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.GetMasterData();
         this.EvaluationMasterList = [];
-        this.GetEvaluationMaster();
+        this.GetEvaluationMaster(true);
       }
     }
   }
@@ -323,7 +323,7 @@ export class EvaluationMasterComponent implements OnInit {
         });
   }
   EvaluationMasterForDropdown: any[] = [];
-  GetEvaluationMaster() {
+  GetEvaluationMaster(pageload) {
     debugger;
 
     this.loading = true;
@@ -361,7 +361,7 @@ export class EvaluationMasterComponent implements OnInit {
       .subscribe((data: any) => {
         //debugger;
         if (data.value.length > 0) {
-          let _startTime = '';
+          //let _startTime = '';
           this.EvaluationMasterList = data.value.map(d => {
 
             d.EvaluationName = globalconstants.decodeSpecialChars(d.EvaluationName);
@@ -370,7 +370,8 @@ export class EvaluationMasterComponent implements OnInit {
             return d;
           })
         }
-        this.EvaluationMasterForDropdown = [...this.EvaluationMasterList]
+        if (pageload)
+          this.EvaluationMasterForDropdown = [...this.EvaluationMasterList]
         //console.log("this.EvaluationMasterList",this.EvaluationMasterList)
         this.dataSource = new MatTableDataSource<IEvaluationMaster>(this.EvaluationMasterList);
         this.dataSource.paginator = this.paging;

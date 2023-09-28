@@ -96,7 +96,7 @@
                                     style="display: flex;justify-content: flex-end;margin:15px">
                                     <button [disabled]="loading || Permission=='read'" matTooltip="Verify All"
                                         mat-mini-fab color="accent" (click)="GetAllEvaluatedStudentMarks()">
-                                        <mat-icon>all_out</mat-icon>
+                                        <mat-icon>done</mat-icon>
                                         <mat-icon *ngIf="loading">
                                             <mat-spinner diameter="20" color="Blue"></mat-spinner>
                                         </mat-icon>
@@ -138,7 +138,7 @@
                             <mat-header-cell *matHeaderCellDef style="display: flex;justify-content: flex-end;">
                                 <div><b>Full Mark </b>:&nbsp;{{FullMark}},&nbsp; </div>
                                 <div><b>Pass Mark </b>:&nbsp;{{PassMark}},&nbsp; </div>
-                                <div><b>Mark Obtain</b>:&nbsp;{{MarkObtain}}</div>
+                                <div><b>Mark Obtain</b>:&nbsp;{{MarkObtainDisplay}}</div>
                             </mat-header-cell>
                             <mat-cell *matCellDef="let element" [attr.colspan]="2"
                                 style="display:flex; flex-direction: column;justify-content: start;">

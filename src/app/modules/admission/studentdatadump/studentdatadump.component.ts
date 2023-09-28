@@ -28,9 +28,9 @@ export class StudentDatadumpComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   Defaultvalue=0;
   loading = false;
-  filterOrgIdNBatchId = '';
-  filterOrgSubOrgIdOnly = '';
-  filterBatchIdNOrgId = '';
+  FilterOrgSubOrgNBatchId = '';
+  FilterOrgSubOrg = '';
+  //filterBatchIdNOrgId = '';
   ELEMENT_DATA: IStudent[]= [];
   dataSource: MatTableDataSource<IStudent>;
   displayedColumns :any[]= [];
@@ -104,18 +104,17 @@ export class StudentDatadumpComponent implements OnInit {
       //var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.SEARCHSTUDENT);
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
       this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
-      //this.filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+      this.FilterOrgSubOrgNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
-      this.filterOrgSubOrgIdOnly = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-      this.filterBatchIdNOrgId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+      this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.studentSearchForm = this.fb.group({
         searchRemarkId: [0],
         searchGroupId: [0],
       })
-      this.contentservice.GetClassGroups(this.filterOrgSubOrgIdOnly)
+      this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
         .subscribe((data: any) => {
           this.ClassGroups = [...data.value];
-          this.contentservice.GetClassGroupMapping(this.filterOrgSubOrgIdOnly, 1)
+          this.contentservice.GetClassGroupMapping(this.FilterOrgSubOrg, 1)
             .subscribe((data: any) => {
               this.ClassGroupMapping = data.value.map(f => {
                 f.ClassName = f.Class.ClassName;
@@ -127,7 +126,7 @@ export class StudentDatadumpComponent implements OnInit {
 
 
 
-      this.contentservice.GetClasses(this.filterOrgSubOrgIdOnly).subscribe((data: any) => {
+      this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         this.Classes = [...data.value];
         this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       });
@@ -210,7 +209,7 @@ export class StudentDatadumpComponent implements OnInit {
         this.LanguageSubjLower = this.getDropDownData(globalconstants.MasterDefinitions.school.LANGUAGESUBJECTLOWERCLS);
         this.shareddata.ChangeLanguageSubjectLower(this.LanguageSubjLower);
         this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
-        this.contentservice.GetFeeDefinitions(this.filterOrgSubOrgIdOnly, 1).subscribe((f: any) => {
+        this.contentservice.GetFeeDefinitions(this.FilterOrgSubOrg, 1).subscribe((f: any) => {
           this.FeeDefinitions = [...f.value];
           this.shareddata.ChangeFeeDefinition(this.FeeDefinitions);
         });
@@ -348,7 +347,7 @@ export class StudentDatadumpComponent implements OnInit {
     let list: List = new List();
     list.fields = ["StudentId", "RollNo", "SectionId", "StudentClassId", "ClassId", "SemesterId"];
     list.PageName = "StudentClasses";
-    list.filter = [this.filterOrgIdNBatchId + " and IsCurrent eq true"];
+    list.filter = [this.FilterOrgSubOrgNBatchId + " and IsCurrent eq true"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -365,7 +364,7 @@ export class StudentDatadumpComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FeeTypeId", "FeeTypeName", "Formula"];
     list.PageName = "SchoolFeeTypes";
-    list.filter = [this.filterOrgSubOrgIdOnly + " and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -416,7 +415,7 @@ export class StudentDatadumpComponent implements OnInit {
     list.fields = ["Remarks,StudentClassId,HouseId,BatchId,ClassId,RollNo,FeeTypeId,Remarks,SectionId,SemesterId"];
     list.lookupFields = ["Student($select=*)"];
     list.PageName = "StudentClasses";
-    list.filter = [this.filterOrgSubOrgIdOnly + " and " + classfilter];
+    list.filter = [this.FilterOrgSubOrg + " and " + classfilter];
     //list.orderBy = "ParentId";
 
     this.dataservice.get(list)
