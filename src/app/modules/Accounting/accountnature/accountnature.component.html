@@ -66,6 +66,18 @@
             </mat-checkbox>
         </mat-cell>
     </ng-container>
+    <ng-container matColumnDef="AccountTypeId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Account Type</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-select [(ngModel)]="element.AccountTypeId" [value]="element.AccountTypeId"
+                    (selectionChange)="onBlur(element)">
+                    <mat-option *ngFor="let item of AccountTypes" [value]="item.MasterDataId">{{item.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
     <ng-container matColumnDef="TBSequence">
         <mat-header-cell *matHeaderCellDef mat-sort-header>TB Sequence
         </mat-header-cell>

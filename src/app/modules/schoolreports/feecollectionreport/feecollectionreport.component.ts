@@ -15,6 +15,7 @@ import { List } from '../../../shared/interface';
 import { SharedataService } from '../../../shared/sharedata.service';
 import { IStudent } from '../../admission/AssignStudentClass/Assignstudentclassdashboard.component';
 import { SwUpdate } from '@angular/service-worker';
+import { TableUtil } from '../../../shared/TableUtil';
 
 @Component({
   selector: 'app-feecollectionreport',
@@ -45,6 +46,7 @@ export class FeecollectionreportComponent implements OnInit {
   CurrentBatch: string = '';
   Students: any[] = [];
   DisplayColumns = [
+    "PID",
     "Name",
     "ClassRollNoSection",
     "RollNo",
@@ -109,7 +111,7 @@ export class FeecollectionreportComponent implements OnInit {
         var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
           this.Classes = [...data.value];
-          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
         });
         this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, 0)
           .subscribe((data: any) => {
@@ -159,7 +161,12 @@ export class FeecollectionreportComponent implements OnInit {
   get f() {
     return this.SearchForm.controls;
   }
-
+  exportArray() {
+    if (this.ELEMENT_DATA.length > 0) {
+      const datatoExport: any[] = this.ELEMENT_DATA;
+      TableUtil.exportArrayToExcel(datatoExport, "feepaymentstatus");
+    }
+  }
   GetStudentFeePaymentReport() {
     debugger;
     this.ErrorMessage = '';
@@ -182,23 +189,28 @@ export class FeecollectionreportComponent implements OnInit {
       return;
     }
     this.loading = true;
-    nestedFilter = "$filter=TotalCredit gt 0 and Balance eq 0 and Month eq " + selectedMonth + ";";
+    if (paidNotPaid == 'NotPaid')
+      //nestedFilter = "$filter=TotalCredit gt 0 and Balance gt 0 and Month eq " + selectedMonth + ";";
+      nestedFilter = " and TotalDebit gt 0 and Balance gt 0 and Month eq " + selectedMonth;
+    else
+      nestedFilter = " and TotalDebit gt 0 and Balance eq 0 and Month eq " + selectedMonth;
 
     if (_selectedClassId > 0) {
       filterstring += ' and ClassId eq ' + _selectedClassId;
     }
 
-    filterstring += " and IsCurrent eq true" // and Active eq 1"//report needed even though the student is deactivated.
+    //filterstring += " and IsCurrent eq true" // and Active eq 1"//report needed even though the student is deactivated.
 
     let list: List = new List();
     list.fields = [
-      'ClassId,RollNo,SectionId,StudentClassId', 'SemesterId'
+      //'ClassId,RollNo,SectionId,StudentClassId,SemesterId,StudentId'
+      "StudentClassId,Month,TotalDebit,Balance"
     ];
-    list.PageName = "StudentClasses";//AccountingLedgerTrialBalances";
+    list.PageName = "AccountingLedgerTrialBalances";
     //StudentClassId','Month','TotalDebit','Balance'
 
-    list.lookupFields = ["Student($select=FirstName,LastName),AccountingLedgerTrialBalances(" + nestedFilter + "$select=StudentClassId,Month,TotalDebit,Balance)"];
-    list.filter = [filterstring];
+    //list.lookupFields = ["AccountingLedgerTrialBalances(" + nestedFilter + "$select=StudentClassId,Month,TotalDebit,Balance)"];
+    list.filter = [filterstring + nestedFilter];
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource<ITodayReceipt>(this.ELEMENT_DATA);
     this.dataservice.get(list)
@@ -213,31 +225,42 @@ export class FeecollectionreportComponent implements OnInit {
           data.value.forEach((item, indx) => {
             _className = '';
             _sectionName = '';
-            var clsobj = this.Classes.filter(c => c.ClassId == item.ClassId)
-            if (clsobj.length > 0) {
-              _className = clsobj[0].ClassName
-              var sectionObj = this.Sections.filter((s: any) => s.MasterDataId == item.SectionId)
-              if (sectionObj.length > 0)
-                _sectionName = sectionObj[0].MasterDataName
-              var _lastname = item.Student.LastName == null ? '' : " " + item.Student.LastName;
-              result.push({
-                Name: item.Student.FirstName + _lastname,
-                ClassRollNoSection: _className + ' - ' + _sectionName,
-                RollNo: item.RollNo,
-                Section: _sectionName,
-                Month: item.AccountingLedgerTrialBalances.length > 0 ? item.AccountingLedgerTrialBalances[0].Month : 0,
-                Sequence: clsobj[0].Sequence
-              })
+            let stud = this.Students.filter(f => f.StudentClassId == item.StudentClassId)
+            if (stud.length > 0) {
+              item.Name = stud[0].Name;
+              item.ClassId = stud[0].ClassId;
+              item.SemesterId = stud[0].SemesterId;
+              item.SectionId = stud[0].SectionId;
+              item.RollNo = stud[0].RollNo;
+              item.PID = stud[0].PID;
+              var clsobj = this.Classes.filter(c => c.ClassId == item.ClassId)
+              if (clsobj.length > 0) {
+                _className = clsobj[0].ClassName
+                var sectionObj = this.Sections.filter((s: any) => s.MasterDataId == item.SectionId)
+                if (sectionObj.length > 0)
+                  _sectionName = sectionObj[0].MasterDataName
+                //var _lastname = item.Student.LastName == null ? '' : " " + item.Student.LastName;
+                result.push({
+                  Name: item.Name,
+                  ClassRollNoSection: _className + '-' + _sectionName,
+                  RollNo: item.RollNo,
+                  Section: _sectionName,
+                  Month: item.Month,
+                  Sequence: clsobj[0].Sequence,
+                  PID: item.PID
+                })
+              }
             }
           });
           debugger;
           //result =result.sort((a,b)=>a.Sequence - b.Sequence);
-          this.ELEMENT_DATA = alasql("select Name,ClassRollNoSection,RollNo,Sequence,Section,MAX(Month) month from ? group by Name,Sequence,ClassRollNoSection,Section,RollNo", [result]);
-          if (paidNotPaid == 'NotPaid')
-            this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f: any) => f.month == 0); //.sort((a, b) => a.month - b.month)
-          else
-            this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f: any) => f.month > 0); //.sort((a, b) => a.month - b.month)
-          this.loading = false; this.PageLoading = false;
+          this.ELEMENT_DATA = alasql("select PID,Name,ClassRollNoSection,RollNo,Sequence,Section,MAX(Month) month from ? group by PID,Name,Sequence,ClassRollNoSection,Section,RollNo", [result]);
+          // if (paidNotPaid == 'NotPaid')
+          //   this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f: any) => f.month == 0); //.sort((a, b) => a.month - b.month)
+          // else
+          //   this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f: any) => f.month > 0); //.sort((a, b) => a.month - b.month)
+          this.loading = false;
+          this.PageLoading = false;
           this.TotalPaidStudentCount = this.ELEMENT_DATA.length;
           if (this.ELEMENT_DATA.length == 0) {
             this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
@@ -314,55 +337,62 @@ export class FeecollectionreportComponent implements OnInit {
 
     ////console.log(this.LoginUserDetail);
 
-    let list: List = new List();
-    list.fields = [
-      'StudentClassId',
-      'StudentId',
-      'ClassId',
-      'RollNo',
-      'SectionId'
-    ];
+    // let list: List = new List();
+    // list.fields = [
+    //   'StudentClassId',
+    //   'StudentId',
+    //   'ClassId',
+    //   'RollNo',
+    //   'SectionId',
+    //   'SemesterId'
+    // ];
 
-    list.PageName = "StudentClasses";
-    //list.lookupFields = ["Student($select=FirstName,LastName)"]
-    list.filter = ['OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and IsCurrent eq true and BatchId eq ' + this.SelectedBatchId];
+    // list.PageName = "StudentClasses";
+    // //list.lookupFields = ["Student($select=FirstName,LastName)"]
+    // list.filter = ['OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and IsCurrent eq true and BatchId eq ' + this.SelectedBatchId];
 
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        //debugger;
-        //  //console.log('data.value', data.value);
-        if (data.value.length > 0) {
-          var _students: any = this.tokenStorage.getStudents()!;
-          var _filteredStudents = _students.filter((s: any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
-          this.Students = [];
-          data.value.forEach(studentcls => {
-            var matchstudent = _filteredStudents.filter(stud => stud.StudentId == studentcls.StudentId)
-            if (matchstudent.length > 0) {
-              var _classNameobj = this.Classes.filter(c => c.ClassId == studentcls.ClassId);
-              var _className = '';
-              if (_classNameobj.length > 0)
-                _className = _classNameobj[0].ClassName;
+    // this.dataservice.get(list)
+    //   .subscribe((data: any) => {
+    //     //debugger;
+    //     //  //console.log('data.value', data.value);
+    //     if (data.value.length > 0) {
+    var _students: any = this.tokenStorage.getStudents()!;
+    //var _filteredStudents = _students.filter((s: any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
+    var _filteredStudents = _students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0);
+    this.Students = [];
+    _filteredStudents.forEach(studentcls => {
+      //var matchstudent = _filteredStudents.filter(stud => stud.StudentId == studentcls.StudentId)
+      //if (matchstudent.length > 0) {
+      var _classNameobj = this.Classes.filter(c => c.ClassId == studentcls.ClassId);
+      var _className = '';
+      if (_classNameobj.length > 0)
+        _className = _classNameobj[0].ClassName;
 
-              var _Section = '';
-              var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studentcls.SectionId);
-              if (_sectionobj.length > 0)
-                _Section = _sectionobj[0].MasterDataName;
+      var _Section = '';
+      var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studentcls.SectionId);
+      if (_sectionobj.length > 0)
+        _Section = _sectionobj[0].MasterDataName;
 
-              var _RollNo = studentcls.RollNo;
-              //console.log('matchstudent[0].LastName', matchstudent[0].LastName)
-              var _lastname = matchstudent[0].LastName ? " " + matchstudent[0].LastName : '';
-              var _name = matchstudent[0].FirstName + _lastname;
-              var _fullDescription = _name + " - " + _className + " - " + _Section + " - " + _RollNo;
-              this.Students.push({
-                StudentClassId: studentcls.StudentClassId,
-                StudentId: studentcls.StudentId,
-                Name: _fullDescription
-              })
-            }
-          })
-        }
-        this.loading = false; this.PageLoading = false;
+      //var _RollNo = studentcls.RollNo;
+      //console.log('matchstudent[0].LastName', matchstudent[0].LastName)
+      var _lastname = studentcls.LastName ? " " + studentcls.LastName : '';
+      var _name = studentcls.FirstName + _lastname;
+      //var _fullDescription = _name //+ " - " + _RollNo;//_className + " - " + _Section + " - " + _RollNo;
+      this.Students.push({
+        StudentClassId: studentcls.StudentClassId,
+        StudentId: studentcls.StudentId,
+        SectionId: studentcls.StudentClasses[0].SectionId,
+        SemesterId: studentcls.StudentClasses[0].SemesterId,
+        RollNo: studentcls.StudentClasses[0].RollNo,
+        ClassId: studentcls.StudentClasses[0].ClassId,
+        PID: studentcls.PID,
+        Name: _name
       })
+      //}
+      //})
+      //}
+      this.loading = false; this.PageLoading = false;
+    })
   }
 }
 export interface ITodayReceipt {

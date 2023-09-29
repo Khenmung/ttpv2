@@ -271,6 +271,8 @@ export class DashboardclassfeeComponent implements OnInit {
                       FeeCategory: _category,
                       FeeSubCategory: _subCategory,
                       FeeTypeId: studcls.FeeTypeId,
+                      ClassId: studcls.ClassId,
+                      SemesterId: studcls.SemesterId,
                       SectionId: studcls.SectionId,
                       RollNo: studcls.RollNo,
                       ClassName: _className
@@ -279,7 +281,7 @@ export class DashboardclassfeeComponent implements OnInit {
 
                 })
               })
-              //console.log("studentfeedetailxxxx", studentfeedetail)
+              console.log("studentfeedetailxxxx", studentfeedetail)
               this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
                 .subscribe((data: any) => {
                   this.loading = false;

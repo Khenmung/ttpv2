@@ -1092,7 +1092,9 @@ export class PromoteclassComponent implements OnInit {
                     FeeCategory: _category,
                     FeeSubCategory: _subCategory,
                     FeeTypeId: studcls.FeeTypeId,
+                    ClassId: studcls.ClassId,
                     SectionId: studcls.SectionId,
+                    SemesterId: studcls.SemesterId,
                     RollNo: studcls.RollNo
                   });
                 }

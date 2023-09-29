@@ -684,6 +684,9 @@ export class ContentService implements OnInit {
         Balance: AmountAfterFormulaApplied,
         Month: inv.Month,
         StudentClassId: inv.StudentClassId,
+        ClassId: inv.ClassId,
+        SectionId: inv.SectionId,
+        SemesterId: inv.SemesterId,
         OrgId: pOrgId,
         SubOrgId: pSubOrgId,
         TotalDebit: AmountAfterFormulaApplied,
@@ -691,8 +694,8 @@ export class ContentService implements OnInit {
       });
     });
     var query = "select SUM(BaseAmount) BaseAmount,SUM(TotalCredit) TotalCredit,SUM(TotalDebit) TotalDebit, SUM(Balance) Balance," +
-      "StudentClassId,LedgerId, Active, GeneralLedgerId, BatchId, Month, OrgId,SubOrgId " +
-      "FROM ? GROUP BY StudentClassId, LedgerId,Active, GeneralLedgerId,BatchId, Month,OrgId,SubOrgId";
+      "StudentClassId,ClassId,SemesterId,SectionId,LedgerId, Active, GeneralLedgerId, BatchId, Month, OrgId,SubOrgId " +
+      "FROM ? GROUP BY StudentClassId,ClassId,SemesterId,SectionId, LedgerId,Active, GeneralLedgerId,BatchId, Month,OrgId,SubOrgId";
     var sumFeeData = alasql(query, [_LedgerData]);
     //console.log("_LedgerData", _LedgerData);
     console.log("sumFeeData", sumFeeData);

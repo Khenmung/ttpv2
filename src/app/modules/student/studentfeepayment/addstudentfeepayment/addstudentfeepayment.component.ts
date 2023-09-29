@@ -127,6 +127,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     StudentClassId: 0,
     ClassId: 0,
     SectionId: 0,
+    SemesterId: 0,
     TotalAmount: 0,
     Balance: 0,
     ReceiptNo: 0,
@@ -164,6 +165,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
   StudentLedgerData: any = {
     LedgerId: 0,
     StudentClassId: 0,
+    ClassId:0,
+    SemesterId:0,
+    SectionId:0,
     Month: 0,
     //TotalDebit: 0,
     TotalCredit: 0,
@@ -998,6 +1002,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     this.StudentReceiptData.StudentClassId = this.studentInfoTodisplay.StudentClassId;
     this.StudentReceiptData.ClassId = this.studentInfoTodisplay.ClassId;
     this.StudentReceiptData.SectionId = this.studentInfoTodisplay.SectionId;
+    this.StudentReceiptData.SemesterId = this.studentInfoTodisplay.SemesterId;
     this.StudentReceiptData.AdjustedAccountId = _adjustedAccountId;
 
     this.StudentReceiptData.Balance = this.Balance;
@@ -1023,6 +1028,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
       this.StudentLedgerData.Active = 1;
       //this.StudentLedgerData.GeneralLedgerId = 0;//StudentFeeLedgerNameId;// row.AccountGroupId;
       this.StudentLedgerData.BatchId = this.SelectedBatchId;
+      this.StudentLedgerData.ClassId = this.studentInfoTodisplay.ClassId;
+      this.StudentLedgerData.SemesterId = this.studentInfoTodisplay.SemesterId;
+      this.StudentLedgerData.SectionId = this.studentInfoTodisplay.SectionId;
 
       this.StudentLedgerData.Balance = this.Balance;
       this.StudentLedgerData.Month = selectedMonthrowFromLedger.Month;

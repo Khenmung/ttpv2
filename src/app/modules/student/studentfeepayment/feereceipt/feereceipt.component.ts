@@ -256,6 +256,8 @@ export class FeereceiptComponent implements OnInit {
                     FeeCategory: _category,
                     FeeSubCategory: _subCategory,
                     FeeTypeId: studcls.FeeTypeId,
+                    ClassId: studcls.ClassId,
+                    SemesterId: studcls.SemesterId,
                     SectionId: studcls.SectionId,
                     RollNo: studcls.RollNo,
                     ClassName: _className

@@ -1245,6 +1245,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                     FeeSubCategory: _subCategory,
                     FeeTypeId: studcls.FeeTypeId,
                     SectionId: studcls.SectionId,
+                    SemesterId: studcls.SemesterId,
+                    ClassId:studcls.ClassId,
                     RollNo: studcls.RollNo
                   });
                 }

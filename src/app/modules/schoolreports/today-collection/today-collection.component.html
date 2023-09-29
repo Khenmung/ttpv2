@@ -22,13 +22,13 @@
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
-        <mat-form-field appearance="outline" style="width:140px">
+        <mat-form-field appearance="outline" style="width:160px">
             <mat-label>From Date</mat-label>
             <input formControlName="FromDate" (dateChange)="datechange()" matInput [matDatepicker]="FromDate" autocomplete="off">
             <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
             <mat-datepicker #FromDate></mat-datepicker>
         </mat-form-field>
-        <mat-form-field appearance="outline" style="width:140px">
+        <mat-form-field appearance="outline" style="width:160px">
             <mat-label>To Date</mat-label>
             <input formControlName="ToDate" (dateChange)="datechange()" matInput [matDatepicker]="ToDate" autocomplete="off">
             <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>

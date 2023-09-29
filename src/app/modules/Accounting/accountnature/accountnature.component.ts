@@ -26,39 +26,41 @@ export class AccountNatureComponent implements OnInit {
   @ViewChild("table") mattable;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  GeneralLedgers :any[]= [];
+  GeneralLedgers: any[] = [];
   AccountNatureListName = 'AccountNatures';
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   DummyMasterItemId = 4579;
-  AccountingPeriod:any = {
+  AccountingPeriod: any = {
     StartDate: new Date(),
     EndDate: new Date()
   }
-  AccountNatures :any[]= [];
+  AccountNatures: any[] = [];
   Permission = '';
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   SelectedApplicationId = 0;
   loading = false;
-  GLAccounts :any[]= [];
+  GLAccounts: any[] = [];
+  AccountTypes: any[] = [];
   CurrentBatchId = 0;
-  SelectedBatchId = 0;SubOrgId = 0;
-  AccountNatureList: IAccountNature[]= [];
+  SelectedBatchId = 0; SubOrgId = 0;
+  AccountNatureList: IAccountNature[] = [];
   dataSource: MatTableDataSource<IAccountNature>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   searchForm: UntypedFormGroup;
-  AccountNatureData :any= {
+  AccountNatureData: any = {
     AccountNatureId: 0,
     AccountName: '',
     ParentId: 0,
     DebitType: false,
-    TBSequence:0,
-    IncomeStatementSequence:0,
-    ExpenseSequence:0,
-    AssetSequence:0,
-    LnESequence:0,
+    AccountTypeId: 0,
+    TBSequence: 0,
+    IncomeStatementSequence: 0,
+    ExpenseSequence: 0,
+    AssetSequence: 0,
+    LnESequence: 0,
     OrgId: 0,
     SubOrgId: 0,
     Active: 0,
@@ -69,6 +71,7 @@ export class AccountNatureComponent implements OnInit {
     "AccountName",
     "ParentId",
     "DebitType",
+    "AccountTypeId",
     "IncomeStatementSequence",
     "ExpenseSequence",
     "AssetSequence",
@@ -110,7 +113,7 @@ export class AccountNatureComponent implements OnInit {
   }
 
   PageLoad() {
-debugger;
+    debugger;
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
 
@@ -130,19 +133,21 @@ debugger;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.accounting.ACCOUNTNATURE);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
-      if (this.Permission != 'deny') {       
+      if (this.Permission != 'deny') {
+        
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+        this.GetMasterData();
         this.GetAccountNatureAutoComplete();
       }
     }
 
   }
-  FilteredAccountNature:any[]=[];
-  filterAccountNature(){
+  FilteredAccountNature: any[] = [];
+  filterAccountNature() {
     var _parentId = this.searchForm.get("searchAccountName")?.value;
-    this.FilteredAccountNature = this.AccountNatureList.filter((f:any)=>f.ParentId == _parentId);
+    this.FilteredAccountNature = this.AccountNatureList.filter((f: any) => f.ParentId == _parentId);
   }
   private _filter(name: string): IAccountNature[] {
 
@@ -160,11 +165,12 @@ debugger;
       AccountNatureId: 0,
       AccountName: '',
       DebitType: false,
-      IncomeStatementSequence:0,
-      ExpenseSequence:0,
-      TBSequence:0,
-      AssetSequence:0,
-      LnESequence:0,
+      AccountTypeId: 0,
+      IncomeStatementSequence: 0,
+      ExpenseSequence: 0,
+      TBSequence: 0,
+      AssetSequence: 0,
+      LnESequence: 0,
       ParentId: 0,
       Active: 0,
       Action: true
@@ -184,7 +190,7 @@ debugger;
     if (_searchAccountId == undefined) {
       filterStr = "ParentId eq 0 and OrgId eq 0";
     }
-    else if (_searchAccountId >0) {
+    else if (_searchAccountId > 0) {
       filterStr += " and ParentId eq " + _searchAccountId
     }
 
@@ -194,6 +200,7 @@ debugger;
       "AccountName",
       "ParentId",
       "DebitType",
+      "AccountTypeId",
       "IncomeStatementSequence",
       "TBSequence",
       "ExpenseSequence",
@@ -224,7 +231,7 @@ debugger;
     let filterStr = "Active eq true and (OrgId eq 0 or (" + this.FilterOrgSubOrg + "))";;
     debugger;
     this.loading = true;
-    
+
     let list: List = new List();
     list.fields = [
       "AccountNatureId",
@@ -245,7 +252,7 @@ debugger;
       });
   }
   GetAccountNatureAutoComplete() {
-    let filterStr = 'Active eq true and (OrgId eq 0 or (' + this.FilterOrgSubOrg +"))";
+    let filterStr = 'Active eq true and (OrgId eq 0 or (' + this.FilterOrgSubOrg + "))";
     this.loading = true;
 
     let list: List = new List();
@@ -325,6 +332,7 @@ debugger;
           this.AccountNatureData.AccountName = row.AccountName;
           this.AccountNatureData.ParentId = row.ParentId;
           this.AccountNatureData.DebitType = row.DebitType;
+          this.AccountNatureData.AccountTypeId = row.AccountTypeId;
           this.AccountNatureData.IncomeStatementSequence = row.IncomeStatementSequence;
           this.AccountNatureData.ExpenseSequence = row.ExpenseSequence;
           this.AccountNatureData.AssetSequence = row.AssetSequence;
@@ -338,7 +346,7 @@ debugger;
             this.AccountNatureData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.AccountNatureData["UpdatedDate"];
             delete this.AccountNatureData["UpdatedBy"];
-            console.log('to insert', this.AccountNatureData)
+            //console.log('to insert', this.AccountNatureData)
             this.insert(row);
           }
           else {
@@ -346,7 +354,7 @@ debugger;
             delete this.AccountNatureData["CreatedBy"];
             this.AccountNatureData["UpdatedDate"] = new Date();
             this.AccountNatureData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log('to update', this.AccountNatureData)
+            //console.log('to update', this.AccountNatureData)
             this.update(row);
           }
         }
@@ -383,7 +391,7 @@ debugger;
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
       !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
- 
+
   openDialog(row) {
     debugger;
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -434,23 +442,11 @@ debugger;
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
+    this.AccountTypes = this.getDropDownData(globalconstants.MasterDefinitions.accounting.ACCOUNTTYPE)
     this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
-    // let Id = 0;
-    // let Ids = this.allMasterData.filter((item, indx) => {
-    //   return item.MasterDataName.toLowerCase() == dropdowntype.toLowerCase();//globalconstants.GENDER
-    // })
-    // if (Ids.length > 0) {
-    //   Id = Ids[0].MasterDataId;
-    //   return this.allMasterData.filter((item, index) => {
-    //     return item.ParentId == Id
-    //   })
-    // }
-    // else
-    //   return [];
-
   }
 
 }
