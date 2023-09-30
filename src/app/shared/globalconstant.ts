@@ -553,7 +553,6 @@ export class globalconstants {
     //public static 
     constructor(
         private dataservice: NaomitsuService,
-        private snackbar: MatSnackBar
     ) {
 
     }

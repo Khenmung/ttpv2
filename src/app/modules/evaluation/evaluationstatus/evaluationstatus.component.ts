@@ -115,7 +115,8 @@ export class EvaluationstatusComponent implements OnInit {
       searchClassId: [0],
       searchSectionId: [0],
       searchSemesterId: [0],
-      searchExamId:[0]
+      searchExamId: [0],
+      searchStatusId: [0]
     });
     // this.filteredStudents = this.searchForm.get("searchStudentName")?.valueChanges
     //   .pipe(
@@ -201,6 +202,16 @@ export class EvaluationstatusComponent implements OnInit {
       this.SelectedClassCategory = obj[0].Category.toLowerCase();
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
+    this.ClearData();
+  }
+  OptionsForSelectedEvalType: any[] = [];
+  ChangeEvaluationType() {
+    debugger;
+    let _searchEvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
+    let obj = this.ClassEvaluations.filter(f => f.EvaluationMasterId == _searchEvaluationMasterId);
+    if (obj.length > 0) {
+      this.OptionsForSelectedEvalType = this.ClassEvaluationOptionList.filter(o => o.ParentId == obj[0].ClassEvaluationAnswerOptionParentId)
+    }
     this.ClearData();
   }
   ClearData() {
@@ -485,12 +496,12 @@ export class EvaluationstatusComponent implements OnInit {
     let _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
     let _semesterId = this.searchForm.get("searchSemesterId")?.value;
     let _sectionId = this.searchForm.get("searchSectionId")?.value;
+    let _statusId = this.searchForm.get("searchStatusId")?.value;
 
-    let row =this.EvaluationForSelectedClassSemesterSection.filter(f=>f.ExamId == _examId);
-    if(row.length==0)
-    {
-      this.loading=false;
-      this.contentservice.openSnackBar("No evaluation found.",globalconstants.ActionText,globalconstants.RedBackground);
+    let row = this.EvaluationForSelectedClassSemesterSection.filter(f => f.ExamId == _examId);
+    if (row.length == 0) {
+      this.loading = false;
+      this.contentservice.openSnackBar("No evaluation found.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     // this.StudentClassId = objstudent.StudentClassId;
@@ -502,13 +513,15 @@ export class EvaluationstatusComponent implements OnInit {
     filterStr += ' and ClassId eq ' + _classId;
     filterStr += ' and SemesterId eq ' + _semesterId;
     filterStr += ' and SectionId eq ' + _sectionId;
-
+    let filterAnswers = '';
+    if (_statusId)
+      filterAnswers = "$filter=ClassEvaluationAnswerOptionsId eq " + _statusId + " and Active eq 1;";
     // this.RelevantEvaluationListForSelectedStudent.forEach(mapping => {
     //   if (mapping.EvaluationExamMapId != row.EvaluationExamMapId)
     //     mapping.Action = false;
     // })
     var _classEvaluations = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == row[0].EvaluationMasterId
-       && (f.ExamId ==0 || f.ExamId == null || f.ExamId == row[0].ExamId));
+      && (f.ExamId == 0 || f.ExamId == null || f.ExamId == row[0].ExamId));
     // //delete row all except selected one
     // for (var i = 0; i < this.RelevantEvaluationListForSelectedStudent.length; i++) {
     //   if (this.RelevantEvaluationListForSelectedStudent[i].EvaluationExamMapId != row.EvaluationExamMapId) {
@@ -516,8 +529,8 @@ export class EvaluationstatusComponent implements OnInit {
     //     i--;
     //   }
     // }
-    this.EvaluationForSelectedClassSemesterSection = this.EvaluationForSelectedClassSemesterSection.filter(f=>f.EvaluationMasterId == _EvaluationMasterId)
-     this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.EvaluationForSelectedClassSemesterSection);
+    this.EvaluationForSelectedClassSemesterSection = this.EvaluationForSelectedClassSemesterSection.filter(f => f.EvaluationMasterId == _EvaluationMasterId)
+    this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.EvaluationForSelectedClassSemesterSection);
 
     let list: List = new List();
     list.fields = [
@@ -562,9 +575,19 @@ export class EvaluationstatusComponent implements OnInit {
             }
             else
               SlNo = '';
-
-            var existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId && f.ClassEvaluationId == clseval.ClassEvaluationId);
-
+            var existing:any[] = [];
+            if (_statusId) {
+              existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
+                && f.StudentEvaluationAnswers
+                && f.StudentEvaluationAnswers.length > 0
+                && f.ClassEvaluationId == clseval.ClassEvaluationId
+                && f.StudentEvaluationAnswers[0].ClassEvaluationAnswerOptionsId == _statusId
+                && f.StudentEvaluationAnswers[0].Active == 1);
+            }
+            else {
+              existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
+                && f.ClassEvaluationId == clseval.ClassEvaluationId);
+            }
             if (existing.length > 0) {
               clseval.ClassEvaluationOptions.forEach(cls => {
                 var selectedorNot = existing[0].StudentEvaluationAnswers.filter(stud => stud.ClassEvaluationAnswerOptionsId == cls.ClassEvaluationAnswerOptionsId)
@@ -604,8 +627,9 @@ export class EvaluationstatusComponent implements OnInit {
                 EvaluationMasterId: row[0].EvaluationMasterId,
                 MultipleAnswer: clseval.MultipleAnswer,
               }
+              this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
             }
-            else {
+            else if (!_statusId) {
               clseval.ClassEvaluationOptions.forEach(f => f.checked = false);
               item = {
                 AutoId: SlNo,
@@ -630,8 +654,9 @@ export class EvaluationstatusComponent implements OnInit {
                 MultipleAnswer: clseval.MultipleAnswer,
                 StudentEvaluationAnswers: []
               }
+              this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
             }
-            this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
+
           })
         })
         //console.log("this.StudentEvaluationList", this.StudentEvaluationList);
@@ -769,6 +794,7 @@ export class EvaluationstatusComponent implements OnInit {
     this.GetEvaluationOption();
 
   }
+
   onBlur(row) {
     row.Action = true;
   }
@@ -891,7 +917,7 @@ export class EvaluationstatusComponent implements OnInit {
     var _classgroupsOfSelectedSemesterSection = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
 
     this.EvaluationForSelectedClassSemesterSection = this.EvaluationExamMaps.filter((f: any) => _classgroupsOfSelectedSemesterSection.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
-    this.loading=false;
+    this.loading = false;
   }
   GetEvaluationOption() {
     this.loading = true;
@@ -987,7 +1013,7 @@ export class EvaluationstatusComponent implements OnInit {
 
     this.ClearData();
     this.Students = [];
-    
+
     var filteredStudent = this.StudentList.filter(lst =>
       lst.StudentClasses
       && lst.StudentClasses.length > 0

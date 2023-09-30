@@ -144,7 +144,10 @@
             </button>
         </mat-header-cell>
         <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
-            <button style="margin-right:15px" [disabled]="loading || element.ParentId==0 || Permission=='read' || !element.Action" matTooltip="save" mat-raised-button
+            <button style="margin-right:15px" [disabled]="
+            loading || 
+            Permission=='read' || 
+            !element.Action" matTooltip="save" mat-raised-button
                 color="accent" (click)="UpdateOrSave(element)">
                 <mat-icon>save</mat-icon>
                 <mat-icon *ngIf="loading">

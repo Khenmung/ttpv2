@@ -22,7 +22,7 @@ import { SwUpdate } from '@angular/service-worker';
 })
 export class NoOfStudentComponent implements OnInit {
   PageLoading = true;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("table") mattable;
@@ -32,7 +32,7 @@ export class NoOfStudentComponent implements OnInit {
   SubOrgId = 0;
   Permission = '';
   PromotePermission = '';
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   FilterOrgSubOrgBatchId = '';
@@ -42,21 +42,21 @@ export class NoOfStudentComponent implements OnInit {
   PreviousClassPreviousBatch = "PreviousClassPreviousBatch";
   HeaderTitle = '';
   loading = false;
-  RollNoGeneration :any[]= [];
-  Genders :any[]= [];
-  Classes :any[]= [];
-  FeeTypes :any[]= [];
-  Sections :any[]= [];
-  Semesters :any[]= [];
-  StudentGrades :any[]= [];
+  RollNoGeneration: any[] = [];
+  Genders: any[] = [];
+  Classes: any[] = [];
+  FeeTypes: any[] = [];
+  Sections: any[] = [];
+  Semesters: any[] = [];
+  StudentGrades: any[] = [];
   CurrentBatchId = 0;
   SelectedBatchId = 0;
   PreviousBatchId = 0;
   NextBatchId = 0;
-  Batches :any[]= [];
-  StudentClassList: IStudentClass[]= [];
+  Batches: any[] = [];
+  StudentClassList: IStudentClass[] = [];
   dataSource: MatTableDataSource<IStudentClass>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   searchForm: UntypedFormGroup;
   SelectedApplicationId = 0;
   //checkBatchIdNSelectedIdEqual = 0;
@@ -100,8 +100,9 @@ export class NoOfStudentComponent implements OnInit {
     });
     this.PageLoad();
   }
+  AllStudents: any[] = [];
   PageLoad() {
-    //debugger;
+    debugger;
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
 
@@ -122,7 +123,7 @@ export class NoOfStudentComponent implements OnInit {
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.StandardFilterWithPreviousBatchId = globalconstants.getOrgSubOrgFilterWithPreviousBatchId(this.tokenStorage);
-
+      this.AllStudents = this.tokenStorage.getStudents()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.misc.NOOFSTUDENT);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
@@ -205,189 +206,200 @@ export class NoOfStudentComponent implements OnInit {
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     this.loading = true;
     var _classId = this.searchForm.get("searchClassId")?.value;
-    filterStr = this.FilterOrgSubOrgBatchId;
-    if (_classId > 0)
-      filterStr += " and ClassId eq " + _classId;
-    filterStr += " and IsCurrent eq true";
+    var _students: any[] = [];
+    var _students = this.AllStudents.filter(s => s.StudentClasses && s.StudentClasses.length > 0)
+    if (_classId > 0) {
+      _students = _students.filter(s => s.StudentClasses && s.StudentClasses[0].ClassId == _classId)
+    }
+    else
+      
+    //   filterStr += " and ClassId eq " + _classId;
+    // filterStr += " and IsCurrent eq true";
 
-    let list: List = new List();
-    list.fields = [
-      'StudentClassId',
-      'ClassId',
-      'SectionId',
-      'SemesterId',
-      'StudentId',
-      'Active'
-    ];
+    // let list: List = new List();
+    // list.fields = [
+    //   'StudentClassId',
+    //   'ClassId',
+    //   'SectionId',
+    //   'SemesterId',
+    //   'StudentId',
+    //   'Active'
+    // ];
 
-    list.PageName = "StudentClasses";
-    list.lookupFields = ["Class($select=ClassName,ClassId,Sequence,MaxStudent)"]
-    list.filter = [filterStr + ' and Active eq 1'];
+    // list.PageName = "StudentClasses";
+    // list.lookupFields = ["Class($select=ClassName,ClassId,Sequence,MaxStudent)"]
+    // list.filter = [filterStr + ' and Active eq 1'];
     this.StudentClassList = [];
-    this.dataservice.get(list)
-      .subscribe((StudentClassesdb: any) => {
-        //console.log("Studenclass no.", StudentClassesdb.value)
-        var errormsg = '';
-        this.BoyGirlTotal = [];
-        this.StudentClassList = StudentClassesdb.value.map(student => {
-          var _sectionname = ''
-          var _semesterName = ''
-          var _pid = 0
-          var _gender = '';
-          var objStudent = this.Students.filter((s:any) => s.StudentId == student.StudentId)
-          if (objStudent.length > 0) {
-            _gender = objStudent[0].Gender;
-            _pid = objStudent[0].PID;
+    // this.dataservice.get(list)
+    //   .subscribe((StudentClassesdb: any) => {
+    //console.log("Studenclass no.", StudentClassesdb.value)
+    var errormsg = '';
+    this.BoyGirlTotal = [];
+    //this.StudentClassList = StudentClassesdb.value.map(student => {
+    _students.forEach(student => {
+      var _clsname = ''
+      var _sectionname = ''
+      var _semesterName = ''
+      var _pid = 0
+      var _gender = '';
+      var objStudent = this.Genders.filter((s: any) => s.MasterDataId == student.GenderId)
+      if (objStudent.length > 0)
+        _gender = objStudent[0].MasterDataName;
 
-            var sectionobj = this.Sections.filter((s:any) => s.MasterDataId == student.SectionId)
-            if (sectionobj.length > 0)
-              _sectionname = sectionobj[0].MasterDataName
-            else {
-              errormsg += _pid + ",";
-            }
-            var semesterobj = this.Semesters.filter((s:any) => s.MasterDataId == student.SemesterId)
-            if (semesterobj.length > 0)
-              _semesterName = semesterobj[0].MasterDataName
-            else {
-              errormsg += _pid + ",";
-            }
-          }
-          //var objgender = this.Genders.filter(g => g.MasterDataId == student.GenderId);
-
-
-          student.PID = _pid;
-          student.Gender = _gender;
-          student.ClassName = student.Class.ClassName + (_sectionname == "" ? "" : " - " + _sectionname);
-          student.Section = _sectionname;
-          student.Semester = _semesterName;
-          student.Sequence = student.Class.Sequence;
-          student.MaxStudent = student.Class.MaxStudent;
-          return student;
-        })
-        // if (errormsg.length > 0) {
-        //   errormsg = "Section not defined for PID: " + errormsg;
-        //   this.contentservice.openSnackBar(errormsg, globalconstants.ActionText, globalconstants.RedBackground);
-        // }
-        var _classStudentCount :any[]= [];
-        //if (errormsg.length == 0) {
-        _classStudentCount = alasql("select ClassId,ClassName,Section,Semester,Gender,MaxStudent,count(StudentClassId) NoOfStudent from ? group by ClassId,ClassName,Section,Semester,Gender,MaxStudent",
-          [this.StudentClassList])
-        //}
-        // else {
-        //   _classStudentCount = alasql("select ClassId,ClassName,Gender,MaxStudent,sum(1) NoOfStudent from ? group by ClassId,ClassName,Gender,MaxStudent",
-        //     [this.StudentClassList])
-        // }
-        var pivottedClass :any[]= [];
-        var _filteredClasses :any[]= [];
-        if (_classId > 0)
-          _filteredClasses = this.Classes.filter(c => c.ClassId == _classId);
-        else
-          _filteredClasses = [...this.Classes]
-
-        var classNSection :any[]= [];
-        _filteredClasses.forEach((c, indx) => {
-          var currentCls = _classStudentCount.filter((s:any) => s.ClassId == c.ClassId);
-          var _noOfSections = alasql("select distinct Section,ClassName,Semester from ?", [currentCls]);
-          if (_noOfSections.length > 0) {
-            _noOfSections.forEach(s => {
-              classNSection.push({ MaxStudent: c.MaxStudent, Sequence: indx, ClassId: c.ClassId, ClassName: c.ClassName + "-" + s.Section, Section: s.Section, Semester: s.Semester });
-            })
-          }
-          else {
-
-            classNSection.push({ MaxStudent: c.MaxStudent, Sequence: indx, ClassId: c.ClassId, ClassName: c.ClassName, Section: "", Semester: "" });
-          }
-        })
-        var _tempClassId = 0;
-        var _classTotal = 0;
-        classNSection.forEach((c, cindx) => {
-
-          var newClassRow :any[]= [];
-          //this.Sections.forEach(s => {
-
-          this.Genders.forEach(g => {
-            var sectionGenderRow :any[]= [];
-            //if (errormsg.length == 0) {
-            sectionGenderRow = _classStudentCount.filter(cls =>
-              cls.Section == c.Section
-              && cls.ClassId == c.ClassId
-              && cls.Gender == g.MasterDataName)
-            if (this.displayedColumns.indexOf(g.MasterDataName) == -1)
-              this.displayedColumns.push(g.MasterDataName)
-
-            if (sectionGenderRow.length > 0) {
-              sectionGenderRow[0].Sequence = c.Sequence;
-            }
-            else {
-              var sectionRow :any[]= []; //_classStudentCount.filter(cls =>cls.ClassId == c.ClassId)
-              sectionRow.push({
-                ClassName: c.ClassName,
-                MaxStudent: c.MaxStudent,
-                Section: c.Section,
-                Total: 0,
-                NoOfStudent: 0,
-                [g.MasterDataName]: 0
-              })
-              sectionGenderRow.push(sectionRow[0]);
-              //}
-            }
-            var existing = newClassRow.filter(n => n.ClassId == sectionGenderRow[0].ClassId
-              && n.Gender == sectionGenderRow[0].Gender
-              && n.Section == sectionGenderRow[0].Section)
-
-            if (existing.length == 0)
-              newClassRow.push(sectionGenderRow[0]);
-            if (isNaN(this.BoyGirlTotal[g.MasterDataName]))
-              this.BoyGirlTotal[g.MasterDataName] = 0;
-            this.BoyGirlTotal[g.MasterDataName] += sectionGenderRow[0].NoOfStudent
-            newClassRow[0][g.MasterDataName] = sectionGenderRow[0].NoOfStudent;
-            newClassRow[0].Total = newClassRow[0].Total ? newClassRow[0].Total + (+sectionGenderRow[0].NoOfStudent) : sectionGenderRow[0].NoOfStudent;
-
-          })
-          if (newClassRow.length > 0) {
-            if (cindx < classNSection.length - 1) {
-              if (_tempClassId == c.ClassId && _tempClassId != classNSection[cindx + 1].ClassId) {
-                _classTotal += (+newClassRow[0].Total);
-                newClassRow[0].ClassTotal = _classTotal;
-                _classTotal = 0;
-              }
-              else {
-                _classTotal += (+newClassRow[0].Total);
-              }
-            }
-            else {
-              //if last one
-              if (cindx == classNSection.length - 1) {
-                _classTotal += (+newClassRow[0].Total);
-                newClassRow[0].ClassTotal = _classTotal;
-                _classTotal = 0;
-              }
-            }
-
-            this.TotalStudent += newClassRow[0].Total;
-            pivottedClass.push(newClassRow[0]);
-          }
-          _tempClassId = c.ClassId;
-          //})
-
-        })
-        if (this.displayedColumns.indexOf('Total') == -1)
-          this.displayedColumns.push("Total");
-        if (this.displayedColumns.indexOf('ClassTotal') == -1)
-          this.displayedColumns.push("ClassTotal");
-        if (this.StudentClassList.length == 0) {
-          this.HeaderTitle = '';
-          this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
+      _pid = student.PID;
+      if (student.StudentClasses) {
+        var clsobj = this.Classes.filter((s: any) => s.ClassId == student.StudentClasses[0].ClassId)
+        if (clsobj.length > 0)
+          _clsname = clsobj[0].ClassName;
+        var sectionobj = this.Sections.filter((s: any) => s.MasterDataId == student.StudentClasses[0].SectionId)
+        if (sectionobj.length > 0)
+          _sectionname = sectionobj[0].MasterDataName
+        else {
+          errormsg += _pid + ",";
         }
-        //console.log("BoyGirlTotal", this.BoyGirlTotal);
-        var _sorted = pivottedClass.sort((a, b) => +a.Sequence - +b.Sequence);
-        this.dataSource = new MatTableDataSource<IStudentClass>(_sorted);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.filterPredicate = this.createFilter();
-        this.loading = false; this.PageLoading = false;
+        var semesterobj = this.Semesters.filter((s: any) => s.MasterDataId == student.StudentClasses[0].SemesterId)
+        if (semesterobj.length > 0)
+          _semesterName = semesterobj[0].MasterDataName
+        else {
+          errormsg += _pid + ",";
+        }
+        //}
+        //var objgender = this.Genders.filter(g => g.MasterDataId == student.GenderId);
+        student.PID = _pid;
+        student.ClassId = student.StudentClasses[0].ClassId;
+        student.Gender = _gender;
+        student.ClassName = _clsname + (_sectionname == "" ? "" : " - " + _sectionname);
+        student.Section = _sectionname;
+        student.Semester = _semesterName;
+        student.Sequence = clsobj[0].Sequence;
+        student.MaxStudent = clsobj[0].MaxStudent;
+        this.StudentClassList.push(student);
+      }
+    })
+    // if (errormsg.length > 0) {
+    //   errormsg = "Section not defined for PID: " + errormsg;
+    //   this.contentservice.openSnackBar(errormsg, globalconstants.ActionText, globalconstants.RedBackground);
+    // }
+    var _classStudentCount: any[] = [];
+    //if (errormsg.length == 0) {
+    _classStudentCount = alasql("select ClassId,ClassName,Section,Semester,Gender,MaxStudent,count(StudentClassId) NoOfStudent from ? group by ClassId,ClassName,Section,Semester,Gender,MaxStudent",
+      [this.StudentClassList])
+    //}
+    // else {
+    //   _classStudentCount = alasql("select ClassId,ClassName,Gender,MaxStudent,sum(1) NoOfStudent from ? group by ClassId,ClassName,Gender,MaxStudent",
+    //     [this.StudentClassList])
+    // }
+    var pivottedClass: any[] = [];
+    var _filteredClasses: any[] = [];
+    if (_classId > 0)
+      _filteredClasses = this.Classes.filter(c => c.ClassId == _classId);
+    else
+      _filteredClasses = [...this.Classes]
+
+    var classNSection: any[] = [];
+    _filteredClasses.forEach((c, indx) => {
+      var currentCls = _classStudentCount.filter((s: any) => s.ClassId == c.ClassId);
+      var _noOfSections = alasql("select distinct Section,ClassName,Semester from ?", [currentCls]);
+      if (_noOfSections.length > 0) {
+        _noOfSections.forEach(s => {
+          classNSection.push({ MaxStudent: c.MaxStudent, Sequence: indx, ClassId: c.ClassId, ClassName: c.ClassName + "-" + s.Section, Section: s.Section, Semester: s.Semester });
+        })
+      }
+      else {
+
+        classNSection.push({ MaxStudent: c.MaxStudent, Sequence: indx, ClassId: c.ClassId, ClassName: c.ClassName, Section: "", Semester: "" });
+      }
+    })
+    var _tempClassId = 0;
+    var _classTotal = 0;
+    classNSection.forEach((c, cindx) => {
+
+      var newClassRow: any[] = [];
+      //this.Sections.forEach(s => {
+
+      this.Genders.forEach(g => {
+        var sectionGenderRow: any[] = [];
+        //if (errormsg.length == 0) {
+        sectionGenderRow = _classStudentCount.filter(cls =>
+          cls.Section == c.Section
+          && cls.ClassId == c.ClassId
+          && cls.Gender == g.MasterDataName)
+        if (this.displayedColumns.indexOf(g.MasterDataName) == -1)
+          this.displayedColumns.push(g.MasterDataName)
+
+        if (sectionGenderRow.length > 0) {
+          sectionGenderRow[0].Sequence = c.Sequence;
+        }
+        else {
+          var sectionRow: any[] = []; //_classStudentCount.filter(cls =>cls.ClassId == c.ClassId)
+          sectionRow.push({
+            ClassName: c.ClassName,
+            MaxStudent: c.MaxStudent,
+            Section: c.Section,
+            Total: 0,
+            NoOfStudent: 0,
+            [g.MasterDataName]: 0
+          })
+          sectionGenderRow.push(sectionRow[0]);
+          //}
+        }
+        var existing = newClassRow.filter(n => n.ClassId == sectionGenderRow[0].ClassId
+          && n.Gender == sectionGenderRow[0].Gender
+          && n.Section == sectionGenderRow[0].Section)
+
+        if (existing.length == 0)
+          newClassRow.push(sectionGenderRow[0]);
+        if (isNaN(this.BoyGirlTotal[g.MasterDataName]))
+          this.BoyGirlTotal[g.MasterDataName] = 0;
+        this.BoyGirlTotal[g.MasterDataName] += sectionGenderRow[0].NoOfStudent
+        newClassRow[0][g.MasterDataName] = sectionGenderRow[0].NoOfStudent;
+        newClassRow[0].Total = newClassRow[0].Total ? newClassRow[0].Total + (+sectionGenderRow[0].NoOfStudent) : sectionGenderRow[0].NoOfStudent;
 
       })
+      if (newClassRow.length > 0) {
+        if (cindx < classNSection.length - 1) {
+          if (_tempClassId == c.ClassId && _tempClassId != classNSection[cindx + 1].ClassId) {
+            _classTotal += (+newClassRow[0].Total);
+            newClassRow[0].ClassTotal = _classTotal;
+            _classTotal = 0;
+          }
+          else {
+            _classTotal += (+newClassRow[0].Total);
+          }
+        }
+        else {
+          //if last one
+          if (cindx == classNSection.length - 1) {
+            _classTotal += (+newClassRow[0].Total);
+            newClassRow[0].ClassTotal = _classTotal;
+            _classTotal = 0;
+          }
+        }
+
+        this.TotalStudent += newClassRow[0].Total;
+        pivottedClass.push(newClassRow[0]);
+      }
+      _tempClassId = c.ClassId;
+      //})
+
+    })
+    if (this.displayedColumns.indexOf('Total') == -1)
+      this.displayedColumns.push("Total");
+    if (this.displayedColumns.indexOf('ClassTotal') == -1)
+      this.displayedColumns.push("ClassTotal");
+    if (this.StudentClassList.length == 0) {
+      this.HeaderTitle = '';
+      this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
+    }
+    //console.log("BoyGirlTotal", this.BoyGirlTotal);
+    var _sorted = pivottedClass.sort((a, b) => +a.Sequence - +b.Sequence);
+    this.dataSource = new MatTableDataSource<IStudentClass>(_sorted);
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.filterPredicate = this.createFilter();
+    this.loading = false; this.PageLoading = false;
+
+    //})
 
     //set current batch id back to the actual one.
     //this.shareddata.CurrentSelectedBatchId.subscribe(s => this.SelectedBatchId = s);
@@ -407,56 +419,56 @@ export class NoOfStudentComponent implements OnInit {
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
       !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
-  Students :any[]= [];
-  GetStudents() {
+  Students: any[] = [];
+  // GetStudents() {
 
-    // let list: List = new List();
-    // list.fields = [
-    //   'StudentId',
-    //   'GenderId',
-    //   'PID'
-    // ];
+  //   // let list: List = new List();
+  //   // list.fields = [
+  //   //   'StudentId',
+  //   //   'GenderId',
+  //   //   'PID'
+  //   // ];
 
-    // list.PageName = "Students";
-    // list.filter = ['Active eq 1 and OrgId eq ' + this.LoginUserDetail[0]["orgId"]];
+  //   // list.PageName = "Students";
+  //   // list.filter = ['Active eq 1 and OrgId eq ' + this.LoginUserDetail[0]["orgId"]];
 
-    // this.dataservice.get(list)
-    //   .subscribe((data: any) => {
-    //debugger;
-    //  //console.log('data.value', data.value);
-    var _students: any = this.tokenStorage.getStudents()!;
-    if (_students.length > 0) {
-      _students.forEach(student => {
-        var obj = this.Genders.filter(g => g.MasterDataId == student.GenderId);
-        if (obj.length > 0)
-          this.Students.push({
-            PID: student.PID,
-            StudentId: student.StudentId,
-            GenderId: student.GenderId,
-            Gender: obj[0].MasterDataName
-          })
-      })
-    }
-    this.loading = false; this.PageLoading = false;
-    // })
-  }
+  //   // this.dataservice.get(list)
+  //   //   .subscribe((data: any) => {
+  //   //debugger;
+  //   //  //console.log('data.value', data.value);
+  //   var _students: any = this.tokenStorage.getStudents()!;
+  //   if (_students.length > 0) {
+  //     _students.forEach(student => {
+  //       var obj = this.Genders.filter(g => g.MasterDataId == student.GenderId);
+  //       if (obj.length > 0)
+  //         this.Students.push({
+  //           PID: student.PID,
+  //           StudentId: student.StudentId,
+  //           GenderId: student.GenderId,
+  //           Gender: obj[0].MasterDataName
+  //         })
+  //     })
+  //   }
+  //   this.loading = false; this.PageLoading = false;
+  //   // })
+  // }
   GetMasterData() {
 
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
-        debugger;
-        this.allMasterData = [...data.value];
-        this.RollNoGeneration = this.getDropDownData(globalconstants.MasterDefinitions.school.ROLLNOGENERATION);
-        this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
-        this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-        this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
-        this.StudentGrades = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTGRADE);
-        //this.ClassPromotion = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSPROMOTION);
-        this.GetStudents();
-        //this.shareddata.ChangeBatch(this.Batches);
-        this.RollNoGenerationSortBy = "Sort by: " + this.RollNoGeneration.filter((f:any) => f.MasterDataName.toLowerCase() == 'sort by')[0].Logic;
-        this.loading = false; this.PageLoading = false;
-      });
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
+    debugger;
+    this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
+    this.RollNoGeneration = this.getDropDownData(globalconstants.MasterDefinitions.school.ROLLNOGENERATION);
+    this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
+    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
+    this.StudentGrades = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTGRADE);
+    //this.ClassPromotion = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSPROMOTION);
+    //this.GetStudents();
+    //this.shareddata.ChangeBatch(this.Batches);
+    this.RollNoGenerationSortBy = "Sort by: " + this.RollNoGeneration.filter((f: any) => f.MasterDataName.toLowerCase() == 'sort by')[0].Logic;
+    this.loading = false; this.PageLoading = false;
+    //});
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);

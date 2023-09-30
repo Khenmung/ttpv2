@@ -134,7 +134,7 @@ export class AccountNatureComponent implements OnInit {
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
-        
+
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -188,7 +188,7 @@ export class AccountNatureComponent implements OnInit {
     var _searchAccountId = this.searchForm.get("searchAccountName")?.value.AccountNatureId;
     //var _searchParentId = this.searchForm.get("searchParentId")?.value;
     if (_searchAccountId == undefined) {
-      filterStr = "ParentId eq 0 and OrgId eq 0";
+      filterStr += " and ParentId eq 0";
     }
     else if (_searchAccountId > 0) {
       filterStr += " and ParentId eq " + _searchAccountId
@@ -228,7 +228,7 @@ export class AccountNatureComponent implements OnInit {
   }
   GetAccountNatures() {
 
-    let filterStr = "Active eq true and (OrgId eq 0 or (" + this.FilterOrgSubOrg + "))";;
+    let filterStr = "Active eq true and " + this.FilterOrgSubOrg;
     debugger;
     this.loading = true;
 
@@ -252,7 +252,7 @@ export class AccountNatureComponent implements OnInit {
       });
   }
   GetAccountNatureAutoComplete() {
-    let filterStr = 'Active eq true and (OrgId eq 0 or (' + this.FilterOrgSubOrg + "))";
+    let filterStr = '(OrgId eq 0 or (' + this.FilterOrgSubOrg + ")) and Active eq true";
     this.loading = true;
 
     let list: List = new List();
@@ -338,6 +338,7 @@ export class AccountNatureComponent implements OnInit {
           this.AccountNatureData.AssetSequence = row.AssetSequence;
           this.AccountNatureData.LnESequence = row.LnESequence;
           this.AccountNatureData.TBSequence = row.TBSequence;
+
           this.AccountNatureData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.AccountNatureData.SubOrgId = this.SubOrgId;
 

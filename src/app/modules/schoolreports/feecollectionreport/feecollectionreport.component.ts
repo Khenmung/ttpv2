@@ -191,7 +191,7 @@ export class FeecollectionreportComponent implements OnInit {
     this.loading = true;
     if (paidNotPaid == 'NotPaid')
       //nestedFilter = "$filter=TotalCredit gt 0 and Balance gt 0 and Month eq " + selectedMonth + ";";
-      nestedFilter = " and TotalDebit gt 0 and Balance gt 0 and Month eq " + selectedMonth;
+      nestedFilter = " and TotalDebit gt 0 and Balance gt 0 and Month eq " + selectedMonth + " and Active eq 1";
     else
       nestedFilter = " and TotalDebit gt 0 and Balance eq 0 and Month eq " + selectedMonth;
 
