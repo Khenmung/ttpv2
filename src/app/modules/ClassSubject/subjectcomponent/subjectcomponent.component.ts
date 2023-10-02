@@ -19,29 +19,31 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 })
 export class SubjectcomponentComponent implements OnInit {
   PageLoading = true;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   //IscurrentBatchSelect = 1;
   SubjectComponentListName = 'SubjectComponents';
-  Applications :any[]= [];
+  Applications: any[] = [];
   Permission = '';
   loading = false;
   SelectedApplicationId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  SubjectComponentType :any[]= [];
+  SubjectComponentType: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
-  SubjectComponentList: ISubjectComponent[]= [];
+  SubjectComponentList: ISubjectComponent[] = [];
   filteredOptions: Observable<ISubjectComponent[]>;
   dataSource: MatTableDataSource<ISubjectComponent>;
-  allMasterData :any[]= [];
-  ClassMasters :any[]= [];
-  Defaultvalue=0;
+  allMasterData: any[] = [];
+  //ClassMasters: any[] = [];
+  Defaultvalue = 0;
   SubjectComponentData = {
     SubjectComponentId: 0,
     ComponentName: '',
     ClassSubjectId: 0,
     ClassId: 0,
+    SectionId: 0,
+    SemesterId: 0,
     SubjectId: 0,
     Sequence: 0,
     OrgId: 0,
@@ -53,6 +55,8 @@ export class SubjectcomponentComponent implements OnInit {
     "SubjectComponentId",
     "ComponentName",
     "ClassId",
+    "SemesterId",
+    "SectionId",
     "ClassSubjectId",
     "Sequence",
     "Active",
@@ -79,7 +83,8 @@ export class SubjectcomponentComponent implements OnInit {
     //debugger;
     this.searchForm = this.fb.group({
       searchClassId: [0],
-      searchSemesterId:[0],
+      searchSemesterId: [0],
+      searchSectionId: [0],
       searchClassSubjectId: [0]
     });
     this.PageLoad();
@@ -104,11 +109,23 @@ export class SubjectcomponentComponent implements OnInit {
         this.GetMasterData();
         // this.GetSubjectComponents();
         this.GetClassSubject();
+        // this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
+        //   this.ClassMasters = [...data.value];
+        //   this.loading = false;
+        //   this.PageLoading = false;
+        // })
+
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          this.ClassMasters = [...data.value];
-          this.loading = false;
-          this.PageLoading = false;
-        })
+          this.Classes = [];
+          data.value.forEach(m => {
+            let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
+            if (obj.length > 0) {
+              m.Category = obj[0].MasterDataName.toLowerCase();
+              this.Classes.push(m);
+            }
+          });
+          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+        });
       }
       // this.loading = false;
       //  this.PageLoading = false;
@@ -195,6 +212,13 @@ export class SubjectcomponentComponent implements OnInit {
     }
     return filterFunction;
   }
+  SelectedClassCategory = '';
+  getCollegeCategory() {
+    return globalconstants.CategoryCollege;
+  }
+  getHighSchoolCategory() {
+    return globalconstants.CategoryHighSchool;
+  }
   UpdateOrSave(row) {
 
     if (row.ClassSubjectId == 0) {
@@ -221,13 +245,15 @@ export class SubjectcomponentComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-          var objClassSubject = this.ClassSubjectList.filter((s:any) => s.ClassSubjectId == row.ClassSubjectId);
+          var objClassSubject = this.ClassSubjectList.filter((s: any) => s.ClassSubjectId == row.ClassSubjectId);
 
           this.SubjectComponentData.SubjectComponentId = row.SubjectComponentId;
           this.SubjectComponentData.ComponentName = row.ComponentName;
           this.SubjectComponentData.ClassSubjectId = row.ClassSubjectId;
           this.SubjectComponentData.ClassId = row.ClassId;
-          this.SubjectComponentData.SubjectId = objClassSubject?objClassSubject[0].SubjectId:0;
+          this.SubjectComponentData.SemesterId = row.SemesterId;
+          this.SubjectComponentData.SectionId = row.SectionId;
+          this.SubjectComponentData.SubjectId = objClassSubject ? objClassSubject[0].SubjectId : 0;
           this.SubjectComponentData.Sequence = row.Sequence;
           //this.SubjectComponentData.BatchId = this.SelectedBatchId;
           this.SubjectComponentData.OrgId = this.LoginUserDetail[0]["orgId"];
@@ -278,37 +304,75 @@ export class SubjectcomponentComponent implements OnInit {
           this.loadingFalse();
         });
   }
-  SelectedClassSubjects :any[]= [];
+  SelectedClassSubjects: any[] = [];
   SelectClassSubject() {
     debugger;
-    this.SelectedClassSubjects = this.ClassSubjectList.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value
+    this.SelectedClassSubjects = this.ClassSubjectList.filter((f: any) => f.ClassId == this.searchForm.get("searchClassId")?.value
       && f.SubjectType.SelectHowMany > 0);
-      this.ClearData();
+    let _classId = this.searchForm.get("searchClassId")?.value;
+    let obj = this.Classes.filter(c => c.ClassId == _classId);
+    if (obj.length > 0) {
+      this.SelectedClassCategory = obj[0].Category.toLowerCase();
+      if(this.SelectedClassCategory == globalconstants.CategoryCollege)
+      {
+        this.displayedColumns = [
+          "SubjectComponentId",
+          "ComponentName",
+          "ClassId",
+          "SemesterId",
+          "ClassSubjectId",
+          "Sequence",
+          "Active",
+          "Action"
+        ];
+      }
+      else if(this.SelectedClassCategory == globalconstants.CategoryHighSchool)
+      {
+        this.displayedColumns = [
+          "SubjectComponentId",
+          "ComponentName",
+          "ClassId",
+          "SectionId",
+          "ClassSubjectId",
+          "Sequence",
+          "Active",
+          "Action"
+        ];
+      }
+    }
+
+    this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
+    this.ClearData();
     //this.GetSpecificStudentGrades();
   }
-  ClearData(){
-    this.SubjectComponentList =[];
+  ClearData() {
+    this.SubjectComponentList = [];
     this.dataSource = new MatTableDataSource<ISubjectComponent>(this.SubjectComponentList);
   }
   RowSelectClassSubject(row) {
     debugger;
-    row.ClassSubjects = this.ClassSubjectList.filter((f:any) => f.ClassId == row.ClassId && f.SubjectType.SelectHowMany > 0);
+    row.ClassSubjects = this.ClassSubjectList.filter((f: any) => f.ClassId == row.ClassId && f.SubjectType.SelectHowMany > 0);
     //this.GetSpecificStudentGrades();
   }
   GetSubjectComponents() {
     //debugger;
     var _classId = this.searchForm.get("searchClassId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
 
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";// 'OrgId eq ' + this.LoginUserDetail[0]['orgId']; // BatchId eq  + this.SelectedBatchId
-    if (_classId > 0)
-      filterStr += " and ClassId eq " + _classId;
-    else {
+    if (_classId == 0) {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     if (_classSubjectId > 0)
       filterStr += " and ClassSubjectId eq " + _classSubjectId;
+
+    filterStr += " and ClassId eq " + _classId;
+    filterStr += " and SemesterId eq " + _semesterId;
+    filterStr += " and SectionId eq " + _sectionId;
+
     this.loading = true;
     let list: List = new List();
     list.fields = [
@@ -316,6 +380,8 @@ export class SubjectcomponentComponent implements OnInit {
       "ComponentName",
       "ClassSubjectId",
       "ClassId",
+      "SemesterId",
+      "SectionId",
       "Sequence",
       "SubjectId",
       "Active"
@@ -328,7 +394,7 @@ export class SubjectcomponentComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.value.length > 0) {
           this.SubjectComponentList = data.value.map(r => {
-            r.ClassSubjects = this.ClassSubjectList.filter((f:any) => f.ClassId == r.ClassId)
+            r.ClassSubjects = this.ClassSubjectList.filter((f: any) => f.ClassId == r.ClassId)
             return r;
           })
         }
@@ -340,7 +406,7 @@ export class SubjectcomponentComponent implements OnInit {
       });
 
   }
-  ClassSubjectList :any[]= [];
+  ClassSubjectList: any[] = [];
   GetClassSubject() {
     let list: List = new List();
     list.fields = [
@@ -367,14 +433,19 @@ export class SubjectcomponentComponent implements OnInit {
         })
       });
   }
-  Subjects :any[]= [];
-  Semesters:any[]=[];
+  Subjects: any[] = [];
+  Semesters: any[] = [];
+  ClassCategory: any[] = [];
+  Classes: any[] = [];
+  Sections = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
 
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
+    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {

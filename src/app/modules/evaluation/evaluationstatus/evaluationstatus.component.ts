@@ -586,6 +586,7 @@ export class EvaluationstatusComponent implements OnInit {
             }
             else {
               existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
+                && (!f.StudentEvaluationAnswers || f.StudentEvaluationAnswers.length==0)
                 && f.ClassEvaluationId == clseval.ClassEvaluationId);
             }
             if (existing.length > 0) {
@@ -629,33 +630,33 @@ export class EvaluationstatusComponent implements OnInit {
               }
               this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
             }
-            else if (!_statusId) {
-              clseval.ClassEvaluationOptions.forEach(f => f.checked = false);
-              item = {
-                AutoId: SlNo,
-                ClassEvaluationOptions: clseval.ClassEvaluationOptions,
-                StudentClassId: eachstud.StudentClassId,
-                StudentId: eachstud.StudentId,
-                Student: eachstud.Name,
-                CatSequence: clseval.DisplayOrder,
-                QuestionnaireType: clseval.QuestionnaireType,
-                AnswerOptionsId: 0,
-                Description: globalconstants.decodeSpecialChars(clseval.Description),
-                AnswerText: '',
-                History: '',
-                Points: 0,
-                Updatable: row[0].Updatable,
-                StudentEvaluationResultId: 0,
-                ClassEvaluationAnswerOptionParentId: clseval.ClassEvaluationAnswerOptionParentId,
-                EvaluationExamMapId: row[0].EvaluationExamMapId,
-                ClassEvaluationId: clseval.ClassEvaluationId,
-                Active: 0,
-                EvaluationMasterId: row[0].EvaluationMasterId,
-                MultipleAnswer: clseval.MultipleAnswer,
-                StudentEvaluationAnswers: []
-              }
-              this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
-            }
+            // else if (!_statusId) {
+            //   clseval.ClassEvaluationOptions.forEach(f => f.checked = false);
+            //   item = {
+            //     AutoId: SlNo,
+            //     ClassEvaluationOptions: clseval.ClassEvaluationOptions,
+            //     StudentClassId: eachstud.StudentClassId,
+            //     StudentId: eachstud.StudentId,
+            //     Student: eachstud.Name,
+            //     CatSequence: clseval.DisplayOrder,
+            //     QuestionnaireType: clseval.QuestionnaireType,
+            //     AnswerOptionsId: 0,
+            //     Description: globalconstants.decodeSpecialChars(clseval.Description),
+            //     AnswerText: '',
+            //     History: '',
+            //     Points: 0,
+            //     Updatable: row[0].Updatable,
+            //     StudentEvaluationResultId: 0,
+            //     ClassEvaluationAnswerOptionParentId: clseval.ClassEvaluationAnswerOptionParentId,
+            //     EvaluationExamMapId: row[0].EvaluationExamMapId,
+            //     ClassEvaluationId: clseval.ClassEvaluationId,
+            //     Active: 0,
+            //     EvaluationMasterId: row[0].EvaluationMasterId,
+            //     MultipleAnswer: clseval.MultipleAnswer,
+            //     StudentEvaluationAnswers: []
+            //   }
+            //   this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
+            // }
 
           })
         })

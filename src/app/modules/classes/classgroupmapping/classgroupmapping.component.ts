@@ -217,6 +217,11 @@ export class ClassgroupmappingComponent implements OnInit {
   UpdateOrSave(row) {
 
     //debugger;
+    if(row.ClassGroupId==0)
+    {
+      this.contentservice.openSnackBar("Please select class group.",globalconstants.ActionText,globalconstants.RedBackground);
+      return;
+    }
     this.loading = true;
     let checkFilterString = this.FilterOrgSubOrg + " and ClassId eq " + row.ClassId +
       " and ClassGroupId eq " + row.ClassGroupId +

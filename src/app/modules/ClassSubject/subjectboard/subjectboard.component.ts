@@ -35,7 +35,6 @@ export class SubjectBoardComponent implements AfterViewInit {
     { "label": "Student Subject", "faIcon": '' },
     { "label": "example", "faIcon": '' },
     { "label": "example", "faIcon": '' },
-    { "label": "example", "faIcon": '' }
   ];
   Permissions =
     {

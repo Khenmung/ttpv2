@@ -120,6 +120,8 @@ export class StudentSubjectMarkCompComponent implements OnInit {
         this.ClassGroupMappings = data.value.map(m => {
           m.ClassName = m.Class.ClassName;
           m.ClassId = m.Class.ClassId;
+          m.SemesterId = m.Class.SemesterId;
+          m.SectionId = m.Class.SectionId;
           return m;
         })
       })

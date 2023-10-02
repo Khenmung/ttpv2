@@ -3,15 +3,16 @@
         <div><strong>Subject Component</strong></div>
     </div>
     <form [formGroup]="searchForm">
-        <mat-form-field appearance="outline" [style.width.px]="200">
+        <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
             <mat-label>Class</mat-label>
             <mat-select formControlName="searchClassId" (selectionChange)="SelectClassSubject()">
-                <mat-option *ngFor="let item of ClassMasters" [value]="item.ClassId">
+                <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
                     {{item.ClassName}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" [style.width.px]="200">
+        <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;"
+            *ngIf="SelectedClassCategory==getCollegeCategory()">
             <mat-label>semester</mat-label>
             <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
                 <mat-option [value]="Defaultvalue">select</mat-option>
@@ -20,7 +21,17 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" [style.width.px]="200">
+        <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;"
+            *ngIf="SelectedClassCategory==getHighSchoolCategory()">
+            <mat-label>section</mat-label>
+            <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
+                <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
             <mat-label>Subject</mat-label>
             <mat-select formControlName="searchClassSubjectId" (selectionChange)="ClearData()">
                 <mat-option *ngFor="let item of SelectedClassSubjects" [value]="item.ClassSubjectId">
@@ -65,8 +76,36 @@
                             <mat-label>Class</mat-label>
                             <mat-select [(ngModel)]="element.ClassId" [value]="element.ClassId"
                                 (selectionChange)="RowSelectClassSubject(element)">
-                                <mat-option *ngFor="let item of ClassMasters" [value]="item.ClassId">
+                                <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
                                     {{item.ClassName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SemesterId">
+                    <mat-header-cell *matHeaderCellDef>Semester
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <mat-label>Semester</mat-label>
+                            <mat-select [(ngModel)]="element.SemesterId" [value]="element.SemesterId">
+                                <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SectionId">
+                    <mat-header-cell *matHeaderCellDef>Section
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline" [style.width.px]="150">
+                            <mat-label>Section</mat-label>
+                            <mat-select [(ngModel)]="element.SectionId" [value]="element.SectionId">
+                                <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
