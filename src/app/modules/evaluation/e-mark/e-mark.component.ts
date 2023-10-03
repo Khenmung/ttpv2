@@ -15,11 +15,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 
 @Component({
-  selector: 'app-evaluationcontrol',
-  templateUrl: './evaluationcontrol.component.html',
-  styleUrls: ['./evaluationcontrol.component.scss']
+  selector: 'EmarkApp',
+  templateUrl: './e-mark.component.html',
+  styleUrls: ['./e-mark.component.scss']
 })
-export class EvaluationControlComponent implements OnInit {
+export class EMarkComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   EvaluationUpdatable = false;
@@ -135,7 +135,7 @@ export class EvaluationControlComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATIONMARK)
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EMARK)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }

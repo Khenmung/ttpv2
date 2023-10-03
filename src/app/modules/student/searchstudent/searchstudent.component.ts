@@ -464,7 +464,7 @@ export class searchstudentComponent implements OnInit {
     debugger;
     var _ClassId = 0;
     //if (element.StudentClasses.length > 0) {
-    if (element.StudentClasses != undefined) {
+    if (element.StudentClasses) {
       this.StudentClassId = element.StudentClassId;
       _ClassId = element.ClassId;
     }

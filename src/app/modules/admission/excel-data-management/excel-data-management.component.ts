@@ -14,6 +14,7 @@ import { employee } from './employee';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StudentActivity } from './StudentActivity';
 import * as moment from 'moment';
+import { forEach } from 'mathjs';
 
 @Component({
   selector: 'app-excel-data-management',
@@ -104,7 +105,7 @@ export class ExcelDataManagementComponent implements OnInit {
       }
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         this.Classes = [...data.value];
-        this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
 
       });
 
@@ -282,7 +283,7 @@ export class ExcelDataManagementComponent implements OnInit {
     let readFile = new FileReader();
     this.ErrorMessage = '';
     readFile.onload = (e) => {
-      let _storeData:any = readFile.result;
+      let _storeData: any = readFile.result;
       //var _rowCount = this.storeData.length;
       // if (_rowCount > globalconstants.RowUploadLimit) {
       //   this.storeData.slice(globalconstants.RowUploadLimit);
@@ -802,7 +803,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
       if (this.ErrorMessage.length == 0) {
         if (element.StudentClassId > 0) {
-          //if studentclassid already exist, dont update classid
+          //if studentclassid already exist, dont update classid,FeeTypeId
           this.ELEMENT_DATA.push({
             StudentId: +studentFilter[0].StudentId,
             SectionId: element.Section,
@@ -810,7 +811,6 @@ export class ExcelDataManagementComponent implements OnInit {
             SemesterId: element.SemesterId,
             IsCurrent: true,
             StudentClassId: element.StudentClassId,
-            FeeTypeId: _regularFeeTypeId,
             BatchId: this.SelectedBatchId,
             OrgId: this.loginDetail[0]["orgId"],
             SubOrgId: this.SubOrgId
@@ -1196,7 +1196,7 @@ export class ExcelDataManagementComponent implements OnInit {
     //console.log("this.ELEMENT_DATA",this.ELEMENT_DATA)
   }
   clear() {
-   this.uploadForm.reset();
+    this.uploadForm.reset();
   }
   readAsCSV() {
     this.csvData = XLSX.utils.sheet_to_csv(this.worksheet);
@@ -1381,6 +1381,10 @@ export class ExcelDataManagementComponent implements OnInit {
           .subscribe((result: any) => {
             this.loading = false; this.PageLoading = false;
             this.ReadyForUpload = false;
+            // let _students = this.tokenStorage.getStudents()!;
+            // toInsert.forEach(newstud=>{
+            //   _students.push(newstud)
+            // })
             this.ELEMENT_DATA = [];
             this.contentservice.openSnackBar("Data uploaded successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
           }, error => {
@@ -1408,7 +1412,13 @@ export class ExcelDataManagementComponent implements OnInit {
     this.dataservice.postPatch('StudentClasses', this.studentData[0], 0, 'post')
       .subscribe((result: any) => {
         //console.log('inserted');
+        let _students: any = this.tokenStorage.getStudents()!;
+        let currentstud = _students.filter((stud: any) => stud.StudentId == this.studentData[0].StudentId)
+        if (currentstud.length > 0) {
+          _students.StudentClasses[0] = this.studentData[0];
+        }
         if (this.toUpdate == 0 && this.ErrorCount == 0) {
+          this.tokenStorage.saveStudents(_students);
           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           this.loading = false;
         }
@@ -1428,25 +1438,33 @@ export class ExcelDataManagementComponent implements OnInit {
   }
   GetStudentClasses() {
     //select only current batch student class but students are from any batch
-    this.FilterOrgSubOrgNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-    this.FilterOrgSubOrgNBatchId += " and IsCurrent eq true";
-    let list: List = new List();
-    list.fields = ["StudentId", "StudentClassId", "ClassId"];
-    list.PageName = "StudentClasses";
-    list.filter = [this.FilterOrgSubOrgNBatchId + " and Active eq 1"];
-    //list.orderBy = "ParentId";
+    // this.FilterOrgSubOrgNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+    // this.FilterOrgSubOrgNBatchId += " and IsCurrent eq true";
+    // let list: List = new List();
+    // list.fields = ["StudentId", "StudentClassId", "ClassId"];
+    // list.PageName = "StudentClasses";
+    // list.filter = [this.FilterOrgSubOrgNBatchId + " and Active eq 1"];
+    // //list.orderBy = "ParentId";
 
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        if (data.value.length > 0) {
-          this.StudentClassList = [...data.value];
-        }
-        // else {
-        //   this.contentservice.openSnackBar("No class student found.", globalconstants.ActionText, globalconstants.RedBackground);
-        // }
+    // this.dataservice.get(list)
+    //   .subscribe((data: any) => {
 
-        this.loading = false; this.PageLoading = false;
-      })
+    //     if (data.value.length > 0) {
+    this.StudentClassList = [];
+
+    this.StudentList.forEach(s => {
+
+      if (s.StudentClasses && s.StudentClasses.length > 0)
+        this.StudentClassList.push(s.StudentClasses);
+
+    })
+    // }
+    // else {
+    //   this.contentservice.openSnackBar("No class student found.", globalconstants.ActionText, globalconstants.RedBackground);
+    // }
+
+    this.loading = false; this.PageLoading = false;
+    //})
   }
 
   GetClassEvaluations() {
@@ -1482,70 +1500,72 @@ export class ExcelDataManagementComponent implements OnInit {
   }
   GetStudents() {
 
-    let list: List = new List();
-    list.fields = ["PID,StudentId", "FirstName", "LastName", "Active"];
-    list.PageName = "Students";
-    list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    //list.orderBy = "ParentId";
+    // let list: List = new List();
+    // list.fields = ["PID,StudentId", "FirstName", "LastName", "Active"];
+    // list.PageName = "Students";
+    // list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
+    // //list.orderBy = "ParentId";
 
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        this.StudentList = [...data.value];// this.tokenStorage.getStudents()!;
-        //this.StudentList = _students.filter((s: any) => s.Active == 1);
-        this.StudentList = this.StudentList.sort((a: any, b: any) => a.ParentId - b.ParentId);
-        this.NoOfStudent = this.StudentList.length;
-        this.GetStudentClasses();
+    // this.dataservice.get(list)
+    //   .subscribe((data: any) => {
+    //     this.StudentList = [...data.value];// 
+    let _students = this.tokenStorage.getStudents()!;
 
-      })
+    //this.StudentList = _students.filter((s: any) => s.Active == 1);
+    this.StudentList = _students.sort((a: any, b: any) => a.ParentId - b.ParentId);
+    this.NoOfStudent = this.StudentList.length;
+    this.GetStudentClasses();
+
+    //   })
   }
 
   GetMasterData() {
     //this.contentservice.GetCommonMasterData(this.loginDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //  .subscribe((data: any) => {
-        //var SelectedApplicationName = '';
-        this.AllMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
+    //var SelectedApplicationName = '';
+    this.AllMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
 
-        this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
-        this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
-        this.Religion = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
-        //this.States = this.getDropDownData(globalconstants.MasterDefinitions.common.STATE);
-        if (this.SelectedApplicationName == 'edu') {
-          this.AdmissionStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
-          this.UploadTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.UPLOADTYPE);
-          this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
-          this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
-          this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
-          this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-          this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
-          this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
-          this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
-          this.ActivityCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
-          this.GetStudents();
-          this.GetStudentsInPlan();
-        }
-        else if (this.SelectedApplicationName == 'employee') {
-          this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.employee.GENDER);
+    this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
+    this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
+    this.Religion = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
+    //this.States = this.getDropDownData(globalconstants.MasterDefinitions.common.STATE);
+    if (this.SelectedApplicationName == 'edu') {
+      this.AdmissionStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
+      this.UploadTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.UPLOADTYPE);
+      this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
+      this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
+      this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
+      this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+      this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
+      this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
+      this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
+      this.ActivityCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
+      this.GetStudents();
+      this.GetStudentsInPlan();
+    }
+    else if (this.SelectedApplicationName == 'employee') {
+      this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.employee.GENDER);
 
-          this.UploadTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEUPLOADTYPE);
-          this.ActivityCategory = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEPROFILECATEGORY);
-          this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.employee.DEPARTMENT);
-          this.Designations = this.getDropDownData(globalconstants.MasterDefinitions.employee.DESIGNATION);
-          this.EmployeeGrades = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGRADE);
-          this.WorkAccounts = this.getDropDownData(globalconstants.MasterDefinitions.employee.WORKACCOUNT);
-          this.EmployeeStatus = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYMENTSTATUS);
-          this.EmployeeTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYMENTTYPE);
-          this.MaritalStatus = this.getDropDownData(globalconstants.MasterDefinitions.employee.MARITALSTATUS);
-          this.WorkNatures = this.getDropDownData(globalconstants.MasterDefinitions.employee.NATURE);
-          this.Country = this.getDropDownData(globalconstants.MasterDefinitions.common.COUNTRY);
+      this.UploadTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEUPLOADTYPE);
+      this.ActivityCategory = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEPROFILECATEGORY);
+      this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.employee.DEPARTMENT);
+      this.Designations = this.getDropDownData(globalconstants.MasterDefinitions.employee.DESIGNATION);
+      this.EmployeeGrades = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGRADE);
+      this.WorkAccounts = this.getDropDownData(globalconstants.MasterDefinitions.employee.WORKACCOUNT);
+      this.EmployeeStatus = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYMENTSTATUS);
+      this.EmployeeTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYMENTTYPE);
+      this.MaritalStatus = this.getDropDownData(globalconstants.MasterDefinitions.employee.MARITALSTATUS);
+      this.WorkNatures = this.getDropDownData(globalconstants.MasterDefinitions.employee.NATURE);
+      this.Country = this.getDropDownData(globalconstants.MasterDefinitions.common.COUNTRY);
 
-        }
-        //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-        this.Batches = this.tokenStorage.getBatches()!;;
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.loading = false;
-        this.PageLoading = false;
+    }
+    //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
+    this.Batches = this.tokenStorage.getBatches()!;;
+    this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+    this.loading = false;
+    this.PageLoading = false;
 
-      //});
+    //});
 
   }
 

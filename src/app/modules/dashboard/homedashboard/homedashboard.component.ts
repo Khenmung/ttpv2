@@ -227,7 +227,7 @@ export class HomeDashboardComponent implements OnInit {
     var permission;
     this.dataservice.get(list).subscribe((data: any) => {
 
-      this.sideMenu =[];
+      this.sideMenu = [];
       data.value.forEach(m => {
         // if(m.Page.PageTitle=="Question Bank")
         // {
@@ -664,7 +664,7 @@ export class HomeDashboardComponent implements OnInit {
           //   //this.searchForm.patchValue({ "searchSubOrgId": this.SubOrgId });
           // });
         }
-        
+
         this.GetMenuData(this.SelectedAppId);
       }
       //  });
@@ -784,6 +784,8 @@ export class HomeDashboardComponent implements OnInit {
       .subscribe((data: any) => {
         var _students = data[0].value;
         var __studentClasses = data[1].value;
+        if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student')
+          this.tokenStorage.saveClassId(__studentClasses[0].ClassId);
         //let _studentWithClass = _students.map((item, i) => Object.assign({}, item, __studentClasses[i]));
         //console.log("_studentWithClass",_studentWithClass)
         var _classNameobj: any[] = [];

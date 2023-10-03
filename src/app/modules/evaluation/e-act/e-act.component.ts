@@ -13,11 +13,11 @@ import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 @Component({
-  selector: 'app-StudentEvaluation',
-  templateUrl: './studentevaluation.component.html',
-  styleUrls: ['./studentevaluation.component.scss']
+  selector: 'e-ActApp',
+  templateUrl: './e-act.component.html',
+  styleUrls: ['./e-act.component.scss']
 })
-export class StudentEvaluationComponent implements OnInit {
+export class EActComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   //EvaluationUpdatable: any = null;
@@ -147,7 +147,7 @@ export class StudentEvaluationComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EXECUTEEVALUATION)
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EACT)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
@@ -739,8 +739,8 @@ export class StudentEvaluationComponent implements OnInit {
                   this.searchForm.get("searchSectionId")?.disable();
                   this.searchForm.get("searchSemesterId")?.disable();
                   this.searchForm.get("searchStudentName")?.disable();
-                  this.searchForm.get("searchEvaluationMasterId")?.disable();
-                  this.searchForm.get("searchExamId")?.disable();
+                  //this.searchForm.get("searchEvaluationMasterId")?.disable();
+                  //this.searchForm.get("searchExamId")?.disable();
                 }
               }
               else
@@ -779,7 +779,7 @@ export class StudentEvaluationComponent implements OnInit {
   }
   EvaluationForSelectedClassSemesterSection: any[] = [];
   GetMasterData() {
-
+    this.loading = true;
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
     this.ClassGroupTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUPTYPE);
@@ -943,10 +943,12 @@ export class StudentEvaluationComponent implements OnInit {
             if (obj.length > 0) {
               m.ClassGroup = obj[0].GroupName;
               //Class group type is exam, students are allowed to execute else not allowed.
-              if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student'
-                && obj[0].ClassGroupType.toLowerCase() != 'exam')
-                m.AllowStudent = false;
-              else
+              if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
+                if (obj[0].ClassGroupType.toLowerCase() == 'exam')
+                  m.AllowStudent = true;
+                else
+                  m.AllowStudent = false;
+              } else
                 m.AllowStudent = true;
             }
             m.EvaluationStarted = false;
@@ -1057,7 +1059,7 @@ export class StudentEvaluationComponent implements OnInit {
       });
   }
   GetClassEvaluations() {
-
+    this.loading = true;
     let list: List = new List();
     list.fields = [
       'ClassEvaluationId',
@@ -1181,7 +1183,7 @@ export class StudentEvaluationComponent implements OnInit {
       // }
     })
     this.Students = this.Students.sort((a, b) => a.RollNo.localeCompare(b.RollNo))
-    
+
     var _classgroupsOfSelectedStudent = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, pClassId, pSectionId, pSemesterId);
     this.EvaluationForSelectedClassSemesterSection = this.EvaluationExamMaps.filter((f: any) => _classgroupsOfSelectedStudent.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
     this.ExamsForDD = this.Exams.filter(e => this.EvaluationForSelectedClassSemesterSection.map(s => s.ExamId).indexOf(e.ExamId) > -1);

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EvaluationresultlistComponent } from './evaluationresultlist.component';
+import { ECheckComponent } from './e-check.component';
 
 describe('EvaluationresultlistComponent', () => {
-  let component: EvaluationresultlistComponent;
-  let fixture: ComponentFixture<EvaluationresultlistComponent>;
+  let component: ECheckComponent;
+  let fixture: ComponentFixture<ECheckComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EvaluationresultlistComponent ]
+      declarations: [ ECheckComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EvaluationresultlistComponent);
+    fixture = TestBed.createComponent(ECheckComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

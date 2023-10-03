@@ -1,7 +1,7 @@
 <div style="padding:15px 15px 10px 15px;">
     <div><strong>Subjects in slot</strong></div>
 </div>
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;margin-bottom: 15px;"></mat-spinner>
 <!-- <div style="width:auto;min-width: 1280px; overflow: auto;"> -->
 <form [formGroup]="searchForm">
     <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
@@ -12,11 +12,40 @@
             </mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" style="width:350px;margin-right: 15px;">
+    <!-- <mat-form-field appearance="outline" style="width:350px;margin-right: 15px;">
         <mat-label>Exam Date</mat-label>
         <mat-select formControlName="searchSlotId" (selectionChange)="emptyresult()">
             <mat-option *ngFor="let item of SelectedExamSlots" [value]="item.ExamSlotId">
                 {{item.ExamDateDetail}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field> -->
+    <mat-form-field appearance="outline" style="width:150px;margin-right: 15px;">
+        <mat-label>Class</mat-label>
+        <mat-select formControlName="searchClassId" (selectionChange)="BindSectionSemester()">
+            <mat-option #allSelected [value]="Defaultvalue">select</mat-option>
+            <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                {{item.ClassName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="width:150px;margin-right: 15px;" *ngIf="SelectedClassCategory==getCollegeCategory()"
+        [style.width.px]="200">
+        <mat-label>semester</mat-label>
+        <mat-select formControlName="searchSemesterId" (selectionChange)="emptyresult()">
+            <mat-option [value]="Defaultvalue">select</mat-option>
+            <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                {{item.MasterDataName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="width:150px;margin-right: 15px;" *ngIf="SelectedClassCategory==getHighSchoolCategory()"
+        [style.width.px]="200">
+        <mat-label>section</mat-label>
+        <mat-select formControlName="searchSectionId" (selectionChange)="emptyresult()">
+            <mat-option [value]="Defaultvalue">select</mat-option>
+            <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                {{item.MasterDataName}}
             </mat-option>
         </mat-select>
     </mat-form-field>
@@ -34,14 +63,15 @@
         <ng-container matColumnDef="ClassName">
             <mat-header-cell *matHeaderCellDef>Class
             </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                {{element.ClassName}}
+            <mat-cell *matCellDef="let element" style="display: flex;align-items: flex-start;justify-content: center;padding: 15px;">
+                <b>{{element.ClassName}}</b>                
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="SlotClassSubjectId">
             <mat-header-cell *matHeaderCellDef>Subjects
             </mat-header-cell>
-            <mat-cell *matCellDef="let element">
+            <mat-cell *matCellDef="let element" style="display: flex;flex-direction: column;">
+                <div style="margin:15px;font-weight: bold;">{{element.ExamDetail}}</div>
                 <div class="wrapper">
                     <div class="innerwrapper" *ngFor="let cell of element.Subject;">
                         <mat-checkbox (click)="$event.stopPropagation()"

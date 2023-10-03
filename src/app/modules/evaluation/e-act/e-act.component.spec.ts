@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StudentEvaluationComponent } from './studentevaluation.component';
+import { EActComponent } from './e-act.component';
 
 describe('StudentactivityComponent', () => {
-  let component: StudentEvaluationComponent;
-  let fixture: ComponentFixture<StudentEvaluationComponent>;
+  let component: EActComponent;
+  let fixture: ComponentFixture<EActComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [StudentEvaluationComponent],
+    declarations: [EActComponent],
     teardown: { destroyAfterEach: false }
 })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StudentEvaluationComponent);
+    fixture = TestBed.createComponent(EActComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

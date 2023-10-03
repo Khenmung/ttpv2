@@ -2,7 +2,7 @@
     <div style="padding:15px 15px 10px 15px;">
         <div><strong>Class Group</strong></div>
     </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading || loading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
     <div style="padding: 15px;" fxLayout="row wrap">
         <div style="width: 100%;">
 
@@ -25,7 +25,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ClassGroupTypeId">
-                    <mat-header-cell *matHeaderCellDef>Group Type
+                    <mat-header-cell *matHeaderCellDef>Type
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <mat-form-field appearance="outline">

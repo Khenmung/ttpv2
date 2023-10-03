@@ -7,7 +7,7 @@ import moment from "moment";
 
 export class globalconstants {
     //////"https://api.ttpsolutions.in";"https://ettest.ttpsolutions.in"; environment.apiU+++.*-=-0983`9556'nb656RL
-    public static apiUrl: string = "https://ettest.ttpsolutions.in"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
+    public static apiUrl: string = "https://api.ttpsolutions.in"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
     public static fileUrl: string = '';
     public static CompanyParentId = 31850;// 31850-production;// 27762;test site; 
     public static PremiumPlusId = 4;//4;//2 
@@ -286,15 +286,15 @@ export class globalconstants {
                 },
                 'EVALUATION': {
                     'EVALUATION': 'evaluation',
-                    'EvaluationExamMap': 'evaluation exam',
-                    'EVALUATIONQUESTIONNAIRE': 'evaluation questionnaire',
-                    'EXECUTEEVALUATION': 'execute evaluation',
-                    'EVALUATIONTYPE': 'evaluation type',
-                    'EVALUATIONRESULT': 'evaluation result',
-                    'EVALUATIONRESULTLIST': 'evaluation result list',
+                    'EvaluationExamMap': 'e-mapping',
+                    'EVALUATIONQUESTIONNAIRE': 'e-questionnaire',
+                    'EACT': 'e-perform',
+                    'ETYPE': 'E-Type',
+                    'ECHECK': 'E-Check',
+                    'EVALUATIONRESULTLIST': 'E-Check',
                     'CLASSEVALUATIONOPTION': 'answer option',
                     'EVALUATIONANDEXAM': 'evaluation and exam',
-                    'EVALUATIONMARK': 'evaluation mark',
+                    'EMARK': 'e-mark',
                     'ESTATUS': 'E-Status'
                 },
                 'QUESTIONBANK': {

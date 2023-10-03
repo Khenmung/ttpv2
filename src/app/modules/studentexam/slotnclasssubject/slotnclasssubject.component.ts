@@ -21,44 +21,48 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 export class SlotnclasssubjectComponent implements OnInit {
   PageLoading = true;
   weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
-  ClassGroupMapping :any[]= [];
-  FilteredClasses :any[]= [];
+  ClassGroupMapping: any[] = [];
+  FilteredClasses: any[] = [];
 
-  DistinctExamDate :any[]= [];
+  DistinctExamDate: any[] = [];
   Permission = 'deny';
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
   DataToUpdateCount = -1;
-  StoreForUpdate: ISlotNClassSubject[]= [];
-  ClassWiseSubjectDisplay :any[]= [];
+  StoreForUpdate: ISlotNClassSubject[] = [];
+  ClassWiseSubjectDisplay: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  AllSubjectsOfSelectedExam :any[]= [];
-  ExamSlots :any[]= [];
-  Classes :any[]= [];
-  Subjects :any[]= [];
-  ExamNames :any[]= [];
-  SlotNames :any[]= [];
-  Batches :any[]= [];
-  ClassSubjectList :any[]= [];
-  Exams :any[]= [];
-  ClassWiseDatasource: MatTableDataSource<any>[]= [];
+  AllSubjectsOfSelectedExam: any[] = [];
+  ExamSlots: any[] = [];
+  Classes: any[] = [];
+  Subjects: any[] = [];
+  ExamNames: any[] = [];
+  SlotNames: any[] = [];
+  Batches: any[] = [];
+  ClassSubjectList: any[] = [];
+  Exams: any[] = [];
+  ClassWiseDatasource: MatTableDataSource<any>[] = [];
   dataSource: MatTableDataSource<any>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   rowCount = 0;
   ExamId = 0;
-  SlotNClassSubjectData:any = {
+  SlotNClassSubjectData: any = {
     SlotClassSubjectId: 0,
     SlotId: 0,
     ClassSubjectId: 0,
-    OrgId: 0, SubOrgId: 0,
+    ClassId: 0,
+    SemesterId: 0,
+    SectionId: 0,
+    OrgId: 0,
+    SubOrgId: 0,
     BatchId: 0,
     Active: 0
   };
-  SelectedExamSlots :any[]= [];
+  SelectedExamSlots: any[] = [];
   displayedColumns = [
     "ClassName",
     "SlotClassSubjectId",
@@ -85,9 +89,12 @@ export class SlotnclasssubjectComponent implements OnInit {
     // })
     //debugger;
     this.searchForm = this.fb.group({
-      searchSlotId: [0],
+      //searchSlotId: [0],
       searchExamId: [0],
       searchSubjectId: [0],
+      searchClassId: [0],
+      searchSemesterId: [0],
+      searchSectionId: [0]
     });
     this.PageLoad();
   }
@@ -115,14 +122,32 @@ export class SlotnclasssubjectComponent implements OnInit {
       }
     }
   }
+  getCollegeCategory() {
+    return globalconstants.CategoryCollege;
+  }
+  getHighSchoolCategory() {
+    return globalconstants.CategoryHighSchool;
+  }
+  SelectedClassCategory = '';
+  BindSectionSemester() {
+    let _classId = this.searchForm.get("searchClassId")?.value;
+
+    let obj = this.Classes.filter(c => c.ClassId == _classId);
+    if (obj.length > 0) {
+      this.SelectedClassCategory = obj[0].Category.toLowerCase();
+    }
+    this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
+    this.emptyresult();
+  }
+
   public trackItem(index: number, item: any) {
     return item.ClassName;
   }
   updateActive(item, value, selectedSubjectname) {
     debugger;
-    this.ClassWiseSubjectDisplay.filter((f:any) => {
-      if (f.ClassName == item.ClassName) {
-        f.Subject.forEach(sub => {
+    //this.ClassWiseSubjectDisplay.filter((f: any) => {
+    //  if (f.ClassName == item.ClassName) {
+        item.Subject.forEach(sub => {
           if (sub.SubjectName == selectedSubjectname) {
             if (value.source._checked)
               sub.value = 1;
@@ -134,8 +159,8 @@ export class SlotnclasssubjectComponent implements OnInit {
               sub.value = 0;
           }
         })
-      }
-    })
+     // }
+    //})
 
     item.Action = true;
   }
@@ -163,13 +188,13 @@ export class SlotnclasssubjectComponent implements OnInit {
     debugger;
     this.loading = true;
 
-    var classSujects = this.StoreForUpdate.filter((s:any) => s.SlotId == this.searchForm.get("searchSlotId")?.value
+    var classSujects = this.StoreForUpdate.filter((s: any) => s.SlotId == element.SlotId// this.searchForm.get("searchSlotId")?.value
       && s.ClassName.toLowerCase() == element.ClassName.toLowerCase());
 
     this.DataToUpdateCount = 0;
 
     Object.keys(element).forEach(subjectname => {
-      var subjectdetail = classSujects.filter((f:any) => f.Subject == subjectname)
+      var subjectdetail = classSujects.filter((f: any) => f.Subject == subjectname)
 
       subjectdetail.forEach(row => {
         row.Active = element[subjectname];
@@ -182,7 +207,7 @@ export class SlotnclasssubjectComponent implements OnInit {
     })
   }
   UpdateOrSave(row) {
-    //console.log("row", row)
+    console.log("row", row)
     this.loading = true;
     debugger;
     var subobject = row.Subject.filter(sub => sub.value == 1)
@@ -193,7 +218,7 @@ export class SlotnclasssubjectComponent implements OnInit {
 
     if (row.SelectedSubject) {
 
-      let checkFilterString = this.FilterOrgSubOrgBatchId + " and SlotId eq " + this.searchForm.get("searchSlotId")?.value +
+      let checkFilterString = this.FilterOrgSubOrgBatchId + " and SlotId eq " + row.SlotId +
         " and ClassSubjectId eq " + row.SelectedSubject.ClassSubjectId;
 
       if (row.SlotClassSubjectId > 0)
@@ -262,19 +287,20 @@ export class SlotnclasssubjectComponent implements OnInit {
   }
   InsertOrUpdate(row, pClassSubjectId) {
     this.SlotNClassSubjectData.SlotClassSubjectId = row.SlotClassSubjectId;
-    this.SlotNClassSubjectData.SlotId = this.searchForm.get("searchSlotId")?.value;
+    this.SlotNClassSubjectData.SlotId = row.SlotId;// this.searchForm.get("searchSlotId")?.value;
     //this.SlotNClassSubjectData.Active = pClassSubjectId ? 1 : 0;
-    if (pClassSubjectId)
-    {
+    if (pClassSubjectId) {
       this.SlotNClassSubjectData.ClassSubjectId = pClassSubjectId;
       this.SlotNClassSubjectData.Active = 1;
-    }      
-    else
-    {
+    }
+    else {
       delete this.SlotNClassSubjectData.ClassSubjectId;
-      this.SlotNClassSubjectData.Active = 0;      
-    }      
+      this.SlotNClassSubjectData.Active = 0;
+    }
 
+    this.SlotNClassSubjectData.ClassId = row.ClassId;
+    this.SlotNClassSubjectData.SemesterId = row.SemesterId;
+    this.SlotNClassSubjectData.SectionId = row.SectionId;
     this.SlotNClassSubjectData.OrgId = this.LoginUserDetail[0]["orgId"];
     this.SlotNClassSubjectData.SubOrgId = this.SubOrgId;
     this.SlotNClassSubjectData.BatchId = this.SelectedBatchId;
@@ -308,6 +334,8 @@ export class SlotnclasssubjectComponent implements OnInit {
       'ClassSubjectId',
       'SubjectId',
       'ClassId',
+      'SemesterId',
+      'SectionId',
       'Active'
     ];
 
@@ -329,10 +357,12 @@ export class SlotnclasssubjectComponent implements OnInit {
             _subject = subjobj[0].MasterDataName;
             this.ClassSubjectList.push({
               ClassSubjectId: item.ClassSubjectId,
-              ClassSubject: _class + " - " + _subject,
+              ClassNSubject: _class + "-" + _subject,
               Subject: _subject,
               ClassName: _class,
               SubjectId: item.SubjectId,
+              SemesterId: item.SemesterId,
+              SectionId: item.SectionId,
               ClassId: item.ClassId
             })
           }
@@ -347,18 +377,22 @@ export class SlotnclasssubjectComponent implements OnInit {
     this.contentservice.GetClassGroupMapping(filterOrgSubOrg, 1)
       .subscribe((data: any) => {
         this.ClassGroupMapping = data.value.map(f => {
-          f.ClassName = f.Class.ClassName;
+
+          f.ClassName = f.Class.ClassName
+          //f.Semester = _semester;
+          //f.Section = _section;
+
           return f;
         });
       })
   }
-  ExamClassGroups :any[]= [];
-  FilteredClassGroup :any[]= [];
+  ExamClassGroups: any[] = [];
+  FilteredClassGroup: any[] = [];
   FilterClass() {
     debugger;
     var _examId = this.searchForm.get("searchExamId")?.value
     var _classGroupId = 0;
-    var obj = this.Exams.filter((f:any) => f.ExamId == _examId);
+    var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
 
     if (obj.length > 0) {
       _classGroupId = obj[0].ClassGroupId;
@@ -372,7 +406,7 @@ export class SlotnclasssubjectComponent implements OnInit {
           return e;
         })
         this.FilteredClassGroup = this.ExamClassGroups.filter(e => e.ExamId == _examId);
-        this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => this.FilteredClassGroup.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        this.FilteredClasses = this.ClassGroupMapping.filter((f: any) => this.FilteredClassGroup.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
       })
 
 
@@ -395,7 +429,7 @@ export class SlotnclasssubjectComponent implements OnInit {
         this.ExamNames.forEach(e => {
           let existing = data.value.filter(db => db.ExamNameId == e.MasterDataId);
           if (existing.length > 0) {
-            var obj = this.ExamNames.filter((f:any) => f.MasterDataId == existing[0].ExamNameId);
+            var obj = this.ExamNames.filter((f: any) => f.MasterDataId == existing[0].ExamNameId);
             if (obj.length > 0) {
               existing[0].ExamName = obj[0].MasterDataName;
               existing[0].Action = false;
@@ -447,7 +481,7 @@ export class SlotnclasssubjectComponent implements OnInit {
           if (exams.length > 0)
             _examname = exams[0].MasterDataName;
           var _slotName = '';
-          var obj = this.SlotNames.filter((f:any) => f.MasterDataId == s.SlotNameId);
+          var obj = this.SlotNames.filter((f: any) => f.MasterDataId == s.SlotNameId);
           if (obj.length > 0)
             _slotName = obj[0].MasterDataName;
           return {
@@ -464,7 +498,7 @@ export class SlotnclasssubjectComponent implements OnInit {
       })
   }
   GetSelectedExamSlot() {
-    this.SelectedExamSlots = this.ExamSlots.filter((f:any) => f.ExamId == this.searchForm.get("searchExamId")?.value)
+    this.SelectedExamSlots = this.ExamSlots.filter((f: any) => f.ExamId == this.searchForm.get("searchExamId")?.value)
       .sort((a, b) => moment.utc(a.ExamDate).diff(moment.utc(b.ExamDate)));
     this.emptyresult();
     this.GetSelectedSubjectsForSelectedExam();
@@ -485,7 +519,7 @@ export class SlotnclasssubjectComponent implements OnInit {
     ];
     list.PageName = "Examslots";
     list.filter = [filterstr];
-    list.lookupFields = ["SlotAndClassSubjects($select=SlotId,ClassSubjectId)"];
+    list.lookupFields = ["SlotAndClassSubjects($select=SlotId,ClassSubjectId,ClassId,SectionId,SemesterId)"];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AllSubjectsOfSelectedExam = data.value.map(m => {
@@ -507,23 +541,33 @@ export class SlotnclasssubjectComponent implements OnInit {
     debugger;
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId + ' and Active eq 1';
     //var filterstr = 'Active eq 1';
-    let _slotId =this.searchForm.get("searchSlotId")?.value;
-    if (_slotId == 0) {
-      this.contentservice.openSnackBar("Please select exam slot", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
-
-    orgIdSearchstr += ' and SlotId eq ' + _slotId;
+    //let _slotId = this.searchForm.get("searchSlotId")?.value;
+    let _classId = this.searchForm.get("searchClassId")?.value;
+    let _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    let _sectionId = this.searchForm.get("searchSectionId")?.value;
+    // if (_slotId == 0) {
+    //   this.contentservice.openSnackBar("Please select exam slot", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
+    this.loading = true;
+    //orgIdSearchstr += ' and SlotId eq ' + _slotId;
+    orgIdSearchstr += ' and ClassId eq ' + _classId;
+    orgIdSearchstr += ' and SemesterId eq ' + _semesterId;
+    orgIdSearchstr += ' and SectionId eq ' + _sectionId;
 
     let list: List = new List();
     list.fields = [
       "SlotClassSubjectId",
       "SlotId",
       "ClassSubjectId",
+      "ClassId",
+      "SemesterId",
+      "SectionId",
       "Active"
     ];
     list.PageName = "SlotAndClassSubjects";
-    list.lookupFields = ["ClassSubject($select=SubjectId,ClassId)", "Slot($select=SlotNameId)"];
+    list.lookupFields = [//"ClassSubject($select=SubjectId,ClassId)", 
+      "Slot($select=SlotNameId)"];
     list.filter = [orgIdSearchstr];
 
     this.ClassWiseSubjectDisplay = [];
@@ -531,87 +575,121 @@ export class SlotnclasssubjectComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.StoreForUpdate = [];
-        this.FilteredClasses.forEach(cls => {
-          this.ClassWiseSubjectDisplay.push({
-            ClassName: cls.ClassName,
-            Subject: []
-          });
-        })
+        let _section = ''
+        let _sectionObj: any = this.Sections.filter(s => s["MasterDataId"] == _sectionId)
+        if (_sectionObj.length > 0)
+          _section = "-" + _sectionObj[0].MasterDataName;
+        let _semester = ''
+        let _semesterObj: any = this.Semesters.filter(s => s["MasterDataId"] == _semesterId)
+        if (_semesterObj.length > 0)
+          _semester = "-" + _semesterObj[0].MasterDataName;
+
+        let _classobj = this.Classes.filter(c => c.ClassId == _classId)
+
+
+
+        //})
         debugger;
-        this.ClassWiseSubjectDisplay.forEach(displayrow => {
-          displayrow["Subject"] = [];
-          displayrow["SlotClassSubjectId"] = 0;
-          var _currentClassSubjectlist = this.ClassSubjectList.filter((f:any) => f.ClassName == displayrow.ClassName)
-            .sort((a, b) => a.Subject - b.Subject);
-          _currentClassSubjectlist.forEach((clssub) => {
+        var _currentClassSubjectlist = globalconstants.getFilteredClassSubjects(this.ClassSubjectList, _classId, _sectionId, _semesterId) //.filter((f: any) => f.ClassName == displayrow.ClassName)
+          .sort((a, b) => a.Subject - b.Subject);
+        this.SelectedExamSlots = this.SelectedExamSlots.sort((a, b) => {
+          let start = a.ExamDate.split('/');
+          let end = b.ExamDate.split('/');
+          return new Date(start[2], start[1], start[0]).getTime() - new Date(end[2], end[1], end[0]).getTime();
+        })
+        this.SelectedExamSlots.forEach(slot => {
+          if (_classobj.length > 0) {
+            this.ClassWiseSubjectDisplay.push({
+              ClassName: _classobj[0].ClassName + _semester + _section,
+              ExamDetail: slot.ExamDateDetail,
+              SlotId: slot.ExamSlotId,
+              Subject: []
+            });
+          }
+          let currentClassSlot = this.ClassWiseSubjectDisplay.filter(curr => curr.SlotId == slot.ExamSlotId)
+          currentClassSlot.forEach(displayrow => {
+            displayrow["Subject"] = [];
+            displayrow["SlotClassSubjectId"] = 0;
+            displayrow["SlotId"] = slot.ExamSlotId;
 
-            var selected = 0;
-            var toolTip = '';
-            let existingInSelectedSlot = data.value.filter(db => db.ClassSubjectId == clssub.ClassSubjectId);
+            _currentClassSubjectlist.forEach((clssub) => {
 
-            if (existingInSelectedSlot.length > 0) {
-              let existingsubject = this.AllSubjectsOfSelectedExam
-                .filter((f:any) => f.SlotAndClassSubjects.filter(c =>c.SlotId != existingInSelectedSlot[0].SlotId && c.ClassSubjectId == clssub.ClassSubjectId).length > 0)
-              if (existingsubject.length > 0) {
-                toolTip = existingsubject[0].Tooltip;
-                selected = 2;
-              }
-              displayrow["SlotClassSubjectId"] = existingInSelectedSlot[0].SlotClassSubjectId;
-              displayrow["Subject"].push(
-                {
+              var selected = 0;
+              var toolTip = '';
+              let existingInSelectedSlot = data.value.filter(db => db.ClassSubjectId == clssub.ClassSubjectId && db.SectionId == _sectionId && db.SemesterId == _semesterId && db.SlotId == slot.ExamSlotId);
+
+              if (existingInSelectedSlot.length > 0) {
+                let existingsubject = this.AllSubjectsOfSelectedExam
+                  .filter((f: any) => f.SlotAndClassSubjects.filter(c => c.SlotId != existingInSelectedSlot[0].SlotId
+                    && c.ClassSubjectId == clssub.ClassSubjectId).length > 0)
+                if (existingsubject.length > 0) {
+                  toolTip = existingsubject[0].Tooltip;
+                  selected = 2;
+                }
+                displayrow["SlotClassSubjectId"] = existingInSelectedSlot[0].SlotClassSubjectId;
+                displayrow["Subject"].push(
+                  {
+                    ClassSubjectId: existingInSelectedSlot[0].ClassSubjectId,
+                    SubjectName: clssub.Subject,
+                    value: selected == 2 ? 2 : 1,
+                    Tooltip: toolTip
+                  });
+                // displayrow["Subject"][clssub.Subject] = +existing[0].Active;
+                //displayrow['Selected'] = selected;
+                this.StoreForUpdate.push({
+                  SlotClassSubjectId: existingInSelectedSlot[0].SlotClassSubjectId,
+                  SlotId: existingInSelectedSlot[0].SlotId,
+                  Slot: this.ExamSlots.filter((s: any) => s.ExamSlotId == existingInSelectedSlot[0].SlotId)[0].ExamSlotName,
                   ClassSubjectId: existingInSelectedSlot[0].ClassSubjectId,
-                  SubjectName: clssub.Subject,
-                  value: selected == 2 ? 2 : 1,
-                  Tooltip: toolTip
+                  ClassNSubject: clssub.ClassNSubject,
+                  Subject: clssub.Subject,
+                  SubjectId: clssub.SubjectId,
+                  ClassId: clssub.ClassId,
+                  SemesterId: existingInSelectedSlot[0].SemesterId,
+                  SectionId: existingInSelectedSlot[0].SectionId,
+                  ClassName: displayrow.ClassName,
+                  Active: existingInSelectedSlot[0].Active,
+                  Action: false
                 });
-              // displayrow["Subject"][clssub.Subject] = +existing[0].Active;
-              //displayrow['Selected'] = selected;
-              this.StoreForUpdate.push({
-                SlotClassSubjectId: existingInSelectedSlot[0].SlotClassSubjectId,
-                SlotId: existingInSelectedSlot[0].SlotId,
-                Slot: this.ExamSlots.filter((s:any) => s.ExamSlotId == existingInSelectedSlot[0].SlotId)[0].ExamSlotName,
-                ClassSubjectId: existingInSelectedSlot[0].ClassSubjectId,
-                ClassSubject: clssub.ClassSubject,
-                Subject: clssub.Subject,
-                SubjectId: existingInSelectedSlot[0].ClassSubject.SubjectId,
-                ClassId: existingInSelectedSlot[0].ClassSubject.ClassId,
-                ClassName: displayrow.ClassName,
-                Active: existingInSelectedSlot[0].Active,
-                Action: false
-              });
-            }
-            else {
-              var toopTip = '';
-              let existingsubject = this.AllSubjectsOfSelectedExam
-                .filter((f:any) => f.SlotAndClassSubjects.filter(c => c.ClassSubjectId == clssub.ClassSubjectId).length > 0)
-              if (existingsubject.length > 0) {
-                toopTip = existingsubject[0].Tooltip;
-                selected = 2;
               }
-              displayrow["Subject"].push(
-                {
-                  ClassSubjectId: clssub.ClassSubjectId,
-                  SubjectName: clssub.Subject,
-                  value: selected,
-                  Tooltip: toopTip
-                });
+              else {
+                var toopTip = '',selected=0;
+                let existingsubject = this.AllSubjectsOfSelectedExam
+                  .filter((f: any) => f.SlotAndClassSubjects.filter(c => c.ClassSubjectId == clssub.ClassSubjectId
+                    && c.ClassId == _classId
+                    && c.SectionId == _sectionId
+                    && c.SemesterId == _semesterId).length > 0)
+                if (existingsubject.length > 0) {
+                  toopTip = existingsubject[0].Tooltip;
+                  selected = 2;
+                }
+                displayrow["Subject"].push(
+                  {
+                    ClassSubjectId: clssub.ClassSubjectId,
+                    SubjectName: clssub.Subject,
+                    value: selected,
+                    Tooltip: toopTip
+                  });
 
-              this.StoreForUpdate.push({
-                SlotClassSubjectId: 0,
-                SlotId: _slotId,
-                Slot: this.ExamSlots.filter((s:any) => s.ExamSlotId == _slotId)[0].ExamSlotName,
-                ClassSubjectId: clssub.ClassSubjectId,
-                ClassSubject: clssub.ClassSubject,
-                Subject: clssub.Subject,
-                SubjectId: clssub.ClassSubject.SubjectId,
-                ClassId: clssub.ClassSubject.ClassId,
-                ClassName: displayrow.ClassName,
-                Active: 0,
-                Action: false
-              });
-            }
-          });
-          displayrow["Action"] = false;
+                this.StoreForUpdate.push({
+                  SlotClassSubjectId: 0,
+                  SlotId: slot.ExamSlotId,
+                  Slot: this.ExamSlots.filter((s: any) => s.ExamSlotId == slot.ExamSlotId)[0].ExamSlotName,
+                  ClassSubjectId: clssub.ClassSubjectId,
+                  ClassNSubject: clssub.ClassNSubject,
+                  Subject: clssub.Subject,
+                  SubjectId: clssub.SubjectId,
+                  ClassId: clssub.ClassId,
+                  SemesterId: _semesterId,
+                  SectionId: _sectionId,
+                  ClassName: displayrow.ClassName,
+                  Active: 0,
+                  Action: false
+                });
+              }
+            });
+            displayrow["Action"] = false;
+          })
         })
         if (this.StoreForUpdate.length == 0) {
           this.contentservice.openSnackBar("No record found! Subject not defined in class subject module.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -632,7 +710,7 @@ export class SlotnclasssubjectComponent implements OnInit {
   }
   SaveAll() {
     debugger;
-    var toUpdate = this.ClassWiseSubjectDisplay.filter((f:any) => f.Action == true);
+    var toUpdate = this.ClassWiseSubjectDisplay.filter((f: any) => f.Action == true);
     this.DataToUpdateCount = toUpdate.length;
     toUpdate.forEach(record => {
       this.DataToUpdateCount--;
@@ -672,6 +750,10 @@ export class SlotnclasssubjectComponent implements OnInit {
     // are considered equivalent
     return true;
   }
+  ClassCategory = [];
+  Sections = [];
+  Semesters = [];
+  Defaultvalue = 0;
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -679,10 +761,27 @@ export class SlotnclasssubjectComponent implements OnInit {
     //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
+    this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
+    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
+
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-      this.Classes = [...data.value];
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = [];
+      data.value.forEach(m => {
+        let obj: any = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
+        if (obj.length > 0) {
+          m.Category = obj[0].MasterDataName.toLowerCase();
+          this.Classes.push(m);
+        }
+      })
+      if (this.LoginUserDetail[0]['RoleUsers'][0]['role'].toLowerCase() == 'student') {
+        let _classId = this.tokenStorage.getClassId();
+        this.Classes = this.Classes.filter(c => c.ClassId == _classId);
+      }
+      else
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+
       this.GetExams();
       this.GetExamSlots();
       this.GetClassSubject();
@@ -692,7 +791,7 @@ export class SlotnclasssubjectComponent implements OnInit {
 
 
   }
-  ClassGroups :any[]= [];
+  ClassGroups: any[] = [];
   Getclassgroups() {
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
@@ -727,10 +826,12 @@ export interface ISlotNClassSubject {
   SlotId: number;
   Slot: string;
   ClassSubjectId: number;
-  ClassSubject: string;
+  ClassNSubject: string;
   Subject: string,
   SubjectId: number;
   ClassId: number;
+  SemesterId: number;
+  SectionId: number;
   ClassName: string;
   Active: number;
   Action: boolean;

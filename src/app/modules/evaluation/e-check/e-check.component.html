@@ -14,7 +14,7 @@
 </div>
 <div style="z-index: 10;">
     <div style="padding:15px 15px 10px 15px;">
-        <div><strong>Evaluation Result</strong></div>
+        <div><strong>E-Check</strong></div>
     </div>
     <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
     <!-- <alert></alert> -->
@@ -76,7 +76,7 @@
             <div *ngIf="EvaluatedStudent.length>0"
                 style="border:1px solid lightgray; display:flex;align-items:flex-start">
                 <div style="display:flex;flex-direction: column;">
-                    <mat-table style="width:300px" #table [dataSource]="AssessmentTypeDatasource"
+                    <mat-table style="max-width:400px" #table [dataSource]="AssessmentTypeDatasource"
                         *ngIf="EvaluatedStudent.length>0">
                         <ng-container matColumnDef="Name">
                             <mat-header-cell *matHeaderCellDef>
@@ -114,7 +114,7 @@
 
                 </div>
 
-                <div id="printSection" style="display:flex;flex-direction: column;">
+                <div id="printSection" style="width:80%;display:flex;flex-direction: column;">
 
                     <div
                         style="margin:30px 15px 15px 0px; display:flex;flex-direction: column;justify-content: center; width:100%">
@@ -125,7 +125,7 @@
 
                     </div>
 
-                    <mat-table style="width:100% !important;border-top:1px solid lightgray;padding: 15px;" #table
+                    <mat-table style="width:100% !important;border-top:1px solid lightgray;border-left:1px solid lightgray;border-bottom:1px solid lightgray;padding: 15px;" #table
                         [dataSource]="dataSource" *ngIf="StudentEvaluationList.length>0">
                         <ng-container matColumnDef="StudentEvaluationResultId">
                             <mat-header-cell *matHeaderCellDef>Id

@@ -10,7 +10,7 @@ import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
-import { IStudentEvaluation } from '../../evaluation/evaluationcontrol/evaluationcontrol.component';
+import { IStudentEvaluation } from '../../evaluation/e-mark/e-mark.component';
 import { SwUpdate } from '@angular/service-worker';
 import { SharedataService } from '../../../shared/sharedata.service';
 import * as moment from 'moment';

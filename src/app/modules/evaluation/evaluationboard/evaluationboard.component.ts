@@ -6,10 +6,10 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 import { ClassEvaluationComponent } from '../classevaluation/classevaluation.component';
 import { EvaluationExamMapComponent } from '../evaluationexammap/EvaluationExamMap.component';
 import { EvaluationMasterComponent } from '../evaluationmaster/evaluationmaster.component';
-import { EvaluationControlComponent } from '../evaluationcontrol/evaluationcontrol.component';
-import { EvaluationresultlistComponent } from '../evaluationresultlist/evaluationresultlist.component';
-import { StudentEvaluationComponent } from '../studentevaluation/studentevaluation.component';
+import { EMarkComponent } from '../e-mark/e-mark.component';
+import { EActComponent } from '../e-act/e-act.component';
 import { EvaluationstatusComponent } from '../evaluationstatus/evaluationstatus.component';
+import { ECheckComponent } from '../e-check/e-check.component';
 
 @Component({
   selector: 'app-evaluationboard',
@@ -22,9 +22,9 @@ export class EvaluationboardComponent implements AfterViewInit {
     EvaluationMasterComponent,
     ClassEvaluationComponent,
     EvaluationExamMapComponent,
-    StudentEvaluationComponent,
-    EvaluationresultlistComponent,
-    EvaluationControlComponent,
+    EActComponent,
+    ECheckComponent,
+    EMarkComponent,
     EvaluationstatusComponent
   ];
 
@@ -67,11 +67,11 @@ export class EvaluationboardComponent implements AfterViewInit {
       this.Permissions.ParentPermission = perObj[0].permission;
     }
 
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EXECUTEEVALUATION);
-    var comindx = this.components.indexOf(StudentEvaluationComponent);
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EACT);
+    var comindx = this.components.indexOf(EActComponent);
     this.AddRemoveComponent(perObj, comindx);
 
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATIONTYPE);
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.ETYPE);
     var comindx = this.components.indexOf(EvaluationMasterComponent);
     this.AddRemoveComponent(perObj, comindx);
 
@@ -83,12 +83,12 @@ export class EvaluationboardComponent implements AfterViewInit {
     var comindx = this.components.indexOf(EvaluationExamMapComponent);
     this.AddRemoveComponent(perObj, comindx);
 
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATIONRESULT)
-    var comindx = this.components.indexOf(EvaluationresultlistComponent);
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.ECHECK)
+    var comindx = this.components.indexOf(ECheckComponent);
     this.AddRemoveComponent(perObj, comindx);
     
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATIONMARK)
-    var comindx = this.components.indexOf(EvaluationControlComponent);
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EMARK)
+    var comindx = this.components.indexOf(EMarkComponent);
     this.AddRemoveComponent(perObj, comindx);
     
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.ESTATUS)

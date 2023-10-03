@@ -6,10 +6,10 @@ import { ClassEvaluationOptionComponent } from './classevaluationoption/classeva
 import { EvaluationExamMapComponent } from './evaluationexammap/EvaluationExamMap.component';
 import { EvaluationboardComponent } from './evaluationboard/evaluationboard.component';
 import { EvaluationMasterComponent } from './evaluationmaster/evaluationmaster.component';
-import { EvaluationControlComponent } from './evaluationcontrol/evaluationcontrol.component';
+import { EMarkComponent } from './e-mark/e-mark.component';
 import { QuestionnexamComponent } from './questionnexam/questionnexam.component';
 import { EvaluationstatusComponent } from './evaluationstatus/evaluationstatus.component';
-import { EvaluationresultlistComponent } from './evaluationresultlist/evaluationresultlist.component';
+import { ECheckComponent } from './e-check/e-check.component';
 
 const routes: Routes = [
   {
@@ -33,9 +33,9 @@ export const EvaluationComponents = [
   EvaluationExamMapComponent,
   EvaluationboardComponent,
   EvaluationMasterComponent,
-  EvaluationControlComponent,
+  EMarkComponent,
   QuestionnexamComponent,
   EvaluationstatusComponent,
-  EvaluationresultlistComponent
+  ECheckComponent
 ];
 

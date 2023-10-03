@@ -36,7 +36,7 @@ export class ClassgroupComponent implements OnInit {
   filteredOptions: Observable<IClassgroup[]>;
   dataSource: MatTableDataSource<IClassgroup>;
   allMasterData :any[]= [];
-  ClassMasters :any[]= [];
+  //ClassMasters :any[]= [];
   classgroupData = {
     ClassGroupId: 0,
     GroupName: '',
@@ -96,17 +96,18 @@ export class ClassgroupComponent implements OnInit {
       if (this.Permission == 'deny') {
         //this.nav.navigate(['/edu']);
       }
-      else if (this.ClassMasters.length == 0) {
+      else //if (this.ClassMasters.length == 0) 
+      {
         this.GetMasterData();
         this.Getclassgroups();
 
-        this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          this.ClassMasters = [...data.value];
-          this.loading = false;
-          this.PageLoading = false;
-        })
+        // this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
+        //   this.ClassMasters = [...data.value];
+        //   this.loading = false;
+        //   this.PageLoading = false;
+        // })
       }
-      this.loading = false; this.PageLoading = false;
+      //this.loading = false; this.PageLoading = false;
 
     }
   }

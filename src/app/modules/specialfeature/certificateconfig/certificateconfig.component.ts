@@ -107,7 +107,7 @@ export class CertificateconfigComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EXECUTEEVALUATION)
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.SPECIALFEATURE.CERTIFICATECONFIG)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }

@@ -10,7 +10,6 @@ import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
-import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
@@ -220,8 +219,8 @@ export class ResultComponent implements OnInit {
 
   // }
   ResultAtAGlance: any[] = [];
-  PromotedStudent :any[]=[];
-  FailStudent :any[]=[];
+  PromotedStudent: any[] = [];
+  FailStudent: any[] = [];
   GetExamStudentResults() {
 
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -513,6 +512,8 @@ export class ResultComponent implements OnInit {
       });
     this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [];
+
+
       data.value.map(m => {
         let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
@@ -520,7 +521,12 @@ export class ResultComponent implements OnInit {
           this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+      if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
+        let _classId = this.tokenStorage.getClassId();
+        this.Classes = this.Classes.filter(c => c.ClassId == _classId);
+      }
+      else
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
     });
     this.GetExams();
     //this.GetStudentSubjects();

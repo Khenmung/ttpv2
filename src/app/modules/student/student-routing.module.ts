@@ -9,10 +9,10 @@ import { FeereceiptComponent } from './studentfeepayment/feereceipt/feereceipt.c
 import { StudentattendancereportComponent } from './studentattendancereport/studentattendancereport.component';
 import { StudentboardComponent } from './studentboard/studentboard.component';
 import { StudentprogressreportComponent } from './studentprogressreport/studentprogressreport.component';
-import { StudentEvaluationComponent } from '../evaluation/studentevaluation/studentevaluation.component';
 import { AuthGuard } from '../../guards/auth.guard';
 import { HomeComponent } from '../../shared/components/home/home.component';
 import { StudentviewComponent } from './studentview/studentview.component';
+import { EActComponent } from '../evaluation/e-act/e-act.component';
 
 const routes: Routes = [
   {
@@ -43,7 +43,7 @@ export const StudentComponents = [
   StudentattendancereportComponent,
   StudentboardComponent,
   StudentprogressreportComponent,
-  StudentEvaluationComponent,
+  EActComponent,
   StudentprogressreportComponent,
   StudentviewComponent
 ]

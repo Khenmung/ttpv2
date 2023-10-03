@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EvaluationControlComponent } from './evaluationcontrol.component';
+import { EMarkComponent } from './e-mark.component';
 
 describe('EvaluationresultComponent', () => {
-  let component: EvaluationControlComponent;
-  let fixture: ComponentFixture<EvaluationControlComponent>;
+  let component: EMarkComponent;
+  let fixture: ComponentFixture<EMarkComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EvaluationControlComponent ]
+      declarations: [ EMarkComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EvaluationControlComponent);
+    fixture = TestBed.createComponent(EMarkComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

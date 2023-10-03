@@ -13,11 +13,11 @@ import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
-  selector: 'app-evaluationresultlist',
-  templateUrl: './evaluationresultlist.component.html',
-  styleUrls: ['./evaluationresultlist.component.scss']
+  selector: 'e-checkapp',
+  templateUrl: './e-check.component.html',
+  styleUrls: ['./e-check.component.scss']
 })
-export class EvaluationresultlistComponent implements OnInit {
+export class ECheckComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   EvaluationUpdatable = false;
@@ -128,7 +128,7 @@ export class EvaluationresultlistComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATIONRESULT)
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.ECHECK)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
