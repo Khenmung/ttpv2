@@ -812,7 +812,9 @@ export class searchstudentComponent implements OnInit {
       this.studentSearchForm.get("searchRemarkId")?.disable();
       this.studentSearchForm.get("searchAdmissionNo")?.disable();
       this.studentSearchForm.get("searchPID")?.disable();
-
+      this.studentSearchForm.get("FatherName")?.disable();
+      this.studentSearchForm.get("MotherName")?.disable();
+      
       var _studentId = localStorage.getItem('studentId');
       if (this.Siblings.length > 0) {
         _tempStudent = this.StudentsFromCache.filter((s:any) => s.StudentId == _studentId || s.ParentStudentId == this.Siblings[0].ParentStudentId)

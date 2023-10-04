@@ -528,16 +528,31 @@ export class AttendancepercentComponent implements OnInit {
     this.AttendanceAbsentId = this.AttendanceStatus.filter((s: any) => s.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
     this.shareddata.ChangeSubjects(this.Subjects);
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-      this.Classes = data.value.map(m => {
-        let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
-        if (obj.length > 0) {
-          m.Category = obj[0].MasterDataName.toLowerCase();
-        }
-        else
-          m.Category = '';
-        return m;
-      })
-      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+      if (this.LoginUserDetail[0]['RoleUsers'][0]['role'].toLowerCase() == 'student') {
+        let _classId = this.tokenStorage.getClassId();
+        let _classes = data.value.filter(d=>d.ClassId == _classId)
+        this.Classes = _classes.map(m => {
+          let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
+          if (obj.length > 0) {
+            m.Category = obj[0].MasterDataName.toLowerCase();
+          }
+          else
+            m.Category = '';
+          return m;
+        })
+      }
+      else {
+        this.Classes = data.value.map(m => {
+          let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
+          if (obj.length > 0) {
+            m.Category = obj[0].MasterDataName.toLowerCase();
+          }
+          else
+            m.Category = '';
+          return m;
+        })
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+      }
     });
     this.GetClassSubject();
     this.loading = false;

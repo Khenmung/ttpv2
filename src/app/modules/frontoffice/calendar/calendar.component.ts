@@ -8,15 +8,11 @@ import {
 import {
   startOfDay,
   endOfDay,
-  subDays,
-  addDays,
-  endOfMonth,
   isSameDay,
   isSameMonth,
   addHours,
 } from 'date-fns';
 import { Subject } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   CalendarEvent,
   CalendarEventAction,
@@ -28,9 +24,8 @@ import { NaomitsuService } from '../../../shared/databaseService';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import * as moment from 'moment';
 import { globalconstants } from '../../../shared/globalconstant';
-import {SwUpdate} from '@angular/service-worker';
+import { SwUpdate } from '@angular/service-worker';
 import { MatTableDataSource } from '@angular/material/table';
-import { getMatIconFailedToSanitizeUrlError } from '@angular/material/icon';
 
 const colors: any = {
   red: {
@@ -66,20 +61,21 @@ const colors: any = {
 
   templateUrl: 'calendar.component.html',
 })
-export class CalendarComponent implements OnInit { PageLoading=true;
+export class CalendarComponent implements OnInit {
+  PageLoading = true;
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
-  LoginUserDetail :any[]= [];
+  LoginUserDetail: any[] = [];
   events: CalendarEvent[];
-  EventList :any[]= [];
-  HolidayList :any[]= [];
+  EventList: any[] = [];
+  HolidayList: any[] = [];
   EventsListName = 'Events';
   HolidayListName = 'Holidays';
   view: CalendarView = CalendarView.Month;
-  FilterOrgSubOrgBatchId='';
-  FilterOrgSubOrg='';
+  FilterOrgSubOrgBatchId = '';
+  FilterOrgSubOrg = '';
   CalendarView = CalendarView;
   //CalendarView.setOption('height', 700);
-
+  //refresh: Subject<any> = new Subject();
   viewDate: Date = new Date();
 
   modalData: {
@@ -104,54 +100,14 @@ export class CalendarComponent implements OnInit { PageLoading=true;
     },
   ];
 
-  SelectedBatchId = 0;SubOrgId = 0;
+  SelectedBatchId = 0; SubOrgId = 0;
   loading = false;
   refresh = new Subject<void>();
-  CalendarList :any[]= [];
-  // events: CalendarEvent[] = [
-  //   {
-  //     start: subDays(startOfDay(new Date()), 1),
-  //     end: addDays(new Date(), 1),
-  //     title: 'A 3 day event',
-  //     color: colors.red,
-  //     actions: this.actions,
-  //     allDay: true,
-  //     resizable: {
-  //       beforeStart: true,
-  //       afterEnd: true,
-  //     },
-  //     draggable: true,
-  //   },
-  //   {
-  //     start: startOfDay(new Date()),
-  //     title: 'An event with no end date',
-  //     color: colors.yellow,
-  //     actions: this.actions,
-  //   },
-  //   {
-  //     start: subDays(endOfMonth(new Date()), 3),
-  //     end: addDays(endOfMonth(new Date()), 3),
-  //     title: 'A long event that spans 2 months',
-  //     color: colors.blue,
-  //     allDay: true,
-  //   },
-  //   {
-  //     start: addHours(startOfDay(new Date()), 2),
-  //     end: addHours(new Date(), 2),
-  //     title: 'A draggable and resizable event',
-  //     color: colors.yellow,
-  //     actions: this.actions,
-  //     resizable: {
-  //       beforeStart: true,
-  //       afterEnd: true,
-  //     },
-  //     draggable: true,
-  //   },
-  // ];
-
+  CalendarList: any[] = [];
   activeDayIsOpen: boolean = true;
   Permission = '';
-  constructor(private servicework: SwUpdate,private modal: NgbModal,
+  constructor(
+    private servicework: SwUpdate,
     private dataservice: NaomitsuService,
     private tokenservice: TokenStorageService
   ) {
@@ -159,9 +115,14 @@ export class CalendarComponent implements OnInit { PageLoading=true;
     this.SelectedBatchId = +this.tokenservice.getSelectedBatchId()!;
     this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenservice);
     this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenservice);
-    this.GetEvents();
+
   }
+  HolidayDataSource: MatTableDataSource<any>;
+  EventDataSource: MatTableDataSource<any>;
+  HolidayDisplayedColumns = ['Title', 'StartDate', 'EndDate']
+  EventDisplayedColumns = ['EventName', 'EventStartDate', 'EventEndDate']
   ngOnInit(): void {
+    debugger;
     // this.servicework.activateUpdate().then(() => {
     //   this.servicework.checkForUpdate().then((value) => {
     //     if (value) {
@@ -176,6 +137,8 @@ export class CalendarComponent implements OnInit { PageLoading=true;
     }
     ////console.log('this.Permission', this.Permission)
     if (this.Permission != 'deny') {
+      this.PageLoading = true;
+      this.GetEvents();
     }
   }
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
@@ -216,7 +179,7 @@ export class CalendarComponent implements OnInit { PageLoading=true;
     //this.modalData = { event, action };
     //this.modal.open(this.modalContent, { size: 'lg' });
   }
-dataSource:MatTableDataSource<any>;
+
   addEvent(): void {
     this.events = [
       ...this.events,
@@ -245,7 +208,7 @@ dataSource:MatTableDataSource<any>;
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
   }
-  async GetEvents() {
+  GetEvents() {
     //debugger;
     this.loading = true;
     let filterStr = this.FilterOrgSubOrgBatchId + " and Active eq 1";
@@ -256,14 +219,15 @@ dataSource:MatTableDataSource<any>;
     list.PageName = this.EventsListName;
     list.filter = [filterStr];
     this.events = [];
-    await this.dataservice.get(list)
+    this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
+          this.EventDataSource = new MatTableDataSource(data.value);
           data.value.forEach(e => {
             this.events.push(
               {
                 //id: e.EventId,
-                title: e.EventName + ", " + moment(e.EventStartDate).format('ddd HH:mm A') + ", " + e.Venue,
+                title: e.EventName + ", " + moment(e.EventStartDate).format('ddd') + ", " + e.Venue,
                 start: new Date(e.EventStartDate),
                 end: new Date(e.EventEndDate),
                 color: colors.red,
@@ -283,10 +247,11 @@ dataSource:MatTableDataSource<any>;
         this.dataservice.get(list)
           .subscribe((holiday: any) => {
             if (holiday.value.length > 0) {
+              this.HolidayDataSource = new MatTableDataSource(holiday.value);
               holiday.value.forEach(e => {
                 this.events.push(
                   {
-                    title: e.Title + ", " + moment(e.StartDate).format('ddd HH:mm A'),
+                    title: e.Title + ", " + moment(e.StartDate).format('ddd'),
                     start: new Date(e.StartDate),
                     end: new Date(e.EndDate),
                     color: colors.blue,
@@ -300,7 +265,12 @@ dataSource:MatTableDataSource<any>;
                   }
                 );
               })
+              this.events = this.events.sort((a, b) => {
+                return a.start.getTime() - b.start.getTime();
+              })
+              this.refresh.next();
             }
+            this.PageLoading = false;
           });
         //console.log("events",this.events);
         ///this.activeDayIsOpen = false;
@@ -308,126 +278,126 @@ dataSource:MatTableDataSource<any>;
       });
   }
 }
-  // import { Component, OnInit } from '@angular/core';
+// import { Component, OnInit } from '@angular/core';
 //import { SwUpdate } from '@angular/service-worker';
-  // import timeGridPlugin from '@fullcalendar/timegrid';
-  // import { CalendarOptions } from '@fullcalendar/angular';
-  // import { NaomitsuService } from '../../../shared/databaseService';
-  // import { List } from '../../../shared/interface';
-  // import { TokenStorageService } from '../../../_services/token-storage.service';
-  // import { ContentService } from '../../../shared/content.service';
+// import timeGridPlugin from '@fullcalendar/timegrid';
+// import { CalendarOptions } from '@fullcalendar/angular';
+// import { NaomitsuService } from '../../../shared/databaseService';
+// import { List } from '../../../shared/interface';
+// import { TokenStorageService } from '../../../_services/token-storage.service';
+// import { ContentService } from '../../../shared/content.service';
 
 
-  // @Component({
-  //   selector: 'app-calendar',
-  //   templateUrl: './calendar.component.html',
-  //   styleUrls: ['./calendar.component.scss']
-  // })
-  // export class CalendarComponent implements OnInit { PageLoading=true;
-  //   loading = false;
-  //   LoginUserDetail :any[]= [];
-  //   EventList :any[]= [];
-  //   EventsListName = 'Events';
-  //   HolidayListName = 'Holidays';
-  //   CalendarList :any[]= [];
-  //   SelectedBatchId=0;
-  //   calendarOptions: CalendarOptions;
-  //   constructor(private servicework: SwUpdate,
-  //     private contentservice: ContentService,
-  //     private dataservice: NaomitsuService,
-  //     private tokenService: TokenStorageService) { }
+// @Component({
+//   selector: 'app-calendar',
+//   templateUrl: './calendar.component.html',
+//   styleUrls: ['./calendar.component.scss']
+// })
+// export class CalendarComponent implements OnInit { PageLoading=true;
+//   loading = false;
+//   LoginUserDetail :any[]= [];
+//   EventList :any[]= [];
+//   EventsListName = 'Events';
+//   HolidayListName = 'Holidays';
+//   CalendarList :any[]= [];
+//   SelectedBatchId=0;
+//   calendarOptions: CalendarOptions;
+//   constructor(private servicework: SwUpdate,
+//     private contentservice: ContentService,
+//     private dataservice: NaomitsuService,
+//     private tokenService: TokenStorageService) { }
 
-  //   ngOnInit(): void {
-    // this.servicework.activateUpdate().then(() => {
-    //   this.servicework.checkForUpdate().then((value) => {
-    //     if (value) {
-    //       location.reload();
-    //     }
-    //   })
-    // })
-  //     this.LoginUserDetail = this.tokenService.getUserDetail();
-  //     this.SelectedBatchId =  +this.tokenService.getSelectedBatchId();
-  //     this.GetHoliday();
-  //   }
-  //   GetHoliday() {
-  //     debugger;
+//   ngOnInit(): void {
+// this.servicework.activateUpdate().then(() => {
+//   this.servicework.checkForUpdate().then((value) => {
+//     if (value) {
+//       location.reload();
+//     }
+//   })
+// })
+//     this.LoginUserDetail = this.tokenService.getUserDetail();
+//     this.SelectedBatchId =  +this.tokenService.getSelectedBatchId();
+//     this.GetHoliday();
+//   }
+//   GetHoliday() {
+//     debugger;
 
-  //     this.loading = true;
-  //     let filterStr = 'Active eq 1 and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
+//     this.loading = true;
+//     let filterStr = 'Active eq 1 and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-  //     let list: List = new List();
-  //     list.fields = ["HolidayId,Title,StartDate,EndDate"];
+//     let list: List = new List();
+//     list.fields = ["HolidayId,Title,StartDate,EndDate"];
 
-  //     list.PageName = this.HolidayListName;
-  //     list.filter = [filterStr];
-  //     this.CalendarList :any[]= [];
-  //     this.dataservice.get(list)
-  //       .subscribe((data: any) => {
-  //         //debugger;
-  //         if (data.value.length > 0) {
-  //           data.value.forEach(m => {
-  //             this.CalendarList.push(
-  //               {
-  //                 Id: m.HolidayId,
-  //                 title: m.Title,
-  //                 start: m.StartDate
-  //               }
-  //             )
-  //           });
-  //         }
-  //         this.GetEvents();
-  //         this.loading = false; this.PageLoading=false;
-  //       });
+//     list.PageName = this.HolidayListName;
+//     list.filter = [filterStr];
+//     this.CalendarList :any[]= [];
+//     this.dataservice.get(list)
+//       .subscribe((data: any) => {
+//         //debugger;
+//         if (data.value.length > 0) {
+//           data.value.forEach(m => {
+//             this.CalendarList.push(
+//               {
+//                 Id: m.HolidayId,
+//                 title: m.Title,
+//                 start: m.StartDate
+//               }
+//             )
+//           });
+//         }
+//         this.GetEvents();
+//         this.loading = false; this.PageLoading=false;
+//       });
 
-  //   }
-  // GetEvents() {
-  //   debugger;
+//   }
+// GetEvents() {
+//   debugger;
 
-  //   this.loading = true;
-  //   let filterStr = 'Active eq 1 and (' + this.FilterOrgSubOrg +") and BatchId eq " + this.SelectedBatchId;
+//   this.loading = true;
+//   let filterStr = 'Active eq 1 and (' + this.FilterOrgSubOrg +") and BatchId eq " + this.SelectedBatchId;
 
-  //   let list: List = new List();
-  //   list.fields = ["*"];
+//   let list: List = new List();
+//   list.fields = ["*"];
 
-  //   list.PageName = this.EventsListName;
-  //   list.filter = [filterStr];
-  //   this.EventList :any[]= [];
-  //   this.dataservice.get(list)
-  //     .subscribe((data: any) => {
-  //       if (data.value.length > 0) {
-  //         data.value.forEach(e => {
-  //           this.CalendarList.push(
-  //             {
-  //               Id: e.EventId,
-  //               title: e.EventName,
-  //               start: e.EventStartDate,
-  //               end: e.EventEndDate
-  //             }
-  //           );
-  //         })
-  //         this.calendarOptions = {
+//   list.PageName = this.EventsListName;
+//   list.filter = [filterStr];
+//   this.EventList :any[]= [];
+//   this.dataservice.get(list)
+//     .subscribe((data: any) => {
+//       if (data.value.length > 0) {
+//         data.value.forEach(e => {
+//           this.CalendarList.push(
+//             {
+//               Id: e.EventId,
+//               title: e.EventName,
+//               start: e.EventStartDate,
+//               end: e.EventEndDate
+//             }
+//           );
+//         })
+//         this.calendarOptions = {
 
-  //           contentHeight: 450,
-  //           plugins: [timeGridPlugin],
-  //           editable: true,
-  //           headerToolbar: {
-  //             left: 'dayGridMonth,timeGridWeek,timeGridDay',
-  //             center: 'title',
-  //             right: 'prevYear,prev,next,nextYear'
-  //           },
-  //           eventTextColor: '#ECECEC',
-  //           dayMaxEvents: true,
-  //           selectable: true,
-  //           eventMouseEnter: (event) => this.eventMouseOver(event),
-  //           initialView: 'timeGridWeek',
-  //           dateClick: this.handleDateClick.bind(this), // bind is important!
-  //           events: this.CalendarList
+//           contentHeight: 450,
+//           plugins: [timeGridPlugin],
+//           editable: true,
+//           headerToolbar: {
+//             left: 'dayGridMonth,timeGridWeek,timeGridDay',
+//             center: 'title',
+//             right: 'prevYear,prev,next,nextYear'
+//           },
+//           eventTextColor: '#ECECEC',
+//           dayMaxEvents: true,
+//           selectable: true,
+//           eventMouseEnter: (event) => this.eventMouseOver(event),
+//           initialView: 'timeGridWeek',
+//           dateClick: this.handleDateClick.bind(this), // bind is important!
+//           events: this.CalendarList
 
-  //         };
-  //       }
-  //     });
+//         };
+//       }
+//     });
 
-  // }
+// }
 //   handleDateClick(arg) {
 //     //console.log("arg",arg)
 //     //alert('date click! ' + arg)

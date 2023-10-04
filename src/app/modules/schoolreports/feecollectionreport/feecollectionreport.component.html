@@ -84,13 +84,11 @@
 </div>
 <div style="display:flex">
     <div style="display:flex;justify-content: center;width:100%;">
-        <button style="margin: 15px" [disabled]="loading || ELEMENT_DATA.length ==0" 
-            matTooltip="print" color="accent"
-            printSectionId="printSection" 
-            [useExistingCss]="true" ngxPrint mat-raised-button>
+        <button style="margin: 15px" [disabled]="loading || ELEMENT_DATA.length ==0" matTooltip="print" color="accent"
+            printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button>
             <mat-icon>print</mat-icon>
         </button>
-        <button style="margin: 15px" [disabled]="loading || ELEMENT_DATA.length ==0" (click)="exportArray()" 
+        <button style="margin: 15px" [disabled]="loading || ELEMENT_DATA.length ==0" (click)="exportArray()"
             matTooltip="download in excel" mat-raised-button color="accent">
             <mat-icon>download</mat-icon>
         </button>

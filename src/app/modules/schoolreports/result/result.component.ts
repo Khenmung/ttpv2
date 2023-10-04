@@ -457,10 +457,21 @@ export class ResultComponent implements OnInit {
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClassGroupMapping(filterOrgSubOrg, 1)
       .subscribe((data: any) => {
-        this.ClassGroupMapping = data.value.map(f => {
-          f.ClassName = f.Class.ClassName;
-          return f;
-        });
+        let _classId = this.tokenStorage.getClassId();
+        this.ClassGroupMapping = [];
+        if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
+          data.value.map(f => {
+            f.ClassName = f.Class.ClassName;
+            if (f.ClassId == _classId)
+              this.ClassGroupMapping.push(f);
+          });
+        }
+        else {
+          data.value.map(f => {
+            f.ClassName = f.Class.ClassName;
+            this.ClassGroupMapping.push(f);
+          });
+        }
         this.GetStudentGradeDefn();
       })
   }

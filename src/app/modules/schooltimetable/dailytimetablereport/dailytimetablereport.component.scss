@@ -1,12 +1,9 @@
-.mat-form-field{
-    width:98%;
-   
-}
+
 // .mat-column-Active,.mat-column-recess,.mat-column-break{
 //     justify-content: center;
 // }
 mat-cell:first-of-type,mat-header-cell:first-of-type{
-    padding-left: 0px;
+    padding-left: 10px;
 }
 mat-cell,mat-header-cell{
     border-right: 1px solid lightgray;

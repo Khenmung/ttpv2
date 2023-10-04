@@ -80,7 +80,8 @@ export class ExcelDataManagementComponent implements OnInit {
     this.shareddata.CurrentFeeType.subscribe(b => this.FeeTypes = b);
 
     this.uploadForm = this.fb.group({
-      UploadTypeId: [0, [Validators.required]]
+      UploadTypeId: [0, [Validators.required]],
+      inputFile:['']
     })
     this.FilterOrgSubOrgNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
     this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -1455,7 +1456,7 @@ export class ExcelDataManagementComponent implements OnInit {
     this.StudentList.forEach(s => {
 
       if (s.StudentClasses && s.StudentClasses.length > 0)
-        this.StudentClassList.push(s.StudentClasses);
+        this.StudentClassList.push(s.StudentClasses[0]);
 
     })
     // }

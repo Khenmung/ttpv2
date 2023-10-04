@@ -19,7 +19,7 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 export class DailytimetablereportComponent implements OnInit {
   PageLoading = true;
   SelectedApplicationId = 0;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
@@ -27,21 +27,21 @@ export class DailytimetablereportComponent implements OnInit {
   rowCount = -1;
   DataToSave = 0;
   SelectedBatchId = 0; SubOrgId = 0;
-  StoredForUpdate :any[]= [];
-  PeriodTypes :any[]= [];
-  Classes :any[]= [];
-  Sections :any[]= [];
-  Subjects :any[]= [];
-  WeekDays :any[]= [];
-  Periods :any[]= [];
-  Batches :any[]= [];
-  ClassSubjects :any[]= [];
-  ClassWiseSubjects :any[]= [];
-  AllClassPeriods :any[]= [];
+  StoredForUpdate: any[] = [];
+  PeriodTypes: any[] = [];
+  Classes: any[] = [];
+  Sections: any[] = [];
+  Subjects: any[] = [];
+  WeekDays: any[] = [];
+  Periods: any[] = [];
+  Batches: any[] = [];
+  ClassSubjects: any[] = [];
+  ClassWiseSubjects: any[] = [];
+  AllClassPeriods: any[] = [];
   SchoolTimeTableListName = "SchoolTimeTables";
-  SchoolTimeTableList :any[]= [];
+  SchoolTimeTableList: any[] = [];
   dataSource: MatTableDataSource<any[]>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   Permission = '';
   SchoolTimeTableData = {
     TimeTableId: 0,
@@ -54,7 +54,7 @@ export class DailytimetablereportComponent implements OnInit {
     BatchId: 0,
     Active: 0
   };
-  displayedColumns:any[]= [];
+  displayedColumns: any[] = [];
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
     private datepipe: DatePipe,
@@ -81,7 +81,7 @@ export class DailytimetablereportComponent implements OnInit {
     this.searchForm = this.fb.group({
       searchClassId: [0],
       searchSectionId: [0],
-      searchSemesterId:[0]
+      searchSemesterId: [0]
     });
     this.dataSource = new MatTableDataSource<any[]>([]);
     this.PageLoad();
@@ -110,14 +110,28 @@ export class DailytimetablereportComponent implements OnInit {
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.GetMasterData();
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          data.value.forEach(m => {
-            let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
-            if (obj.length > 0) {
-              m.Category = obj[0].MasterDataName.toLowerCase();
-              this.Classes.push(m);
-            }
-          });
-          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
+            let _classId = this.tokenStorage.getClassId();
+            let _classes = data.value.filter(d => d.ClassId == _classId);
+            _classes.forEach(m => {
+              let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
+              if (obj.length > 0) {
+                m.Category = obj[0].MasterDataName.toLowerCase();
+                this.Classes.push(m);
+              }
+            });
+
+          }
+          else {
+            data.value.forEach(m => {
+              let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
+              if (obj.length > 0) {
+                m.Category = obj[0].MasterDataName.toLowerCase();
+                this.Classes.push(m);
+              }
+            });
+            this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+          }
         });
 
       }
@@ -140,7 +154,7 @@ export class DailytimetablereportComponent implements OnInit {
       this.contentservice.openSnackBar("Please select class", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    
+
     filterstr += ' and ClassId eq ' + _classId;
     filterstr += ' and SemesterId eq ' + _semesterId;
     filterstr += ' and SectionId eq ' + _sectionId;
@@ -171,10 +185,10 @@ export class DailytimetablereportComponent implements OnInit {
           d.Day = this.WeekDays.filter(w => w.MasterDataId == d.DayId)[0].MasterDataName;
           return d;
         }))
-        var forDisplay:any[]= [];
+        var forDisplay: any[] = [];
         var _classId = this.searchForm.get("searchClassId")?.value;
         //this is used in html for subject dropdown.
-        this.ClassWiseSubjects = this.TeacherSubjectList.filter((f:any) => f.ClassId == _classId);
+        this.ClassWiseSubjects = this.TeacherSubjectList.filter((f: any) => f.ClassId == _classId);
 
         //iterrate through class
         //iterrate through weekdays
@@ -188,7 +202,7 @@ export class DailytimetablereportComponent implements OnInit {
 
         }
         else {
-          var usedWeekDays = this.WeekDays.filter((f:any) => dbTimeTable.filter(db => db.DayId == f.MasterDataId).length > 0)
+          var usedWeekDays = this.WeekDays.filter((f: any) => dbTimeTable.filter(db => db.DayId == f.MasterDataId).length > 0)
           usedWeekDays.forEach(p => {
             forDisplay = [];
             forDisplay["Day"] = p.MasterDataName;
@@ -215,7 +229,7 @@ export class DailytimetablereportComponent implements OnInit {
                   exist.Sequence = clsperiod.Sequence;
 
                   this.StoredForUpdate.push(exist);
-                  var objcls = this.ClassWiseSubjects.filter((s:any) => s.TeacherSubjectId == exist.TeacherSubjectId);
+                  var objcls = this.ClassWiseSubjects.filter((s: any) => s.TeacherSubjectId == exist.TeacherSubjectId);
                   if (objcls.length > 0) {
 
                     forDisplay[clsperiod.Period] = objcls[0].SubjectName
@@ -240,11 +254,11 @@ export class DailytimetablereportComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
-  TeacherSubjectList :any[]= [];
+  TeacherSubjectList: any[] = [];
   SelectedClassCategory = '';
   Defaultvalue = 0;
-  Semesters :any[]= [];
-  ClassCategory :any[]= [];
+  Semesters: any[] = [];
+  ClassCategory: any[] = [];
   BindSectionSemester() {
     let _classId = this.searchForm.get("searchClassId")?.value;
     let obj = this.Classes.filter(c => c.ClassId == _classId);

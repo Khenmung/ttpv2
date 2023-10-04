@@ -21,7 +21,7 @@
     <div style="padding: 15px;" fxLayout="row wrap">
         <div style="width: 100%;">
             <form [formGroup]="searchForm">
-                <mat-form-field appearance="outline"  style="width:200px;margin-right: 15px;">
+                <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                     <mat-label>Exam</mat-label>
                     <mat-select formControlName="searchExamId">
                         <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
@@ -46,8 +46,8 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="outline" style="width:150px;margin-right: 15px;" *ngIf="SelectedClassCategory==getCollegeCategory()"
-                    [style.width.px]="200">
+                <mat-form-field appearance="outline" style="width:150px;margin-right: 15px;"
+                    *ngIf="SelectedClassCategory==getCollegeCategory()" [style.width.px]="200">
                     <mat-label>semester</mat-label>
                     <mat-select formControlName="searchSemesterId">
                         <mat-option [value]="Defaultvalue">select</mat-option>
@@ -56,8 +56,8 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="outline" style="width:150px;margin-right: 15px;" 
-                *ngIf="SelectedClassCategory==getHighSchoolCategory()">
+                <mat-form-field appearance="outline" style="width:150px;margin-right: 15px;"
+                    *ngIf="SelectedClassCategory==getHighSchoolCategory()">
                     <mat-label>section</mat-label>
                     <mat-select formControlName="searchSectionId">
                         <mat-option [value]="Defaultvalue">select</mat-option>
@@ -74,19 +74,20 @@
                 </button>
             </form>
             <!-- <p>Record will be displayed if it is defined in Subjects in Slot.</p> -->
-            <span id="printSection">
-                <div *ngIf="GradingSlotNClassSubjects.length>0">Marking Subjects</div>
-                <mat-table #table [dataSource]="MarkingdataSource" style="min-width: 600px;border-bottom: 1px solid lightgray;">
+            <span id="printSection" style="display: flex;flex-direction: column;">
+                <!-- <div *ngIf="GradingSlotNClassSubjects.length>0">Marking Subjects</div> -->
+                <mat-table #table [dataSource]="MarkingdataSource"
+                    style="min-width: 600px;border-bottom: 1px solid lightgray;">
                     <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index"
                         matColumnDef="{{disCol}}">
                         <mat-header-cell [attr.rowspan]="NoOfColumn" *matHeaderCellDef
                             style="display:flex;justify-content: center;">
                             <div *ngIf="MarkingSlotNClassSubjects.length>0 && colIndex==0"
                                 style="width:100%;margin:15px; display: flex;flex-direction: column;justify-content: center;">
+                                <div style="justify-content:center;font-size: 16px;font-weight: bold">
+                                    Marking Subjects - {{SelectedClasses}}</div>
                                 <div style="justify-content:center; font-size: 20px;font-weight: bold;">
                                     {{SelectedExamName}} Exam Time Table</div>
-                                <div style="justify-content:center;font-size: 16px;font-weight: bold">
-                                    {{SelectedClasses}}</div>
                             </div>
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element" [innerHTML]="element[disCol]">
@@ -97,18 +98,20 @@
                         [ngClass]="{'backgroundcolorgray': row.daterow }">
                     </mat-row>
                 </mat-table>
-                <div *ngIf="GradingSlotNClassSubjects.length>0">Grading Subjects</div>
-                <mat-table #table [dataSource]="GradingdataSource" style="min-width: 600px;border-bottom: 1px solid lightgray;">
+                <!-- <div *ngIf="GradingSlotNClassSubjects.length>0">Grading Subjects</div> -->
+                <mat-table #table [dataSource]="GradingdataSource"
+                    style="min-width: 600px;border-bottom: 1px solid lightgray;">
                     <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index"
                         matColumnDef="{{disCol}}">
                         <mat-header-cell [attr.rowspan]="NoOfColumn" *matHeaderCellDef
                             style="display:flex;justify-content: center;">
                             <div *ngIf="GradingSlotNClassSubjects.length>0 && colIndex==0"
                                 style="width:100%;margin:15px; display: flex;flex-direction: column;justify-content: center;">
+                                <div style="justify-content:center;font-size: 16px;font-weight: bold">
+                                    Grading Subjects - {{SelectedClasses}}</div>
                                 <div style="justify-content:center; font-size: 20px;font-weight: bold;">
                                     {{SelectedExamName}} Exam Time Table</div>
-                                <div style="justify-content:center;font-size: 16px;font-weight: bold">
-                                    {{SelectedClasses}}</div>
+
                             </div>
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element" [innerHTML]="element[disCol]">

@@ -5,6 +5,7 @@ mat-card {
 }
 
 mat-cell:first-of-type {
+
     //padding: 0px 8px 0px 20px;
     @media screen and (max-width: 700px) {
         padding: 0px 8px 0px 10px;
@@ -46,4 +47,15 @@ mat-cell:first-of-type {
 .mdc-data-table__cell,
 .mdc-data-table__header-cell {
     padding: 8px 15px 0px 0px;
+}
+
+.arrow_up {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+
+    border-bottom: 50px solid #F9F9F9;
+
+    margin: 2rem;
 }

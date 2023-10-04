@@ -1,8 +1,10 @@
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
 <div style="display:flex;justify-content:space-between;width:650px">
+  
   <div style="margin: 15px;display:flex;justify-content:space-between">
     <!-- <div class="btn-group"> -->
-    <div style="margin-right: 10px;" mat-raised-button mwlCalendarPreviousView [view]="view"
-      [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+    <div style="margin-right: 10px;" mat-raised-button mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+      (viewDateChange)="closeOpenMonthViewDay()">
       Previous
     </div>
     <div style="margin-right: 10px;" class="btn btn-outline-secondary" mwlCalendarToday [(viewDate)]="viewDate">
@@ -34,7 +36,7 @@
     </div>
   </div>
 </div>
-<br />
+
 <div [ngSwitch]="view" style="width:650px">
   <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events"
     [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
@@ -47,116 +49,61 @@
     (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
   </mwl-calendar-day-view>
 </div>
-
-<!-- Everything you see below is just for the demo, you don't need to include it in your app -->
-<!--   
-  <br /><br /><br />
-  
-  <h3>
-    Edit events
-    <button class="btn btn-primary float-right" (click)="addEvent()">
-      Add new
-    </button>
-    <div class="clearfix"></div>
-  </h3>
-  
-  <div class="table-responsive">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Primary color</th>
-          <th>Secondary color</th>
-          <th>Starts at</th>
-          <th>Ends at</th>
-          <th>Remove</th>
-        </tr>
-      </thead>
-  
-      <tbody>
-        <tr *ngFor="let event of events">
-          <td>
-            <input
-              type="text"
-              class="form-control"
-              [(ngModel)]="event.title"
-              (keyup)="refresh.next()"
-            />
-          </td>
-          <td>
-            <input
-              type="color"
-              [(ngModel)]="event.color.primary"
-              (change)="refresh.next()"
-            />
-          </td>
-          <td>
-            <input
-              type="color"
-              [(ngModel)]="event.color.secondary"
-              (change)="refresh.next()"
-            />
-          </td>
-          <td>
-            <input
-              class="form-control"
-              type="text"
-              mwlFlatpickr
-              [(ngModel)]="event.start"
-              (ngModelChange)="refresh.next()"
-              [altInput]="true"
-              [convertModelValue]="true"
-              [enableTime]="true"
-              dateFormat="Y-m-dTH:i"
-              altFormat="F j, Y H:i"
-              placeholder="Not set"
-            />
-          </td>
-          <td>
-            <input
-              class="form-control"
-              type="text"
-              mwlFlatpickr
-              [(ngModel)]="event.end"
-              (ngModelChange)="refresh.next()"
-              [altInput]="true"
-              [convertModelValue]="true"
-              [enableTime]="true"
-              dateFormat="Y-m-dTH:i"
-              altFormat="F j, Y H:i"
-              placeholder="Not set"
-            />
-          </td>
-          <td>
-            <button class="btn btn-danger" (click)="deleteEvent(event)">
-              Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<div style="display: flex;margin-top: 50px;">
+  <div style="display: flex;flex-direction: column;width: 500px;margin-right: 30px;">
+    <div style="font-weight: bold;justify-content: center;display: flex;">Event</div>
+    <mat-table #table style="border: 1px solid lightgray;" [dataSource]="EventDataSource" matSort>
+      <ng-container matColumnDef="EventName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="">Event
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.EventName}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="EventStartDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="">Start
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.EventStartDate|date:'dd/MM/yyyy'}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="EventEndDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="">End
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.EventEndDate|date:'dd/MM/yyyy'}}
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="EventDisplayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: EventDisplayedColumns;" class="element-row"></mat-row>
+    </mat-table>
   </div>
-  
-  <ng-template #modalContent let-close="close">
-    <div class="modal-header">
-      <h5 class="modal-title">Event action occurred</h5>
-      <button type="button" class="close" (click)="close()">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div>
-        Action:
-        <pre>{{ modalData?.action }}</pre>
-      </div>
-      <div>
-        Event:
-        <pre>{{ modalData?.event | json }}</pre>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-secondary" (click)="close()">
-        OK
-      </button>
-    </div>
-  </ng-template> -->
+  <div style="display: flex;flex-direction: column;">
+    <div style="font-weight: bold;justify-content: center;display: flex;">Holiday</div>
+    <mat-table #table style="width:500px;border: 1px solid lightgray;" [dataSource]="HolidayDataSource" matSort>
+      <ng-container matColumnDef="Title">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="">Title
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.Title}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="StartDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="">Start
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.StartDate|date:'dd/MM/yyyy'}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="EndDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header="">End
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.EndDate|date:'dd/MM/yyyy'}}
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="HolidayDisplayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: HolidayDisplayedColumns;" class="element-row"></mat-row>
+    </mat-table>
+  </div>
+</div>

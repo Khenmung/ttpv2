@@ -44,7 +44,7 @@
                 </div>
             </form>
 
-            <mat-table #table [dataSource]="dataSource" id="printSection">
+            <mat-table #table [dataSource]="dataSource" id="printSection" style="border:1px solid lightgray">
 
                 <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
                     <mat-header-cell *matHeaderCellDef>

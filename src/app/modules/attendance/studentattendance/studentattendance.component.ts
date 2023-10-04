@@ -20,7 +20,7 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 })
 export class StudentAttendanceComponent implements OnInit {
   PageLoading = true;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   //@Input() StudentClassId:number;
   @ViewChild("table") mattable;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -385,7 +385,7 @@ export class StudentAttendanceComponent implements OnInit {
     });
   }
   UpdateActive(element) {
-    element.Action = true;    
+    element.Action = true;
   }
   onChangeEvent(row, value) {
     //debugger;
@@ -472,7 +472,7 @@ export class StudentAttendanceComponent implements OnInit {
             this.StudentAttendanceData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.StudentAttendanceData["UpdatedDate"];
             delete this.StudentAttendanceData["UpdatedBy"];
-            console.log("StudentAttendanceData insert",this.StudentAttendanceData);
+            console.log("StudentAttendanceData insert", this.StudentAttendanceData);
             this.insert(row);
           }
           else {
@@ -480,7 +480,7 @@ export class StudentAttendanceComponent implements OnInit {
             delete this.StudentAttendanceData["CreatedBy"];
             this.StudentAttendanceData["UpdatedDate"] = new Date();
             this.StudentAttendanceData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log("StudentAttendanceData update",this.StudentAttendanceData);
+            console.log("StudentAttendanceData update", this.StudentAttendanceData);
             this.update(row);
           }
           row.Action = false;
@@ -594,17 +594,31 @@ export class StudentAttendanceComponent implements OnInit {
     this.AttendancePresentId = this.AttendanceStatus.filter((f: any) => f.MasterDataName.toLowerCase() == 'present')[0].MasterDataId;
     this.AttendanceAbsentId = this.AttendanceStatus.filter((f: any) => f.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-      
-      this.Classes = data.value.map(m => {
-        let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
-        if (obj.length > 0) {
-          m.Category = obj[0].MasterDataName.toLowerCase();
-        }
-        else
-          m.Category = '';
-        return m;
-      })
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      if (this.LoginUserDetail[0]['RoleUsers'][0]['role'].toLowerCase() == 'student') {
+        let _classId = this.tokenStorage.getClassId();
+        let _classes = data.value.filter(d=>d.ClassId == _classId)
+        this.Classes = _classes.map(m => {
+          let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
+          if (obj.length > 0) {
+            m.Category = obj[0].MasterDataName.toLowerCase();
+          }
+          else
+            m.Category = '';
+          return m;
+        })
+      }
+      else {
+        this.Classes = data.value.map(m => {
+          let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
+          if (obj.length > 0) {
+            m.Category = obj[0].MasterDataName.toLowerCase();
+          }
+          else
+            m.Category = '';
+          return m;
+        })
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+      }
     })
     this.shareddata.ChangeSubjects(this.Subjects);
     this.GetSubjectTypes();
