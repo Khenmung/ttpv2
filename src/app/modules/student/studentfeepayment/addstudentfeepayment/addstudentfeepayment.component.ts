@@ -561,7 +561,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
       return;
     }
 
-    let filterstr = this.FilterOrgSubOrgBatchId + " and ClassId eq " + this.studentInfoTodisplay.ClassId + " and Active eq 1";
+    let filterstr = this.FilterOrgSubOrgBatchId + " and ClassId eq " + this.studentInfoTodisplay.ClassId;// + " and Active eq 1";
 
     let list: List = new List();
     list.fields = [
@@ -629,7 +629,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
           let itemcount = 1;
           this.StudentLedgerList = [];
           this.StudentClassFees.forEach((studentClassFee) => {
-            let existing = this.ExistingStudentLedgerList.filter(fromdb => fromdb.Month == studentClassFee.Month)
+            //either class fee is active or already paid are shown.
+            let existing = this.ExistingStudentLedgerList.filter(fromdb => fromdb.Month == studentClassFee.Month
+              && (studentClassFee.Active ==1 || fromdb.TotalDebit > fromdb.Balance))
             if (existing.length > 0) {
               var alreadyAdded = this.StudentLedgerList.filter((f: any) => f.Month == studentClassFee.Month)
               if (alreadyAdded.length == 0)

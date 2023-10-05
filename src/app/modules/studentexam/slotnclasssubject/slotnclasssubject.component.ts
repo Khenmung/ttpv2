@@ -147,19 +147,19 @@ export class SlotnclasssubjectComponent implements OnInit {
     debugger;
     //this.ClassWiseSubjectDisplay.filter((f: any) => {
     //  if (f.ClassName == item.ClassName) {
-        item.Subject.forEach(sub => {
-          if (sub.SubjectName == selectedSubjectname) {
-            if (value.source._checked)
-              sub.value = 1;
-            else
-              sub.value = 0;
-          }
-          else {
-            if (sub.value != 2)
-              sub.value = 0;
-          }
-        })
-     // }
+    item.Subject.forEach(sub => {
+      if (sub.SubjectName == selectedSubjectname) {
+        if (value.source._checked)
+          sub.value = 1;
+        else
+          sub.value = 0;
+      }
+      else {
+        if (sub.value != 2)
+          sub.value = 0;
+      }
+    })
+    // }
     //})
 
     item.Action = true;
@@ -603,10 +603,18 @@ export class SlotnclasssubjectComponent implements OnInit {
               ClassName: _classobj[0].ClassName + _semester + _section,
               ExamDetail: slot.ExamDateDetail,
               SlotId: slot.ExamSlotId,
+              ClassId: _classId,
+              SemesterId: _semesterId,
+              SectionId: _sectionId,
               Subject: []
             });
           }
-          let currentClassSlot = this.ClassWiseSubjectDisplay.filter(curr => curr.SlotId == slot.ExamSlotId)
+          let currentClassSlot = this.ClassWiseSubjectDisplay.filter(curr => 
+            curr.SlotId == slot.ExamSlotId)
+            // && curr.ClassId == _classId
+            // && curr.SemesterId == _semesterId
+            // && curr.SectionId == _sectionId)
+            
           currentClassSlot.forEach(displayrow => {
             displayrow["Subject"] = [];
             displayrow["SlotClassSubjectId"] = 0;
@@ -616,12 +624,19 @@ export class SlotnclasssubjectComponent implements OnInit {
 
               var selected = 0;
               var toolTip = '';
-              let existingInSelectedSlot = data.value.filter(db => db.ClassSubjectId == clssub.ClassSubjectId && db.SectionId == _sectionId && db.SemesterId == _semesterId && db.SlotId == slot.ExamSlotId);
+              let existingInSelectedSlot = data.value.filter(db => db.ClassSubjectId == clssub.ClassSubjectId 
+                && db.ClassId == _classId 
+                && db.SectionId == _sectionId 
+                && db.SemesterId == _semesterId 
+                && db.SlotId == slot.ExamSlotId);
 
               if (existingInSelectedSlot.length > 0) {
                 let existingsubject = this.AllSubjectsOfSelectedExam
                   .filter((f: any) => f.SlotAndClassSubjects.filter(c => c.SlotId != existingInSelectedSlot[0].SlotId
-                    && c.ClassSubjectId == clssub.ClassSubjectId).length > 0)
+                    && c.ClassSubjectId == clssub.ClassSubjectId
+                    && c.ClassId == _classId
+                    && c.SemesterId == _semesterId
+                    && c.SectionId == _sectionId).length > 0)
                 if (existingsubject.length > 0) {
                   toolTip = existingsubject[0].Tooltip;
                   selected = 2;
@@ -653,7 +668,7 @@ export class SlotnclasssubjectComponent implements OnInit {
                 });
               }
               else {
-                var toopTip = '',selected=0;
+                var toopTip = '', selected = 0;
                 let existingsubject = this.AllSubjectsOfSelectedExam
                   .filter((f: any) => f.SlotAndClassSubjects.filter(c => c.ClassSubjectId == clssub.ClassSubjectId
                     && c.ClassId == _classId

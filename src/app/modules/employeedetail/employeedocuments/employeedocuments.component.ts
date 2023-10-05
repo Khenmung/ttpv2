@@ -210,15 +210,15 @@ export class EmployeedocumentsComponent implements OnInit {
     return;
   }
   GetMasterData() {
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
-        this.allMasterData = [...data.value];
+  //   this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+  //     .subscribe((data: any) => {
+        this.allMasterData =this.tokenStorage.getMasterData()!;// [...data.value];
         this.DocumentTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.DOCUMENTTYPE);
         //this.Batches = this.getDropDownData(globalconstants.MasterDefinitions.school.BATCH);
         //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
         this.Batches = this.tokenStorage.getBatches()!;;
        // this.GetDocuments();
-      });
+    //  });
 
   }
   getDropDownData(dropdowntype) {

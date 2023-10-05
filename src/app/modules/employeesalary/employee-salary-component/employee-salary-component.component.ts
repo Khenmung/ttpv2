@@ -368,9 +368,9 @@ export class EmployeeSalaryComponentComponent implements OnInit {
   // }
   GetMasterData() {
 
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
-        this.allMasterData = [...data.value];
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
+        this.allMasterData = this.tokenStorage.getMasterData()!;//[...data.value];
         //this.Batches = this.getDropDownData(globalconstants.MasterDefinitions.school.BATCH);
         this.Grades = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGRADE);
         this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.DEPARTMENT);
@@ -395,7 +395,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
 
         this.GetEmployees();
         this.GetEmpComponents();
-      });
+      //});
   }
   GetVariableConfigs() {
 

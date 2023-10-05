@@ -253,13 +253,13 @@ export class HolidayComponent implements OnInit {
 
   GetMasterData() {
 
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
-        this.allMasterData = [...data.value];
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
+        this.allMasterData =this.tokenStorage.getMasterData()!;// [...data.value];
         this.HolidayTypes = this.getDropDownData(globalconstants.MasterDefinitions.common.HOLIDAYLIST)
         this.GetHoliday();
         this.loading = false; this.PageLoading = false;
-      });
+     // });
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);

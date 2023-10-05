@@ -387,10 +387,10 @@ export class studentprimaryinfoComponent implements OnInit {
   Sections: any[] = [];
   Semesters: any[] = [];
   GetMasterData() {
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
         ////console.log(data.value);
-        this.allMasterData = [...data.value];
+        this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
         this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
         this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
         this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
@@ -448,18 +448,21 @@ export class studentprimaryinfoComponent implements OnInit {
             }
           });
         }
-      });
+      //});
 
   }
   GetStudentClassPhoto() {
-    var source = [this.GetStudent(), this.GetStudentClass(), this.GetPhoto()];
+    //var source = [this.GetStudent(), this.GetStudentClass(), this.GetPhoto()];
+    var source = [this.GetStudent(), this.GetPhoto()];
     forkJoin(source)
       .subscribe((all: any) => {
         var _student = all[0].value;
-        var _studentclass = all[1].value;
-        var _photo = all[2].value;
+        //var _studentclass;// = all[1].value;
+        this.Students = this.tokenStorage.getStudents()!;
+        var _studentclass =this.Students.filter(s=>s.StudentId == this.StudentId)[0].StudentClasses;
+        var _photo = all[1].value;
         if (_student.length > 0) {
-          this.Students = this.tokenStorage.getStudents()!;
+          
           //var studcls = this.Students.filter(store => store.StudentId == this.StudentId);
           // if (studcls.length > 0)
           //   all[0].value[0].StudentClasses = studcls[0].StudentClasses ? studcls[0].StudentClasses : [];
@@ -871,6 +874,7 @@ export class studentprimaryinfoComponent implements OnInit {
     list.filter = ["StudentId eq " + this.StudentId + " and IsCurrent eq true and BatchId eq " + this.SelectedBatchId];
     list.PageName = "StudentClasses";
     return this.dataservice.get(list);
+    
     //list.lookupFields = ["StudentClasses($filter=BatchId eq " + this.SelectedBatchId + ";$select=ClassId,RollNo,SectionId,StudentClassId,StudentId),StorageFnPs($select=FileId,FileName;$filter=StudentId eq " + this.StudentId + ")"]
   }
   GetStudent() {

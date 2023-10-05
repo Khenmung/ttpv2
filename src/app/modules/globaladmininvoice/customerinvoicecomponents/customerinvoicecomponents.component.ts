@@ -244,9 +244,9 @@ export class CustomerinvoicecomponentsComponent implements OnInit { PageLoading=
   }
   GetMasterData() {
 
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"],this.SubOrgId,this.SelectedApplicationId)
-      .subscribe((data: any) => {
-        this.allMasterData = [...data.value];
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"],this.SubOrgId,this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
+        this.allMasterData = this.tokenStorage.getMasterData()!;//[...data.value];
         this.InvoiceComponents = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.INVOICECOMPONENT);
         this.Applications = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.bang);
 
@@ -255,7 +255,7 @@ export class CustomerinvoicecomponentsComponent implements OnInit { PageLoading=
         // this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
         // this.shareddata.ChangeBatch(this.Batches);
         this.loading = false; this.PageLoading=false;
-      });
+    //  });
   }
 
   getDropDownData(dropdowntype) {

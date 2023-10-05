@@ -281,7 +281,8 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
     this.loading=true;
     var _adminRoleId = this.Roles.filter(r => r.MasterDataName.toLowerCase() == 'admin')[0].MasterDataId;
     rolefilter += " and (RoleId eq " + _adminRoleId + " or RoleId eq " + _selectedRoleId + ")"; //this.searchForm.get("RoleId")?.value;
-
+    rolefilter += " and PlanId eq " + this.UserDetails[0]["planId"];
+    
     let list: List = new List();
     list.fields = [
       "ApplicationFeatureRoleId",
@@ -310,7 +311,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
         //console.log("adminFeatures",adminFeatures);
         adminFeatures.forEach(p => {
           _roleName = "";
-          var existing = roleFilteredAssigned.filter(r => r.PlanFeatureId == p.PlanFeatureId);
+          var existing = roleFilteredAssigned.filter(r => r.PlanFeatureId == p.PlanFeatureId && p.Active ==1);
           if (existing.length > 0) {
             var obj = this.Roles.filter(r => r.MasterDataId == existing[0].RoleId)
             if (obj.length > 0)

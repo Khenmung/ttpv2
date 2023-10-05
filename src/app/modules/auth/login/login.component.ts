@@ -329,6 +329,7 @@ export class LoginComponent implements OnInit {
               _appShortName = appObj[0].MasterDataName;
 
               var _permission = '';
+              console.log("item.PlanFeature.Page.PageTitle",item.PlanFeature.Page.PageTitle + "-----" + item.PermissionId)
               if (item.PermissionId != null)
                 _permission = globalconstants.PERMISSIONTYPES.filter(a => a.val == item.PermissionId)[0].type
               this.UserDetail[0]["applicationRolePermission"].push({

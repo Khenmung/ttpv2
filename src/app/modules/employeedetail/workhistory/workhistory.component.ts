@@ -250,14 +250,14 @@ export class WorkhistoryComponent implements OnInit { PageLoading=true;
 
   GetMasterData() {
 
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"],this.SubOrgId,this.SelectedApplicationId)
-      .subscribe((data: any) => {
-        this.allMasterData = [...data.value];
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"],this.SubOrgId,this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
+        this.allMasterData =this.tokenStorage.getMasterData()!;// [...data.value];
         //this.FamilyRelationship = this.getDropDownData(globalconstants.MasterDefinitions.employee.FAMILYRELATIONSHIP);
         this.EmployeeWorkHistory = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEESKILL);
         this.GetEmployeeWorkHistory();
         this.loading = false; this.PageLoading=false;
-      });
+     // });
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);

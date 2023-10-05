@@ -520,10 +520,10 @@ export class StudentviewComponent implements OnInit {
 AttendancePresentId=0;
 AttendanceAbsentId=0;
   GetMasterData() {
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
         ////console.log(data.value);
-        this.allMasterData = [...data.value];
+        this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
         this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
         this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
         this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
@@ -549,7 +549,7 @@ AttendanceAbsentId=0;
         if (this.StudentId > 0)
           this.GetStudent();
 
-      });
+     // });
 
   }
   getDropDownData(dropdowntype) {

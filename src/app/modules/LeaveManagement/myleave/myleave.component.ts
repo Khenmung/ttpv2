@@ -432,10 +432,10 @@ export class MyLeaveComponent implements OnInit {
 
   GetMasterData() {
 
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
         //debugger;
-        this.allMasterData = [...data.value];
+        this.allMasterData =this.tokenStorage.getMasterData()!;// [...data.value];
         this.Leaves = this.getDropDownData(globalconstants.MasterDefinitions.leave.EMPLOYEELEAVE);
         this.Leaves.sort((a, b) => a.Sequence - b.Sequence);
         this.Grades = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGRADE);
@@ -463,7 +463,7 @@ export class MyLeaveComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
         this.GetEmployees();
         this.GetLeavePolicy();
-      });
+      //});
   }
   GetEmployees() {
 

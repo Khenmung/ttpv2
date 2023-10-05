@@ -27,11 +27,11 @@ export class searchstudentComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   loading = false;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   filterOrgIdNBatchId = '';
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
-  ELEMENT_DATA: IStudent[]=[];
+  ELEMENT_DATA: IStudent[] = [];
   dataSource: MatTableDataSource<IStudent>;
   displayedColumns = [
     'PID',
@@ -45,45 +45,45 @@ export class searchstudentComponent implements OnInit {
     'Active',
     //'ReasonForLeaving',
     'Action'];
-  allMasterData :any[]= [];
-  Students :any[]= [];
-  Genders :any[]= [];
-  Classes :any[]= [];
-  Batches :any[]= [];
-  Bloodgroup :any[]= [];
-  Category :any[]= [];
-  Religion :any[]= [];
+  allMasterData: any[] = [];
+  Students: any[] = [];
+  Genders: any[] = [];
+  Classes: any[] = [];
+  Batches: any[] = [];
+  Bloodgroup: any[] = [];
+  Category: any[] = [];
+  Religion: any[] = [];
   States = []
-  Remarks :any[]= [];
-  PrimaryContact :any[]= [];
-  Location :any[]= [];
-  LanguageSubjUpper :any[]= [];
-  LanguageSubjLower :any[]= [];
-  FeeType :any[]= [];
-  FeeDefinitions :any[]= [];
-  Sections :any[]= [];
-  Houses :any[]= [];
-  StudentClasses :any[]= [];
-  UploadTypes :any[]= [];
-  ReasonForLeaving :any[]= [];
-  Siblings :any[]= [];
-  Semesters :any[]= [];
+  Remarks: any[] = [];
+  PrimaryContact: any[] = [];
+  Location: any[] = [];
+  LanguageSubjUpper: any[] = [];
+  LanguageSubjLower: any[] = [];
+  FeeType: any[] = [];
+  FeeDefinitions: any[] = [];
+  Sections: any[] = [];
+  Houses: any[] = [];
+  StudentClasses: any[] = [];
+  UploadTypes: any[] = [];
+  ReasonForLeaving: any[] = [];
+  Siblings: any[] = [];
+  Semesters: any[] = [];
   SelectedApplicationId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   //SelectedBatchStudentIDRollNo :any[]= [];
-  Clubs :any[]= [];
-  ClassCategory :any[]= [];
+  Clubs: any[] = [];
+  ClassCategory: any[] = [];
   StudentClassId = 0;
   StudentId = 0;
-  StudentFamilyNFriendList :any[]= [];
-  StudentOfClass :any[]= [];
+  StudentFamilyNFriendList: any[] = [];
+  StudentOfClass: any[] = [];
   studentSearchForm: UntypedFormGroup;
   filteredStudents: Observable<IStudent[]>;
   filteredFathers: Observable<IStudent[]>;
   filteredMothers: Observable<IStudent[]>;
   LoginUserDetail;
   FeePaymentPermission = '';
-  StudentsFromCache :any[]= [];
+  StudentsFromCache: any[] = [];
   StudentSearch: any[] = [{
     StudentId: 0,
     ClassId: 0,
@@ -128,7 +128,7 @@ export class searchstudentComponent implements OnInit {
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.StudentsFromCache = this.tokenStorage.getStudents()!;
-      this.StudentsFromCache =this.AssignNameClassSection(this.StudentsFromCache)
+      this.StudentsFromCache = this.AssignNameClassSection(this.StudentsFromCache)
       this.studentSearchForm = this.fb.group({
         searchSectionId: [0],
         searchSemesterId: [0],
@@ -199,7 +199,7 @@ export class searchstudentComponent implements OnInit {
   private _filterM(name: string): IStudent[] {
 
     const filterValue = name.toLowerCase();
-    var arr :any[]= [];
+    var arr: any[] = [];
     if (name)
       arr = this.StudentsFromCache.filter(option => option.MotherName.toLowerCase().includes(filterValue));
     return arr;
@@ -217,8 +217,8 @@ export class searchstudentComponent implements OnInit {
     return arr.filter((item,
       index) => arr.indexOf(item) === index);
   }
-  Groups :any[]= [];
-  AdmissionStatus :any[]= [];
+  Groups: any[] = [];
+  AdmissionStatus: any[] = [];
   GetMasterData() {
 
 
@@ -302,39 +302,39 @@ export class searchstudentComponent implements OnInit {
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [];
       data.value.map(m => {
-        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.GetStudents();
     });
 
     //this.GetStudentClasses();
-    var searchObj = this.StudentSearch.filter((f:any) => f.Text == 'ClassId');
+    var searchObj = this.StudentSearch.filter((f: any) => f.Text == 'ClassId');
     if (searchObj.length > 0 && searchObj[0].Value > 0
       && this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() != 'student') {
       this.studentSearchForm.patchValue({ searchClassId: searchObj[0].Value })
       this.BindSemesterSection();
-      var searchSectionIdObj = this.StudentSearch.filter((f:any) => f.Text == 'SectionId');
+      var searchSectionIdObj = this.StudentSearch.filter((f: any) => f.Text == 'SectionId');
       if (searchSectionIdObj.length > 0 && searchSectionIdObj[0].Value > 0) {
         this.studentSearchForm.patchValue({ searchSectionId: searchSectionIdObj[0].Value })
-        this.StudentOfClass = this.Students.filter((f:any) => f.ClassId == searchObj[0].Value && f.SectionId == searchSectionIdObj[0].Value);
+        this.StudentOfClass = this.Students.filter((f: any) => f.ClassId == searchObj[0].Value && f.SectionId == searchSectionIdObj[0].Value);
       }
       else
-        this.StudentOfClass = this.Students.filter((f:any) => f.ClassId == searchObj[0].Value);
+        this.StudentOfClass = this.Students.filter((f: any) => f.ClassId == searchObj[0].Value);
 
-      var searchFatherObj = this.StudentSearch.filter((f:any) => f.Text == 'FatherName');
+      var searchFatherObj = this.StudentSearch.filter((f: any) => f.Text == 'FatherName');
       if (searchFatherObj.length > 0 && searchFatherObj[0].Value > 0) {
-        var selectedFatherObj = this.Students.filter((f:any) => f.FatherName.includes(searchFatherObj[0].Value))
+        var selectedFatherObj = this.Students.filter((f: any) => f.FatherName.includes(searchFatherObj[0].Value))
         this.studentSearchForm.patchValue({ FatherName: selectedFatherObj[0] })
       }
-      var searchMotherObj = this.StudentSearch.filter((f:any) => f.Text == 'MotherName');
+      var searchMotherObj = this.StudentSearch.filter((f: any) => f.Text == 'MotherName');
       if (searchMotherObj.length > 0 && searchMotherObj[0].Value > 0)
         this.studentSearchForm.patchValue({ MotherName: searchMotherObj[0].Value })
-      var searchRemarkIdObj = this.StudentSearch.filter((f:any) => f.Text == 'RemarkId');
+      var searchRemarkIdObj = this.StudentSearch.filter((f: any) => f.Text == 'RemarkId');
       if (searchRemarkIdObj.length > 0 && searchRemarkIdObj[0].Value > 0)
         this.studentSearchForm.patchValue({ searchRemarkId: searchRemarkIdObj[0].Value })
       // if (this.Students.length == 0)
@@ -372,18 +372,18 @@ export class searchstudentComponent implements OnInit {
   progressreport(element) {
     debugger;
     let StudentName = element.Name;
-    var _clsName:string = '';
+    var _clsName: string = '';
     var _sectionName = '';
     //let studentclass: any = this.SelectedBatchStudentIDRollNo.filter(sid => sid.StudentId == element.StudentId);
     let studentclass: any = this.Students.filter(sid => sid.StudentId == element.StudentId);
     if (studentclass.length > 0) {
-      
-      var objcls = this.Classes.filter((f:any) => f.ClassId == studentclass[0].ClassId);
+
+      var objcls = this.Classes.filter((f: any) => f.ClassId == studentclass[0].ClassId);
       if (objcls.length > 0)
         _clsName = objcls[0].ClassName
 
-      
-      var sectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclass[0].SectionId)
+
+      var sectionObj = this.Sections.filter((f: any) => f.MasterDataId == studentclass[0].SectionId)
       if (sectionObj.length > 0)
         _sectionName = sectionObj[0].MasterDataName;
       this.StudentClassId = studentclass[0].StudentClassId
@@ -401,7 +401,7 @@ export class searchstudentComponent implements OnInit {
     this.SelectedClassCategory = '';
     var _classId = this.studentSearchForm.get("searchClassId")?.value;
     if (_classId > 0) {
-      let obj = this.Classes.filter((f:any) => f.ClassId == _classId);
+      let obj = this.Classes.filter((f: any) => f.ClassId == _classId);
       if (obj.length > 0)
         this.SelectedClassCategory = obj[0].Category;
     }
@@ -415,7 +415,7 @@ export class searchstudentComponent implements OnInit {
     var _classId = this.studentSearchForm.get("searchClassId")?.value;
     var _sectionId = this.studentSearchForm.get("searchSectionId")?.value;
     var _semesterId = this.studentSearchForm.get("searchSemesterId")?.value;
-    this.StudentOfClass = this.Students.filter((f:any) => f.ClassId == _classId
+    this.StudentOfClass = this.Students.filter((f: any) => f.ClassId == _classId
       && f.SectionId == _sectionId ? _sectionId : f.SectionId
         && f.SemesterId == _semesterId ? _semesterId : f.SemesterId);
 
@@ -424,7 +424,7 @@ export class searchstudentComponent implements OnInit {
     var _classId = this.studentSearchForm.get("searchClassId")?.value;
     var _sectionId = this.studentSearchForm.get("searchSectionId")?.value;
     var _semesterId = this.studentSearchForm.get("searchSemesterId")?.value;
-    this.StudentOfClass = this.Students.filter((f:any) => f.ClassId == _classId
+    this.StudentOfClass = this.Students.filter((f: any) => f.ClassId == _classId
       && f.SectionId == _sectionId ? _sectionId : f.SectionId
         && f.SemesterId == _semesterId ? _semesterId : f.SemesterId);
   }
@@ -440,12 +440,12 @@ export class searchstudentComponent implements OnInit {
     if (studentclass.length > 0) {
       var _clsName = '', _rollNo = '';
       _rollNo = studentclass[0].RollNo ? studentclass[0].RollNo : '';
-      var objcls = this.Classes.filter((f:any) => f.ClassId == studentclass[0].ClassId);
+      var objcls = this.Classes.filter((f: any) => f.ClassId == studentclass[0].ClassId);
       if (objcls.length > 0)
         _clsName = objcls[0].ClassName;
 
       var _sectionName = '';
-      var sectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclass[0].SectionId)
+      var sectionObj = this.Sections.filter((f: any) => f.MasterDataId == studentclass[0].SectionId)
       if (sectionObj.length > 0)
         _sectionName = sectionObj[0].MasterDataName;
       this.StudentClassId = studentclass[0].StudentClassId
@@ -587,6 +587,7 @@ export class searchstudentComponent implements OnInit {
     }
 
 
+
     var classfilter = '';
     if (_ClassId > 0) {
       this.StudentSearch.push({ Text: "ClassId", Value: _ClassId });
@@ -595,6 +596,8 @@ export class searchstudentComponent implements OnInit {
     if (_semesterId > 0) {
       this.StudentSearch.push({ Text: "SemesterId", Value: _semesterId });
     }
+
+
 
     if (_studentId == 0 && _PID == 0 && !_mothername && !_fathername && _remarkId == 0) {
       if (_ClassId == 0) {
@@ -609,11 +612,11 @@ export class searchstudentComponent implements OnInit {
           classfilter += ' and SemesterId eq ' + _semesterId;
         if (_sectionId > 0)
           classfilter += ' and SectionId eq ' + _sectionId;
-          
+
         classfilter += ' and IsCurrent eq true';
 
         if (_remarkId > 0) {
-          var obj :any[]= [];
+          var obj: any[] = [];
           this.Groups.forEach(f => {
             var check = f.group.filter(h => h.MasterDataId == _remarkId);
             if (check.length > 0)
@@ -627,7 +630,7 @@ export class searchstudentComponent implements OnInit {
     }
     else {
       if (_remarkId > 0) {
-        var obj :any[]= [];
+        var obj: any[] = [];
         this.Groups.forEach(f => {
           var check = f.group.filter(h => h.MasterDataId == _remarkId);
           if (check.length > 0)
@@ -654,99 +657,115 @@ export class searchstudentComponent implements OnInit {
       this.tokenStorage.saveStudentSearch(this.StudentSearch);
     else
       this.tokenStorage.saveStudentSearch([]);
-    let list: List = new List();
 
-    list.fields = ["StudentId,StudentClassId,HouseId,BatchId,SectionId,ClassId,RollNo,SemesterId,FeeTypeId,Remarks"];
+    if (_semesterId == 0 && _sectionId == 0) {
+      filteredStudents = filteredStudents.filter(fromallstud => fromallstud.StudentClasses
+        && fromallstud.StudentClasses.length > 0
+        && fromallstud.StudentClasses[0].ClassId == _ClassId);
+    }
+    else
+    {
+      filteredStudents = filteredStudents.filter(fromallstud => fromallstud.StudentClasses
+        && fromallstud.StudentClasses.length > 0
+        && fromallstud.StudentClasses[0].ClassId == _ClassId
+        && fromallstud.StudentClasses[0].SemesterId == _semesterId
+        && fromallstud.StudentClasses[0].SectionId == _sectionId);
+    }
+    // let list: List = new List();
 
-    //list.lookupFields = ["StudentClasses($filter=" + classfilter + "BatchId eq " + this.SelectedBatchId + ";$select=StudentClassId,HouseId,BatchId,SectionId,ClassId,RollNo,FeeTypeId,Remarks)"];
-    list.PageName = "StudentClasses";
-    var filterstr = this.FilterOrgSubOrgBatchId + classfilter + checkFilterString;
-    list.filter = [filterstr];
-    //list.orderBy = "ParentId";
+    // list.fields = ["StudentId,StudentClassId,HouseId,BatchId,SectionId,ClassId,RollNo,SemesterId,FeeTypeId,Remarks"];
 
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        ////console.log(data.value);
-        //if (data.value.length > 0) {
-        var formattedData :any[]= [];
-        if (data.value.length > 0) {
-          filteredStudents.forEach(s => {
-            var existInCurrentStudentClass = data.value.filter((f:any) => f.StudentId == s.StudentId);
-            if (existInCurrentStudentClass.length > 0) {
-              s.StudentClasses = existInCurrentStudentClass;
-              formattedData.push(s);
-            }
-          })
+    // //list.lookupFields = ["StudentClasses($filter=" + classfilter + "BatchId eq " + this.SelectedBatchId + ";$select=StudentClassId,HouseId,BatchId,SectionId,ClassId,RollNo,FeeTypeId,Remarks)"];
+    // list.PageName = "StudentClasses";
+    // var filterstr = this.FilterOrgSubOrgBatchId + classfilter + checkFilterString;
+    // list.filter = [filterstr];
+    // //list.orderBy = "ParentId";
 
-          formattedData = formattedData.filter(sc => {
-            let reason = this.ReasonForLeaving.filter(r => r.MasterDataId == sc.ReasonForLeavingId)
-            if (sc.StudentClasses != undefined && sc.StudentClasses.length > 0) {
-              var obj = this.FeeType.filter((f:any) => f.FeeTypeId == sc.StudentClasses[0].FeeTypeId);
-              if (obj.length > 0) {
-                sc.FeeType = obj[0].FeeTypeName
-              }
-              else
-                sc.FeeType = '';
-            }
-            else
-              sc.FeeType = '';
+    // this.dataservice.get(list)
+    //   .subscribe((data: any) => {
+    //     ////console.log(data.value);
+    //     //if (data.value.length > 0) {
+    //     //var formattedData: any[] = [];
+    //     if (data.value.length > 0) {
+    //       filteredStudents.forEach(s => {
+    //         var existInCurrentStudentClass = data.value.filter((f: any) => f.StudentId == s.StudentId);
+    //         if (existInCurrentStudentClass.length > 0) {
+    //           s.StudentClasses = existInCurrentStudentClass;
+    //           formattedData.push(s);
+    //         }
+    //       })
 
-            sc.ReasonForLeaving = reason.length > 0 ? reason[0].MasterDataName : '';
-            return sc;
-          });
-          this.ELEMENT_DATA = [];
-          formattedData.forEach(item => {
-            var _lastname = item.LastName == null ? '' : " " + item.LastName;
-            item.Name = item.FirstName + _lastname;
-            var _remark = '';
-            var objremark = this.Remarks.filter((f:any) => f.MasterDataId == item.RemarkId);
-            if (objremark.length > 0) {
-              _remark = objremark[0].MasterDataName
-              item.Remarks = _remark;
-            }
-            else
-              item.Remarks = '';
-            // if (item.StudentClasses.length == 0) 
-            if (item.StudentClasses == undefined) {
-              item.ClassName = '';
-            }
-            else {
-              item.RollNo = item.RollNo;
-              var clsobj = this.Classes.filter(cls => {
-                return cls.ClassId == item.ClassId
-              });
-              if (clsobj.length > 0) {
-                var objsection = this.Sections.filter((s:any) => s.MasterDataId == item.StudentClasses[0].SectionId);
-                if (objsection.length > 0)
-                  item.ClassName = clsobj[0].ClassName + "-" + objsection[0].MasterDataName;
-                else
-                  item.ClassName = clsobj[0].ClassName;
-                var objsemester = this.Semesters.filter((s:any) => s.MasterDataId == item.StudentClasses[0].SemesterId);
-                if (objsemester.length > 0)
-                  item.ClassName = clsobj[0].ClassName + "-" + objsemester[0].MasterDataName;
-              }
-              else
-                item.ClassName = '';
-            }
-            item.Action = "";
-            this.ELEMENT_DATA.push(item);
-          })
+    //formattedData = formattedData.filter(sc => {
+    filteredStudents = filteredStudents.filter(sc => {
+      let reason = this.ReasonForLeaving.filter(r => r.MasterDataId == sc.ReasonForLeavingId)
+      if (sc.StudentClasses != undefined && sc.StudentClasses.length > 0) {
+        var obj = this.FeeType.filter((f: any) => f.FeeTypeId == sc.StudentClasses[0].FeeTypeId);
+        if (obj.length > 0) {
+          sc.FeeType = obj[0].FeeTypeName
         }
-        //else {
-        if (this.ELEMENT_DATA.length == 0)
-          this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
-        //}
-        //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
-        this.ELEMENT_DATA = this.ELEMENT_DATA.sort((a,b)=>a["RollNo"] - b["RollNo"])
-        this.dataSource = new MatTableDataSource<IStudent>(this.ELEMENT_DATA);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        this.loading = false; this.PageLoading = false;
+        else
+          sc.FeeType = '';
+      }
+      else
+        sc.FeeType = '';
 
-        // else {
-        //   formattedData = [...filteredStudents];
-        // }
-      });
+      sc.ReasonForLeaving = reason.length > 0 ? reason[0].MasterDataName : '';
+      return sc;
+    });
+    this.ELEMENT_DATA = [];
+    //formattedData.forEach(item => {
+    filteredStudents.forEach(item => {
+      var _lastname = item.LastName == null ? '' : " " + item.LastName;
+      item.Name = item.FirstName + _lastname;
+      var _remark = '';
+      var objremark = this.Remarks.filter((f: any) => f.MasterDataId == item.RemarkId);
+      if (objremark.length > 0) {
+        _remark = objremark[0].MasterDataName
+        item.Remarks = _remark;
+      }
+      else
+        item.Remarks = '';
+      // if (item.StudentClasses.length == 0) 
+      if (item.StudentClasses == undefined) {
+        item.ClassName = '';
+      }
+      else {
+        item.RollNo = item.RollNo;
+        var clsobj = this.Classes.filter(cls => {
+          return cls.ClassId == item.ClassId
+        });
+        if (clsobj.length > 0) {
+          var objsection = this.Sections.filter((s: any) => s.MasterDataId == item.StudentClasses[0].SectionId);
+          if (objsection.length > 0)
+            item.ClassName = clsobj[0].ClassName + "-" + objsection[0].MasterDataName;
+          else
+            item.ClassName = clsobj[0].ClassName;
+          var objsemester = this.Semesters.filter((s: any) => s.MasterDataId == item.StudentClasses[0].SemesterId);
+          if (objsemester.length > 0)
+            item.ClassName = clsobj[0].ClassName + "-" + objsemester[0].MasterDataName;
+        }
+        else
+          item.ClassName = '';
+      }
+      item.Action = "";
+      this.ELEMENT_DATA.push(item);
+    })
+    //}
+    //else {
+    if (this.ELEMENT_DATA.length == 0)
+      this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
+    //}
+    //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
+    this.ELEMENT_DATA = this.ELEMENT_DATA.sort((a, b) => a["RollNo"] - b["RollNo"])
+    this.dataSource = new MatTableDataSource<IStudent>(this.ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.loading = false; this.PageLoading = false;
+
+    // else {
+    //   formattedData = [...filteredStudents];
+    // }
+    //});
 
     //}
   }
@@ -803,7 +822,7 @@ export class searchstudentComponent implements OnInit {
   }
   GetStudents() {
     debugger;
-    var _tempStudent :any[]= [];
+    var _tempStudent: any[] = [];
     if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
       //list.lookupFields = ["StudentFamilyNFriends($select=StudentId,ParentStudentId)"]
       this.studentSearchForm.get("searchClassId")?.disable()
@@ -814,14 +833,14 @@ export class searchstudentComponent implements OnInit {
       this.studentSearchForm.get("searchPID")?.disable();
       this.studentSearchForm.get("FatherName")?.disable();
       this.studentSearchForm.get("MotherName")?.disable();
-      
+
       var _studentId = localStorage.getItem('studentId');
       if (this.Siblings.length > 0) {
-        _tempStudent = this.StudentsFromCache.filter((s:any) => s.StudentId == _studentId || s.ParentStudentId == this.Siblings[0].ParentStudentId)
+        _tempStudent = this.StudentsFromCache.filter((s: any) => s.StudentId == _studentId || s.ParentStudentId == this.Siblings[0].ParentStudentId)
         //standardfilter += ' and (StudentId eq ' + _studentId + ' or ParentStudentId eq ' + this.Siblings[0].ParentStudentId + ")";
       }
       else {
-        _tempStudent = this.StudentsFromCache.filter((s:any) => s.StudentId == _studentId);
+        _tempStudent = this.StudentsFromCache.filter((s: any) => s.StudentId == _studentId);
 
       }
 
@@ -833,7 +852,7 @@ export class searchstudentComponent implements OnInit {
     this.loading = true;
     if (_tempStudent.length > 0) {
       if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
-        var _students :any[]= [];
+        var _students: any[] = [];
         _tempStudent.forEach(student => {
           if (student.StudentFamilyNFriends) {
             var indx = student.StudentFamilyNFriends.findIndex(sibling => sibling.StudentId == student.StudentId)
@@ -856,7 +875,7 @@ export class searchstudentComponent implements OnInit {
       // if (this.StudentClasses.length == 0 && _fathername == undefined && _mothername == undefined) {
       //   _students = this.Students.filter((f:any) => f.StudentClasses.length == 0);
       // }
-      this.Students= this.AssignNameClassSection(_students);
+      this.Students = this.AssignNameClassSection(_students);
 
       //  this.filteredStudents  = this.studentSearchForm.get("searchStudentName")?.valueChanges
       //     .pipe(
@@ -883,7 +902,7 @@ export class searchstudentComponent implements OnInit {
     //})
   }
   AssignNameClassSection(pStudents) {
-    let _students:any=[];
+    let _students: any = [];
     pStudents.forEach(student => {
       var _RollNo = '';
       var _name = '';
@@ -905,11 +924,11 @@ export class searchstudentComponent implements OnInit {
         if (_classNameobj.length > 0)
           _className = _classNameobj[0].ClassName;
 
-        var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == student.StudentClasses[0].SectionId)
+        var _SectionObj = this.Sections.filter((f: any) => f.MasterDataId == student.StudentClasses[0].SectionId)
         if (_SectionObj.length > 0)
           _section = _SectionObj[0].MasterDataName;
 
-        var _SemesterObj = this.Semesters.filter((f:any) => f.MasterDataId == student.StudentClasses[0].SemesterId)
+        var _SemesterObj = this.Semesters.filter((f: any) => f.MasterDataId == student.StudentClasses[0].SemesterId)
         if (_SemesterObj.length > 0)
           _semester = _SemesterObj[0].MasterDataName;
 

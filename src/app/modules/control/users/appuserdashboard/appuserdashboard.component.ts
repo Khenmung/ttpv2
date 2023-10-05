@@ -146,9 +146,9 @@ export class AppuserdashboardComponent implements OnInit {
 
   GetMasterData() {
 
-    this.contentservice.GetCommonMasterData(this.LoginDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
-        this.allMasterData = [...data.value];
+    // this.contentservice.GetCommonMasterData(this.LoginDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
+        this.allMasterData =this.tokenStorage.getMasterData()!;// [...data.value];
         this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
         this.UserTypes = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.USERTYPE);
         this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.DEPARTMENT);
@@ -177,7 +177,7 @@ export class AppuserdashboardComponent implements OnInit {
         })
 
         //this.GetRoleUser();
-      });
+    //  });
   }
   OnClassSelected() {
 

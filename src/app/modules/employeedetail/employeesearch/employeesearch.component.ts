@@ -142,14 +142,14 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
     return emp && emp.EmployeeCode ? emp.EmployeeCode : '';
   }
   GetMasterData() {
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"],this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"],this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
 
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
 
-        this.shareddata.ChangeMasterData(data.value);
-        this.allMasterData = [...data.value];
+        //this.shareddata.ChangeMasterData(data.value);
+        this.allMasterData = this.tokenStorage.getMasterData()!;//[...data.value];
 
         this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
         this.shareddata.ChangeReasonForLeaving(this.ReasonForLeaving);
@@ -195,7 +195,7 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
         //this.getSelectedBatchEmpEmployeeIdRollNo();
 
 
-      });
+     // });
 
   }
   getDropDownData(dropdowntype) {

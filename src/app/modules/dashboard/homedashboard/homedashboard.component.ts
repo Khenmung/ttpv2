@@ -229,10 +229,10 @@ export class HomeDashboardComponent implements OnInit {
 
       this.sideMenu = [];
       data.value.forEach(m => {
-        // if(m.Page.PageTitle=="Question Bank")
-        // {
-        //   debugger;
-        // }
+        if(m.Page.PageTitle=="Pages")
+        {
+          debugger;
+        }
         permission = this.LoginUserDetail[0]["applicationRolePermission"].filter(r => r.applicationFeature.toLowerCase().trim() == m.Page.PageTitle.toLowerCase().trim()
           && r.applicationId == pSelectedAppId && m.Page.ParentId == 0)
         if (permission.length > 0 && permission[0].permission != 'deny') {
@@ -842,7 +842,7 @@ export class HomeDashboardComponent implements OnInit {
   GetStudentClasses() {
     let list: List = new List();
     list.fields = [
-      "StudentClassId,StudentId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active"
+      "StudentClassId,StudentId,HouseId,BatchId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active"
     ];
     list.PageName = "StudentClasses";
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {

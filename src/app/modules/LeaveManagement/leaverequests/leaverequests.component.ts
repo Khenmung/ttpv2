@@ -381,10 +381,10 @@ export class LeaveRequestsComponent {
 
   GetMasterData() {
 
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
         //debugger;
-        this.allMasterData = [...data.value];
+        this.allMasterData =this.tokenStorage.getMasterData()!;// [...data.value];
         //this.OpenAdjustCloseLeaves = this.getDropDownData(globalconstants.MasterDefinitions.leave.OPENADJUSTCLOSE);
         //this.OpenAdjustCloseLeaves.sort((a, b) => a.Sequence - b.Sequence);
         this.Leaves = this.getDropDownData(globalconstants.MasterDefinitions.leave.EMPLOYEELEAVE);
@@ -416,7 +416,7 @@ export class LeaveRequestsComponent {
         this.GetEmployees();
         this.GetLeavePolicy();
         //this.GetEmployeeLeave();
-      });
+     // });
   }
   GetEmployees() {
 

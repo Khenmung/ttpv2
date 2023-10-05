@@ -267,14 +267,14 @@ export class EventComponent implements OnInit {
 
   GetMasterData() {
 
-    this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
-      .subscribe((data: any) => {
-        this.allMasterData = [...data.value];
+    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
+    //   .subscribe((data: any) => {
+        this.allMasterData = this.tokenStorage.getMasterData()!;//[...data.value];
         //this.FamilyRelationship = this.getDropDownData(globalconstants.MasterDefinitions.employee.FAMILYRELATIONSHIP);
         this.Events = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEESKILL);
         this.GetEvents();
         this.loading = false; this.PageLoading = false;
-      });
+     // });
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);

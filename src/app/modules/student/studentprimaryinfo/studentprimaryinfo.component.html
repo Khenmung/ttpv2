@@ -9,7 +9,7 @@
                 <ng-template mat-tab-label>
                     <mat-icon>info</mat-icon>Primary
                 </ng-template>
-                <div style="padding:15px 15px 10px 0px;">
+                <div style="padding:15px 15px 10px 15px;">
                     <div style="padding:0px 15px 15px 80px;font-weight: bold;">Primary</div>
                     <mat-grid-list cols="3" rowHeight="90px" #basic>
                         <mat-grid-tile [colspan]="1" [rowspan]="1">
@@ -226,7 +226,7 @@
                 <div style="display:flex;flex-direction: column; padding:15px 15px 10px 0px;">
                     <div style="padding:0px 15px 15px 30px;font-weight: bold;">Contact</div>
                     <!-- <div style="padding:15px 15px 10px 15px;"><strong>Contact</strong></div> -->
-                    <div style="display:flex;margin-left: 30px;">
+                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline" fxFlex>
                             <mat-label>Personal no.</mat-label>
                             <input id="txtPersonalNo" formControlName="PersonalNo" (blur)="OnBlur()" autocomplete="Off"
@@ -243,7 +243,7 @@
                                 autocomplete="Off" #Pincode matInput [maxlength]="10">
                         </mat-form-field>
                     </div>
-                    <div style="display:flex;margin-left: 30px;">
+                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline" fxFlex>
                             <mat-label>Mother's contact no.</mat-label>
                             <input id="txtMotherContactNo" formControlName="MotherContactNo" (blur)="OnBlur()"
@@ -255,7 +255,7 @@
                                 autocomplete="Off" #Pincode matInput [maxlength]="50">
                         </mat-form-field>
                     </div>
-                    <div style="display:flex;margin-left: 30px;">
+                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline" fxFlex>
                             <mat-label>Present address</mat-label>
                             <textarea rows="1" id="txtAreaPresentAddress" formControlName="PresentAddress"
@@ -342,7 +342,7 @@
                 </ng-template>
                 <div style="display:flex;flex-direction: column; padding:15px 15px 10px 0px;">
                     <div style="padding:0px 15px 15px 30px;font-weight: bold;">Bank Account</div>
-                    <div style="display:flex;margin-left: 30px;">
+                    <div style="display:flex;margin-left: 15px;">
                         <!-- <div style="padding:15px 15px 10px 15px;"><strong>Bank Account</strong></div> -->
                         <!-- <div style="display:flex;flex-direction: column;padding:15px"> -->
                         <mat-form-field appearance="outline" fxFlex>
@@ -356,7 +356,7 @@
                                 autocomplete="Off" matInput [maxlength]="20">
                         </mat-form-field>
                     </div>
-                    <div style="display:flex;margin-left: 30px;">
+                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline" fxFlex>
                             <mat-label>IFSC</mat-label>
                             <input id="txtIFSCode" formControlName="IFSCCode" (blur)="OnBlur()" autocomplete="Off"
@@ -405,7 +405,7 @@
 
                     <!-- <div style="padding:15px 15px 10px 15px;"><strong>Additional Info.</strong></div> -->
                     <!-- <div fxLayout="column" fxLayoutAlign="space-around"> -->
-                    <div style="display:flex;margin-left: 30px;">
+                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline">
                             <mat-label>Last school attended</mat-label>
                             <input id="txtTransferFromSchool" formControlName="TransferFromSchool" (blur)="OnBlur()"
@@ -422,7 +422,7 @@
                                 [maxlength]="5">
                         </mat-form-field>
                     </div>
-                    <div style="display:flex;margin-left: 30px;">
+                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline">
                             <mat-label>Club</mat-label>
                             <mat-select id="ddClub" formControlName="Club" (selectionChange)="OnBlur()">
@@ -448,7 +448,7 @@
                         </mat-form-field>
 
                     </div>
-                    <div style="display:flex;margin-left: 30px;">
+                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline">
                             <mat-label>Remarks</mat-label>
                             <mat-select id="ddRemarks" formControlName="Remarks" (selectionChange)="OnBlur()">
@@ -470,7 +470,7 @@
                                 autocomplete="Off" matInput [maxlength]="15">
                         </mat-form-field>
                     </div>
-                    <div style="display:flex;margin-left: 30px;">
+                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline" style="width:450px">
                             <mat-label>Notes</mat-label>
                             <textarea rows="1" id="txtAreaNotes" cols="50" (blur)="OnBlur()" [maxlength]="256" matInput
