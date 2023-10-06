@@ -30,7 +30,7 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline" fxFlex style="max-width:400px">
                     <mat-label>Message</mat-label>
-                    <textarea formControlName="MessageBody" #MessageBody [rows]="5" [cols]="30" matInput [maxlength]="250" autocomplete="Off"
+                    <textarea formControlName="MessageBody" #MessageBody [rows]="5" [cols]="100" matInput [maxlength]="250" autocomplete="Off"
                         cdkTextareaAutosize required></textarea>
                     <!-- <mat-hint align="end">{{MessageBody.value?.length || 0}}/250</mat-hint> -->
                     <span class="text-danger"

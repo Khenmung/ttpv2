@@ -4,12 +4,12 @@
 <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
 <!-- <alert></alert> -->
 <form [formGroup]="searchForm">
-    <!-- <mat-form-field appearance="outline" [style.width.px]="200">
+    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
         <mat-label>Posting Date</mat-label>
         <input formControlName="searchPostingDate" matInput [matDatepicker]="searchPostingDate" autocomplete="off">
         <mat-datepicker-toggle matSuffix [for]="searchPostingDate"></mat-datepicker-toggle>
         <mat-datepicker #searchPostingDate></mat-datepicker>
-    </mat-form-field> -->
+    </mat-form-field>
 
     <!-- <mat-form-field appearance="outline" [style.width.px]="200">
         <mat-label>Reference</mat-label>
@@ -26,10 +26,10 @@
         </mat-autocomplete>
     </mat-form-field>
     <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
-        <mat-label>Reference</mat-label>
-        <mat-select formControlName="searchReference">
-            <mat-option *ngFor="let option of FilteredGeneralLedger" [value]="option.Reference">
-                {{option.Reference}}
+        <mat-label>description</mat-label>
+        <mat-select formControlName="searchDescription">
+            <mat-option *ngFor="let option of AllAccountingVouchers" [value]="option.ShortText">
+                {{option.ShortText}}
             </mat-option>
         </mat-select>
     </mat-form-field>
@@ -104,30 +104,50 @@
             </mat-form-field>
         </mat-cell>
     </ng-container>
-    <ng-container matColumnDef="Debit">
+    <!-- <ng-container matColumnDef="Debit">
         <mat-header-cell *matHeaderCellDef> Debit</mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateDebit(element,$event)"
                 [checked]="element.Debit">
             </mat-checkbox>
         </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="BaseAmount">
-        <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
+    </ng-container> -->
+    <ng-container matColumnDef="DebitAmount">
+        <mat-header-cell *matHeaderCellDef> Debit </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
-                <input matInput autocomplete="Off" type="number" (blur)="onBlur(element)" [max]="1000000"
-                    [(ngModel)]="element.BaseAmount" [value]="element.BaseAmount">
+                <input matInput autocomplete="Off" type="number" (blur)="onBlur(element,'DebitAmount')" [max]="1000000"
+                    [(ngModel)]="element.DebitAmount" [value]="element.DebitAmount">
             </mat-form-field>
         </mat-cell>
     </ng-container>
-
+    <ng-container matColumnDef="CreditAmount">
+        <mat-header-cell *matHeaderCellDef> Credit </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <input matInput autocomplete="Off" type="number" (blur)="onBlur(element,'CreditAmount')" [max]="1000000"
+                    [(ngModel)]="element.CreditAmount" [value]="element.CreditAmount">
+            </mat-form-field>
+        </mat-cell>
+    </ng-container>
     <ng-container matColumnDef="Active">
         <mat-header-cell *matHeaderCellDef> Active </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
                 [checked]="element.Active==1?true:false">
             </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="ActivityTypeId">
+        <mat-header-cell *matHeaderCellDef> Activity </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline">
+                <mat-select (selectionChange)="onBlur(element,'')" [(ngModel)]="element.ActivityTypeId" [value]="element.ActivityTypeId">
+                    <mat-option *ngFor="let option of ActivityTypes" [value]="option.MasterDataId">
+                        {{option.MasterDataName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
         </mat-cell>
     </ng-container>
     <ng-container matColumnDef="Action">

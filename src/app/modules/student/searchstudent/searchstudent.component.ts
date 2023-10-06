@@ -310,37 +310,38 @@ export class searchstudentComponent implements OnInit {
       });
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.GetStudents();
+
+
+      //this.GetStudentClasses();
+      var searchObj = this.StudentSearch.filter((f: any) => f.Text == 'ClassId');
+
+      if (searchObj.length > 0 && searchObj[0].Value > 0
+        && this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() != 'student') {
+        this.studentSearchForm.patchValue({ searchClassId: searchObj[0].Value })
+        this.BindSemesterSection();
+        var searchSectionIdObj = this.StudentSearch.filter((f: any) => f.Text == 'SectionId');
+        if (searchSectionIdObj.length > 0 && searchSectionIdObj[0].Value > 0) {
+          this.studentSearchForm.patchValue({ searchSectionId: searchSectionIdObj[0].Value })
+          this.StudentOfClass = this.Students.filter((f: any) => f.ClassId == searchObj[0].Value && f.SectionId == searchSectionIdObj[0].Value);
+        }
+        else
+          this.StudentOfClass = this.Students.filter((f: any) => f.ClassId == searchObj[0].Value);
+
+        var searchFatherObj = this.StudentSearch.filter((f: any) => f.Text == 'FatherName');
+        if (searchFatherObj.length > 0 && searchFatherObj[0].Value > 0) {
+          var selectedFatherObj = this.Students.filter((f: any) => f.FatherName.includes(searchFatherObj[0].Value))
+          this.studentSearchForm.patchValue({ FatherName: selectedFatherObj[0] })
+        }
+        var searchMotherObj = this.StudentSearch.filter((f: any) => f.Text == 'MotherName');
+        if (searchMotherObj.length > 0 && searchMotherObj[0].Value > 0)
+          this.studentSearchForm.patchValue({ MotherName: searchMotherObj[0].Value })
+        var searchRemarkIdObj = this.StudentSearch.filter((f: any) => f.Text == 'RemarkId');
+        if (searchRemarkIdObj.length > 0 && searchRemarkIdObj[0].Value > 0)
+          this.studentSearchForm.patchValue({ searchRemarkId: searchRemarkIdObj[0].Value })
+        // if (this.Students.length == 0)
+
+      }
     });
-
-    //this.GetStudentClasses();
-    var searchObj = this.StudentSearch.filter((f: any) => f.Text == 'ClassId');
-    if (searchObj.length > 0 && searchObj[0].Value > 0
-      && this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() != 'student') {
-      this.studentSearchForm.patchValue({ searchClassId: searchObj[0].Value })
-      this.BindSemesterSection();
-      var searchSectionIdObj = this.StudentSearch.filter((f: any) => f.Text == 'SectionId');
-      if (searchSectionIdObj.length > 0 && searchSectionIdObj[0].Value > 0) {
-        this.studentSearchForm.patchValue({ searchSectionId: searchSectionIdObj[0].Value })
-        this.StudentOfClass = this.Students.filter((f: any) => f.ClassId == searchObj[0].Value && f.SectionId == searchSectionIdObj[0].Value);
-      }
-      else
-        this.StudentOfClass = this.Students.filter((f: any) => f.ClassId == searchObj[0].Value);
-
-      var searchFatherObj = this.StudentSearch.filter((f: any) => f.Text == 'FatherName');
-      if (searchFatherObj.length > 0 && searchFatherObj[0].Value > 0) {
-        var selectedFatherObj = this.Students.filter((f: any) => f.FatherName.includes(searchFatherObj[0].Value))
-        this.studentSearchForm.patchValue({ FatherName: selectedFatherObj[0] })
-      }
-      var searchMotherObj = this.StudentSearch.filter((f: any) => f.Text == 'MotherName');
-      if (searchMotherObj.length > 0 && searchMotherObj[0].Value > 0)
-        this.studentSearchForm.patchValue({ MotherName: searchMotherObj[0].Value })
-      var searchRemarkIdObj = this.StudentSearch.filter((f: any) => f.Text == 'RemarkId');
-      if (searchRemarkIdObj.length > 0 && searchRemarkIdObj[0].Value > 0)
-        this.studentSearchForm.patchValue({ searchRemarkId: searchRemarkIdObj[0].Value })
-      // if (this.Students.length == 0)
-
-    }
-
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
@@ -657,19 +658,20 @@ export class searchstudentComponent implements OnInit {
       this.tokenStorage.saveStudentSearch(this.StudentSearch);
     else
       this.tokenStorage.saveStudentSearch([]);
-
-    if (_semesterId == 0 && _sectionId == 0) {
-      filteredStudents = filteredStudents.filter(fromallstud => fromallstud.StudentClasses
-        && fromallstud.StudentClasses.length > 0
-        && fromallstud.StudentClasses[0].ClassId == _ClassId);
-    }
-    else
-    {
-      filteredStudents = filteredStudents.filter(fromallstud => fromallstud.StudentClasses
-        && fromallstud.StudentClasses.length > 0
-        && fromallstud.StudentClasses[0].ClassId == _ClassId
-        && fromallstud.StudentClasses[0].SemesterId == _semesterId
-        && fromallstud.StudentClasses[0].SectionId == _sectionId);
+    
+    if (_PID == 0 && _studentId == 0) {
+      if (_ClassId > 0 && _semesterId == 0 && _sectionId == 0) {
+        filteredStudents = filteredStudents.filter(fromallstud => fromallstud.StudentClasses
+          && fromallstud.StudentClasses.length > 0
+          && fromallstud.StudentClasses[0].ClassId == _ClassId);
+      }
+      else if (_ClassId > 0) {
+        filteredStudents = filteredStudents.filter(fromallstud => fromallstud.StudentClasses
+          && fromallstud.StudentClasses.length > 0
+          && fromallstud.StudentClasses[0].ClassId == _ClassId
+          && fromallstud.StudentClasses[0].SemesterId == _semesterId
+          && fromallstud.StudentClasses[0].SectionId == _sectionId);
+      }
     }
     // let list: List = new List();
 

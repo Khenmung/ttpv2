@@ -303,6 +303,10 @@ export class ExamtimetableComponent implements OnInit {
       this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
+    if (_classId == 0) {
+      this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
     this.loading = true;
     this.SelectedClasses = '';
 

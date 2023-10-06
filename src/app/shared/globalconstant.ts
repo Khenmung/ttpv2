@@ -537,7 +537,8 @@ export class globalconstants {
             "accounting": {
                 "ACCOUNTNATURE": "account nature",
                 "ACCOUNTTYPE": "account type",
-                "ACCOUNTGROUP": "account group"
+                "ACCOUNTGROUP": "account group",
+                "ACTIVITYTYPE": "activity type"
             }
         }
 

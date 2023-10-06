@@ -25,9 +25,9 @@ export class JournalEntryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   PageLoading = true;
   @ViewChild("table") mattable;
-  GeneralLedgers :any[]= [];
+  GeneralLedgers: any[] = [];
   AccountingVoucherListName = 'AccountingVouchers';
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   DummyMasterItemId = 4579;
@@ -41,13 +41,13 @@ export class JournalEntryComponent implements OnInit {
   FilterOrgSubOrg = '';
   SelectedApplicationId = 0;
   loading = false;
-  GLAccounts :any[]= [];
+  GLAccounts: any[] = [];
   CurrentBatchId = 0;
   SelectedBatchId = 0;
   SubOrgId = 0;
-  AccountingVoucherList: IAccountingVoucher[]= [];
+  AccountingVoucherList: IAccountingVoucher[] = [];
   dataSource: MatTableDataSource<IAccountingVoucher>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   searchForm: UntypedFormGroup;
   AccountingVoucherData = {
     AccountingVoucherId: 0,
@@ -64,8 +64,8 @@ export class JournalEntryComponent implements OnInit {
     BaseAmount: 0,
     Amount: 0,
     ShortText: '',
-    
-    OrgId: 0,SubOrgId: 0,
+    ActivityTypeId:0,
+    OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
 
@@ -74,9 +74,10 @@ export class JournalEntryComponent implements OnInit {
     "PostingDate",
     "GeneralLedgerAccountId",
     "ShortText",
-    "Reference",
-    "BaseAmount",
-    "Debit",
+    //"Reference",
+    "DebitAmount",
+    "CreditAmount",
+    "ActivityTypeId",
     "Active",
     "Action",
   ];
@@ -103,9 +104,9 @@ export class JournalEntryComponent implements OnInit {
     // })
     this.searchForm = this.fb.group({
       searchGeneralLedgerId: [0],
-      searchReference: [''],
+      searchDescription: [''],
       searchShortText: [''],
-      //searchPostingDate:[new Date()]
+      searchPostingDate:[new Date()]
     });
     this.PageLoad();
     //        this.GetTeachers();
@@ -132,10 +133,11 @@ export class JournalEntryComponent implements OnInit {
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.accounting.JOURNALENTRY);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
-      if (this.Permission && this.Permission != 'denied') {
-      
+      if (this.Permission && this.Permission != 'deny') {
+
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+        this.GetMasterData();
         this.GetAllAccountingVoucher();
         this.GetGeneralLedgerAutoComplete();
       }
@@ -161,6 +163,11 @@ export class JournalEntryComponent implements OnInit {
     }
     //var debitcredit = debit == 'debit' ? 0 : 1
     if (this.reference.length > 0 || mode) {
+      let _operatingActivityId = 0;
+      let obj: any = this.ActivityTypes.filter((f: any) => f.MasterDataName.toLowerCase() == 'operating');
+      if (obj.length > 0) {
+        _operatingActivityId = obj[0].MasterDataId;
+      }
       var newdata = {
         AccountingVoucherId: 0,
         DocDate: new Date(),
@@ -175,8 +182,11 @@ export class JournalEntryComponent implements OnInit {
         GeneralLedgerAccountId: this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId,
         Debit: false,
         BaseAmount: 0,
+        DebitAmount: 0,
+        CreditAmount: 0,
         Amount: 0,
         ShortText: '',
+        ActivityTypeId: _operatingActivityId,
         Active: 0,
         Action: true
       }
@@ -195,14 +205,14 @@ export class JournalEntryComponent implements OnInit {
       this.TranParentId = this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId;
     }
   }
-  FilteredGeneralLedger :any[]= [];
+  FilteredGeneralLedger: any[] = [];
   BindReference() {
     debugger;
     this.FilteredGeneralLedger = [];
     var GeneralLedgerId = this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId;
-    this.FilteredGeneralLedger = this.AllAccountingVouchers.filter((f:any) => f.GeneralLedgerAccountId == GeneralLedgerId);
+    this.FilteredGeneralLedger = this.AllAccountingVouchers.filter((f: any) => f.GeneralLedgerAccountId == GeneralLedgerId);
   }
-  AllAccountingVouchers :any[]= [];
+  AllAccountingVouchers: any[] = [];
   GetAllAccountingVoucher() {
     let filterStr = this.FilterOrgSubOrg + ' and LedgerId eq 0 and Active eq 1';
     debugger;
@@ -214,7 +224,7 @@ export class JournalEntryComponent implements OnInit {
     let list: List = new List();
     list.fields = [
       "GeneralLedgerAccountId",
-      "Reference",
+      "ShortText",
     ];
 
     list.PageName = this.AccountingVoucherListName;
@@ -225,7 +235,7 @@ export class JournalEntryComponent implements OnInit {
     this.AllAccountingVouchers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        this.AllAccountingVouchers = alasql("select distinct GeneralLedgerAccountId,Reference from ?", [data.value]);
+        this.AllAccountingVouchers = alasql("select distinct GeneralLedgerAccountId,ShortText from ?", [data.value]);
         //console.log("allaccountingvouchers",this.AllAccountingVouchers);
       })
   }
@@ -233,15 +243,28 @@ export class JournalEntryComponent implements OnInit {
 
     let filterStr = this.FilterOrgSubOrg + ' and LedgerId eq 0 and Active eq 1';
     debugger;
+    var _searchDescription = this.searchForm.get("searchDescription")?.value;
+    var _PostingDate = this.searchForm.get("searchPostingDate")?.value;
+    var _GeneralLedger = this.searchForm.get("searchGeneralLedgerId")?.value;
+    // if(_searchDescription.length==0 && )
+    if (_GeneralLedger.GeneralLedgerId) {
+      filterStr += " and GeneralLedgerAccountId eq " + _GeneralLedger.GeneralLedgerId;
+      //this.contentservice.openSnackBar("Please select Account.", globalconstants.ActionText, globalconstants.RedBackground);
+      //return;
+    }
+   
     this.loading = true;
     var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
     filterStr += " and PostingDate ge " + this.datepipe.transform(FinancialStartEnd.StartDate, 'yyyy-MM-dd') + //T00:00:00.000Z
       " and  PostingDate le " + this.datepipe.transform(FinancialStartEnd.EndDate, 'yyyy-MM-dd');//T00:00:00.000Z
+    let toDate = new Date(_PostingDate).setDate(new Date(_PostingDate).getDate()+1);
+      filterStr += " and PostingDate ge " + this.datepipe.transform(_PostingDate, 'yyyy-MM-dd') + //T00:00:00.000Z
+      " and  PostingDate lt " + this.datepipe.transform(toDate, 'yyyy-MM-dd');//T00:00:00.000Z
 
-    var searchReference = this.searchForm.get("searchReference")?.value;
-    if (searchReference != "") {
-      this.reference = searchReference;
-      filterStr += " and Reference eq '" + searchReference + "'"
+    
+    if (_searchDescription != "") {
+      this.reference = _searchDescription;
+      filterStr += " and ShortText eq '" + _searchDescription + "'"
     }
 
     let list: List = new List();
@@ -259,6 +282,7 @@ export class JournalEntryComponent implements OnInit {
       "BaseAmount",
       "Amount",
       "ShortText",
+      "ActivityTypeId",
       "Active",
     ];
 
@@ -271,8 +295,12 @@ export class JournalEntryComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountingVoucherList = data.value.map(m => {
+          if (m.Debit)
+            m.DebitAmount = m.BaseAmount;
+          else
+            m.CreditAmount = m.BaseAmount;
 
-          var obj = this.GeneralLedgers.filter((f:any) => f.GeneralLedgerId == m.GeneralLedgerAccountId)
+          var obj = this.GeneralLedgers.filter((f: any) => f.GeneralLedgerId == m.GeneralLedgerAccountId)
           if (obj.length > 0) {
             m.GeneralLedgerAccountId = obj[0];
           }
@@ -281,7 +309,7 @@ export class JournalEntryComponent implements OnInit {
           return m;
         });
 
-        //        console.log("AccountingVoucherList", this.AccountingVoucherList);
+                console.log("AccountingVoucherList", this.AccountingVoucherList);
         if (this.AccountingVoucherList.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
@@ -297,21 +325,32 @@ export class JournalEntryComponent implements OnInit {
       account => account.GeneralLedgerName.toLowerCase().includes(name?.toLowerCase())
     ) || this.GeneralLedgers;
   }
-  onBlur(row) {
+  onBlur(row, colName) {
+    debugger;
     row.Action = true;
+    if (row[colName] > 0 && colName.toLowerCase() == 'debitamount') {
+      row.Debit = true;
+      row.Amount = row[colName];
+      row.BaseAmount = row[colName];
+    }
+    else if (row[colName] > 0 && colName.toLowerCase() == 'creditamount') {
+      row.Debit = false;
+      row.Amount = row[colName];
+      row.BaseAmount = row[colName];
+    }
   }
   updateActive(row, value) {
 
     row.Active = value.checked ? 1 : 0;
     row.Action = true;
   }
-  UpdateDebit(row, event) {
-    if (event.checked)
-      row.Debit = true;
-    else
-      row.Debit = false;
-    this.onBlur(row);
-  }
+  // UpdateDebit(row, event) {
+  //   if (event.checked)
+  //     row.Debit = true;
+  //   else
+  //     row.Debit = false;
+  //   this.onBlur(row);
+  // }
   // delete(element) {
   //   let toupdate = {
   //     Active: element.Active == 1 ? 0 : 1
@@ -388,6 +427,7 @@ export class JournalEntryComponent implements OnInit {
             this.AccountingVoucherData.PostingDate = row.PostingDate;
             this.AccountingVoucherData.Reference = this.reference;
             this.AccountingVoucherData.LedgerId = row.LedgerId;
+            this.AccountingVoucherData.ActivityTypeId = row.ActivityTypeId;
             this.AccountingVoucherData.GeneralLedgerAccountId = row.GeneralLedgerAccountId.GeneralLedgerId;
             this.AccountingVoucherData.ClassFeeId = 0;
             this.AccountingVoucherData.FeeReceiptId = 0;
@@ -473,9 +513,11 @@ export class JournalEntryComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
+  ActivityTypes = [];
   GetMasterData() {
-
+    debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
+    this.ActivityTypes = this.getDropDownData(globalconstants.MasterDefinitions.accounting.ACTIVITYTYPE)
     this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {
