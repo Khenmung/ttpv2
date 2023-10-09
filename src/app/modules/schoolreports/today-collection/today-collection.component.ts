@@ -123,9 +123,10 @@ export class TodayCollectionComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
           this.Classes = [...data.value];
-          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+          this.GetMasterData();
         });
-        this.GetMasterData();
+        
         this.GetEmployees();
       }
     }
@@ -311,10 +312,10 @@ export class TodayCollectionComponent implements OnInit {
     this.Reload = true;
     this.DateWiseCollection = [];
     this.dataSource = new MatTableDataSource(this.DateWiseCollection);
-    this.HeadsWiseCollection =[];
-    this.GroupByPaymentType =[];
-    this.GrandTotalAmount =0;
-    this.CancelledAmount =0;
+    this.HeadsWiseCollection = [];
+    this.GroupByPaymentType = [];
+    this.GrandTotalAmount = 0;
+    this.CancelledAmount = 0;
   }
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -357,32 +358,34 @@ export class TodayCollectionComponent implements OnInit {
     //debugger;
     //  //console.log('data.value', data.value);
     var _students: any = this.tokenStorage.getStudents()!;
-    this.Students = [..._students];
+    //this.Students = [..._students];
     // var _filteredStudents = _students.filter((s:any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
     // if (data.value.length > 0) {
-    //   this.Students = data.value.map(studentcls => {
-    //     var matchstudent = _filteredStudents.filter(stud => stud.StudentId == studentcls.StudentId)
-    //     var _classNameobj = this.Classes.filter(c => c.ClassId == studentcls.ClassId);
-    //     var _className = '';
-    //     if (_classNameobj.length > 0)
-    //       _className = _classNameobj[0].ClassName;
+    _students.forEach(studentcls => {
+      //var matchstudent = _filteredStudents.filter(stud => stud.StudentId == studentcls.StudentId)
+      if (studentcls.StudentClasses && studentcls.StudentClasses.length > 0) {
+        var _classNameobj = this.Classes.filter(c => c.ClassId == studentcls.StudentClasses[0].ClassId);
+        var _className = '';
+        if (_classNameobj.length > 0)
+          _className = _classNameobj[0].ClassName;
 
-    //     var _Section = '';
-    //     var _sectionobj = this.Sections.filter((f:any) => f.MasterDataId == studentcls.SectionId);
-    //     if (_sectionobj.length > 0)
-    //       _Section = _sectionobj[0].MasterDataName;
-    //     var _lastname = matchstudent[0].LastName == null ? '' : " " + matchstudent[0].LastName;
-    //     var _RollNo = studentcls.RollNo;
-    //     var _name = matchstudent[0].FirstName + _lastname;
-    //     var _fullDescription = _name + "-" + _className + "-" + _Section + "-" + _RollNo;
-    //     return {
-    //       StudentClassId: studentcls.StudentClassId,
-    //       StudentId: studentcls.StudentId,
-    //       ClassName: _className,
-    //       Name: _fullDescription
-    //     }
-    //   })
-    // }
+        var _Section = '';
+        var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studentcls.StudentClasses[0].SectionId);
+        if (_sectionobj.length > 0)
+          _Section = _sectionobj[0].MasterDataName;
+        var _lastname = studentcls.LastName == null ? '' : " " + studentcls.LastName;
+        var _RollNo = studentcls.StudentClasses[0].RollNo;
+        var _name = studentcls.FirstName + _lastname;
+        var _fullDescription = _name + "-" + _className + "-" + _Section + "-" + _RollNo;
+
+        studentcls.StudentClassId = studentcls.StudentClasses[0].StudentClassId;
+        //StudentId: studentcls.StudentId,
+        studentcls.ClassName = _className;
+        studentcls.Name = _fullDescription;
+        this.Students.push(studentcls);
+      }
+    })
+    //}
     this.loading = false; this.PageLoading = false;
     //})
   }

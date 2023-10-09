@@ -33,7 +33,7 @@
                     <div style="margin: 15px 15px 15px 0px;">
                         <a [routerLink]="['/auth/forgot']">Forgot password</a>
                     </div>
-                    <div style="margin: 15px 15px 15px 0px;">
+                    <div style="margin: 15px 15px 15px 0px;" *ngIf="LoginUserDetail.length>0">
                         New Organization Owner? <a [routerLink]="['/auth/signup']">Sign up</a>
                     </div>
                     <div *ngIf="f.username.invalid && (f.username.dirty || f.username.touched)"

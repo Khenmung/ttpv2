@@ -2,12 +2,20 @@
 //     width:98%;
 //     margin-right: 15px;;
 // }
+.mat-column-TBSequence,.mat-column-IncomeStatementSequence,
+.mat-column-ExpenseSequence,
+.mat-column-AssetSequence,
+.mat-column-LnESequence{
+    flex:1 0 100px;
+}
+.mat-column-Active,.mat-column-AccountNatureId{
+    flex: 1 0 80px;
+}
 .mat-column-GroupOrNature,
 .mat-column-DebitType,
-.mat-column-Active,
 .mat-column-Action{
     justify-content:center;
-    flex:1 0 100px;
+    flex:1 0 110px;
 }
 .mat-column-AccountName,.mat-column-ParentId,.mat-column-AccountTypeId
 {    

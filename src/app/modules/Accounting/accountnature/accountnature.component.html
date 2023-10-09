@@ -59,7 +59,7 @@
         </mat-cell>
     </ng-container>
     <ng-container matColumnDef="DebitType">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Debit Account (or Credit)</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Dr. (or Cr.)</mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateDebit(element,$event)"
                 [checked]="element.DebitType">
@@ -147,14 +147,15 @@
             <button style="margin-right:15px" [disabled]="
             loading || 
             Permission=='read' || 
-            !element.Action" matTooltip="save" mat-raised-button
+            !element.Action" matTooltip="save" mat-mini-fab
                 color="accent" (click)="UpdateOrSave(element)">
                 <mat-icon>save</mat-icon>
                 <mat-icon *ngIf="loading">
                     <mat-spinner diameter="20" color="Blue"></mat-spinner>
                 </mat-icon>
             </button>
-            <button [disabled]="loading || element.ParentId==0 || Permission!='rwd' || !element.Action" matTooltip="save" mat-raised-button
+            <button [disabled]="loading || element.ParentId==0 || Permission!='rwd' || !element.Action" matTooltip="save" 
+                mat-mini-fab
                 color="accent" (click)="openDialog(element)">
                 <mat-icon>delete</mat-icon>
                 <mat-icon *ngIf="loading">

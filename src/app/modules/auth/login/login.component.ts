@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private contentservice: ContentService
   ) { }
-
+  LoginUserDetail:any=[];
   ngOnInit(): void {
 
     this.password = 'password';
@@ -66,9 +66,9 @@ export class LoginComponent implements OnInit {
     })
 
     debugger;
-    var LoginUserDetail = this.tokenStorage.getUserDetail();
+    this.LoginUserDetail = this.tokenStorage.getUserDetail();
     //if (this.tokenStorage.getToken()) {
-    if (LoginUserDetail.length > 0) {
+    if (this.LoginUserDetail.length > 0 && this.LoginUserDetail[0].org!='TTP') {
       this.isLoggedIn = true;
       this.route.navigate(['/dashboard']);
     }
