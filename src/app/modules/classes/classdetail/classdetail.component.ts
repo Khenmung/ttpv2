@@ -131,6 +131,7 @@ export class ClassdetailComponent implements OnInit {
           var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
             this.ClassMasters = [...data.value];
+            this.ClassMasters = this.ClassMasters.sort((a,b)=>a.Sequence - b.Sequence);
           })
         }
         this.GetMasterData();

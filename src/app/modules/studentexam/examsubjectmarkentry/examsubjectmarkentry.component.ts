@@ -160,7 +160,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
     debugger;
 
-    this.DataCollection.push(JSON.parse(JSON.stringify(row)))
+    this.DataCollection.push(JSON.parse(JSON.stringify(row)));
     if (row.Marks > row.FullMark) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Marks cannot be greater than FullMark (" + row.FullMark + ").", globalconstants.ActionText, globalconstants.RedBackground);
@@ -1068,6 +1068,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     })
   }
   saveall() {
+    this.DataCollection =[];
     this.ExamStudentSubjectResult.forEach(record => {
       if (record.Action == true) {
         this.UpdateOrSave(record, record);
@@ -1096,7 +1097,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     this.rowCount = 0;
     this.rowSave = 0;
     //var columnexist;
-    this.DataCollection = [];;
+    this.DataCollection = [];
     for (var prop in element) {
 
       var row: any = this.StoredForUpdate.filter((s: any) => s.SubjectMarkComponent == prop

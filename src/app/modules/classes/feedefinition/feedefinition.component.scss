@@ -1,7 +1,4 @@
-mat-form-field{
 
-    width: 99%;
-}
 .mat-column-FeeDefinitionId{
     flex:0 0 60px;
 }
@@ -13,4 +10,9 @@ mat-form-field{
 }
 .mat-column-Description{
     flex:0 0 250px;
+}
+
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+    padding: 0px 15px 0px 0px;
 }

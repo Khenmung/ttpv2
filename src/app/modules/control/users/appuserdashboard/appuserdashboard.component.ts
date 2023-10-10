@@ -366,7 +366,7 @@ export class AppuserdashboardComponent implements OnInit {
 
       var _lastname = student.LastName == null ? '' : " " + student.LastName;
       //var matchstudcls = data.value.filter(d => d.StudentId == student.StudentId);
-
+      
       if (student.EmailAddress != null && student.EmailAddress.length > 0) {
         student.ClassName = this.Classes.filter(c => c.ClassId == student.StudentClasses[0].ClassId)[0].ClassName;
         student.EmailAddress = student.EmailAddress;

@@ -376,9 +376,9 @@ export class OrganizationComponent implements OnInit {
   }
   GetStorageFnP(pParentId) {
 
-    var filterstr = 'Active eq 1 and ParentId eq ' + pParentId;
+    var filterstr = "Active eq 1 and ParentId eq " + pParentId;
     let list: List = new List();
-    list.fields = ["*"];
+    list.fields = ["FileId,FileName,Description,UpdatedFileFolderName,ParentId,FileOrFolder,Active"];
     list.PageName = "StorageFnPs";
     //list.lookupFields :any[]= [];
     list.filter = [filterstr];

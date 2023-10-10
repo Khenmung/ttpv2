@@ -95,8 +95,10 @@ export class DashboardclassfeeComponent implements OnInit {
       searchClassId: [0],
       searchMonth: [0],
       searchSectionId: [0],
-      searchSemesterId: [0]
-      //FeeDefinitionId: [0],
+      searchOtherSectionId: [0],
+      searchSemesterId: [0],
+      searchOtherSemesterId: [0],
+      searchOtherClassId: [0]
 
     });
     this.PageLoad();
@@ -195,6 +197,7 @@ export class DashboardclassfeeComponent implements OnInit {
     element.Action = true;
   }
   CategoryName = '';
+  OtherCategoryName = '';
   ChangeClass(element) {
     debugger;
     var _categoryObj = this.Classes.filter(c => c.ClassId == element.value);
@@ -202,6 +205,15 @@ export class DashboardclassfeeComponent implements OnInit {
     if (_categoryObj.length > 0)
       this.CategoryName = _categoryObj[0].Category.toLowerCase();
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
+    this.ClearData();
+  }
+  ChangeOtherClass(element) {
+    debugger;
+    var _categoryObj = this.Classes.filter(c => c.ClassId == element.value);
+    //var _category = ''
+    if (_categoryObj.length > 0)
+      this.OtherCategoryName = _categoryObj[0].Category.toLowerCase();
+    this.searchForm.patchValue({ "searchOtherSectionId": 0, "searchOtherSemesterId": 0 });
     this.ClearData();
   }
   ClearData() {
@@ -234,7 +246,7 @@ export class DashboardclassfeeComponent implements OnInit {
           }
           else
             _clsfeeWithDefinitions = [...items];
-          
+
           this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, _classId, _semesterId, _sectionId, 0, 0)
             .subscribe((data: any) => {
               var studentfeedetail: any[] = [];
@@ -315,6 +327,8 @@ export class DashboardclassfeeComponent implements OnInit {
     this.loading = true;
     this.DataToSaveInLoop = this.ELEMENT_DATA.filter((f: any) => f.Action);
     this.DataCountToUpdate = this.DataToSaveInLoop.length;
+    this.DataCollection = [];
+    this.RowCount = 0;
     this.DataToSaveInLoop.forEach((record) => {
       this.DataCountToUpdate--
       this.UpdateOrSave(record);
@@ -364,12 +378,20 @@ export class DashboardclassfeeComponent implements OnInit {
 
   Save(row) {
     this.DataCountToUpdate = 0;
+    this.RowCount = 0;
+    this.DataCollection = [];
     this.UpdateOrSave(row);
   }
+  DataCollection: any = [];
+  RowCount = 0;
   UpdateOrSave(row) {
     debugger;
-    var objDiscount = this.ELEMENT_DATA.filter((f: any) => f.FeeName == 'Discount');
-    if (objDiscount.length == 0) {
+    this.DataCollection.push(JSON.parse(JSON.stringify(row)));
+
+    var objDiscount = this.ELEMENT_DATA.filter((f: any) => f.FeeName == 'Discount' && f.Active == 0);
+    var objDiscountExist = this.ELEMENT_DATA.filter((f: any) => f.FeeName == 'Discount');
+    let _otherClassId = this.searchForm.get("searchOtherClassId")?.value;
+    if (objDiscountExist.length == 0 && _otherClassId == 0) {
       this.contentservice.openSnackBar("Discount should be activated and saved.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
@@ -423,43 +445,51 @@ export class DashboardclassfeeComponent implements OnInit {
           this.contentservice.openSnackBar("Record already exists!", globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-          this.classFeeData.Active = row.Active;
-          this.classFeeData.Amount = row.Amount;
-          this.classFeeData.Rate = row.Rate;
-          this.classFeeData.Quantity = row.Quantity;
-          this.classFeeData.BatchId = row.BatchId;
-          this.classFeeData.ClassFeeId = row.ClassFeeId;
-          this.classFeeData.ClassId = row.ClassId;
-          this.classFeeData.SectionId = row.SectionId;
-          this.classFeeData.SemesterId = row.SemesterId;
-          this.classFeeData.FeeDefinitionId = row.FeeDefinitionId;
-          this.classFeeData.LocationId = +row.LocationId;
-          this.classFeeData.PaymentOrder = row.PaymentOrder;
-          this.classFeeData.Month = row.Month;
-          this.classFeeData.OrgId = this.LoginUserDetail[0]["orgId"];
-          this.classFeeData.SubOrgId = this.SubOrgId;
-          if (objDiscount[0].ClassFeeId == 0) {
-            var insert: any[] = [];
-            insert.push({
-              Active: 1,
-              Amount: objDiscount[0].Amount,
-              BatchId: objDiscount[0].BatchId,
-              ClassFeeId: objDiscount[0].ClassFeeId,
-              ClassId: objDiscount[0].ClassId,
-              FeeDefinitionId: objDiscount[0].FeeDefinitionId,
-              LocationId: 0,
-              PaymentOrder: objDiscount[0].PaymentOrder,
-              Month: objDiscount[0].Month,
-              OrgId: this.LoginUserDetail[0]["orgId"],
-              SubOrgId: this.SubOrgId
+          this.RowCount += 1;
+          if (this.DataCollection.length == this.RowCount) {
+
+            this.DataCollection.forEach(item => {
+
+              this.classFeeData.Active = item.Active;
+              this.classFeeData.Amount = item.Amount;
+              this.classFeeData.Rate = item.Rate;
+              this.classFeeData.Quantity = item.Quantity;
+              this.classFeeData.BatchId = item.BatchId;
+              this.classFeeData.ClassFeeId = item.ClassFeeId;
+              this.classFeeData.ClassId = item.ClassId;
+              this.classFeeData.SectionId = item.SectionId;
+              this.classFeeData.SemesterId = item.SemesterId;
+              this.classFeeData.FeeDefinitionId = item.FeeDefinitionId;
+              this.classFeeData.LocationId = +item.LocationId;
+              this.classFeeData.PaymentOrder = item.PaymentOrder;
+              this.classFeeData.Month = item.Month;
+              this.classFeeData.OrgId = this.LoginUserDetail[0]["orgId"];
+              this.classFeeData.SubOrgId = this.SubOrgId;
+              if (objDiscount.length > 0 && objDiscount[0].ClassFeeId == 0) {
+                var insert: any[] = [];
+                insert.push({
+                  Active: 1,
+                  Amount: objDiscount[0].Amount,
+                  BatchId: objDiscount[0].BatchId,
+                  ClassFeeId: objDiscount[0].ClassFeeId,
+                  ClassId: objDiscount[0].ClassId,
+                  FeeDefinitionId: objDiscount[0].FeeDefinitionId,
+                  LocationId: 0,
+                  PaymentOrder: objDiscount[0].PaymentOrder,
+                  Month: objDiscount[0].Month,
+                  OrgId: this.LoginUserDetail[0]["orgId"],
+                  SubOrgId: this.SubOrgId
+                })
+                objDiscount[0].Active = 1;
+                this.insert(objDiscount[0], insert[0]);
+              }
+              //console.log("dataclassfee", this.classFeeData);
+              if (this.classFeeData.ClassFeeId == 0)
+                this.insert(item, this.classFeeData);
+              else
+                this.update(item);
             })
-            this.insert(objDiscount[0], insert[0]);
           }
-          //console.log("dataclassfee", this.classFeeData);
-          if (this.classFeeData.ClassFeeId == 0)
-            this.insert(row, this.classFeeData);
-          else
-            this.update(row);
         }
       });
   }
@@ -476,6 +506,7 @@ export class DashboardclassfeeComponent implements OnInit {
           item.ClassFeeId = data.ClassFeeId;
           if (this.DataCountToUpdate == 0) {
             this.DataCountToUpdate = -1;
+            this.RowCount = 0;
             this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
         });
@@ -531,20 +562,29 @@ export class DashboardclassfeeComponent implements OnInit {
       })
   }
   DataFromPreviousBatch = ''
-  CopyFromPreviousBatch() {
-    if (this.PreviousBatchId == -1)
-      this.contentservice.openSnackBar("Previous batch not defined.", globalconstants.ActionText, globalconstants.RedBackground);
-    else {
-
-      this.GetClassFee(this.StandardFilterWithPreviousBatchId, 1)
+  CopyFromOtherClass() {
+    // if (this.PreviousBatchId == -1)
+    //   this.contentservice.openSnackBar("Previous batch not defined.", globalconstants.ActionText, globalconstants.RedBackground);
+    // else {
+    let _classId = this.searchForm.get("searchOtherClassId")?.value;
+    if(_classId==0)
+    {
+      this.contentservice.openSnackBar("Please select other class.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
     }
+    this.GetClassFee(_classId)
+    // }
   }
 
-  GetClassFee(OrgIdAndbatchId, previousbatch) {
+  GetClassFee(otherClassId) {
     debugger;
+
     let _classId = this.searchForm.get("searchClassId")?.value;
     let _sectionId = this.searchForm.get("searchSectionId")?.value;
     let _semesterId = this.searchForm.get("searchSemesterId")?.value;
+
+    let _otherSectionId = this.searchForm.get("searchOtherSectionId")?.value;
+    let _otherSemesterId = this.searchForm.get("searchOtherSemesterId")?.value;
 
     if (_classId == 0) {
       this.contentservice.openSnackBar("Please select class/course.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -552,10 +592,21 @@ export class DashboardclassfeeComponent implements OnInit {
     }
 
     this.loading = true;
-    let filterstr = " and ClassId eq " + _classId;
+    let filterstr = "";
+    if (otherClassId > 0) {
+      filterstr += " and ClassId eq " + otherClassId;
+      filterstr += " and SemesterId eq " + _otherSemesterId;
+      filterstr += " and SectionId eq " + _otherSectionId;
+    }
+    else {
+      filterstr += " and ClassId eq " + _classId;
+      filterstr += " and SemesterId eq " + _semesterId;
+      filterstr += " and SectionId eq " + _sectionId;
+    }
+
+
     //if (_semesterId) query should be specific to class,semesterid,sectionid
-    filterstr += " and SemesterId eq " + _semesterId;
-    filterstr += " and SectionId eq " + _sectionId;
+
 
     this.SelectedMonth = this.searchForm.get("searchMonth")?.value;
     if (this.SelectedMonth > 0)
@@ -576,60 +627,85 @@ export class DashboardclassfeeComponent implements OnInit {
       "Active",
       "PaymentOrder"];
     list.PageName = "ClassFees";
-    list.filter = [OrgIdAndbatchId + filterstr];
+    list.filter = [this.FilterOrgSubOrgBatchId + filterstr];
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource<Element>(this.ELEMENT_DATA);
     this.dataservice.get(list)
       .subscribe((data: any) => {
         var _classFee = [...data.value];
 
-        if (previousbatch == 1) {
-          this.DataFromPreviousBatch = 'Data From Previous Batch'
+        if (otherClassId > 0) {
+          let _otherClassName = this.Classes.filter(c => c.ClassId == otherClassId)[0].ClassName;
+          let _currentlassName = this.Classes.filter(c => c.ClassId == _classId)[0].ClassName;
+          this.DataFromPreviousBatch = 'Fees From ' + _otherClassName + " which are not in " + _currentlassName + ".";
           if (_classFee.length == 0) {
-            this.contentservice.openSnackBar("No data from previous batch.", globalconstants.ActionText, globalconstants.RedBackground);
+            this.contentservice.openSnackBar("No data from " + _otherClassName + ".", globalconstants.ActionText, globalconstants.RedBackground);
             this.loading = false; this.PageLoading = false;
             return;
           }
+          //getting existing data \
+          let _currentClassId = this.searchForm.get("searchClassId")?.value;
+          if (_currentClassId == 0) {
+            this.loading = false; this.PageLoading = false;
+            this.contentservice.openSnackBar("Please select class to copy to.", globalconstants.ActionText, globalconstants.RedBackground);
+            return;
+          }
+          let filterstr = " and ClassId eq " + _currentClassId;
+          filterstr += " and SemesterId eq " + _semesterId;
+          filterstr += " and SectionId eq " + _sectionId;
+
+          this.SelectedMonth = this.searchForm.get("searchMonth")?.value;
+          if (this.SelectedMonth > 0)
+            filterstr += " and Month eq " + this.SelectedMonth;
           list.filter = [this.FilterOrgSubOrgBatchId + filterstr];
           this.dataservice.get(list)
             .subscribe((existingclsfee: any) => {
               _classFee = data.value.filter((f: any) => existingclsfee.value.filter(g => g.FeeDefinitionId == f.FeeDefinitionId).length == 0)
-              this.ProcessClassFee(_classFee, previousbatch)
+              if (_classFee.length == 0) {
+                this.contentservice.openSnackBar("No data from " + _otherClassName + " which are not in " + _currentlassName + ".", globalconstants.ActionText, globalconstants.RedBackground);
+                this.loading = false; this.PageLoading = false;
+                return;
+              }
+              this.ProcessClassFee(_classFee, otherClassId)
             })
         }
         else {
           this.DataFromPreviousBatch = '';
-          this.ProcessClassFee(_classFee, previousbatch)
+          this.ProcessClassFee(_classFee, otherClassId)
         }
 
       });
   }
-  ProcessClassFee(classFee, previousbatch) {
+  ProcessClassFee(classFeeAfterFilteringExisting, otherClassId) {
     debugger;
-    let _classId = this.searchForm.get("searchClassId")?.value;
+    let _classId = 0;
+    _classId = this.searchForm.get("searchClassId")?.value;
+
     let _sectionId = this.searchForm.get("searchSectionId")?.value;
     let _semesterId = this.searchForm.get("searchSemesterId")?.value;
-    if (classFee.length > 0) {
+    if (classFeeAfterFilteringExisting.length > 0) {
       this.FeeDefinitions.forEach((mainFeeName, indx) => {
         var indx = this.Months.findIndex(m => m.MonthName == mainFeeName.FeeName);
         if (indx == -1)
           this.Months.push({ "MonthName": mainFeeName.FeeName, "val": mainFeeName.FeeDefinitionId });
 
-        let existing = classFee.filter(fromdb => fromdb.FeeDefinitionId == mainFeeName.FeeDefinitionId)
+        let existing = classFeeAfterFilteringExisting.filter(fromdb => fromdb.FeeDefinitionId == mainFeeName.FeeDefinitionId)
         if (existing.length > 0) {
           existing.forEach(ex => {
             ex.SlNo = indx + 1;
             ex.FeeName = mainFeeName.FeeName;
             ex.Action = false;
             ex.ClassId = _classId;
-            ex.ClassFeeId = (previousbatch == 1 ? 0 : ex.ClassFeeId);
-            ex.Active = (previousbatch == 1 ? 0 : ex.Active);
-            ex.Month = (previousbatch == 1 ? 0 : ex.Month);
+            ex.SemesterId = _semesterId;
+            ex.SectionId = _sectionId;
+            ex.ClassFeeId = (otherClassId > 0 ? 0 : ex.ClassFeeId);
+            ex.Active = (otherClassId > 0 ? 0 : ex.Active);
+            //ex.Month = (otherClassId > 0 ? 0 : ex.Month);
             ex.BatchId = this.SelectedBatchId;
             this.ELEMENT_DATA.push(ex);
           })
         }
-        else if (previousbatch == 0 && this.SelectedMonth == 0)
+        else if (otherClassId == 0 && this.SelectedMonth == 0)
           this.ELEMENT_DATA.push({
             "SlNo": indx + 1,
             "ClassFeeId": 0,
@@ -647,7 +723,7 @@ export class DashboardclassfeeComponent implements OnInit {
           });
       })
     }
-    else if (previousbatch == 0 && this.SelectedMonth == 0) {
+    else if (otherClassId == 0 && this.SelectedMonth == 0) {
 
       this.ELEMENT_DATA = this.FeeDefinitions.map((fee, indx) => {
         var indx = this.Months.findIndex(m => m.MonthName == fee.FeeName);
@@ -737,6 +813,7 @@ export class DashboardclassfeeComponent implements OnInit {
           m.Category = obj[0].MasterDataName.toLowerCase();
         return m;
       })
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       //[...data.value];
       //this.GetMasterData();
       this.GetDistinctClassFee();
