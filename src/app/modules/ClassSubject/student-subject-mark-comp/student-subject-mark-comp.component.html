@@ -152,7 +152,7 @@
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <button [disabled]="loading || !element.Action || Permission == 'read' || DisableSaveButton"
-                    matTooltip="save" mat-mini-fab (click)="Save(element)">
+                    matTooltip="save" mat-mini-fab (click)="SaveRow(element)">
                     <mat-icon>save</mat-icon>
                     <mat-icon *ngIf="loading">
                         <mat-spinner diameter="20" color="Blue"></mat-spinner>

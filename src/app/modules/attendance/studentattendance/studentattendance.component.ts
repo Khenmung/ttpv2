@@ -404,22 +404,45 @@ export class StudentAttendanceComponent implements OnInit {
 
         });
   }
+  // saveall() {
+  //   debugger;
+  //   //var toUpdateAttendance = this.StudentAttendanceList.filter((f:any) => f.Action);
+  //   //console.log("toUpdateAttendance",toUpdateAttendance);
+  //   this.NoOfRecordToUpdate = this.StudentAttendanceList.length;
+  //   this.loading = true;
+  //   this.StudentAttendanceList.forEach((record) => {
+  //     this.NoOfRecordToUpdate--;
+  //     this.UpdateOrSave(record);
+  //   })
+  //   if (this.StudentAttendanceList.length == 0) {
+  //     this.loading = false;
+  //   }
+  // }
+  // SaveRow(row) {
+  //   this.NoOfRecordToUpdate = 0;
+  //   this.UpdateOrSave(row);
+  // }
+  RowCount = 0;
+  DataCollection: any = [];
   saveall() {
     debugger;
-    //var toUpdateAttendance = this.StudentAttendanceList.filter((f:any) => f.Action);
-    //console.log("toUpdateAttendance",toUpdateAttendance);
+    //var _toUpdate = this.StudentClassList.filter((f: any) => f.Action);
     this.NoOfRecordToUpdate = this.StudentAttendanceList.length;
+    this.RowCount = 0;
+    this.DataCollection = [];
     this.loading = true;
     this.StudentAttendanceList.forEach((record) => {
       this.NoOfRecordToUpdate--;
+      this.DataCollection.push(JSON.parse(JSON.stringify(record)));
       this.UpdateOrSave(record);
     })
-    if (this.StudentAttendanceList.length == 0) {
-      this.loading = false;
-    }
   }
   SaveRow(row) {
+    debugger;
     this.NoOfRecordToUpdate = 0;
+    this.DataCollection = [];
+    this.DataCollection.push(JSON.parse(JSON.stringify(row)));
+    this.RowCount = 0;
     this.UpdateOrSave(row);
   }
   UpdateOrSave(row) {
@@ -452,50 +475,55 @@ export class StudentAttendanceComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-
-          this.StudentAttendanceData.StudentClassId = row.StudentClassId;
-          this.StudentAttendanceData.ClassId = row.ClassId;
-          this.StudentAttendanceData.SectionId = row.SectionId;
-          this.StudentAttendanceData.SemesterId = row.SemesterId;
-          this.StudentAttendanceData.AttendanceDate = new Date(_AttendanceDate);
-          this.StudentAttendanceData.AttendanceId = row.AttendanceId;
-          this.StudentAttendanceData.OrgId = this.LoginUserDetail[0]["orgId"];
-          this.StudentAttendanceData.SubOrgId = this.SubOrgId;
-          this.StudentAttendanceData.BatchId = this.SelectedBatchId;
-          this.StudentAttendanceData.AttendanceStatusId = row.AttendanceStatusId;
-          this.StudentAttendanceData.ClassSubjectId = clssubjectid;
-          this.StudentAttendanceData.Approved = false;
-          this.StudentAttendanceData.ApprovedBy = '';
-          this.StudentAttendanceData.Remarks = row.Remarks;
-          if (this.StudentAttendanceData.AttendanceId == 0) {
-            this.StudentAttendanceData["CreatedDate"] = new Date();
-            this.StudentAttendanceData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
-            delete this.StudentAttendanceData["UpdatedDate"];
-            delete this.StudentAttendanceData["UpdatedBy"];
-            console.log("StudentAttendanceData insert", this.StudentAttendanceData);
-            this.insert(row);
+          this.RowCount += 1;
+          if (this.DataCollection.length == this.RowCount) {
+            this.DataCollection.forEach(item => {
+              this.StudentAttendanceData.StudentClassId = item.StudentClassId;
+              this.StudentAttendanceData.ClassId = item.ClassId;
+              this.StudentAttendanceData.SectionId = item.SectionId;
+              this.StudentAttendanceData.SemesterId = item.SemesterId;
+              this.StudentAttendanceData.AttendanceDate = new Date(_AttendanceDate);
+              this.StudentAttendanceData.AttendanceId = item.AttendanceId;
+              this.StudentAttendanceData.OrgId = this.LoginUserDetail[0]["orgId"];
+              this.StudentAttendanceData.SubOrgId = this.SubOrgId;
+              this.StudentAttendanceData.BatchId = this.SelectedBatchId;
+              this.StudentAttendanceData.AttendanceStatusId = item.AttendanceStatusId;
+              this.StudentAttendanceData.ClassSubjectId = clssubjectid;
+              this.StudentAttendanceData.Approved = false;
+              this.StudentAttendanceData.ApprovedBy = '';
+              this.StudentAttendanceData.Remarks = item.Remarks;
+              if (this.StudentAttendanceData.AttendanceId == 0) {
+                this.StudentAttendanceData["CreatedDate"] = new Date();
+                this.StudentAttendanceData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
+                delete this.StudentAttendanceData["UpdatedDate"];
+                delete this.StudentAttendanceData["UpdatedBy"];
+                console.log("StudentAttendanceData insert", this.StudentAttendanceData);
+                this.insert(item);
+              }
+              else {
+                delete this.StudentAttendanceData["CreatedDate"];
+                delete this.StudentAttendanceData["CreatedBy"];
+                this.StudentAttendanceData["UpdatedDate"] = new Date();
+                this.StudentAttendanceData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
+                console.log("StudentAttendanceData update", this.StudentAttendanceData);
+                this.update(item);
+              }
+            })
+            row.Action = false;
           }
-          else {
-            delete this.StudentAttendanceData["CreatedDate"];
-            delete this.StudentAttendanceData["CreatedBy"];
-            this.StudentAttendanceData["UpdatedDate"] = new Date();
-            this.StudentAttendanceData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log("StudentAttendanceData update", this.StudentAttendanceData);
-            this.update(row);
-          }
-          row.Action = false;
         }
       });
   }
 
   insert(row) {
-    console.log("this.StudentAttendanceData", this.StudentAttendanceData);
+    //console.log("this.StudentAttendanceData", this.StudentAttendanceData);
     this.dataservice.postPatch('Attendances', this.StudentAttendanceData, 0, 'post')
       .subscribe(
         (data: any) => {
           //this.edited = false;
-          row.AttendanceId = data.AttendanceId;
-          row.Action = false;
+          let insertedItem:any = this.StudentAttendanceList.filter(f=>f.StudentClassId ==row.StudentClassId);
+          insertedItem[0].AttendanceId = data.AttendanceId;
+          insertedItem[0].Action = false;
           if (this.NoOfRecordToUpdate == 0) {
             this.NoOfRecordToUpdate = -1;
             this.loading = false;
@@ -507,8 +535,8 @@ export class StudentAttendanceComponent implements OnInit {
     this.dataservice.postPatch('Attendances', this.StudentAttendanceData, this.StudentAttendanceData.AttendanceId, 'patch')
       .subscribe(
         (data: any) => {
-          //this.edited = false;
-          row.Action = false;
+          let updatedItem:any = this.StudentAttendanceList.filter(f=>f.AttendanceId ==row.AttendanceId);
+          updatedItem[0].Action = false;
           if (this.NoOfRecordToUpdate == 0) {
             this.NoOfRecordToUpdate = -1;
             this.loading = false;
@@ -596,7 +624,7 @@ export class StudentAttendanceComponent implements OnInit {
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       if (this.LoginUserDetail[0]['RoleUsers'][0]['role'].toLowerCase() == 'student') {
         let _classId = this.tokenStorage.getClassId();
-        let _classes = data.value.filter(d=>d.ClassId == _classId)
+        let _classes = data.value.filter(d => d.ClassId == _classId)
         this.Classes = _classes.map(m => {
           let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
           if (obj.length > 0) {

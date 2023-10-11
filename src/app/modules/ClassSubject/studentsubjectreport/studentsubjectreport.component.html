@@ -50,10 +50,10 @@
             </form>
 
             <mat-table #table style="overflow: auto;" [dataSource]="dataSource" matSort
-                *ngIf="SubjectCount.length>0">
+                *ngIf="StudentSubjects.length>0">
                 <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
                     <mat-header-cell *matHeaderCellDef [mat-sort-header]="disCol">
-                        {{disCol.replaceAll('Name','').replace('SubjectCount','Count')}}
+                        {{disCol}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element[disCol]}}
@@ -62,7 +62,7 @@
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
             </mat-table>
-            <mat-paginator *ngIf="SubjectCount.length>0" style="display:flex;justify-content:center" [pageSizeOptions]="[5,10,20,50,100]"></mat-paginator>
+            <mat-paginator style="display:flex;justify-content:center" [pageSizeOptions]="[5,10,20,50,100]"></mat-paginator>
         </div>
 
     </div>

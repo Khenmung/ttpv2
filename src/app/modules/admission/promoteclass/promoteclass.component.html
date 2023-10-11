@@ -20,7 +20,7 @@
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
-            <mat-form-field appearance="outline" style="width:150px">
+            <mat-form-field appearance="outline" style="width:250px">
                 <mat-label>Status from exam</mat-label>
                 <mat-select formControlName="searchExamId">
                     <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
@@ -177,7 +177,7 @@
             Admitted
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+            <mat-checkbox [disabled]="element.Active==1" (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
                 [checked]="element.Active==1?true:false">
             </mat-checkbox>
         </mat-cell>
@@ -193,7 +193,10 @@
             </button> -->
         </mat-header-cell>
         <mat-cell *matCellDef="let element" style="display: flex;justify-content: center;">
-            <button style="margin-right:15px" [disabled]="loading || !element.Action || Permission=='read'"
+            <button style="margin-right:15px" [disabled]="loading 
+            || !element.Action 
+            || Permission=='read'
+            || element.Active==1"
                 matTooltip="save" mat-mini-fab color="accent" (click)="SaveRow(element)">
                 <mat-icon>plus_one</mat-icon>
                 <mat-icon *ngIf="loading">

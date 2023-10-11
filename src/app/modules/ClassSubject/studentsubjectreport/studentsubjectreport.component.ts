@@ -23,33 +23,33 @@ export class StudentSubjectReportComponent implements OnInit {
   PageLoading = true;
   ResultReleased = 0;
   Defaultvalue = 0;
-  LoginUserDetail:any[]= [];
-  Semesters :any[]= [];
+  LoginUserDetail: any[] = [];
+  Semesters: any[] = [];
   CurrentRow: any = {};
-  ClassSubjects :any[]= [];
-  AllowedSubjectIds :any[]= [];
+  ClassSubjects: any[] = [];
+  AllowedSubjectIds: any[] = [];
   FilterOrgSubOrgBatchId = '';
   loading = false;
   rowCount = 0;
-  ExamStudentSubjectResult: IExamStudentSubjectResult[]= [];
+  ExamStudentSubjectResult: IExamStudentSubjectResult[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
   //StoredForUpdate :any[]= [];
-  SubjectMarkComponents :any[]= [];
-  MarkComponents :any[]= [];
-  Classes :any[]= [];
+  SubjectMarkComponents: any[] = [];
+  MarkComponents: any[] = [];
+  Classes: any[] = [];
   //ClassGroups :any[]= [];
-  Subjects :any[]= [];
-  Sections :any[]= [];
+  Subjects: any[] = [];
+  Sections: any[] = [];
   //ExamStatuses :any[]= [];
   //ExamNames :any[]= [];
   //Exams :any[]= [];
-  Batches :any[]= [];
-  StudentSubjects :any[]= [];
-  SelectedClassSubjects :any[]= [];
-  Students :any[]= [];
+  Batches: any[] = [];
+  StudentSubjects: any[] = [];
+  SelectedClassSubjects: any[] = [];
+  Students: any[] = [];
   dataSource: MatTableDataSource<IExamStudentSubjectResult>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   Permission = 'deny';
   ExamId = 0;
   ExamStudentSubjectResultData = {
@@ -132,8 +132,8 @@ export class StudentSubjectReportComponent implements OnInit {
         this.PageLoading = false;
       })
   }
-  FilteredClasses :any[]= [];
-  SubjectCount :any[]= [];
+  FilteredClasses: any[] = [];
+  SubjectCount: any[] = [];
   // FilterClass() {
   //   var _examId = this.searchForm.get("searchExamId")?.value
   //   var _classGroupId = 0;
@@ -163,20 +163,7 @@ export class StudentSubjectReportComponent implements OnInit {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    // if (_sectionId == 0) {
-    //   this.contentservice.openSnackBar("Please select student section", globalconstants.ActionText, globalconstants.RedBackground);
-    //   return;
-    // }
-    // if (_classSubjectId == 0) {
-    //   this.contentservice.openSnackBar("Please select subject", globalconstants.ActionText, globalconstants.RedBackground);
-    //   return;
-    // }
 
-    //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    //let filterStr = '(' + this.FilterOrgSubOrg +") and Active eq 1";
-    //var batchFilter = "BatchId eq " + this.SelectedBatchId;
-    //var _classSubjectId = this.ClassSubjects.filter(c=>c.ClassId == _classId && c.SubjectId == _classSubjectId)[0].ClassSubjectId;
-    //var studclssubjfilter = "OrgId eq " + this.LoginUserDetail[0]["orgId"] + " and BatchId eq " + this.SelectedBatchId + " and Active eq 1";
     var studclssubjfilter = this.FilterOrgSubOrgBatchId + " and Active eq 1";
     studclssubjfilter += " and ClassId eq " + _classId;
     if (_semesterId)
@@ -208,10 +195,10 @@ export class StudentSubjectReportComponent implements OnInit {
         var _studname = '';
 
         this.StudentSubjects = [];
-        var filteredStudents = this.Students.filter((f:any) => f.StudentClasses.length > 0
-          && f.StudentClasses[0].ClassId == _classId 
-          && f.StudentClasses[0].SemesterId == _semesterId 
-          && f.StudentClasses[0].SectionId == _sectionId 
+        var filteredStudents = this.Students.filter((f: any) => f.StudentClasses.length > 0
+          && f.StudentClasses[0].ClassId == _classId
+          && f.StudentClasses[0].SemesterId == _semesterId
+          && f.StudentClasses[0].SectionId == _sectionId
           && f.Active == 1);
 
         //dbdata = data.value.filter(x =>x.StudentClassSubjects.filter(y=>y.StudentClass.SectionId == _sectionId).length>0)
@@ -220,7 +207,7 @@ export class StudentSubjectReportComponent implements OnInit {
           //s.StudentClassSubjects.forEach((inner, index) => {
 
           //console.log("index",index);
-          var studentcls: any = filteredStudents.filter((f:any) => f.StudentClasses[0].StudentClassId == s.StudentClassId);
+          var studentcls: any = filteredStudents.filter((f: any) => f.StudentClasses[0].StudentClassId == s.StudentClassId);
           _class = '';
           _subject = '';
           _studname = '';
@@ -244,6 +231,8 @@ export class StudentSubjectReportComponent implements OnInit {
             if (_sectionId > 0) {
               if (_stdSection.length > 0 && studentcls[0].StudentClasses[0].SectionId == _sectionId) {
                 this.StudentSubjects.push({
+                  Name: studentcls[0].FirstName + " " + studentcls[0].LastName,
+                  RollNo:studentcls[0].StudentClasses[0].RollNo,
                   SubjectName: _subject,
                   ClassName: _class,
                   SectionName: _section,
@@ -257,6 +246,8 @@ export class StudentSubjectReportComponent implements OnInit {
             }
             else {
               this.StudentSubjects.push({
+                Name: studentcls[0].FirstName + " " + studentcls[0].LastName,
+                RollNo:studentcls[0].StudentClasses[0].RollNo,
                 SubjectName: _subject,
                 ClassName: _class,
                 SectionName: _section,
@@ -272,18 +263,17 @@ export class StudentSubjectReportComponent implements OnInit {
         })
         //SubjectCount :any[]= [];
         this.displayedColumns = [
-          //'ClassName',
-          //'SectionName',
-          'SubjectName',
-          'SubjectCount'
+          "RollNo",
+          'Name',
+     //     'SubjectName'
         ];
 
-        this.SubjectCount = alasql("select count(SubjectName) SubjectCount,SubjectName,SectionName,ClassName from ? group by SubjectName,SectionName,ClassName", [this.StudentSubjects]);
-        this.SubjectCount = this.SubjectCount.sort((a, b) => a.SubjectName - b.SubjectName)
-        if (this.SubjectCount.length == 0) {
+        //this.SubjectCount = alasql("select count(SubjectName) SubjectCount,SubjectName,SectionName,ClassName,Name from ? group by SubjectName,SectionName,ClassName,Name", [this.StudentSubjects]);
+        this.StudentSubjects = this.StudentSubjects.sort((a, b) => a.SubjectName - b.SubjectName)
+        if (this.StudentSubjects.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
-        this.dataSource = new MatTableDataSource(this.SubjectCount);
+        this.dataSource = new MatTableDataSource(this.StudentSubjects);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.loading = false;
@@ -302,7 +292,7 @@ export class StudentSubjectReportComponent implements OnInit {
       this.SelectedClassCategory = obj[0].Category.toLowerCase();
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
-    this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == _classId
+    this.SelectedClassSubjects = this.ClassSubjects.filter((f: any) => f.ClassId == _classId
       && f.SelectHowMany > 0);
     //this.GetSpecificStudentGrades();
   }
@@ -322,7 +312,7 @@ export class StudentSubjectReportComponent implements OnInit {
     // this.dataservice.get(list)
     //   .subscribe((data: any) => {
     var _students: any = this.tokenStorage.getStudents()!;
-    this.Students = _students.filter((s:any) => s.Active == 1);
+    this.Students = _students.filter((s: any) => s.Active == 1);
     this.GetMasterData();
     //});
   }
@@ -407,7 +397,7 @@ export class StudentSubjectReportComponent implements OnInit {
       .subscribe((data: any) => {
         this.SubjectMarkComponents = [];
         data.value.forEach(x => {
-          var clsSubject = this.ClassSubjects.filter((f:any) => f.ClassSubjectId == x.ClassSubjectId)
+          var clsSubject = this.ClassSubjects.filter((f: any) => f.ClassSubjectId == x.ClassSubjectId)
           if (clsSubject.length > 0) {
             x.SubjectId = clsSubject[0].SubjectId;
             x.SemesterId = clsSubject[0].SemesterId;
@@ -418,7 +408,7 @@ export class StudentSubjectReportComponent implements OnInit {
         })
         this.SubjectMarkComponents = this.SubjectMarkComponents.map(c => {
           var _sequence = 0;
-          var _sequenceObj = this.MarkComponents.filter((s:any) => s.MasterDataId == c.SubjectComponentId);
+          var _sequenceObj = this.MarkComponents.filter((s: any) => s.MasterDataId == c.SubjectComponentId);
           if (_sequenceObj.length > 0) {
             _sequence = _sequenceObj[0].Sequence
           }
@@ -444,9 +434,9 @@ export class StudentSubjectReportComponent implements OnInit {
       })
   }
 
-  StudentGrades :any[]= [];
-  SelectedClassStudentGrades :any[]= [];
-  ClassGroupMapping :any[]= [];
+  StudentGrades: any[] = [];
+  SelectedClassStudentGrades: any[] = [];
+  ClassGroupMapping: any[] = [];
   // GetClassGroupMapping() {
   //   var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
   //   //+ ' and BatchId eq ' + this.SelectedBatchId;
@@ -497,8 +487,8 @@ export class StudentSubjectReportComponent implements OnInit {
     })
   }
 
-  SubjectCategory :any[]= [];
-  ClassCategory :any[]= [];
+  SubjectCategory: any[] = [];
+  ClassCategory: any[] = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -510,13 +500,13 @@ export class StudentSubjectReportComponent implements OnInit {
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
-        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.GetClassSubject();
     });
     // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {

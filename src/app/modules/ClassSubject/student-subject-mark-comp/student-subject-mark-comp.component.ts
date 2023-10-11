@@ -152,15 +152,6 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   onBlur(element) {
     element.Action = element.PassMark < 1000 && element.FullMark < 1000 ? true : false;
   }
-  ToUpdateCount = -1;
-  SaveAll() {
-    debugger;
-    var toUpdate = this.ELEMENT_DATA.filter(all => all.Action)
-    this.ToUpdateCount = toUpdate.length;
-    toUpdate.forEach(item => {
-      this.UpdateOrSave(item);
-    })
-  }
   SelectAll(event) {
     //var event ={checked:true}
     this.ELEMENT_DATA.forEach(element => {
@@ -168,9 +159,43 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       element.Action = true;
     })
   }
-  Save(element) {
+  ToUpdateCount = -1;
+  // SaveAll() {
+  //   debugger;
+  //   var toUpdate = this.ELEMENT_DATA.filter(all => all.Action)
+  //   this.ToUpdateCount = toUpdate.length;
+  //   toUpdate.forEach(item => {
+  //     this.UpdateOrSave(item);
+  //   })
+  // }  
+  // Save(element) {
+  //   this.ToUpdateCount = 1;
+  //   this.UpdateOrSave(element);
+  // }
+  RowCount = 0;
+  DataCollection: any = [];
+  SaveAll() {
+    debugger;
+    //var _toUpdate = this.StudentClassList.filter((f: any) => f.Action);
+    //this.DataCountToSave = this.ClassSubjectList.length;
+    this.RowCount = 0;
+    this.DataCollection = [];
+    this.loading = true;
+    var toUpdate = this.ELEMENT_DATA.filter((f: any) => f.Action);
+    this.ToUpdateCount = toUpdate.length;
+    toUpdate.forEach((record) => {
+      this.DataCollection.push(JSON.parse(JSON.stringify(record)));
+      this.UpdateOrSave(record);
+    })
+  }
+  SaveRow(row) {
+    debugger;
+    //this.NoOfRecordToUpdate = 0;
+    this.DataCollection = [];
+    this.DataCollection.push(JSON.parse(JSON.stringify(row)));
+    this.RowCount = 0;
     this.ToUpdateCount = 1;
-    this.UpdateOrSave(element);
+    this.UpdateOrSave(row);
   }
   UpdateOrSave(row) {
     //debugger;
@@ -198,35 +223,41 @@ export class StudentSubjectMarkCompComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
-          this.classSubjectComponentData.Active = row.Active;// == true ? 1 : 0;
-          this.classSubjectComponentData.ClassSubjectMarkComponentId = row.ClassSubjectMarkComponentId;
-          this.classSubjectComponentData.ClassSubjectId = row.ClassSubjectId;
-          this.classSubjectComponentData.SemesterId = row.SemesterId;
-          this.classSubjectComponentData.SectionId = row.SectionId;
-          this.classSubjectComponentData.SubjectComponentId = row.SubjectComponentId;
-          this.classSubjectComponentData.ExamId = row.ExamId;
-          this.classSubjectComponentData.FullMark = row.FullMark == '' ? 0 : row.FullMark;
-          this.classSubjectComponentData.PassMark = row.PassMark == '' ? 0 : row.PassMark;
-          this.classSubjectComponentData.OverallPassMark = row.OverallPassMark == '' ? 0 : row.OverallPassMark;
-          this.classSubjectComponentData.BatchId = this.SelectedBatchId;
-          this.classSubjectComponentData.OrgId = this.LoginUserDetail[0]["orgId"];
-          this.classSubjectComponentData.SubOrgId = this.SubOrgId;
+          this.RowCount += 1;
+          if (this.RowCount == this.DataCollection.length) {
+            this.DataCollection.forEach(item => {
 
-          if (this.classSubjectComponentData.ClassSubjectMarkComponentId == 0) {
-            this.classSubjectComponentData["CreatedDate"] = new Date();
-            this.classSubjectComponentData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
-            delete this.classSubjectComponentData["UpdatedDate"];
-            delete this.classSubjectComponentData["UpdatedBy"];
-            ////console.log('this', this.classSubjectComponentData);
-            this.insert(row);
-          }
-          else {
-            delete this.classSubjectComponentData["CreatedDate"];
-            delete this.classSubjectComponentData["CreatedBy"];
-            this.classSubjectComponentData["UpdatedDate"] = new Date();
-            this.classSubjectComponentData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
+              this.classSubjectComponentData.Active = item.Active;// == true ? 1 : 0;
+              this.classSubjectComponentData.ClassSubjectMarkComponentId = item.ClassSubjectMarkComponentId;
+              this.classSubjectComponentData.ClassSubjectId = item.ClassSubjectId;
+              this.classSubjectComponentData.SemesterId = item.SemesterId;
+              this.classSubjectComponentData.SectionId = item.SectionId;
+              this.classSubjectComponentData.SubjectComponentId = item.SubjectComponentId;
+              this.classSubjectComponentData.ExamId = item.ExamId;
+              this.classSubjectComponentData.FullMark = item.FullMark == '' ? 0 : item.FullMark;
+              this.classSubjectComponentData.PassMark = item.PassMark == '' ? 0 : item.PassMark;
+              this.classSubjectComponentData.OverallPassMark = item.OverallPassMark == '' ? 0 : item.OverallPassMark;
+              this.classSubjectComponentData.BatchId = this.SelectedBatchId;
+              this.classSubjectComponentData.OrgId = this.LoginUserDetail[0]["orgId"];
+              this.classSubjectComponentData.SubOrgId = this.SubOrgId;
 
-            this.update(row);
+              if (this.classSubjectComponentData.ClassSubjectMarkComponentId == 0) {
+                this.classSubjectComponentData["CreatedDate"] = new Date();
+                this.classSubjectComponentData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
+                delete this.classSubjectComponentData["UpdatedDate"];
+                delete this.classSubjectComponentData["UpdatedBy"];
+                ////console.log('this', this.classSubjectComponentData);
+                this.insert(item);
+              }
+              else {
+                delete this.classSubjectComponentData["CreatedDate"];
+                delete this.classSubjectComponentData["CreatedBy"];
+                this.classSubjectComponentData["UpdatedDate"] = new Date();
+                this.classSubjectComponentData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
+
+                this.update(item);
+              }
+            })
           }
         }
       });
@@ -238,10 +269,20 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.dataservice.postPatch('ClassSubjectMarkComponents', this.classSubjectComponentData, 0, 'post')
       .subscribe(
         (data: any) => {
-          // this.loading = false; this.PageLoading = false;
-          row.Action = false;
+
+          let insertedItem = this.DataCollection.filter(f => f.SubjectComponentId == row.SubjectComponentId
+            && f.ClassSubjectId == row.ClassSubjectId
+            && f.ClassId == row.ClassId
+            && f.SectionId == row.SectionId
+            && f.SemesterId == row.SemesterId);
+
+          if (insertedItem.length > 0) {
+            insertedItem[0].ClassSubjectMarkComponentId = data.ClassSubjectMarkComponentId;
+            insertedItem[0].Action = false;
+          }
+
           this.ToUpdateCount--;
-          row.ClassSubjectMarkComponentId = data.ClassSubjectMarkComponentId;
+
           if (this.ToUpdateCount == 0) {
             this.loading = false;
             this.PageLoading = false;
@@ -256,8 +297,10 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.dataservice.postPatch('ClassSubjectMarkComponents', this.classSubjectComponentData, this.classSubjectComponentData.ClassSubjectMarkComponentId, 'patch')
       .subscribe(
         (data: any) => {
-          //this.loading = false; this.PageLoading = false;
-          row.Action = false;
+          let updatedItem = this.DataCollection.filter(f => f.ClassSubjectMarkComponentId == row.ClassSubjectMarkComponentId);
+          if (updatedItem.length > 0)
+            updatedItem[0].Action = false;
+          
           this.ToUpdateCount--;
           if (this.ToUpdateCount == 0) {
             this.loading = false;
@@ -305,10 +348,10 @@ export class StudentSubjectMarkCompComponent implements OnInit {
         let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.GetClassSubject();
     })
     //}

@@ -9,6 +9,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import alasql from 'alasql';
 import { evaluate } from 'mathjs';
 import { AuthService } from '../_services/auth.service';
+import { of } from 'rxjs';
 //import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -85,13 +86,18 @@ export class ContentService implements OnInit {
     return this.dataservice.get(list)
 
   }
-  GetClasses(pOrgSubOrgFilter: string) {
-    let list = new List();
-    list.fields = ["ClassId,ClassName,Sequence,BatchId,CategoryId,MinStudent,MaxStudent,StartDate,EndDate"];
-    list.filter = [pOrgSubOrgFilter + " and Active eq 1"];
-    list.PageName = "ClassMasters";
-    //list.orderBy = "Sequence";
-    return this.dataservice.get(list);
+  GetClasses(pOrgSubOrgFilter: string,refresh=0) {
+    // let _classes = this.tokenService.getClasses();
+    // if (_classes?.length == 0 || refresh==1) {
+      let list = new List();
+      list.fields = ["ClassId,ClassName,Sequence,BatchId,CategoryId,MinStudent,MaxStudent,StartDate,EndDate"];
+      list.filter = [pOrgSubOrgFilter + " and Active eq 1"];
+      list.PageName = "ClassMasters";
+      //list.orderBy = "Sequence";
+      return this.dataservice.get(list);
+    // }
+    // else
+    //   return of(_classes)
   }
   GetStudentClassCount(pOrgSubOrgId, pClassId, pSectionId, pSemesterId, pBatchId) {
     debugger;

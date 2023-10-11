@@ -606,8 +606,6 @@ export class ECheckComponent implements OnInit {
   NoOfRecordToUpdate = 0;
   saveall() {
     debugger;
-    //var toUpdateAttendance = this.StudentAttendanceList.filter((f:any) => f.Action);
-    //console.log("toUpdateAttendance",toUpdateAttendance);
     this.NoOfRecordToUpdate = this.StudentEvaluationList.length;
     this.loading = true;
     this.StudentEvaluationList.forEach((record) => {

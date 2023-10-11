@@ -44,9 +44,9 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Description
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <mat-form-field appearance="outline">
-                            <input matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="255"
-                                [value]="element.Description" [(ngModel)]="element.Description">
+                        <mat-form-field appearance="outline" style="width: 100%;">
+                            <textarea rows="1" matInput (blur)="onBlur(element)" autocomplete="Off" [maxlength]="255"
+                                [value]="element.Description" [(ngModel)]="element.Description"></textarea>
                         </mat-form-field>
                     </mat-cell>
                 </ng-container>
@@ -101,7 +101,7 @@
                             <mat-icon>add</mat-icon>
                         </button>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                    <mat-cell *matCellDef="let element">
                         <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
                             mat-raised-button color="accent" (click)="UpdateOrSave(element)">
                             <mat-icon>save</mat-icon>

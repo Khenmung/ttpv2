@@ -26,7 +26,7 @@ export class ClassSubjectDetailComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
 
@@ -39,22 +39,22 @@ export class ClassSubjectDetailComponent implements OnInit {
   StandardFilterWithPreviousBatchId = '';
   PreviousBatchId = 0;
   loading = false;
-  WorkAccounts :any[]= [];
-  Teachers :any[]= [];
-  Classes :any[]= [];
-  Semesters :any[]= [];
-  Subjects :any[]= [];
-  SubjectTypes :any[]= [];
-  SubjectCategory :any[]= [];
+  WorkAccounts: any[] = [];
+  Teachers: any[] = [];
+  Classes: any[] = [];
+  Semesters: any[] = [];
+  Subjects: any[] = [];
+  SubjectTypes: any[] = [];
+  SubjectCategory: any[] = [];
   CurrentBatchId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   CheckBatchIDForEdit = 1;
   DataCountToSave = -1;
-  Batches :any[]= [];
+  Batches: any[] = [];
   //WorkAccounts :any[]= [];
-  ClassSubjectList: IClassSubject[]= [];
+  ClassSubjectList: IClassSubject[] = [];
   dataSource: MatTableDataSource<IClassSubject>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   searchForm = this.fb.group({
     searchSemesterId: [0],
     searchClassId: [0],
@@ -92,7 +92,7 @@ export class ClassSubjectDetailComponent implements OnInit {
   filterValues = {
     SubjectName: ''
   };
-  Sections :any[]= [];
+  Sections: any[] = [];
   Defaultvalue = 0;
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
@@ -183,7 +183,7 @@ export class ClassSubjectDetailComponent implements OnInit {
       'Nov',
       'Dec'
     ]
-    var monthArray :any[]= [];
+    var monthArray: any[] = [];
     //setTimeout(() => {
 
     this.shareddata.CurrentSelectedBatchStartEnd$.subscribe((b: any) => {
@@ -254,8 +254,8 @@ export class ClassSubjectDetailComponent implements OnInit {
       this.contentservice.openSnackBar("Please select class/course", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    if(_sectionId) filterStr += " and SectionId eq " + _sectionId;
-    if(_semesterId) filterStr += " and SemesterId eq " + _semesterId;
+    if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
+    if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
 
 
     //list.filter = ["OrgId eq " + this.LoginUserDetail[0]["orgId"] + " and BatchId eq " + this.SelectedBatchId + " and Active eq 1"];
@@ -463,18 +463,41 @@ export class ClassSubjectDetailComponent implements OnInit {
   }
   updateSelectHowMany(row) {
     //debugger;
-    row.SelectHowMany = this.SubjectTypes.filter((f:any) => f.SubjectTypeId == row.SubjectTypeId)[0].SelectHowMany;
+    row.SelectHowMany = this.SubjectTypes.filter((f: any) => f.SubjectTypeId == row.SubjectTypeId)[0].SelectHowMany;
     row.Action = true;
   }
+  // SaveAll() {
+  //   this.DataCountToSave = this.ClassSubjectList.length;
+  //   var toUpdate = this.ClassSubjectList.filter((f:any) => f.Action);
+  //   toUpdate.forEach(row => {
+  //     this.DataCountToSave--;
+  //     this.UpdateOrSave(row);
+  //   })
+  // }
+  RowCount = 0;
+  DataCollection: any = [];
   SaveAll() {
+    debugger;
+    //var _toUpdate = this.StudentClassList.filter((f: any) => f.Action);
     this.DataCountToSave = this.ClassSubjectList.length;
-    var toUpdate = this.ClassSubjectList.filter((f:any) => f.Action);
-    toUpdate.forEach(row => {
+    this.RowCount = 0;
+    this.DataCollection = [];
+    this.loading = true;
+    var toUpdate = this.ClassSubjectList.filter((f: any) => f.Action);
+    toUpdate.forEach((record) => {
       this.DataCountToSave--;
-      this.UpdateOrSave(row);
+      this.DataCollection.push(JSON.parse(JSON.stringify(record)));
+      this.UpdateOrSave(record);
     })
   }
-
+  SaveRow(row) {
+    debugger;
+    //this.NoOfRecordToUpdate = 0;
+    this.DataCollection = [];
+    this.DataCollection.push(JSON.parse(JSON.stringify(row)));
+    this.RowCount = 0;
+    this.UpdateOrSave(row);
+  }
   UpdateOrSave(row) {
     this.DataCountToSave = 0;
     //debugger;
@@ -491,7 +514,7 @@ export class ClassSubjectDetailComponent implements OnInit {
       this.PageLoading = false;
       return;
     }
-   
+
     if (row.Credits > 100) {
       this.contentservice.openSnackBar("Credits can not be greater than 100.", globalconstants.ActionText, globalconstants.RedBackground);
       this.loading = false; this.PageLoading = false;
@@ -522,34 +545,40 @@ export class ClassSubjectDetailComponent implements OnInit {
           return;
         }
         else {
+          this.RowCount += 1;
+          if (this.DataCollection.length == this.RowCount) {
+           
+            this.DataCollection.forEach(item => {
 
-          this.ClassSubjectData.Active = row.Active;
-          this.ClassSubjectData.ClassSubjectId = row.ClassSubjectId;
-          this.ClassSubjectData.ClassId = row.ClassId;
-          this.ClassSubjectData.SectionId = row.SectionId;
-          this.ClassSubjectData.SemesterId = row.SemesterId;
-          this.ClassSubjectData.Credits = row.Credits;
-          this.ClassSubjectData.Confidential = row.Confidential == null ? false : row.Confidential;
-          this.ClassSubjectData.SubjectId = row.SubjectId;
-          this.ClassSubjectData.SubjectTypeId = row.SubjectTypeId;
-          this.ClassSubjectData.SubjectCategoryId = row.SubjectCategoryId;
-          //      this.ClassSubjectData.TeacherId = row.TeacherId;
-          this.ClassSubjectData.OrgId = this.LoginUserDetail[0]["orgId"];
-          this.ClassSubjectData.SubOrgId = this.SubOrgId;
-          this.ClassSubjectData.BatchId = this.SelectedBatchId;
-          if (this.ClassSubjectData.ClassSubjectId == 0) {
-            this.ClassSubjectData["CreatedDate"] = new Date();
-            this.ClassSubjectData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
-            delete this.ClassSubjectData["UpdatedDate"];
-            delete this.ClassSubjectData["UpdatedBy"];
-            this.insert(row);
-          }
-          else {
-            delete this.ClassSubjectData["CreatedDate"];
-            delete this.ClassSubjectData["CreatedBy"];
-            this.ClassSubjectData["UpdatedDate"] = new Date();
-            this.ClassSubjectData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            this.update(row);
+              this.ClassSubjectData.Active = item.Active;
+              this.ClassSubjectData.ClassSubjectId = item.ClassSubjectId;
+              this.ClassSubjectData.ClassId = item.ClassId;
+              this.ClassSubjectData.SectionId = item.SectionId;
+              this.ClassSubjectData.SemesterId = item.SemesterId;
+              this.ClassSubjectData.Credits = item.Credits;
+              this.ClassSubjectData.Confidential = item.Confidential == null ? false : item.Confidential;
+              this.ClassSubjectData.SubjectId = item.SubjectId;
+              this.ClassSubjectData.SubjectTypeId = item.SubjectTypeId;
+              this.ClassSubjectData.SubjectCategoryId = item.SubjectCategoryId;
+              //      this.ClassSubjectData.TeacherId = row.TeacherId;
+              this.ClassSubjectData.OrgId = this.LoginUserDetail[0]["orgId"];
+              this.ClassSubjectData.SubOrgId = this.SubOrgId;
+              this.ClassSubjectData.BatchId = this.SelectedBatchId;
+              if (this.ClassSubjectData.ClassSubjectId == 0) {
+                this.ClassSubjectData["CreatedDate"] = new Date();
+                this.ClassSubjectData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
+                delete this.ClassSubjectData["UpdatedDate"];
+                delete this.ClassSubjectData["UpdatedBy"];
+                this.insert(item);
+              }
+              else {
+                delete this.ClassSubjectData["CreatedDate"];
+                delete this.ClassSubjectData["CreatedBy"];
+                this.ClassSubjectData["UpdatedDate"] = new Date();
+                this.ClassSubjectData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
+                this.update(item);
+              }
+            })
           }
         }
       });
@@ -563,9 +592,14 @@ export class ClassSubjectDetailComponent implements OnInit {
     this.dataservice.postPatch('ClassSubjects', this.ClassSubjectData, 0, 'post')
       .subscribe(
         (data: any) => {
-
-          row.Action = false;
-          row.ClassSubjectId = data.ClassSubjectId;
+          let inserteditem = this.ClassSubjectList.filter(s => s.SubjectId == row.SubjectId
+            && s.ClassId == row.ClassId
+            && s.SemesterId == row.SemesterId
+            && s.SectionId == row.SectionId);
+          if (inserteditem.length > 0) {
+            inserteditem[0].Action = false;
+            inserteditem[0].ClassSubjectId = data.ClassSubjectId;
+          }
           if (this.DataCountToSave == 0) {
             this.loading = false; this.PageLoading = false;
             this.DataCountToSave = -1;
@@ -578,7 +612,10 @@ export class ClassSubjectDetailComponent implements OnInit {
     this.dataservice.postPatch('ClassSubjects', this.ClassSubjectData, this.ClassSubjectData.ClassSubjectId, 'patch')
       .subscribe(
         (data: any) => {
-          row.Action = false;
+          let updateditem = this.ClassSubjectList.filter(s => s.ClassSubjectId == row.ClassSubjectId);
+          if (updateditem.length > 0)
+            updateditem[0].Action = false;
+
           if (this.DataCountToSave == 0) {
             this.loading = false; this.PageLoading = false;
             this.DataCountToSave = -1;
@@ -612,7 +649,7 @@ export class ClassSubjectDetailComponent implements OnInit {
   GetTeachers() {
 
     //var orgIdSearchstr = this.OrgSubOrgFilter;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    var _WorkAccount = this.WorkAccounts.filter((f:any) => f.MasterDataName.toLowerCase() == "teaching");
+    var _WorkAccount = this.WorkAccounts.filter((f: any) => f.MasterDataName.toLowerCase() == "teaching");
     var _workAccountId = 0;
     if (_WorkAccount.length > 0)
       _workAccountId = _WorkAccount[0].MasterDataId;
@@ -627,7 +664,7 @@ export class ClassSubjectDetailComponent implements OnInit {
     this.Teachers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        data.value.filter((f:any) => {
+        data.value.filter((f: any) => {
           var _lastname = f.Employee.LastName == null ? '' : " " + f.Employee.LastName;
           this.Teachers.push({
             TeacherId: f.Employee.EmpEmployeeId,
@@ -637,7 +674,7 @@ export class ClassSubjectDetailComponent implements OnInit {
 
       })
   }
-  ClassCategory :any[]= [];
+  ClassCategory: any[] = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -652,13 +689,13 @@ export class ClassSubjectDetailComponent implements OnInit {
     //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(this.OrgSubOrgFilter).subscribe((data: any) => {
       data.value.forEach(m => {
-        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
+        let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
     });
     this.shareddata.ChangeSubjects(this.Subjects);
     //this.shareddata.ChangeBatch(this.Batches);

@@ -30,6 +30,7 @@ const MENUDATA = 'menudata';
 const MASTERDATA = 'masterdata';
 const SubOrgId = 'SubOrgId';
 const COMPANYNAME ='CompanyName';
+const CLASSES ='classes';
 @Injectable({
   providedIn: 'root'
 })
@@ -96,6 +97,18 @@ export class TokenStorageService {
     var students = localStorage.getItem(STUDENTS);
     if (students) {
       return JSON.parse(students);
+    }
+    return [{}];
+
+  }
+  public saveClasses(token: any): void {
+    localStorage.removeItem(CLASSES);
+    localStorage.setItem(CLASSES, JSON.stringify(token));
+  }
+  public getClasses(): object[] | null {
+    var _classes = localStorage.getItem(CLASSES);
+    if (_classes) {
+      return JSON.parse(_classes);
     }
     return [{}];
 

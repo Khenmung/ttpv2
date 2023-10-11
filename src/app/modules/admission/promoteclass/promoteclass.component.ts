@@ -516,7 +516,7 @@ export class PromoteclassComponent implements OnInit {
     this.loading = true;
     //var filter = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
     let list: List = new List();
-    list.fields = ["FeeTypeId", "FeeTypeName", "Formula"];
+    list.fields = ["FeeTypeId", "FeeTypeName", "Formula","DefaultType"];
     list.PageName = "SchoolFeeTypes";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
 
@@ -559,7 +559,7 @@ export class PromoteclassComponent implements OnInit {
   ClassCategoryName = '';
   SetCategory(event) {
     this.ClassCategoryName = '';
-    var obj = this.Classes.filter((f: any) => f.ClassId == event.option.StudentClasses[0].ClassId);
+    var obj = this.Classes.filter((f: any) => f.ClassId == event.option.value.StudentClasses[0].ClassId);
     if (obj.length > 0) {
       this.ClassCategoryName = obj[0].Category;
     }
@@ -726,7 +726,7 @@ export class PromoteclassComponent implements OnInit {
 
         this.StudentClassList = [];
         var _defaultTypeId = 0;
-        var defaultFeeTypeObj = this.FeeTypes.filter((f: any) => f.defaultType == 1);
+        var defaultFeeTypeObj = this.FeeTypes.filter((f: any) => f.DefaultType == 1);
         if (defaultFeeTypeObj.length > 0)
           _defaultTypeId = defaultFeeTypeObj[0].FeeTypeId;
         var _previousStudent: any = this.PreviousBatchStudents.filter(studnt => studnt.StudentId == _StudentId)
@@ -897,18 +897,41 @@ export class PromoteclassComponent implements OnInit {
 
         });
   }
+  // SaveAll() {
+  //   debugger;
+  //   var _toUpdate = this.StudentClassList.filter((f: any) => f.Action);
+  //   this.RowsToUpdate = _toUpdate.length;
+  //   _toUpdate.forEach(e => {
+  //     this.RowsToUpdate -= 1;
+  //     this.UpdateOrSave(e);
+  //   })
+  // }
+  // SaveRow(row) {
+  //   debugger;
+  //   this.RowsToUpdate = 0;
+  //   this.UpdateOrSave(row);
+  // }
+  RowCount = 0;
+  DataCollection: any = [];
   SaveAll() {
     debugger;
     var _toUpdate = this.StudentClassList.filter((f: any) => f.Action);
     this.RowsToUpdate = _toUpdate.length;
+    this.RowCount = 0;
+    this.DataCollection = [];
     _toUpdate.forEach(e => {
       this.RowsToUpdate -= 1;
+      this.DataCollection.push(JSON.parse(JSON.stringify(e)));
       this.UpdateOrSave(e);
     })
   }
   SaveRow(row) {
     debugger;
     this.RowsToUpdate = 0;
+    this.RowsToUpdate = 1;
+    this.DataCollection = [];
+    this.DataCollection.push(JSON.parse(JSON.stringify(row)));
+    this.RowCount = 0;
     this.UpdateOrSave(row);
   }
   UpdateOrSave(row) {
@@ -937,34 +960,36 @@ export class PromoteclassComponent implements OnInit {
           return;
         }
         else {
-          this.contentservice.GetStudentClassCount(this.FilterOrgSubOrg, 0, 0, 0, this.SelectedBatchId)
-            .subscribe((data: any) => {
+          this.RowCount += 1;
+          // this.contentservice.GetStudentClassCount(this.FilterOrgSubOrg, 0, 0, 0, this.SelectedBatchId)
+          //   .subscribe((data: any) => {
+          if (this.DataCollection.length == this.RowCount) {
+            // var ClassStrength = data.value.length;
+            // ClassStrength += 1;
+            var _batchName = this.tokenStorage.getSelectedBatchName()!;
+            //var _admissionNo = this.searchForm.get("AdmissionNo")?.value;
+            var _year = _batchName.split('-')[0].trim();
+            //var _year = new Date().getFullYear();
 
-              var ClassStrength = data.value.length;
-              ClassStrength += 1;
-              var _batchName = this.tokenStorage.getSelectedBatchName()!;
-              //var _admissionNo = this.searchForm.get("AdmissionNo")?.value;
-              var _year = _batchName.split('-')[0].trim();
-              //var _year = new Date().getFullYear();
-
+            this.DataCollection.forEach(item => {
               //var _section= this.Sections.filter((s:any)=>s.MasterDataId == row.Section)
-              this.StudentClassData.Active = row.Active;
-              this.StudentClassData.StudentClassId = row.StudentClassId;
-              this.StudentClassData.StudentId = row.StudentId;
-              this.StudentClassData.ClassId = row.AdmitTo;
-              this.StudentClassData.SemesterId = row.SemesterId;
-              this.StudentClassData.FeeTypeId = row.FeeTypeId;
-              this.StudentClassData.RollNo = row.RollNo;
-              this.StudentClassData.SectionId = row.SectionId;
-              this.StudentClassData.Remarks = row.Remarks;
-              this.StudentClassData.AdmissionNo = row.AdmissionNo ? row.AdmissionNo : '';
+              this.StudentClassData.Active = item.Active;
+              this.StudentClassData.StudentClassId = item.StudentClassId;
+              this.StudentClassData.StudentId = item.StudentId;
+              this.StudentClassData.ClassId = item.AdmitTo;
+              this.StudentClassData.SemesterId = item.SemesterId;
+              this.StudentClassData.FeeTypeId = item.FeeTypeId;
+              this.StudentClassData.RollNo = item.RollNo;
+              this.StudentClassData.SectionId = item.SectionId;
+              this.StudentClassData.Remarks = item.Remarks;
+              this.StudentClassData.AdmissionNo = item.AdmissionNo ? item.AdmissionNo : '';
               //this.StudentClassData.AdmissionDate = new Date();
 
               this.StudentClassData.OrgId = this.LoginUserDetail[0]["orgId"];
               this.StudentClassData.SubOrgId = this.SubOrgId;
               this.StudentClassData.BatchId = this.SelectedBatchId;
               if (this.StudentClassData.StudentClassId == 0) {
-                this.StudentClassData.AdmissionNo = _year + ClassStrength;
+                this.StudentClassData.AdmissionNo = _year //+ ClassStrength;
                 this.StudentClassData.IsCurrent = true;
                 //this.StudentClassData.AdmissionDate = new Date();
                 this.StudentClassData["CreatedDate"] = new Date();
@@ -972,7 +997,7 @@ export class PromoteclassComponent implements OnInit {
                 delete this.StudentClassData["UpdatedDate"];
                 delete this.StudentClassData["UpdatedBy"];
                 console.log('to insert', this.StudentClassData)
-                this.insert(row);
+                this.insert(item);
               }
               else {
                 delete this.StudentClassData["CreatedDate"];
@@ -981,9 +1006,10 @@ export class PromoteclassComponent implements OnInit {
                 this.StudentClassData["UpdatedDate"] = new Date();
                 this.StudentClassData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
                 console.log('to update', this.StudentClassData)
-                this.update(row);
+                this.update(item);
               }
-            });
+            })
+          }
         }
       });
   }
@@ -995,8 +1021,9 @@ export class PromoteclassComponent implements OnInit {
       .subscribe(
         (data: any) => {
           this.loading = false; this.PageLoading = false;
-          row.ClassName = this.Classes.filter(c => c.ClassId == data.ClassId)[0].ClassName;
-          row.StudentClassId = data.StudentClassId;
+          let iteminserted:any = this.StudentClassList.filter(s=>s.StudentId == row.StudentId && s["BatchId"] == row.BatchId)
+          iteminserted.ClassName = this.Classes.filter(c => c.ClassId == data.ClassId)[0].ClassName;
+          iteminserted.StudentClassId = data.StudentClassId;
           var NewStudentFromPrevious: any = this.PreviousBatchStudents.filter(st => st.StudentId == this.StudentClassData.StudentId);
           var cls = [{
             StudentClassId: data.StudentClassId,
@@ -1011,7 +1038,8 @@ export class PromoteclassComponent implements OnInit {
           NewStudentFromPrevious[0].StudentClasses = [...cls];
           row.Action = false;
 
-          var stud = this.CurrentBatchStudents.filter((f: any) => f.StudentId == this.StudentClassData.StudentId);
+          var stud = this.CurrentBatchStudents.filter((f: any) => f.StudentId == this.StudentClassData.StudentId
+          && f.BatchId == this.StudentClassData.BatchId);
           if (stud.length > 0) {
             stud["StudentClasses"] = [...cls];
           }
@@ -1060,7 +1088,7 @@ export class PromoteclassComponent implements OnInit {
         }
         else
           _clsfeeWithDefinitions = [...items];
-        
+
         this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, this.StudentClassData.ClassId, this.StudentClassData.SemesterId, this.StudentClassData.SectionId, row.StudentClassId, 0)
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
@@ -1129,7 +1157,7 @@ export class PromoteclassComponent implements OnInit {
 
     //var _classId = this.searchForm.get("searchClassId")?.value;
     //var _sectionId = this.searchForm.get("searchSectionId")?.value;
-    let filterstr = this.FilterOrgSubOrgBatchId +
+    let filterstr = this.StandardFilterWithPreviousBatchId +
       " and ExamId eq " + _examId;
 
     if (_PId > 0) {
@@ -1177,7 +1205,7 @@ export class PromoteclassComponent implements OnInit {
     list.PageName = "Students";
     list.lookupFields = ["StudentClasses($filter=BatchId eq " + this.PreviousBatchId + ";$select=ClassId,StudentClassId,SectionId)"]
     // 'OrgId eq ' + this.LoginUserDetail[0]["orgId"]  + " and SubOrgId eq " + this.SubOrgId + ' and BatchId eq ' + this.PreviousBatchId
-    list.filter = [this.StandardFilterWithPreviousBatchId + ' and Active eq 1'];
+    list.filter = [this.FilterOrgSubOrg + ' and Active eq 1'];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {

@@ -136,6 +136,7 @@ export class AbsentListComponent implements OnInit {
               m.Category = '';
             return m;
           })
+          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
         });
       }
     }
@@ -191,20 +192,7 @@ export class AbsentListComponent implements OnInit {
     }
     this.ClearData();
   }
-  saveall() {
-    debugger;
-    //var toUpdateAttendance = this.StudentAttendanceList.filter((f:any) => f.Action);
-    //console.log("toUpdateAttendance",toUpdateAttendance);
-    this.NoOfRecordToUpdate = this.StudentAttendanceList.length;
-    this.loading = true;
-    this.StudentAttendanceList.forEach((record) => {
-      this.NoOfRecordToUpdate--;
-      this.UpdateOrSave(record);
-    })
-    if (this.StudentAttendanceList.length == 0) {
-      this.loading = false;
-    }
-  }
+
   Teachers: any[] = [];
   GetTeachers() {
 
@@ -353,12 +341,12 @@ export class AbsentListComponent implements OnInit {
                 AttendanceId: sc.AttendanceId,
                 Student: _student[0].FirstName + " " + (_student[0].LastName == null ? '' : _student[0].LastName),
                 RollNo: _student[0].StudentClasses[0].RollNo,
-                PID:_student[0].PID,
+                PID: _student[0].PID,
                 Section: _section,
                 Semester: _semester,
                 StudentClassId: sc.StudentClassId,
                 AttendanceStatusId: sc.AttendanceStatusId,
-                AttendanceStatus: this.AttendanceStatus.filter(a=>a.MasterDataId ==sc.AttendanceStatusId)[0].MasterDataName,
+                AttendanceStatus: this.AttendanceStatus.filter(a => a.MasterDataId == sc.AttendanceStatusId)[0].MasterDataName,
                 AttendanceDate: sc.AttendanceDate,
                 ClassSubjectId: sc.ClassSubjectId,
                 Approved: sc.Approved,
@@ -367,7 +355,7 @@ export class AbsentListComponent implements OnInit {
                 ApprovedByName: _approvedByName,
                 ClassName: _Class,
                 ClassSubject: _subjName,
-                Remarks: sc.Remarks,                
+                Remarks: sc.Remarks,
                 PersonalNo: _student[0].PersonalNo,
                 ClassSequence: sc.ClassSequence
               });
@@ -379,7 +367,7 @@ export class AbsentListComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         else {
 
-          this.StudentAttendanceList = this.StudentAttendanceList.sort((a:any, b:any) => {
+          this.StudentAttendanceList = this.StudentAttendanceList.sort((a: any, b: any) => {
             // if (a.ClassSequence == b.ClassSequence) {
             //   return a.Section.localeCompare(b.Section);
             // }
@@ -451,9 +439,42 @@ export class AbsentListComponent implements OnInit {
 
         });
   }
-
+  // saveall() {
+  //   this.NoOfRecordToUpdate = this.StudentAttendanceList.length;
+  //   this.loading = true;
+  //   this.StudentAttendanceList.forEach((record) => {
+  //     this.NoOfRecordToUpdate--;
+  //     this.UpdateOrSave(record);
+  //   })
+  //   if (this.StudentAttendanceList.length == 0) {
+  //     this.loading = false;
+  //   }
+  // }
+  // SaveRow(row) {
+  //   this.NoOfRecordToUpdate = 0;
+  //   this.UpdateOrSave(row);
+  // }
+  RowCount = 0;
+  DataCollection: any = [];
+  saveall() {
+    debugger;
+    //var _toUpdate = this.StudentClassList.filter((f: any) => f.Action);
+    this.NoOfRecordToUpdate = this.StudentAttendanceList.length;
+    this.RowCount = 0;
+    this.DataCollection = [];
+    this.loading = true;
+    this.StudentAttendanceList.forEach((record) => {
+      this.NoOfRecordToUpdate--;
+      this.DataCollection.push(JSON.parse(JSON.stringify(record)));
+      this.UpdateOrSave(record);
+    })
+  }
   SaveRow(row) {
+    debugger;
     this.NoOfRecordToUpdate = 0;
+    this.DataCollection = [];
+    this.DataCollection.push(JSON.parse(JSON.stringify(row)));
+    this.RowCount = 0;
     this.UpdateOrSave(row);
   }
   UpdateOrSave(row) {
@@ -488,34 +509,39 @@ export class AbsentListComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
         else {
+          this.RowCount += 1;
+          if (this.DataCollection.length == this.RowCount) {
 
-          //this.StudentAttendanceData.StudentClassId = row.StudentClassId;
-          //this.StudentAttendanceData.AttendanceDate = new Date(_AttendanceDate);
-          this.StudentAttendanceData.AttendanceId = row.AttendanceId;
-          this.StudentAttendanceData.OrgId = this.LoginUserDetail[0]["orgId"];
-          this.StudentAttendanceData.SubOrgId = this.SubOrgId;
-          this.StudentAttendanceData.BatchId = this.SelectedBatchId;
-          this.StudentAttendanceData.Approved = row.Approved;
-          this.StudentAttendanceData.ReportedTo = row.ReportedTo;
-          this.StudentAttendanceData.ApprovedBy = this.LoginUserDetail[0]["userId"];
-          if (this.StudentAttendanceData.AttendanceId == 0) {
-            this.StudentAttendanceData["CreatedDate"] = new Date();
-            this.StudentAttendanceData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
-            delete this.StudentAttendanceData["UpdatedDate"];
-            delete this.StudentAttendanceData["UpdatedBy"];
+            this.DataCollection.forEach(item => {
 
-            this.insert(row);
+              this.StudentAttendanceData.AttendanceId = item.AttendanceId;
+              this.StudentAttendanceData.OrgId = this.LoginUserDetail[0]["orgId"];
+              this.StudentAttendanceData.SubOrgId = this.SubOrgId;
+              this.StudentAttendanceData.BatchId = this.SelectedBatchId;
+              this.StudentAttendanceData.Approved = item.Approved;
+              this.StudentAttendanceData.ReportedTo = item.ReportedTo;
+              this.StudentAttendanceData.ApprovedBy = this.LoginUserDetail[0]["userId"];
+              if (this.StudentAttendanceData.AttendanceId == 0) {
+                this.StudentAttendanceData["CreatedDate"] = new Date();
+                this.StudentAttendanceData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
+                delete this.StudentAttendanceData["UpdatedDate"];
+                delete this.StudentAttendanceData["UpdatedBy"];
+
+                this.insert(item);
+              }
+              else {
+
+                delete this.StudentAttendanceData["CreatedDate"];
+                delete this.StudentAttendanceData["CreatedBy"];
+                this.StudentAttendanceData["UpdatedDate"] = new Date();
+                this.StudentAttendanceData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
+                //console.log("StudentAttendanceData", this.StudentAttendanceData);
+                this.update(item);
+              }
+
+            })
+            // row.Action = false;
           }
-          else {
-
-            delete this.StudentAttendanceData["CreatedDate"];
-            delete this.StudentAttendanceData["CreatedBy"];
-            this.StudentAttendanceData["UpdatedDate"] = new Date();
-            this.StudentAttendanceData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log("StudentAttendanceData", this.StudentAttendanceData);
-            this.update(row);
-          }
-          row.Action = false;
         }
       });
   }
@@ -526,8 +552,9 @@ export class AbsentListComponent implements OnInit {
       .subscribe(
         (data: any) => {
           //this.edited = false;
-          row.AttendanceId = data.AttendanceId;
-          row.Action = false;
+          let insertedItem: any = this.StudentAttendanceList.filter(f => f.AttendanceId == row.AttendanceId);
+          insertedItem[0].AttendanceId = data.AttendanceId;
+          insertedItem[0].Action = false;
           if (this.NoOfRecordToUpdate == 0) {
             this.NoOfRecordToUpdate = -1;
             this.loading = false;
@@ -540,7 +567,8 @@ export class AbsentListComponent implements OnInit {
       .subscribe(
         (data: any) => {
           //this.edited = false;
-          row.Action = false;
+          let insertedItem: any = this.StudentAttendanceList.filter(f => f.AttendanceId == row.AttendanceId);
+          insertedItem[0].Action = false;
           if (this.NoOfRecordToUpdate == 0) {
             this.NoOfRecordToUpdate = -1;
             this.loading = false;
@@ -613,23 +641,23 @@ export class AbsentListComponent implements OnInit {
   }
   exportArray() {
     if (this.StudentAttendanceList.length > 0) {
-      let toExport :any[]= [];
-      this.StudentAttendanceList.forEach(m=>{
+      let toExport: any[] = [];
+      this.StudentAttendanceList.forEach(m => {
         toExport.push({
-          AttendanceId:m.AttendanceId,
-          PID:m.PID,
-          Student:m.Student,
-          AttendanceDate:moment(m.AttendanceDate).format('DD-MM-YYYY'),
-          AttendanceStatus:m.AttendanceStatus,
-          ClassName:m.ClassName,
-          RollNo:m.RollNo,
-          Section:m.Section,
-          Semester:m.Semester,
-          PersonalNo:m.PersonalNo,
-          Subject:m.ClassSubject,
-          Remarks:m.Remarks,
-          ReportedTo:m.ReportedTo,
-          LeaveGranted:m.Approved
+          AttendanceId: m.AttendanceId,
+          PID: m.PID,
+          Student: m.Student,
+          AttendanceDate: moment(m.AttendanceDate).format('DD-MM-YYYY'),
+          AttendanceStatus: m.AttendanceStatus,
+          ClassName: m.ClassName,
+          RollNo: m.RollNo,
+          Section: m.Section,
+          Semester: m.Semester,
+          PersonalNo: m.PersonalNo,
+          Subject: m.ClassSubject,
+          Remarks: m.Remarks,
+          ReportedTo: m.ReportedTo,
+          LeaveGranted: m.Approved
         })
       })
       const datatoExport: Partial<any>[] = toExport;
@@ -639,13 +667,13 @@ export class AbsentListComponent implements OnInit {
 }
 export interface IStudentAttendance {
   AttendanceId: number;
-  PID:number;
+  PID: number;
   RollNo: number;
   Section: string;
   Semester: string;
   StudentClassId: number;
   AttendanceStatusId: number;
-  AttendanceStatus:string;
+  AttendanceStatus: string;
   ClassSubjectId: number;
   ClassSubject: string;
   AttendanceDate: Date;

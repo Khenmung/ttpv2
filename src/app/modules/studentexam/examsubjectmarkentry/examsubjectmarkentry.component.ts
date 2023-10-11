@@ -277,7 +277,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
     //debugger;
     this.ExamStudentSubjectResultData = JSON.parse(JSON.stringify(this.ExamStudentSubjectResultData));
-    console.log("this.ExamStudentSubjectResultData", this.ExamStudentSubjectResultData);
+    //console.log("this.ExamStudentSubjectResultData", this.ExamStudentSubjectResultData);
 
     this.dataservice.postPatch('ExamStudentSubjectResults', this.ExamStudentSubjectResultData, 0, 'post')
       .subscribe(
@@ -477,7 +477,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
                 ClassSubjectId: s.ClassSubjectId,
                 StudentClassId: s.StudentClassId,
                 RollNo: s.RollNo,
-                StudentClassSubject: s.RollNo + '-' + s.Name + '-' + _class + _semester + _section + ' - ' + _subject,
+                StudentClassSubject: s.RollNo + '-' + s.Name,// + '-' + _class + _semester + _section,
                 SubjectId: s.SubjectId,
                 ClassId: s.ClassId,
                 SemesterId: s.SemesterId,

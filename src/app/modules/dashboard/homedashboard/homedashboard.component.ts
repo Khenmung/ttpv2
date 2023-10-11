@@ -699,7 +699,8 @@ export class HomeDashboardComponent implements OnInit {
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }
-    this.filterOrgSubOrgBatchId += " and IsCurrent eq true";
+
+    //this.filterOrgSubOrgBatchId += " and IsCurrent eq true";
     list.PageName = "StudentClasses";
     list.lookupFields = ["Student($select=StudentId," +
       "FirstName,LastName,FatherName,MotherName,PID,Active,RemarkId," +

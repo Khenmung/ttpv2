@@ -323,17 +323,7 @@ export class DashboardclassfeeComponent implements OnInit {
     })
     return filledVar;
   }
-  SaveAll() {
-    this.loading = true;
-    this.DataToSaveInLoop = this.ELEMENT_DATA.filter((f: any) => f.Action);
-    this.DataCountToUpdate = this.DataToSaveInLoop.length;
-    this.DataCollection = [];
-    this.RowCount = 0;
-    this.DataToSaveInLoop.forEach((record) => {
-      this.DataCountToUpdate--
-      this.UpdateOrSave(record);
-    })
-  }
+
   GetSessionFormattedMonths() {
     var _sessionStartEnd = {
       StartDate: new Date(),
@@ -375,7 +365,17 @@ export class DashboardclassfeeComponent implements OnInit {
     }
     return monthArray;
   }
-
+  SaveAll() {
+    this.loading = true;
+    this.DataToSaveInLoop = this.ELEMENT_DATA.filter((f: any) => f.Action);
+    this.DataCountToUpdate = this.DataToSaveInLoop.length;
+    this.DataCollection = [];
+    this.RowCount = 0;
+    this.DataToSaveInLoop.forEach((record) => {
+      this.DataCountToUpdate--
+      this.UpdateOrSave(record);
+    })
+  }
   Save(row) {
     this.DataCountToUpdate = 0;
     this.RowCount = 0;
@@ -447,7 +447,7 @@ export class DashboardclassfeeComponent implements OnInit {
         else {
           this.RowCount += 1;
           if (this.DataCollection.length == this.RowCount) {
-
+            console.log("datacollection", this.DataCollection)
             this.DataCollection.forEach(item => {
 
               this.classFeeData.Active = item.Active;
@@ -502,7 +502,12 @@ export class DashboardclassfeeComponent implements OnInit {
         (data: any) => {
           row.Action = false;
           this.loading = false; this.PageLoading = false;
-          row.ClassFeeId = data.ClassFeeId;
+          let insertedItem = this.ELEMENT_DATA.filter(e => e.FeeDefinitionId == row.FeeDefinitionId
+            && e.ClassId == row.ClassId
+            && e.SectionId == row.SectionId
+            && e.SemesterId == row.SemesterId)
+
+          insertedItem[0].ClassFeeId = data.ClassFeeId;
           item.ClassFeeId = data.ClassFeeId;
           if (this.DataCountToUpdate == 0) {
             this.DataCountToUpdate = -1;
@@ -517,8 +522,10 @@ export class DashboardclassfeeComponent implements OnInit {
     this.dataservice.postPatch('ClassFees', this.classFeeData, this.classFeeData.ClassFeeId, 'patch')
       .subscribe(
         (data: any) => {
-          row.Action = false;
-          this.loading = false; this.PageLoading = false;
+          let updatedItem = this.ELEMENT_DATA.filter(e => e.ClassFeeId == row.ClassFeeId);
+          updatedItem[0].Action = false;
+          this.loading = false;
+          this.PageLoading = false;
           if (this.DataCountToUpdate == 0) {
             this.DataCountToUpdate = -1;
             this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
@@ -567,8 +574,7 @@ export class DashboardclassfeeComponent implements OnInit {
     //   this.contentservice.openSnackBar("Previous batch not defined.", globalconstants.ActionText, globalconstants.RedBackground);
     // else {
     let _classId = this.searchForm.get("searchOtherClassId")?.value;
-    if(_classId==0)
-    {
+    if (_classId == 0) {
       this.contentservice.openSnackBar("Please select other class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
@@ -772,6 +778,8 @@ export class DashboardclassfeeComponent implements OnInit {
   updateAmount(row, value) {
     // if(row.Rate>0 && row.Quantity>0)
     // {
+    if (!row.Quantity)
+      row.Quantity = 1;
     row.Amount = row.Rate * row.Quantity;
     //}
     row.Action = true;
