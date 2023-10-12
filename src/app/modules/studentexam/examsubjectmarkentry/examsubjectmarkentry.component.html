@@ -32,7 +32,7 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" style="width:100px;margin-right:15px;" *ngIf="SelectedClassCategory==getHighSchoolCategory()">
+        <mat-form-field appearance="outline" style="width:150px;margin-right:15px;" *ngIf="SelectedClassCategory==getHighSchoolCategory()">
             <mat-label>Section</mat-label>
             <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
                 <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
@@ -40,7 +40,7 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" style="width:150px;margin-right:15px;">
+        <mat-form-field appearance="outline" style="width:180px;margin-right:15px;">
             <mat-label>Subject</mat-label>
             <mat-select formControlName="searchClassSubjectId" (selectionChange)="ClearData()">
                 <mat-option *ngFor="let item of SelectedClassSubjects" [value]="item.ClassSubjectId">
@@ -66,7 +66,7 @@
                 <mat-header-cell *matHeaderCellDef>{{disCol!='Action'?disCol:''}}
                     <div *ngIf="ExamStudentSubjectResult.length>0" fxLayoutAlign="center center">
                         <button *ngIf="disCol=='Action'" [disabled]="loading || Permission=='read' || ResultReleased==1"
-                            matTooltip="save all" mat-mini-fab (click)="UpdateAll()">
+                            matTooltip="save all" mat-mini-fab (click)="SaveAll()">
                             <mat-icon>all_out</mat-icon>
                             <mat-icon *ngIf="loading">
                                 <mat-spinner diameter="20" color="Blue"></mat-spinner>

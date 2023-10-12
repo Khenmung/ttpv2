@@ -67,6 +67,7 @@ export class HomeDashboardComponent implements OnInit {
   Roles: any[] = [];
   Submitted = false;
   ngOnInit(): void {
+    debugger;
     this.servicework.activateUpdate().then(() => {
       this.servicework.checkForUpdate().then((value) => {
         if (value) {
@@ -82,8 +83,10 @@ export class HomeDashboardComponent implements OnInit {
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     //console.log("HOme dashboard init")
     //console.log('role',this.Role);
-    var loggedTime = moment(localStorage.getItem('loggedTime'));
-    var loggedInDiff = moment().diff(moment(loggedTime), 'days');
+    //localStorage.setItem('loggedTime','10/11/2023');
+    let loggedin = moment(localStorage.getItem('loggedTime'));
+    //var loggedTime = new Date(loggedin);
+    var loggedInDiff = moment().diff(loggedin, 'days');
     //_today.setHours(0, 0, 0, 0);
     if (this.LoginUserDetail.length == 0 || loggedInDiff) {
       this.tokenStorage.signOut();

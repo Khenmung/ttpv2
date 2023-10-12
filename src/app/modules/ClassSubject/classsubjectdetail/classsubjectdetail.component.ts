@@ -608,7 +608,7 @@ export class ClassSubjectDetailComponent implements OnInit {
         });
   }
   update(row) {
-
+    console.log('this.ClassSubjectData update', this.ClassSubjectData)
     this.dataservice.postPatch('ClassSubjects', this.ClassSubjectData, this.ClassSubjectData.ClassSubjectId, 'patch')
       .subscribe(
         (data: any) => {

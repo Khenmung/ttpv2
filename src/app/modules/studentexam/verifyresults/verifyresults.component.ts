@@ -276,6 +276,7 @@ export class VerifyResultsComponent implements OnInit {
           }
         })
         this.ClassSubjects = this.contentservice.getConfidentialData(this.tokenStorage, this.ClassSubjects, "ClassSubject");
+        //console.log("this.ClassSubjects",this.ClassSubjects.filter(f=>f.ClassSubjectId==1136));
         //this.loading = false;
         this.GetSubjectComponents();
       })
@@ -557,8 +558,9 @@ export class VerifyResultsComponent implements OnInit {
         var _section = '';
         var _semester = '';
         this.StudentSubjects = [];
-        //console.log("data.value",data.value)
-        //var _data = data.value.filter(x => x.ClassSubject.Active == 1);
+      
+        var _data = data.value.filter(x => x.ClassSubjectId == 1136);
+        console.log("data.value",_data)
         //var _studentforselectedClass = this.Students.filter(stud => stud.StudentClasses && stud.StudentClasses[0].ClassId == _classId)
         data.value.forEach(s => {
           _class = '';
@@ -1420,6 +1422,8 @@ export class VerifyResultsComponent implements OnInit {
             this.ClassSubjectComponents.push(e);
           }
         })
+        let test = this.ClassSubjectComponents.filter(f=>f.ClassSubjectId ==1136)
+        console.log("ClassSubjectComponents",test)
         this.loading = false;
         this.PageLoading = false;
       })

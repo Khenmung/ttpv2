@@ -159,7 +159,8 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   UpdateOrSave(row, valuerow) {
 
     debugger;
-
+    // console.log("row",row);
+    // console.log("valuerow",valuerow);
     this.DataCollection.push(JSON.parse(JSON.stringify(row)));
     if (row.Marks > row.FullMark) {
       this.loading = false; this.PageLoading = false;
@@ -213,11 +214,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     list.fields = ["ExamStudentSubjectResultId"];
     list.PageName = "ExamStudentSubjectResults";
     list.filter = [checkFilterString];
-    
+
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        
+
 
         if (data.value.length > 0) {
           this.loading = false; this.PageLoading = false;
@@ -226,9 +227,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         else {
           this.rowCount += 1;
           if (this.DataCollection.length == this.rowCount) {
+            console.log("this.DataCollection", this.DataCollection);
             var _classId = this.searchForm.get("searchClassId")?.value;
             var _sectionId = this.searchForm.get("searchSectionId")?.value;
             var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+
             this.DataCollection.forEach(item => {
 
               let _examstatus = 0;
@@ -252,12 +255,13 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
               this.ExamStudentSubjectResultData.ExamStatus = _examstatus;
               this.ExamStudentSubjectResultData.Marks = parseFloat(item.Marks);
 
-              //console.log("this.ExamStudentSubjectResultData", this.ExamStudentSubjectResultData)
+
               if (this.ExamStudentSubjectResultData.ExamStudentSubjectResultId == 0) {
                 this.ExamStudentSubjectResultData["CreatedDate"] = new Date();
                 this.ExamStudentSubjectResultData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
                 this.ExamStudentSubjectResultData["UpdatedDate"] = new Date();
                 delete this.ExamStudentSubjectResultData["UpdatedBy"];
+                console.log("this.ExamStudentSubjectResultData insert", this.ExamStudentSubjectResultData)
                 this.insert(item, valuerow);
               }
               else {
@@ -286,8 +290,8 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           valuerow.Action = false;
 
           this.loading = false; this.PageLoading = false;
-          this.rowSave += 1;
-          if (this.rowSave == this.displayedColumns.length - 2) {
+          // this.rowSave += 1;
+          if (this.rowCount == this.displayedColumns.length - 2) {
             this.loading = false; this.PageLoading = false;
             this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
@@ -295,15 +299,15 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         });
   }
   update(row, valuerow) {
-    this.ExamStudentSubjectResultData = JSON.parse(JSON.stringify(this.ExamStudentSubjectResultData));
-    console.log("this.ExamStudentSubjectResultData", this.ExamStudentSubjectResultData);
+    //this.ExamStudentSubjectResultData = JSON.parse(JSON.stringify(this.ExamStudentSubjectResultData));
+    //console.log("this.ExamStudentSubjectResultData update", this.ExamStudentSubjectResultData);
     this.dataservice.postPatch('ExamStudentSubjectResults', this.ExamStudentSubjectResultData, this.ExamStudentSubjectResultData.ExamStudentSubjectResultId, 'patch')
       .subscribe(
         (data: any) => {
           //this.loading = false; this.PageLoading=false;
           valuerow.Action = false;
-          this.rowSave += 1;
-          if (this.rowSave == this.displayedColumns.length - 2) {
+          //this.rowSave += 1;
+          if (this.rowCount == this.displayedColumns.length - 2) {
             this.loading = false; this.PageLoading = false;
             this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
@@ -383,7 +387,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-
+    this.loading=true;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
     let filterStr = this.FilterOrgSubOrgBatchId;
     filterStr += " and ClassSubjectId eq " + _classSubjectId;
@@ -421,6 +425,12 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         //var dbdata = data.value.filter(x => x.ClassSubject.Active == 1)
         var dbdata: any[] = [];
         var clssubj = this.ClassSubjects.filter((f: any) => f.ClassSubjectId == _classSubjectId);
+        if (data.value.length == 0) {
+          this.loading = false;
+          this.contentservice.openSnackBar("No student offer this subject.", globalconstants.ActionText, globalconstants.RedBackground);
+          return;
+        }
+
         data.value.forEach(x => {
 
           if (clssubj.length > 0) {
@@ -763,27 +773,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
             && studentsubject.SectionId == _sectionId
             && studentsubject.SemesterId == _semesterId
         });
-        // }
-        // else if (sectionwiseexist.length > 0 && semesterwiseexist.length == 0) {
-        //   filteredStudentSubjects = this.StudentSubjects.filter(studentsubject => {
-        //     return studentsubject.ClassId == _classId
-        //       && studentsubject.ClassSubjectId == _classSubjectId
-        //       && studentsubject.SectionId == (_sectionId ? _sectionId : studentsubject.SectionId)
-        //   });
-        // }
-        // else if (sectionwiseexist.length == 0 && semesterwiseexist.length > 0) {
-        //   filteredStudentSubjects = this.StudentSubjects.filter(studentsubject => {
-        //     return studentsubject.ClassId == _classId
-        //       && studentsubject.ClassSubjectId == _classSubjectId
-        //       && studentsubject.SemesterId == (_semesterId ? _semesterId : studentsubject.SemesterId)
-        //   });
-        // }
-        // else if (sectionwiseexist.length == 0 && semesterwiseexist.length == 0) {
-        //   filteredStudentSubjects = this.StudentSubjects.filter(studentsubject => {
-        //     return studentsubject.ClassId == _classId
-        //       && studentsubject.ClassSubjectId == _classSubjectId
-        //   });
-        // }
+        console.log("filteredStudentSubjects", filteredStudentSubjects)
         filteredStudentSubjects.forEach(studentsubject => {
           studentsubject.Components = studentsubject.Components.filter(c => c.ExamId == _examId)
         });
@@ -897,7 +887,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
               this.StoredForUpdate.push(_toPush);
             }
           })
-          forDisplay["Action"] = true;
+          forDisplay["Action"] = false;
           this.ExamStudentSubjectResult.push(forDisplay);
 
         })
@@ -1067,12 +1057,29 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       record.Action = !record.Action;
     })
   }
-  saveall() {
-    this.DataCollection =[];
-    this.ExamStudentSubjectResult.forEach(record => {
-      if (record.Action == true) {
-        this.UpdateOrSave(record, record);
+  SaveAll() {
+    this.DataCollection = [];
+
+    let _DataToSave = this.ExamStudentSubjectResult.filter(f => f.Action);
+    this.rowCount = 0;
+    _DataToSave.forEach(record => {
+
+      for (var prop in record) {
+
+        var row: any = this.StoredForUpdate.filter((s: any) => s.SubjectMarkComponent == prop
+          && s.StudentClassSubjectId == record.StudentClassSubjectId);
+
+        if (row.length > 0 && prop != 'StudentClassSubject' && prop != 'Action') {
+          row[0].Active = 1;
+          row[0].Marks = row[0][prop];
+          //tosave = JSON.parse(JSON.stringify(row[0]));
+          this.UpdateOrSave(row[0], record);
+        }
       }
+
+      // if (record.Action == true) {
+      //   this.UpdateOrSave(record, record);
+      // }
     })
   }
   onBlur(element, colName) {
@@ -1090,12 +1097,12 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     })
   }
   DataCollection: any = [];
-  rowSave =0;
+  //rowSave =0;
   SaveRow(element) {
     debugger;
     this.loading = true;
     this.rowCount = 0;
-    this.rowSave = 0;
+    //this.rowSave = 0;
     //var columnexist;
     this.DataCollection = [];
     for (var prop in element) {
