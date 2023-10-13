@@ -128,7 +128,7 @@ export class ChartReportComponent {
     list.filter = [this.FilterOrgSubOrgBatchId + " and IsCurrent eq true and Active eq 1"];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        //console.log('data gg', data.value)
+        ////console.log('data gg', data.value)
         this.StudentClasses = data.value.map(m => {
           m.Formula = m.FeeType != undefined ? m.FeeType.Formula : '';
           m.FirstName = m.Student.FirstName;
@@ -177,8 +177,8 @@ export class ChartReportComponent {
         this.pieChartLabels = ['Non-payment %', 'Payment %']
         var PaymentPercent = ((paymentcount * 100) / studentCount).toFixed(2);
         var NonPaymentPercent = ((noofUnpaid * 100) / studentCount).toFixed(2);
-        //console.log("NonPaymentPercent", NonPaymentPercent);
-        //console.log("PaymentPercent", PaymentPercent);
+        ////console.log("NonPaymentPercent", NonPaymentPercent);
+        ////console.log("PaymentPercent", PaymentPercent);
         this.pieChartData = {
           labels: ["Purple", "Green"],
           data: [NonPaymentPercent, PaymentPercent],

@@ -207,7 +207,7 @@ export class LeaveRequestsComponent {
     let a = moment(element.LeaveFrom);
     let b = moment(element.LeaveTo);
     let _noOfDays = b.diff(a, 'days');
-    console.log('noofdays', _noOfDays)
+    //console.log('noofdays', _noOfDays)
     if (_noOfDays < 0) {
       this.contentservice.openSnackBar("Leave from must be less than leave to.", globalconstants.ActionText, globalconstants.RedBackground);
       element.Action = false;
@@ -301,7 +301,7 @@ export class LeaveRequestsComponent {
                 this.EmployeeLeaveData.OrgId = this.LoginUserDetail[0]["orgId"];
                 this.EmployeeLeaveData.SubOrgId = this.SubOrgId;
                 this.EmployeeLeaveData.Remarks = row.Remarks;
-                //console.log('data', this.EmployeeLeaveData);
+                ////console.log('data', this.EmployeeLeaveData);
 
                 if (this.EmployeeLeaveData.EmployeeLeaveId == 0) {
                   this.EmployeeLeaveData["CreatedDate"] = new Date();
@@ -349,7 +349,7 @@ export class LeaveRequestsComponent {
         });
   }
   update(row) {
-    ////console.log("this.GradeComponentData", this.GradeComponentData);
+    //////console.log("this.GradeComponentData", this.GradeComponentData);
     this.dataservice.postPatch(this.EmployeeLeaveListName, this.LeaveManagement, this.EmployeeLeaveData.EmployeeLeaveId, 'patch')
       .subscribe(
         (data: any) => {
@@ -440,7 +440,7 @@ export class LeaveRequestsComponent {
             Name: m.EmployeeCode + "-" + m.FirstName + " " + m.LastName
           }
         })
-        //console.log("employeeid",this.searchForm.get("searchEmployee")?.value.EmployeeId)
+        ////console.log("employeeid",this.searchForm.get("searchEmployee")?.value.EmployeeId)
         //this.GetGradeComponents();
       })
 
@@ -510,7 +510,7 @@ export class LeaveRequestsComponent {
         if (this.EmployeeLeaveList.length == 0) {
           this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        console.log("this.EmployeeLeaveList", this.EmployeeLeaveList)
+        //console.log("this.EmployeeLeaveList", this.EmployeeLeaveList)
         this.EmployeeLeaveList = this.EmployeeLeaveList.sort((a, b) => a.LeaveStatusId - b.LeaveStatusId);
         this.dataSource = new MatTableDataSource<IEmployeeLeave>(this.EmployeeLeaveList);
         this.loading = false;
@@ -573,7 +573,7 @@ export class LeaveRequestsComponent {
         this.StoredForUpdate = [];
         var employeeVariable: any = {};
         var employees = [...data[0].value];
-        //console.log("employee", employees);
+        ////console.log("employee", employees);
         var _NoOfMonths = 0;
         var _NoOfYears = 0;
         var _Age = 0;
@@ -724,7 +724,7 @@ export class LeaveRequestsComponent {
         })
 
         this.LeaveManagement.LeaveBalance = JSON.parse(JSON.stringify(this.StoredForUpdate));
-        console.log("this.LeaveManagement", this.LeaveManagement);
+        //console.log("this.LeaveManagement", this.LeaveManagement);
         this.update(row);
       })
   }

@@ -667,16 +667,16 @@ export class ContentService implements OnInit {
     var AmountAfterFormulaApplied = 0;
     var _VariableObjList: any[] = [];
     var _LedgerData: any[] = [];
-    //console.log("data", data.filter((f:any) => f.StudentClassId == 3852))
+    ////console.log("data", data.filter((f:any) => f.StudentClassId == 3852))
     data.forEach((inv: any) => {
       _VariableObjList.push(inv)
       if (inv.Formula.length > 0) {
         //      if (inv.Month == 202200)
-        console.log("inv.Formula", inv.Formula);
+        //console.log("inv.Formula", inv.Formula);
 
         var formula = this.ApplyVariables(inv.Formula, _VariableObjList);
         //  if (inv.Month == 202200)
-        //console.log("after applying Formula", formula);
+        ////console.log("after applying Formula", formula);
         //after applying, remove again since it is for each student
         _VariableObjList.splice(_VariableObjList.indexOf(inv), 1);
         AmountAfterFormulaApplied = evaluate(formula);
@@ -703,8 +703,8 @@ export class ContentService implements OnInit {
       "StudentClassId,ClassId,SemesterId,SectionId,LedgerId, Active, GeneralLedgerId, BatchId, Month, OrgId,SubOrgId " +
       "FROM ? GROUP BY StudentClassId,ClassId,SemesterId,SectionId, LedgerId,Active, GeneralLedgerId,BatchId, Month,OrgId,SubOrgId";
     var sumFeeData = alasql(query, [_LedgerData]);
-    //console.log("_LedgerData", _LedgerData);
-    console.log("sumFeeData", sumFeeData);
+    ////console.log("_LedgerData", _LedgerData);
+    //console.log("sumFeeData", sumFeeData);
     return this.authservice.CallAPI(sumFeeData, 'createinvoice')
   }
   ApplyVariables(formula, pVariableObjList) {
@@ -727,7 +727,7 @@ export class ContentService implements OnInit {
     //debugger
     this.url = this.HostUrl + '/odata/' + title + '?' + query;
     //this.url = '/odata/' +title + '?' + query;  
-    ////console.log(this.url);
+    //////console.log(this.url);
     return this.http.get(this.url);//.map(res=>res.json());
     //.pipe(map((res:Response) => res.json()));
     // .pipe(map((res:any)=>{
@@ -789,7 +789,7 @@ export class ContentService implements OnInit {
           if (data.value[0].Org.Active == 1)
             this.GetMasterData(data.value);
           else {
-            //console.log("User's Organization not active!, Please contact your administrator!");
+            ////console.log("User's Organization not active!, Please contact your administrator!");
           }
         }
       })
@@ -820,7 +820,7 @@ export class ContentService implements OnInit {
 
           this.dataservice.get(list)
             .subscribe((data: any) => {
-              ////console.log(data.value);
+              //////console.log(data.value);
               //this.shareddata.ChangeMasterData(data.value);
               this.allMasterData = [...data.value];
 
@@ -858,7 +858,7 @@ export class ContentService implements OnInit {
               //this.tokenService.saveCheckEqualBatchId
               this.GetApplicationRolesPermission();
             }, error => {
-              console.log("getmasterdata error", error);
+              //console.log("getmasterdata error", error);
               this.tokenService.signOut();
             });
         }
@@ -959,7 +959,7 @@ export class ContentService implements OnInit {
               })
             }
           });
-          //          console.log("this.UserDetail", this.UserDetail);
+          //          //console.log("this.UserDetail", this.UserDetail);
           this.tokenService.saveUserdetail(this.UserDetail);
         }
       })
@@ -981,7 +981,7 @@ export class ContentService implements OnInit {
   //         var _roleName = pLoginUserDetail[0]['RoleUsers'][0].role;
   //         const diffTime = Math.abs(_validTo.getTime() - _today.getTime());
   //         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  //         //console.log("diffDays", diffDays)
+  //         ////console.log("diffDays", diffDays)
   //         var alertDate = localStorage.getItem("alertdate");
   //         var todaystring = moment(new Date()).format('DD-MM-YYYY')
 

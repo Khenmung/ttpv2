@@ -203,7 +203,7 @@ export class RulesnpolicyreportComponent implements OnInit {
             this.RulesOrPolicyData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.RulesOrPolicyData["UpdatedDate"] = new Date();
             delete this.RulesOrPolicyData["UpdatedBy"];
-            console.log("rules", this.RulesOrPolicyData)
+            //console.log("rules", this.RulesOrPolicyData)
             this.insert();
           }
           else {

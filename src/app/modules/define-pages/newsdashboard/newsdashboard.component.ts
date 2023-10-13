@@ -41,7 +41,7 @@ export class NewsdashboardComponent implements OnInit { PageLoading=true;
     
     });
     
-    // //console.log('shared data', this.shareddata.getData());
+    // ////console.log('shared data', this.shareddata.getData());
   } 
   getDetails() {
 
@@ -58,7 +58,7 @@ export class NewsdashboardComponent implements OnInit { PageLoading=true;
               UpdateDate: item.UpdateDate
             }
           })
-          ////console.log("dd",this.AllData);
+          //////console.log("dd",this.AllData);
           this.displayedColumns = ["Title","UpdateDate"];//this.columns.map(c => c.columnDef);
           this.dataSource = new MatTableDataSource(this.AllData);
           this.dataSource.paginator = this.paginator;
@@ -89,9 +89,9 @@ export class NewsdashboardComponent implements OnInit { PageLoading=true;
     let today = new Date();
     let badgeDate = this.datePipe.transform(today, 'yyyy/MM/dd')!;//today.setDate(today.getDate()-2);
     let NewsDate = this.datePipe.transform(newsdate, 'yyyy/MM/dd')!;
-    ////console.log('newsdate',NewsDate)
-    ////console.log('badgeDate',badgeDate)
-    ////console.log(newsdate<badgeDate);
+    //////console.log('newsdate',NewsDate)
+    //////console.log('badgeDate',badgeDate)
+    //////console.log(newsdate<badgeDate);
     return NewsDate < badgeDate ? true : false;
   }
   view(element) {

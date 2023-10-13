@@ -39,7 +39,7 @@ export class ConfirmemailComponent implements OnInit { PageLoading=true;
       this.userId = params.get("id")!;
       var payload = { "code": this.code, "userId": this.userId };
       this.authservice.CallAPI(payload, 'ConfirmEmail').subscribe((data: any) => {
-        console.log("confirmemail data",data)
+        //console.log("confirmemail data",data)
         localStorage.setItem("orgId", data.OrgId);
         localStorage.setItem("userId", data.Id);
         this.contentservice.openSnackBar("Email confirmation success! Please select your plan.", globalconstants.ActionText, globalconstants.BlueBackground);
@@ -48,7 +48,7 @@ export class ConfirmemailComponent implements OnInit { PageLoading=true;
       },
         err => {
           this.contentservice.openSnackBar("Email confirmation fail", globalconstants.ActionText, globalconstants.RedBackground);
-          console.log("confirm email error", err);
+          //console.log("confirm email error", err);
           this.loading = false; this.PageLoading=false;
         });
     })

@@ -219,7 +219,7 @@ export class EmployeeactivityComponent implements OnInit {
           this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
           this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
           this.EmployeeActivityForUpdate = [];;
-          //console.log("inserting-1",this.EmployeeActivityForUpdate);
+          ////console.log("inserting-1",this.EmployeeActivityForUpdate);
 
           this.EmployeeActivityData.EmployeeActivityId = row.EmployeeActivityId;
           this.EmployeeActivityData.ActivityNameId = row.ActivityNameId;
@@ -239,7 +239,7 @@ export class EmployeeactivityComponent implements OnInit {
             this.EmployeeActivityData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.EmployeeActivityData["UpdatedDate"] = new Date();
             delete this.EmployeeActivityData["UpdatedBy"];
-            console.log("this.EmployeeActivityData", this.EmployeeActivityData)
+            //console.log("this.EmployeeActivityData", this.EmployeeActivityData)
             this.insert(row, this.EmployeeActivityData);
           }
           else {
@@ -256,7 +256,7 @@ export class EmployeeactivityComponent implements OnInit {
     this.loading = false; this.PageLoading = false;
   }
   insert(row, toinsert) {
-    //console.log("inserting",this.EmployeeActivityForUpdate);
+    ////console.log("inserting",this.EmployeeActivityForUpdate);
 
     //debugger;
     this.dataservice.postPatch('EmployeeActivities', toinsert, 0, 'post')
@@ -270,7 +270,7 @@ export class EmployeeactivityComponent implements OnInit {
         });
   }
   update(row) {
-    //console.log("updating",this.EmployeeActivityForUpdate);
+    ////console.log("updating",this.EmployeeActivityForUpdate);
     this.dataservice.postPatch('EmployeeActivities', this.EmployeeActivityData, this.EmployeeActivityData.EmployeeActivityId, 'patch')
       .subscribe(
         (data: any) => {
@@ -325,7 +325,7 @@ export class EmployeeactivityComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           this.EmployeeActivityList = data.value.map(item => {
             var _lastname = item.Employee.LastName ? " " + item.Employee.LastName : '';
@@ -337,7 +337,7 @@ export class EmployeeactivityComponent implements OnInit {
         if (this.EmployeeActivityList.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
-        //console.log('EmployeeActivity', this.EmployeeActivityList)
+        ////console.log('EmployeeActivity', this.EmployeeActivityList)
         this.dataSource = new MatTableDataSource<IEmployeeActivity>(this.EmployeeActivityList);
         this.loadingFalse();
       });
@@ -369,7 +369,7 @@ export class EmployeeactivityComponent implements OnInit {
     var item = this.EmployeeActivityList.filter((f: any) => f.EmployeeActivityId == row.EmployeeActivityId);
     //item[0].SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
 
-    ////console.log("dat", this.EmployeeActivityList);
+    //////console.log("dat", this.EmployeeActivityList);
     this.dataSource = new MatTableDataSource(this.EmployeeActivityList);
 
 
@@ -404,7 +404,7 @@ export class EmployeeactivityComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           this.Employees = data.value.map(Employee => {
             var _lastname = Employee.LastName == null ? '' : " " + Employee.LastName;

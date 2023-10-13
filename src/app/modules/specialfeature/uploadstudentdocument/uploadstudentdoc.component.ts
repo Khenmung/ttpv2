@@ -197,7 +197,7 @@ export class StudentDocumentComponent implements OnInit {
         this.formdata.append("studentId", this.StudentId + "");
       this.formdata.append("studentClassId", this.StudentClassId.toString());
       this.formdata.append("docTypeId", this.uploadForm.get("DocTypeId")?.value);
-      ////console.log('this.uploadForm.get("DocTypeId")?.value")',this.uploadForm.get("DocTypeId")?.value);
+      //////console.log('this.uploadForm.get("DocTypeId")?.value")',this.uploadForm.get("DocTypeId")?.value);
       this.formdata.append("image", this.selectedFile, this.selectedFile.name);
       this.uploadImage();
     }
@@ -260,7 +260,7 @@ export class StudentDocumentComponent implements OnInit {
             }
           })
 
-          ////console.log("studentdocuments",this.StudentDocuments)
+          //////console.log("studentdocuments",this.StudentDocuments)
         }
         if (this.StudentDocuments.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
@@ -302,7 +302,7 @@ export class StudentDocumentComponent implements OnInit {
       Deleted: true
       //UpdatedDate: new Date()
     }
-    console.log("toupdate", toUpdate)
+    //console.log("toupdate", toUpdate)
     this.dataservice.postPatch('StorageFnPs', toUpdate, row.FileId, 'patch')
       .subscribe(res => {
         row.Action = false;
@@ -377,7 +377,7 @@ export class StudentDocumentComponent implements OnInit {
     //   .subscribe((data: any) => {
     //debugger;
     //this.Students = [...data.value];
-    //  //console.log('data.value', data.value);
+    //  ////console.log('data.value', data.value);
     var _students = this.tokenStorage.getStudents()!;
     if (_students.length > 0) {
 

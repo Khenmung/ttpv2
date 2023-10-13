@@ -233,7 +233,7 @@ export class StudentgradeComponent implements OnInit {
           this.StudentGradeData.BatchId = this.SelectedBatchId;
           this.StudentGradeData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.StudentGradeData.SubOrgId = this.SubOrgId;
-          //console.log("this.StudentGradeData", this.StudentGradeData);
+          ////console.log("this.StudentGradeData", this.StudentGradeData);
           if (this.StudentGradeData.StudentGradeId == 0) {
             this.StudentGradeData["CreatedDate"] = new Date();
             this.StudentGradeData["CreatedBy"] = this.LoginUserDetail[0]["userId"];

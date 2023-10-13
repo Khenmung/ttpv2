@@ -321,7 +321,7 @@ export class QuestionandexamreportComponent implements OnInit {
           this.QuestionBankNExamData.Active = row.Active;
 
           this.QuestionBankNExamForUpdate.push(this.QuestionBankNExamData);
-          console.log('dta', this.QuestionBankNExamForUpdate);
+          //console.log('dta', this.QuestionBankNExamForUpdate);
 
           if (this.QuestionBankNExamForUpdate[0].QuestionBankNExamId == 0) {
             this.QuestionBankNExamForUpdate[0]["CreatedDate"] = new Date();
@@ -379,7 +379,7 @@ export class QuestionandexamreportComponent implements OnInit {
         });
   }
   update(row) {
-    //console.log("updating",this.QuestionBankForUpdate);
+    ////console.log("updating",this.QuestionBankForUpdate);
     this.dataservice.postPatch('QuestionBankNExams', this.QuestionBankNExamForUpdate[0], this.QuestionBankNExamForUpdate[0].QuestionBankNExamId, 'patch')
       .subscribe(
         (data: any) => {
@@ -558,7 +558,7 @@ export class QuestionandexamreportComponent implements OnInit {
         if (this.QuestionNExams.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         }
-        console.log("this.QuestionNExams", this.QuestionNExams);
+        //console.log("this.QuestionNExams", this.QuestionNExams);
         this.dataSource = new MatTableDataSource<IQuestionNExam>(this.QuestionNExams);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -597,7 +597,7 @@ export class QuestionandexamreportComponent implements OnInit {
     debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
     //var result = this.allMasterData.filter((f:any)=>f.MasterDataName =='Question Bank ContentUnit')
-    //console.log("result",result)
+    ////console.log("result",result)
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.ContentUnit = this.getDropDownData(globalconstants.MasterDefinitions.school.BOOKCONTENTUNIT);
     this.DifficultyLevels = this.getDropDownData(globalconstants.MasterDefinitions.school.DIFFICULTYLEVEL);

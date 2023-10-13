@@ -72,7 +72,7 @@ export class StudentboardComponent implements AfterViewInit {
     this.StudentId = tokenStorage.getStudentId()!;
   }
   toggleRightSidenav() {
-    //console.log("this.sidenav",this.sidenav.)
+    ////console.log("this.sidenav",this.sidenav.)
     this.sidenav.toggle();
    
  }
@@ -80,7 +80,7 @@ export class StudentboardComponent implements AfterViewInit {
   public ngAfterViewInit(): void {
     debugger
     this.shareddata.CurrentStudentName.subscribe(s => (this.StudentName = s));
-    //console.log("StudentName",this.StudentName);
+    ////console.log("StudentName",this.StudentName);
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
     var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.STUDENT)

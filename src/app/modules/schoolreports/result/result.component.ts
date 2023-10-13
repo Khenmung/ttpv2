@@ -271,12 +271,12 @@ export class ResultComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        //console.log("examresults1",data.value);
+        ////console.log("examresults1",data.value);
         var _students: any = this.tokenStorage.getStudents()!;
         var classMarks = this.ClassSubjectComponents.filter(c => c.ClassId == _classId);
         if (classMarks.length > 0)
           this.ClassFullMark = alasql("select ClassId,sum(FullMark) as FullMark from ? group by ClassId", [classMarks]);
-        //  console.log("data.value",data.value)
+        //  //console.log("data.value",data.value)
         this.ExamStudentResult = [];
         data.value.forEach(studcls => {
           var stud = _students.filter(st => st.StudentClasses.length > 0 && st.StudentClasses[0].StudentClassId == studcls.StudentClassId)
@@ -302,7 +302,7 @@ export class ResultComponent implements OnInit {
           //})
         })
 
-        //console.log("this.ExamStudentResult",this.ExamStudentResult);
+        ////console.log("this.ExamStudentResult",this.ExamStudentResult);
         this.ExamStudentResult = this.ExamStudentResult.map((d: any) => {
           var _section = '';
           //var _gradeObj = this.SelectedClassStudentGrades[0].grades.filter((f:any) => f.StudentGradeId == d.Grade);

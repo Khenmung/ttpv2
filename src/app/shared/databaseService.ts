@@ -93,7 +93,7 @@ export class NaomitsuService {
   ): Observable<returnType> {
     //const cfqu = this.correctFormatForQueryUrl(qp);
     //Config.ServiceBaseURL + '/odata/' + model + '/(' + id + ')',
-    ////console.log('hh',`${this.END_POINT}/odata/${model}${id ? '(' + id + ')': ''}`);
+    //////console.log('hh',`${this.END_POINT}/odata/${model}${id ? '(' + id + ')': ''}`);
     return this.http[method](
       `${this.END_POINT}/odata/${model}${id ? '(' + id + ')' : ''}`,
       data, {

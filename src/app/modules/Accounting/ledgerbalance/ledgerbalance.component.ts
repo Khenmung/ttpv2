@@ -264,7 +264,7 @@ export class LedgerBalanceComponent implements OnInit {
           })
 
         })
-        console.log("_ledgerBalance", _ledgerBalance)
+        //console.log("_ledgerBalance", _ledgerBalance)
         this.TotalCredit = _ledgerBalance.reduce((acc, current) => acc + current["CrAmt"], 0)
         this.TotalDebit = _ledgerBalance.reduce((acc, current) => acc + current["DrAmt"], 0)
         if (this.TotalCredit > this.TotalDebit) {
@@ -347,7 +347,7 @@ export class LedgerBalanceComponent implements OnInit {
       this.AccountingVoucherData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
       delete this.AccountingVoucherData["UpdatedDate"];
       delete this.AccountingVoucherData["UpdatedBy"];
-      //console.log('to insert', this.AccountingVoucherData)
+      ////console.log('to insert', this.AccountingVoucherData)
       this.insert(row);
     }
     else {
@@ -355,7 +355,7 @@ export class LedgerBalanceComponent implements OnInit {
       delete this.AccountingVoucherData["CreatedBy"];
       this.AccountingVoucherData["UpdatedDate"] = new Date();
       this.AccountingVoucherData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-      //console.log('to update', this.AccountingVoucherData)
+      ////console.log('to update', this.AccountingVoucherData)
       this.update(row);
     }
   }
@@ -407,7 +407,7 @@ export class LedgerBalanceComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         data.value.forEach(f => {
 
           if (f.AccountNature.Active == true) {

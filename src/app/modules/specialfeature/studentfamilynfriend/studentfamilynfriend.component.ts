@@ -356,7 +356,7 @@ export class StudentfamilynfriendComponent implements OnInit {
             delete this.StudentFamilyNFriendData["CreatedBy"];
             this.StudentFamilyNFriendData["UpdatedDate"] = new Date();
             this.StudentFamilyNFriendData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log('this.StudentFamilyNFriendData', this.StudentFamilyNFriendData)
+            //console.log('this.StudentFamilyNFriendData', this.StudentFamilyNFriendData)
             this.update(row);
           }
         }

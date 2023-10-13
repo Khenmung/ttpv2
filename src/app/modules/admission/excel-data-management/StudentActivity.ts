@@ -40,7 +40,7 @@ export class StudentActivity {
                 CreatedBy: this.LoginUserDetail[0]["userId"],
             });
         });
-        console.log("toInsert", toInsert)
+        //console.log("toInsert", toInsert)
         this.dataservice.postPatch('StudentEvaluations', toInsert, 0, 'post')
             .subscribe((result: any) => {
                 this.loading = false; this.PageLoading=false;

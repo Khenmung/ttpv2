@@ -186,7 +186,7 @@ export class AssetVendorComponent implements OnInit {
             this.insert(row);
           }
           else {
-            //console.log("this.AchievementAndPointForUpdate[0] update", this.AchievementAndPointForUpdate[0])
+            ////console.log("this.AchievementAndPointForUpdate[0] update", this.AchievementAndPointForUpdate[0])
             this.AchievementAndPointForUpdate[0]["UpdatedDate"] = new Date();
             this.AchievementAndPointForUpdate[0]["UpdatedBy"];
             delete this.AchievementAndPointForUpdate[0]["CreatedDate"];
@@ -203,7 +203,7 @@ export class AssetVendorComponent implements OnInit {
     this.loading = false; this.PageLoading = false;
   }
   insert(row) {
-    console.log("this.AchievementAndPointForUpdate", this.AchievementAndPointForUpdate)
+    //console.log("this.AchievementAndPointForUpdate", this.AchievementAndPointForUpdate)
     this.dataservice.postPatch('AchievementAndPoints', this.AchievementAndPointForUpdate[0], 0, 'post')
       .subscribe(
         (data: any) => {
@@ -216,16 +216,16 @@ export class AssetVendorComponent implements OnInit {
           }
         }, error => {
           this.loadingFalse();
-          console.log("error on AchievementAndPoint insert", error);
+          //console.log("error on AchievementAndPoint insert", error);
         });
   }
   update(row) {
-    console.log("updating", this.AchievementAndPointForUpdate[0]);
+    //console.log("updating", this.AchievementAndPointForUpdate[0]);
     this.dataservice.postPatch('AchievementAndPoints', this.AchievementAndPointForUpdate[0], this.AchievementAndPointForUpdate[0].AchievementAndPointId, 'patch')
       .subscribe(
         (data: any) => {
           row.Action = false;
-          //console.log("data update", data.value);
+          ////console.log("data update", data.value);
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           this.loadingFalse();
         });

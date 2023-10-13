@@ -222,7 +222,7 @@ export class AppuserdashboardComponent implements OnInit {
     this.mattable._elementRef.nativeElement.style.backgroundColor = "";
   }
   view(element) {
-    ////console.log('this.mattable', this.mattable);
+    //////console.log('this.mattable', this.mattable);
     this.UserId = element.UserId;
     this.container.nativeElement.style.backgroundColor = "grey";
     this.mattable._elementRef.nativeElement.style.backgroundColor = "grey";
@@ -381,7 +381,7 @@ export class AppuserdashboardComponent implements OnInit {
   }
   GetAppUsers() {
     // this.authservice.CallAPI("","SendSMS").subscribe((data:any)=>{
-    //   console.log("res",data);
+    //   //console.log("res",data);
     // })
 
     //this.contentservice.openSnackBar(this.authservice.CallAPI("","SendSMS"),)
@@ -462,7 +462,7 @@ export class AppuserdashboardComponent implements OnInit {
             });
           });
         }
-        //console.log("this.AppUsers", this.AppUsers)
+        ////console.log("this.AppUsers", this.AppUsers)
         if (this.AppUsers.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
@@ -632,7 +632,7 @@ export class AppuserdashboardComponent implements OnInit {
     this.AppUsersData.Password = this.Password;
 
     this.AppUsersData.ValidTo = new Date(row.ValidTo);
-    //console.log('this.AppUsersData', this.AppUsersData)
+    ////console.log('this.AppUsersData', this.AppUsersData)
     if (row.Id == '')
       this.insert(row);
     else {

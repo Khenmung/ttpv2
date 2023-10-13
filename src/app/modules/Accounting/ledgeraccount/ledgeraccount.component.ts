@@ -297,7 +297,7 @@ export class LedgerAccountComponent implements OnInit {
             this.GeneralLedgerData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.GeneralLedgerData["UpdatedDate"] = new Date();
             delete this.GeneralLedgerData["UpdatedBy"];
-            console.log("inserting1", this.GeneralLedgerData);
+            //console.log("inserting1", this.GeneralLedgerData);
             this.insert(row);
           }
           else {
@@ -305,7 +305,7 @@ export class LedgerAccountComponent implements OnInit {
             this.GeneralLedgerData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.GeneralLedgerData["UpdatedDate"] = new Date();
             delete this.GeneralLedgerData["UpdatedBy"];
-            console.log("inserting2", this.GeneralLedgerData);
+            //console.log("inserting2", this.GeneralLedgerData);
             this.update(row);
           }
         }
@@ -315,7 +315,7 @@ export class LedgerAccountComponent implements OnInit {
     this.loading = false; this.PageLoading = false;
   }
   insert(row) {
-    //console.log("inserting",this.GeneralLedgerForUpdate);
+    ////console.log("inserting",this.GeneralLedgerForUpdate);
     //debugger;
     this.dataservice.postPatch("GeneralLedgers", this.GeneralLedgerData, 0, 'post')
       .subscribe(
@@ -327,7 +327,7 @@ export class LedgerAccountComponent implements OnInit {
         });
   }
   update(row) {
-    //console.log("updating",this.GeneralLedgerForUpdate);
+    ////console.log("updating",this.GeneralLedgerForUpdate);
     this.dataservice.postPatch("GeneralLedgers", this.GeneralLedgerData, this.GeneralLedgerData.GeneralLedgerId, 'patch')
       .subscribe(
         (data: any) => {
@@ -458,7 +458,7 @@ export class LedgerAccountComponent implements OnInit {
         if (this.GeneralLedgerList.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
-        console.log("this.GeneralLedgerList", this.GeneralLedgerList);
+        //console.log("this.GeneralLedgerList", this.GeneralLedgerList);
         this.dataSource = new MatTableDataSource<IGeneralLedger>(this.GeneralLedgerList);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

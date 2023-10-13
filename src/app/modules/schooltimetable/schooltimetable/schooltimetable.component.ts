@@ -140,13 +140,13 @@ export class SchooltimetableComponent implements OnInit {
       //" and TeacherSubjectId eq " + row.TeacherSubjectId +   
       //" and TeacherId eq " + row.TeacherId +
       " and Active eq 1"
-    //console.log("this.AllTimeTable", this.AllTimeTable)
+    ////console.log("this.AllTimeTable", this.AllTimeTable)
     // var duplicateCheck = alasql("select DayId,PeriodId,TeacherId from ? where DayId = ? and PeriodId = ? and TeacherId = ?",
     //   [this.DataForAllClasses, row.DayId, row.PeriodId, row.TeacherId])
-    // console.log("dataforallclasses", this.DataForAllClasses);
+    // //console.log("dataforallclasses", this.DataForAllClasses);
 
     //if (duplicateCheck.length > 1) {
-    //console.log("duplicateCheck",duplicateCheck);
+    ////console.log("duplicateCheck",duplicateCheck);
     // var _detail = '';
     // var _dupdetail = this.DataForAllClasses.filter((f:any) => f.DayId == row.DayId
     //   && f.PeriodId == row.PeriodId
@@ -186,13 +186,13 @@ export class SchooltimetableComponent implements OnInit {
     this.SchoolTimeTableData.SubOrgId = this.SubOrgId;
     this.SchoolTimeTableData.BatchId = this.SelectedBatchId;
 
-    //console.log('data', this.SchoolTimeTableData);
+    ////console.log('data', this.SchoolTimeTableData);
     if (this.SchoolTimeTableData.TimeTableId == 0) {
       this.SchoolTimeTableData["CreatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
       this.SchoolTimeTableData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
       this.SchoolTimeTableData["UpdatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
       delete this.SchoolTimeTableData["UpdatedBy"];
-      console.log('SchoolTimeTableData', this.SchoolTimeTableData)
+      //console.log('SchoolTimeTableData', this.SchoolTimeTableData)
       this.insert(element, row);
     }
     else {
@@ -201,7 +201,7 @@ export class SchooltimetableComponent implements OnInit {
       delete this.SchoolTimeTableData["CreatedBy"];
       this.SchoolTimeTableData["UpdatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd')
       this.SchoolTimeTableData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-      console.log('SchoolTimeTableData', this.SchoolTimeTableData)
+      //console.log('SchoolTimeTableData', this.SchoolTimeTableData)
       this.update(element);
     }
     //}
@@ -345,7 +345,7 @@ export class SchooltimetableComponent implements OnInit {
 
         if (filterPeriodsForAClass.length == 0) {
           this.contentservice.openSnackBar("Period not yet defined for this class.", globalconstants.ActionText, globalconstants.RedBackground);
-          console.log("Period not yet defined for this class : " + distinctcls.ClassId);
+          //console.log("Period not yet defined for this class : " + distinctcls.ClassId);
         }
         else {
 
@@ -452,8 +452,8 @@ export class SchooltimetableComponent implements OnInit {
       })
       d.Total = _totalPeriods;
     })
-    console.log("DayStatisticDisplay", this.DayStatisticDisplay);
-    console.log("this.DayStatistics", this.DayStatistics);
+    //console.log("DayStatisticDisplay", this.DayStatisticDisplay);
+    //console.log("this.DayStatistics", this.DayStatistics);
     this.dataSourceDayStatistic = new MatTableDataSource<any>(this.DayStatistics);
     this.dataSourceDayStatistic.sort = this.sort;
   }
@@ -464,7 +464,7 @@ export class SchooltimetableComponent implements OnInit {
     var _forCurrentTeacher = this.DataForAllClasses.filter(assigned => assigned.TeacherId == TeacherId
       && assigned.Day == dayName);
     var _eachPeriod = alasql("select Period,Count(1) NoOfClasses from ? group by Period", [_forCurrentTeacher]);
-    console.log('_eachPeriod', _eachPeriod);
+    //console.log('_eachPeriod', _eachPeriod);
     this.PeriodStatisticDisplay.forEach(col => {
       var periodmatch = _eachPeriod.filter((f:any) => f.Period == col);
       if (periodmatch.length > 0) {
@@ -478,8 +478,8 @@ export class SchooltimetableComponent implements OnInit {
       }
     })
 
-    //console.log("PeriodStatisticDisplay", this.PeriodStatisticDisplay);
-    //console.log("this.PeriodStatistics", this.PeriodStatistics);
+    ////console.log("PeriodStatisticDisplay", this.PeriodStatisticDisplay);
+    ////console.log("this.PeriodStatistics", this.PeriodStatistics);
 
     this.dataSourcePeriodStatistic = new MatTableDataSource<any>(this.PeriodStatistics);
   }
@@ -563,7 +563,7 @@ export class SchooltimetableComponent implements OnInit {
             this.TeacherSubjectList.push(teachersubject);
           });
         })
-        //console.log("this.TeacherSubjectList", this.TeacherSubjectList);
+        ////console.log("this.TeacherSubjectList", this.TeacherSubjectList);
         this.loading = false;
         this.PageLoading = false;
       });

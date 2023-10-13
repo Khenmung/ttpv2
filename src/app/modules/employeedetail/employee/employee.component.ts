@@ -564,7 +564,7 @@ export class EmployeeComponent implements OnInit {
       });
   }
   save() {
-console.log("this.EmployeeData",this.EmployeeData)
+//console.log("this.EmployeeData",this.EmployeeData)
     this.dataservice.postPatch('EmpEmployees', this.EmployeeData, 0, 'post')
       .subscribe((result: any) => {
         //debugger;
@@ -598,7 +598,7 @@ console.log("this.EmployeeData",this.EmployeeData)
       })
   }
   adjustDateForTimeOffset(dateToAdjust) {
-    ////console.log(dateToAdjust)
+    //////console.log(dateToAdjust)
     var offsetMs = dateToAdjust.getTimezoneOffset() * 60000;
     return new Date(dateToAdjust.getTime() - offsetMs);
   }

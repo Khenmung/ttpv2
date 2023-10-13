@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
     this.password = 'password';
     // //this.mediaSub = this.mediaObserver.asObservable.subscribe((result: MediaChange) => {
     //   this.deviceXs = result.mqAlias === "xs" ? true : false;
-    //   ////console.log("authlogin",this.deviceXs);
+    //   //////console.log("authlogin",this.deviceXs);
     // });
     var username = this.tokenStorage.getUser();
     this.loginForm = this.fb.group({
@@ -181,7 +181,7 @@ export class LoginComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        ////console.log("data", data)
+        //////console.log("data", data)
         if (data.value.length > 0) {
           if (data.value[0].Org.Active == 1)
             this.GetMasterData(data.value);
@@ -305,7 +305,7 @@ export class LoginComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //console.log("all",data.value)
+        ////console.log("all",data.value)
         var _allPermission :any[]= [];
         data.value.forEach(m => {
           if (m.PlanFeature.Page.Active == 1 && m.PlanFeature.Active == 1 && m.PlanFeature.PlanId == localStorage.getItem("planId")) {
@@ -313,7 +313,7 @@ export class LoginComponent implements OnInit {
           }
         })
 
-        console.log("all permission", _allPermission)
+        //console.log("all permission", _allPermission)
         if (_allPermission.length > 0) {
 
           var _applicationName = '';
@@ -329,7 +329,7 @@ export class LoginComponent implements OnInit {
               _appShortName = appObj[0].MasterDataName;
 
               var _permission = '';
-              console.log("item.PlanFeature.Page.PageTitle",item.PlanFeature.Page.PageTitle + "-----" + item.PermissionId)
+              //console.log("item.PlanFeature.Page.PageTitle",item.PlanFeature.Page.PageTitle + "-----" + item.PermissionId)
               if (item.PermissionId != null)
                 _permission = globalconstants.PERMISSIONTYPES.filter(a => a.val == item.PermissionId)[0].type
               this.UserDetail[0]["applicationRolePermission"].push({

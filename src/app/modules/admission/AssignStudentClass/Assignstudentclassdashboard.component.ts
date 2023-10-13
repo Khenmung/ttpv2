@@ -17,7 +17,6 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 import { TableUtil } from '../../../shared/TableUtil';
 import { IStudentDownload } from '../studentdatadump/studentdatadump.component';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-AssignStudentclassdashboard',
@@ -190,8 +189,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         this.Permission = perObj[0].permission;
 
       //this.checkBatchIdNSelectedIdEqual = +this.tokenStorage.getCheckEqualBatchId();
-      ////console.log('selected batchid', this.SelectedBatchId);
-      ////console.log('current batchid', this.CurrentBatchId)
+      //////console.log('selected batchid', this.SelectedBatchId);
+      //////console.log('current batchid', this.CurrentBatchId)
       if (this.PromotePermission == 'read')
         this.displayedColumns = [
           'Student',
@@ -681,7 +680,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
           this.GetExamResult(this.PreviousBatchId, this.PreviousClassId)
             .subscribe((examresult: any) => {
 
-              //console.log('result',result)
+              ////console.log('result',result)
               var _defaultTypeId = 0;
               var defaultFeeTypeObj = this.FeeTypes.filter((f: any) => f.defaultType == 1);
               if (defaultFeeTypeObj.length > 0)
@@ -1099,7 +1098,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                 this.StudentClassData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
                 delete this.StudentClassData["UpdatedDate"];
                 delete this.StudentClassData["UpdatedBy"];
-                //console.log('to insert', this.StudentClassData)
+                ////console.log('to insert', this.StudentClassData)
                 this.insert(item);
               }
               else {
@@ -1263,7 +1262,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
 
               })
             })
-            // console.log("studentfeedetailxxxx",studentfeedetail)
+            // //console.log("studentfeedetailxxxx",studentfeedetail)
             this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
               .subscribe((data: any) => {
                 this.loading = false;
@@ -1271,7 +1270,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
               },
                 error => {
                   this.loading = false;
-                  console.log("create invoice error", error);
+                  //console.log("create invoice error", error);
                   this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
                 })
           })
@@ -1320,7 +1319,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     // this.dataservice.get(list)
     //   .subscribe((data: any) => {
     //debugger;
-    //  //console.log('data.value', data.value);
+    //  ////console.log('data.value', data.value);
     var _students: any = this.tokenStorage.getStudents()!;
     _students = _students.filter(a => a.Active == 1);
     this.Students = _students.map(student => {

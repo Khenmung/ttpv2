@@ -164,13 +164,13 @@ export class EmpComponentsComponent implements OnInit {
           this.EmpComponentData.SubOrgId = this.SubOrgId;
           this.EmpComponentData.FormulaOrAmount = row.FormulaOrAmount;
           this.EmpComponentData.Description = row.Description;
-          ////console.log('data', this.EmpComponentData);
+          //////console.log('data', this.EmpComponentData);
           if (this.EmpComponentData.EmpSalaryComponentId == 0) {
             this.EmpComponentData["CreatedDate"] = new Date();
             this.EmpComponentData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.EmpComponentData["UpdatedDate"] = new Date();
             delete this.EmpComponentData["UpdatedBy"];
-            ////console.log('exam slot', this.ExamStudentSubjectResultData)
+            //////console.log('exam slot', this.ExamStudentSubjectResultData)
             this.insert(row);
           }
           else {
@@ -202,7 +202,7 @@ export class EmpComponentsComponent implements OnInit {
         });
   }
   update(row) {
-    ////console.log("this.EmpComponentData", this.EmpComponentData);
+    //////console.log("this.EmpComponentData", this.EmpComponentData);
     this.dataservice.postPatch(this.EmpComponentListName, this.EmpComponentData, this.EmpComponentData.EmpSalaryComponentId, 'patch')
       .subscribe(
         (data: any) => {
@@ -238,7 +238,7 @@ export class EmpComponentsComponent implements OnInit {
     //debugger;
     //var _colName = event.srcElement.name;
     element.Action = true;
-    ////console.log("event", event);
+    //////console.log("event", event);
     //var row = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
     //row[0][_colName] = element[_colName];
   }
@@ -348,7 +348,7 @@ export class EmpComponentsComponent implements OnInit {
           f.Action = false;
         })
         this.EmpComponentList = [...data.value];
-        //console.log('all data',this.EmpComponentList)
+        ////console.log('all data',this.EmpComponentList)
         this.dataSource = new MatTableDataSource<IEmpComponent>(this.EmpComponentList);
         this.loading = false; this.PageLoading = false;
       })

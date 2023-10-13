@@ -234,7 +234,7 @@ ClearData(){
       Deleted: true,
       UpdatedDate: new Date()
     }
-    //console.log("toUpdate",toUpdate);
+    ////console.log("toUpdate",toUpdate);
     this.dataservice.postPatch('ClassEvaluations', toUpdate, row.ClassEvaluationId, 'patch')
       .subscribe(res => {
         row.Action = false;
@@ -361,7 +361,7 @@ ClearData(){
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
     this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.ClassEvaluationForUpdate = [];;
-    ////console.log("inserting-1",this.ClassEvaluationForUpdate);
+    //////console.log("inserting-1",this.ClassEvaluationForUpdate);
     this.ClassEvaluationForUpdate.push(
       {
         ClassEvaluationId: row.ClassEvaluationId,
@@ -377,7 +377,7 @@ ClearData(){
         OrgId: this.LoginUserDetail[0]["orgId"],
         SubOrgId: this.SubOrgId
       });
-    //console.log('dta', this.ClassEvaluationForUpdate);
+    ////console.log('dta', this.ClassEvaluationForUpdate);
     if (this.ClassEvaluationForUpdate[0].ClassEvaluationAnswerOptionParentId == 0)
       this.ClassEvaluationForUpdate[0].ClassEvaluationAnswerOptionParentId == null;
 
@@ -387,7 +387,7 @@ ClearData(){
       this.ClassEvaluationForUpdate[0]["UpdatedDate"] = new Date();
       delete this.ClassEvaluationForUpdate[0]["UpdatedBy"];
       delete this.ClassEvaluationForUpdate[0]["SubCategories"];
-      ////console.log("inserting1",this.ClassEvaluationForUpdate);
+      //////console.log("inserting1",this.ClassEvaluationForUpdate);
       this.insert(row);
     }
     else {
@@ -407,7 +407,7 @@ ClearData(){
     this.loading = false; this.PageLoading = false;
   }
   insert(row) {
-    //console.log("inserting",this.ClassEvaluationForUpdate);
+    ////console.log("inserting",this.ClassEvaluationForUpdate);
     //debugger;
     this.dataservice.postPatch('ClassEvaluations', this.ClassEvaluationForUpdate[0], 0, 'post')
       .subscribe(
@@ -422,7 +422,7 @@ ClearData(){
         });
   }
   update(row) {
-    //console.log("updating",this.ClassEvaluationForUpdate);
+    ////console.log("updating",this.ClassEvaluationForUpdate);
     this.dataservice.postPatch('ClassEvaluations', this.ClassEvaluationForUpdate[0], this.ClassEvaluationForUpdate[0].ClassEvaluationId, 'patch')
       .subscribe(
         (data: any) => {
@@ -478,7 +478,7 @@ ClearData(){
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           data.value.forEach(item => {
             var _updatable = false;

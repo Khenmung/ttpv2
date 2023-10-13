@@ -81,9 +81,9 @@ export class HeaderComponent implements OnInit {
   //   this.startPosition = e.srcElement.scrollTop;
   //   let scroll = e.srcElement.scrollTop;
   //   if (scroll > this.currentPosition) {
-  //     console.log("down")
+  //     //console.log("down")
   //   } else {
-  //     console.log("up")
+  //     //console.log("up")
   //   }
   //   this.currentPosition = scroll;
   // }

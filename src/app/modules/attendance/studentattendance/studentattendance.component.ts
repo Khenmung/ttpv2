@@ -407,7 +407,7 @@ export class StudentAttendanceComponent implements OnInit {
   // saveall() {
   //   debugger;
   //   //var toUpdateAttendance = this.StudentAttendanceList.filter((f:any) => f.Action);
-  //   //console.log("toUpdateAttendance",toUpdateAttendance);
+  //   ////console.log("toUpdateAttendance",toUpdateAttendance);
   //   this.NoOfRecordToUpdate = this.StudentAttendanceList.length;
   //   this.loading = true;
   //   this.StudentAttendanceList.forEach((record) => {
@@ -497,7 +497,7 @@ export class StudentAttendanceComponent implements OnInit {
                 this.StudentAttendanceData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
                 delete this.StudentAttendanceData["UpdatedDate"];
                 delete this.StudentAttendanceData["UpdatedBy"];
-                console.log("StudentAttendanceData insert", this.StudentAttendanceData);
+                //console.log("StudentAttendanceData insert", this.StudentAttendanceData);
                 this.insert(item);
               }
               else {
@@ -505,7 +505,7 @@ export class StudentAttendanceComponent implements OnInit {
                 delete this.StudentAttendanceData["CreatedBy"];
                 this.StudentAttendanceData["UpdatedDate"] = new Date();
                 this.StudentAttendanceData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-                console.log("StudentAttendanceData update", this.StudentAttendanceData);
+                //console.log("StudentAttendanceData update", this.StudentAttendanceData);
                 this.update(item);
               }
             })
@@ -516,7 +516,7 @@ export class StudentAttendanceComponent implements OnInit {
   }
 
   insert(row) {
-    //console.log("this.StudentAttendanceData", this.StudentAttendanceData);
+    ////console.log("this.StudentAttendanceData", this.StudentAttendanceData);
     this.dataservice.postPatch('Attendances', this.StudentAttendanceData, 0, 'post')
       .subscribe(
         (data: any) => {

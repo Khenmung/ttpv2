@@ -217,13 +217,13 @@ export class ClassperiodComponent implements OnInit {
           this.SchoolClassPeriodData.FromToTime = row.FromToTime;
           this.SchoolClassPeriodData.Sequence = row.Sequence;
 
-          ////console.log('data', this.ClassSubjectData);
+          //////console.log('data', this.ClassSubjectData);
           if (this.SchoolClassPeriodData.SchoolClassPeriodId == 0) {
             this.SchoolClassPeriodData["CreatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
             this.SchoolClassPeriodData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.SchoolClassPeriodData["UpdatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
             delete this.SchoolClassPeriodData["UpdatedBy"];
-            ////console.log('exam slot', this.SchoolClassPeriodListData)
+            //////console.log('exam slot', this.SchoolClassPeriodListData)
             this.insert(row);
           }
           else {

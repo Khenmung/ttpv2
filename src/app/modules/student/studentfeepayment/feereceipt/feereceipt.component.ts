@@ -164,7 +164,7 @@ export class FeereceiptComponent implements OnInit {
     this.ReceivedBy = row.ReceivedBy;
     this.clickPaymentDetails = this.StudentFeePaymentList.filter((f: any) => f.FeeReceiptId == row.StudentFeeReceiptId)
       .sort((a, b) => a.PaymentOrder - b.PaymentOrder);
-    //console.log("PaymentOrder", this.clickPaymentDetails)
+    ////console.log("PaymentOrder", this.clickPaymentDetails)
     this.studentInfoTodisplay.StudentFeeReceiptId = row.StudentFeeReceiptId;
     this.studentInfoTodisplay.ReceiptNo = row.ReceiptNo;
     this.studentInfoTodisplay.OffLineReceiptNo = row.OffLineReceiptNo;
@@ -271,7 +271,7 @@ export class FeereceiptComponent implements OnInit {
               return;
             }
             else {
-              //console.log("studentfeedetailxxxx", studentfeedetail)
+              ////console.log("studentfeedetailxxxx", studentfeedetail)
               this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
                 .subscribe((data: any) => {
                   this.loading = false;
@@ -289,7 +289,7 @@ export class FeereceiptComponent implements OnInit {
                 },
                   error => {
                     this.loading = false;
-                    console.log("create invoice error", error);
+                    //console.log("create invoice error", error);
                     this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
                   })
             }
@@ -383,7 +383,7 @@ export class FeereceiptComponent implements OnInit {
           }
         })
         this.calculateTotal();
-        //console.log("this.FeeReceipt", this.FeeReceipt)
+        ////console.log("this.FeeReceipt", this.FeeReceipt)
         // this.FeeReceipt =this.FeeReceipt.filter(f=>f.FeeName!='');
         this.StudentFeePaymentList = this.StudentFeePaymentList.sort((a, b) => a.indx - b.indx);
         this.dataReceiptSource = new MatTableDataSource<any>(this.FeeReceipt);
@@ -420,7 +420,7 @@ export class FeereceiptComponent implements OnInit {
     this.ReceiptHeading.forEach(f => {
       f.Description = f.Description ? JSON.parse("{" + f.Description + "}") : ''
     })
-    //console.log("this.ReceiptHeading",this.ReceiptHeading);
+    ////console.log("this.ReceiptHeading",this.ReceiptHeading);
     this.PaymentTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.FEEPAYMENTTYPE);
     this.loading = false; this.PageLoading = false;
     //});

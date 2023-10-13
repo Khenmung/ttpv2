@@ -228,7 +228,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
         else
           this.PageFeatures = [];
         this.loading = false; this.PageLoading = false;
-        //console.log("PageFeatures", this.PageFeatures)
+        ////console.log("PageFeatures", this.PageFeatures)
       })
   }
   FilterPageFeatures() {
@@ -308,7 +308,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
         var roleFilteredAssigned = objFiltered.filter(db => db.RoleId == _selectedRoleId);
         debugger;
         var _roleName = "";
-        //console.log("adminFeatures",adminFeatures);
+        ////console.log("adminFeatures",adminFeatures);
         adminFeatures.forEach(p => {
           _roleName = "";
           var existing = roleFilteredAssigned.filter(r => r.PlanFeatureId == p.PlanFeatureId && p.Active ==1);
@@ -353,7 +353,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
         if (this.ApplicationRoleList.length == 0) {
           this.contentservice.openSnackBar("No feature found!", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        //console.log("this.ApplicationRoleList",this.ApplicationRoleList)
+        ////console.log("this.ApplicationRoleList",this.ApplicationRoleList)
         this.datasource = new MatTableDataSource<IApplicationRolePermission>(this.ApplicationRoleList);
         this.datasource.sort = this.sort;
         this.datasource.paginator = this.paginator;
@@ -465,7 +465,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
           this.AppRoleData.OrgId = this.UserDetails[0]["orgId"];
           this.AppRoleData.SubOrgId = this.tokenStorage.getSubOrgId()!;
 
-          //console.log('data', this.AppRoleData);
+          ////console.log('data', this.AppRoleData);
           if (this.AppRoleData.ApplicationFeatureRoleId == 0) {
             this.AppRoleData["CreatedDate"] = new Date();
             this.AppRoleData["CreatedBy"] = this.UserDetails[0].userId;
@@ -540,7 +540,7 @@ export class RoleAppPermissiondashboardComponent implements OnInit {
   }
   getoldvalue(value: string, row) {
     this.oldvalue = row.MasterDataName;
-    //  //console.log('old value', this.oldvalue);
+    //  ////console.log('old value', this.oldvalue);
   }
 
   getDropDownData(dropdowntype) {

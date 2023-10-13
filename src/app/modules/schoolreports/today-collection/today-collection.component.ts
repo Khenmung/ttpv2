@@ -208,7 +208,7 @@ export class TodayCollectionComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //console.log('paymentd ata', data.value);
+        ////console.log('paymentd ata', data.value);
         var result: any[] = [];
         var _students: any[] = [];
         if (_classId > 0)
@@ -237,7 +237,7 @@ export class TodayCollectionComponent implements OnInit {
         result.forEach(t => {
           this.GrandTotalAmount += t.AccountingVouchers.reduce((acc, current) => acc + current.Amount, 0);
         })
-        console.log("activebill", activebill)
+        //console.log("activebill", activebill)
         var cancelledBill = result.filter((f: any) => f.Active == 0)
         this.CancelledAmount = 0;
         cancelledBill.forEach(t => {
@@ -290,7 +290,7 @@ export class TodayCollectionComponent implements OnInit {
         })
 
         this.HeadsWiseCollection = alasql("select FeeCategory,Sum(Amount) Amount from ? group by FeeCategory", [this.HeadsWiseCollection]);
-        //console.log('this.HeadsWiseCollection', this.HeadsWiseCollection)
+        ////console.log('this.HeadsWiseCollection', this.HeadsWiseCollection)
 
         this.GroupByPaymentType = [...groupbyPaymentType];
         if (this.DateWiseCollection.length == 0)
@@ -298,7 +298,7 @@ export class TodayCollectionComponent implements OnInit {
 
         const rows: any[] = [];
         this.DateWiseCollection.forEach(element => rows.push(element, { detailRow: true, element }));
-        //console.log("rows", rows)
+        ////console.log("rows", rows)
         this.dataSource = new MatTableDataSource(rows);
         //this.dataSource.paginator = this.paginator;
         //this.dataSource.sort = this.sort;
@@ -356,7 +356,7 @@ export class TodayCollectionComponent implements OnInit {
     // this.dataservice.get(list)
     //   .subscribe((data: any) => {
     //debugger;
-    //  //console.log('data.value', data.value);
+    //  ////console.log('data.value', data.value);
     var _students: any = this.tokenStorage.getStudents()!;
     //this.Students = [..._students];
     // var _filteredStudents = _students.filter((s:any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)

@@ -306,7 +306,7 @@ export class ExamsComponent implements OnInit {
             }
           }
         })
-        ////console.log('this', this.Exams)
+        //////console.log('this', this.Exams)
         this.Exams = this.Exams.sort((a, b) => {
           return b.Active - a.Active || a.Sequence - b.Sequence;
         })

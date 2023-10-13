@@ -181,7 +181,7 @@ export class studentsubjectdashboardComponent implements OnInit {
     // this.dataservice.get(list)
     //   .subscribe((studentclassdb: any) => {
     //     //debugger;
-    //     //  //console.log('data.value', data.value);
+    //     //  ////console.log('data.value', data.value);
     //     this.StudentSubjectList = [];
     //     var _studentClassExisting :any[]= [];
     //     //if (studentclassdb.value.length > 0) {
@@ -292,7 +292,7 @@ export class studentsubjectdashboardComponent implements OnInit {
         if (_filteredStudent.length > 0) {
           //for all student in student class table for the selected class.
           this.displayedColumns = ["Student"];
-          //console.log("ClassSubjectList",this.ClassSubjectList)
+          ////console.log("ClassSubjectList",this.ClassSubjectList)
           this.StudentSubjectList = [];
           _filteredStudent.forEach(cs => {
             var lastName = (cs.LastName) ? " " + cs.LastName : "";
@@ -313,7 +313,7 @@ export class studentsubjectdashboardComponent implements OnInit {
 
               var takensubjects = this.StudentClassSubjects.filter((f: any) => f.StudentClassId == cs.StudentClasses[0].StudentClassId);
               var specificclasssubjects = this.ClassSubjectList.filter((f: any) => f.ClassId == this.searchForm.get("searchClassId")?.value && f.SelectHowMany > 0)
-              //console.log("specificclasssubjects",specificclasssubjects)
+              ////console.log("specificclasssubjects",specificclasssubjects)
               specificclasssubjects.forEach((subjectTypes, indx) => {
                 var clssubject = takensubjects.filter(c => c.ClassSubjectId == subjectTypes.ClassSubjectId)
                 if (clssubject.length > 0) {
@@ -354,7 +354,7 @@ export class studentsubjectdashboardComponent implements OnInit {
           this.contentservice.openSnackBar("No student found for the selected class " + _clsName, globalconstants.ActionText, globalconstants.RedBackground);
           this.loading = false; this.PageLoading = false;
         }
-        console.log('this.StudentSubjectList', this.StudentSubjectList)
+        //console.log('this.StudentSubjectList', this.StudentSubjectList)
         if (this.StudentSubjectList.length > 0) {
           this.StudentSubjectList = this.StudentSubjectList.sort((a, b) => a.RollNo - b.RollNo);
           this.dataSource = new MatTableDataSource<IStudentSubject>(this.StudentSubjectList);
@@ -433,7 +433,7 @@ export class studentsubjectdashboardComponent implements OnInit {
     this.StudentDetail[_subjectName] = clssubject.Active;
     topush[_subjectName] = clssubject.Active;
     this.StoreForUpdate.push(topush);
-    //console.log('this.StoreForUpdate',this.StoreForUpdate)
+    ////console.log('this.StoreForUpdate',this.StoreForUpdate)
   }
   GetClassSubjects() {
 
@@ -470,7 +470,7 @@ export class studentsubjectdashboardComponent implements OnInit {
           })
         })
         this.ClassSubjectList = this.ClassSubjectList.sort((a, b) => a.SubjectTypeId - b.SubjectTypeId);
-        //console.log("this.ClassSubjectList", this.ClassSubjectList)
+        ////console.log("this.ClassSubjectList", this.ClassSubjectList)
       });
 
   }
@@ -553,7 +553,7 @@ export class studentsubjectdashboardComponent implements OnInit {
     this.rowCount = 0;
     this.SelectedStudentSubjectCount = [];
     ////////
-    //console.log("this.StudentSubjectList", this.StudentSubjectList);
+    ////console.log("this.StudentSubjectList", this.StudentSubjectList);
     let StudentSubjects = this.StoreForUpdate.filter((s: any) => s.StudentClassId == element.StudentClassId);
     var groupbySubjectType = alasql("select distinct SubjectTypeId,SubjectType,SelectHowMany from ? ", [StudentSubjects])
     var matchrow;
@@ -617,7 +617,7 @@ export class studentsubjectdashboardComponent implements OnInit {
             SectionId: row[0].SectionId,
             SemesterId: row[0].SemesterId
           }
-          ////console.log('data to update',data)
+          //////console.log('data to update',data)
           if (row.length > 0) {
             this.UpdateOrSave(data, element);
           }
@@ -657,8 +657,8 @@ export class studentsubjectdashboardComponent implements OnInit {
         //debugger;
 
         if (data.value.length > 0) {
-          console.log("row.ClassSubjectId", row.ClassSubjectId)
-          console.log("data to insert", row);
+          //console.log("row.ClassSubjectId", row.ClassSubjectId)
+          //console.log("data to insert", row);
           this.contentservice.openSnackBar("Record already exists!", globalconstants.ActionText, globalconstants.RedBackground);
           return;
         }
@@ -675,13 +675,13 @@ export class studentsubjectdashboardComponent implements OnInit {
           this.StudentSubjectData.ClassId = row.ClassId;
           this.StudentSubjectData.SectionId = row.SectionId;
           this.StudentSubjectData.SemesterId = row.SemesterId;
-          ////console.log('data', this.StudentSubjectData);
+          //////console.log('data', this.StudentSubjectData);
           if (this.StudentSubjectData.StudentClassSubjectId == 0) {
             this.StudentSubjectData["CreatedDate"] = new Date();
             this.StudentSubjectData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.StudentSubjectData["UpdatedDate"];
             delete this.StudentSubjectData["UpdatedBy"];
-            ////console.log('insert', this.StudentSubjectData);
+            //////console.log('insert', this.StudentSubjectData);
             this.insert(row, element);
           }
           else {

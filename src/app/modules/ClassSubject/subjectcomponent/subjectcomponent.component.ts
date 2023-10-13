@@ -266,7 +266,7 @@ export class SubjectcomponentComponent implements OnInit {
             this.SubjectComponentData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.SubjectComponentData["UpdatedDate"] = new Date();
             delete this.SubjectComponentData["UpdatedBy"];
-            console.log("this.SubjectComponentData", this.SubjectComponentData)
+            //console.log("this.SubjectComponentData", this.SubjectComponentData)
             this.insert(row);
           }
           else {

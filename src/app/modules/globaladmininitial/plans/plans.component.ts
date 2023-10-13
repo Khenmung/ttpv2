@@ -191,7 +191,7 @@ export class PlansComponent implements OnInit { PageLoading=true;
           this.PlanData.MinPrice = +row.MinPrice;
           this.PlanData.MinCount = +row.MinCount;
           this.PlanData.Active = row.Active;
-          ////console.log("plandata", this.PlanData)
+          //////console.log("plandata", this.PlanData)
           if (this.PlanData.PlanId == 0) {
             this.insert(row);
           }

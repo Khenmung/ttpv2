@@ -126,7 +126,7 @@ export class DashboardclassfeeComponent implements OnInit {
         this.Permission = perObj[0].permission;
 
       this.Months = this.contentservice.GetSessionFormattedMonths();
-      //console.log("this.Months",this.Months);
+      ////console.log("this.Months",this.Months);
 
       if (this.Permission == 'deny') {
       }
@@ -138,7 +138,7 @@ export class DashboardclassfeeComponent implements OnInit {
           this.StandardFilterWithPreviousBatchId = globalconstants.getOrgSubOrgFilterWithPreviousBatchId(this.tokenStorage)
 
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        //console.log("this.SelectedBatchId",this.SelectedBatchId);
+        ////console.log("this.SelectedBatchId",this.SelectedBatchId);
         this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
         if (this.SelectedBatchId == 0) {
           //this.contentservice.openSnackBar("Current batch not defined in master!", this.options);
@@ -293,7 +293,7 @@ export class DashboardclassfeeComponent implements OnInit {
 
                 })
               })
-              console.log("studentfeedetailxxxx", studentfeedetail)
+              //console.log("studentfeedetailxxxx", studentfeedetail)
               this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
                 .subscribe((data: any) => {
                   this.loading = false;
@@ -301,7 +301,7 @@ export class DashboardclassfeeComponent implements OnInit {
                 },
                   error => {
                     this.loading = false;
-                    console.log("create invoice error", error);
+                    //console.log("create invoice error", error);
                     this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
                   })
             })
@@ -447,7 +447,7 @@ export class DashboardclassfeeComponent implements OnInit {
         else {
           this.RowCount += 1;
           if (this.DataCollection.length == this.RowCount) {
-            console.log("datacollection", this.DataCollection)
+            //console.log("datacollection", this.DataCollection)
             this.DataCollection.forEach(item => {
 
               this.classFeeData.Active = item.Active;
@@ -483,7 +483,7 @@ export class DashboardclassfeeComponent implements OnInit {
                 objDiscount[0].Active = 1;
                 this.insert(objDiscount[0], insert[0]);
               }
-              //console.log("dataclassfee", this.classFeeData);
+              ////console.log("dataclassfee", this.classFeeData);
               if (this.classFeeData.ClassFeeId == 0)
                 this.insert(item, this.classFeeData);
               else
@@ -562,7 +562,7 @@ export class DashboardclassfeeComponent implements OnInit {
                 "Done": true
               }
           })
-          ////console.log('classes', this.ClassStatuses);         
+          //////console.log('classes', this.ClassStatuses);         
         }
         this.loading = false;
         this.PageLoading = false;
@@ -755,9 +755,9 @@ export class DashboardclassfeeComponent implements OnInit {
 
     }
     //this.ELEMENT_DATA =
-    //console.log("this.CurrentMonthYear", this.CurrentMonthYear);
+    ////console.log("this.CurrentMonthYear", this.CurrentMonthYear);
     this.ELEMENT_DATA.sort((a, b) => b.Active - a.Active);
-    console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
+    //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
     this.dataSource = new MatTableDataSource<Element>(this.ELEMENT_DATA);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -801,7 +801,7 @@ export class DashboardclassfeeComponent implements OnInit {
     if (Number.isNaN(value))
       value = 0;
     row.Amount = parseFloat(value);
-    ////console.log('from change', row);
+    //////console.log('from change', row);
   }
   GetMasterData() {
 

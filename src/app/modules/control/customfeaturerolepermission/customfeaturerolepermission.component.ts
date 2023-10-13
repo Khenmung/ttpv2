@@ -186,7 +186,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
           this.CustomFeatures = [...data.value];
           //this.TableNames = alasql("select distinct TableName,CustomerFeatureId from ? ",[this.CustomFeatures]);
         }
-        //console.log("custom feature",this.CustomFeatures);
+        ////console.log("custom feature",this.CustomFeatures);
       });
   }
   GetTopMasters() {
@@ -278,7 +278,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
         else
           this.PageFeatures = [];
         this.loading = false; this.PageLoading = false;
-        //console.log("PageFeatures", this.PageFeatures)
+        ////console.log("PageFeatures", this.PageFeatures)
       })
   }
   FilterPageFeatures() {
@@ -374,7 +374,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
         else {
           this.CustomerFeaturePermissionList = this.CustomerFeaturePermissionList.sort((a, b) => b.Active - a.Active)
         }
-        //console.log("this.ApplicationRoleList",this.ApplicationRoleList)
+        ////console.log("this.ApplicationRoleList",this.ApplicationRoleList)
         this.datasource = new MatTableDataSource<ICustomFeatureRolePermission>(this.CustomerFeaturePermissionList);
         this.datasource.sort = this.sort;
         this.datasource.paginator = this.paginator;
@@ -494,7 +494,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
           this.AppRoleData.OrgId = this.UserDetails[0]["orgId"];
           this.AppRoleData.SubOrgId = this.tokenStorage.getSubOrgId()!;
 
-          console.log('data', this.AppRoleData);
+          //console.log('data', this.AppRoleData);
           if (this.AppRoleData.CustomFeatureRolePermissionId == 0) {
             this.AppRoleData["CreatedDate"] = new Date();
             this.AppRoleData["CreatedBy"] = this.UserDetails[0].userId;
@@ -569,7 +569,7 @@ export class CustomfeaturerolepermissionComponent implements OnInit {
   }
   getoldvalue(value: string, row) {
     this.oldvalue = row.MasterDataName;
-    //  //console.log('old value', this.oldvalue);
+    //  ////console.log('old value', this.oldvalue);
   }
 
   getDropDownData(dropdowntype) {

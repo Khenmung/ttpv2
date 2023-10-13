@@ -209,7 +209,7 @@ export class AttendancepercentComponent implements OnInit {
       this.contentservice.openSnackBar("Date period should be less than 180 days",globalconstants.ActionText,globalconstants.RedBackground);
       return;
     }
-    //console.log('dateDiff',dateDiff);
+    ////console.log('dateDiff',dateDiff);
     if(_fromDate.getTime())
     if (_fromDate.getTime() > today.getTime()) {
       this.loading = false; this.PageLoading = false;
@@ -268,9 +268,9 @@ export class AttendancepercentComponent implements OnInit {
         //     && all.StudentClasses[0].SectionId == _sectionId);
 
         attendance.value.forEach(sc => {
-          //console.log("sc.StudentClassId",sc.StudentClassId)
+          ////console.log("sc.StudentClassId",sc.StudentClassId)
           var _student = _AllStudents.filter(all => all.StudentClasses[0].StudentClassId == sc.StudentClassId);
-          //console.log("saldkf",_student)
+          ////console.log("saldkf",_student)
           //var _lastname = (_student[0].LastName === null) ? '' : _student[0].LastName;
           // var _Classobj = this.Classes.filter((s:any) => s.ClassId == sc.ClassId);
           // var _Class = '';
@@ -311,7 +311,7 @@ export class AttendancepercentComponent implements OnInit {
             //})
           }
         })
-        console.log('this.StudentAttendanceList', this.StudentAttendanceList)
+        //console.log('this.StudentAttendanceList', this.StudentAttendanceList)
         var PresentAttendance = alasql('select count(AttendanceStatusId) as PresentAbsentCount,StudentClassId from ? where AttendanceStatusId=' + this.AttendancePresentId + ' group by StudentClassId', [this.StudentAttendanceList])
         var AbsentAttendance = alasql('select count(AttendanceStatusId) as PresentAbsentCount,StudentClassId from ? where AttendanceStatusId=' + this.AttendanceAbsentId + ' group by StudentClassId', [this.StudentAttendanceList])
         this.distinctStudent = alasql('select distinct Student,ClassName,Semester,Section,RollNo,StudentClassId from ? ', [this.StudentAttendanceList])
@@ -430,7 +430,7 @@ export class AttendancepercentComponent implements OnInit {
             this.StudentAttendanceData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.StudentAttendanceData["UpdatedDate"];
             delete this.StudentAttendanceData["UpdatedBy"];
-            console.log("StudentAttendanceData", this.StudentAttendanceData);
+            //console.log("StudentAttendanceData", this.StudentAttendanceData);
             this.insert(row);
           }
           else {
@@ -497,7 +497,7 @@ export class AttendancepercentComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         this.ClassSubjects = [];
         data.value.forEach(item => {
           var objsubject = this.Subjects.filter((f: any) => f.MasterDataId == item.SubjectId)

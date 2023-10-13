@@ -221,11 +221,11 @@ export class GroupactivityparticipantComponent implements OnInit {
             this.GroupActivityParticipantForUpdate[0]["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.GroupActivityParticipantForUpdate[0]["UpdatedDate"];
             delete this.GroupActivityParticipantForUpdate[0]["UpdatedBy"];
-            //console.log("this.GroupActivityParticipantForUpdate", this.GroupActivityParticipantForUpdate);
+            ////console.log("this.GroupActivityParticipantForUpdate", this.GroupActivityParticipantForUpdate);
             this.insert(row);
           }
           else {
-            //console.log("this.GroupActivityParticipantForUpdate[0] update", this.GroupActivityParticipantForUpdate[0])
+            ////console.log("this.GroupActivityParticipantForUpdate[0] update", this.GroupActivityParticipantForUpdate[0])
             this.GroupActivityParticipantForUpdate[0]["UpdatedDate"] = new Date();
             this.GroupActivityParticipantForUpdate[0]["UpdatedBy"];
             delete this.GroupActivityParticipantForUpdate[0]["CreatedDate"];
@@ -242,7 +242,7 @@ export class GroupactivityparticipantComponent implements OnInit {
     this.loading = false; this.PageLoading = false;
   }
   insert(row) {
-    //console.log("this.GroupActivityParticipantForUpdate", this.GroupActivityParticipantForUpdate[0])
+    ////console.log("this.GroupActivityParticipantForUpdate", this.GroupActivityParticipantForUpdate[0])
     this.dataservice.postPatch('GroupActivityParticipants', this.GroupActivityParticipantForUpdate[0], 0, 'post')
       .subscribe(
         (data: any) => {
@@ -255,16 +255,16 @@ export class GroupactivityparticipantComponent implements OnInit {
           }
         }, error => {
           this.loadingFalse();
-          console.log("error on group activity participant insert", error);
+          //console.log("error on group activity participant insert", error);
         });
   }
   update(row) {
-    //console.log("updating",this.GroupActivityParticipantForUpdate);
+    ////console.log("updating",this.GroupActivityParticipantForUpdate);
     this.dataservice.postPatch('GroupActivityParticipants', this.GroupActivityParticipantForUpdate[0], this.GroupActivityParticipantForUpdate[0].GroupActivityParticipantId, 'patch')
       .subscribe(
         (data: any) => {
           row.Action = false;
-          //console.log("data update", data.value);
+          ////console.log("data update", data.value);
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           this.loadingFalse();
         });
@@ -492,7 +492,7 @@ export class GroupactivityparticipantComponent implements OnInit {
     //   .subscribe((data: any) => {
     debugger;
     //this.Students = [...data.value];
-    //  //console.log('data.value', data.value);
+    //  ////console.log('data.value', data.value);
     this.Students = [];
     var _students: any = this.tokenStorage.getStudents()!;
     if (_students.length > 0) {

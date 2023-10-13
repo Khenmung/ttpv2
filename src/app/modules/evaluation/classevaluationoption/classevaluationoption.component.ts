@@ -223,7 +223,7 @@ export class ClassEvaluationOptionComponent implements OnInit {
               OrgId: this.LoginUserDetail[0]["orgId"],
               SubOrgId: this.SubOrgId
             });
-          //console.log('dta', this.ClassEvaluationOptionForUpdate);
+          ////console.log('dta', this.ClassEvaluationOptionForUpdate);
 
           if (this.ClassEvaluationOptionForUpdate[0].ClassEvaluationAnswerOptionsId == 0) {
             this.ClassEvaluationOptionForUpdate[0]["CreatedDate"] = new Date();
@@ -312,7 +312,7 @@ export class ClassEvaluationOptionComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           this.ClassEvaluationOptionList = data.value.map(item => {
             item.Title = globalconstants.decodeSpecialChars(item.Title);

@@ -201,11 +201,11 @@ export class CertificateconfigComponent implements OnInit {
             this.CertificateConfigForUpdate[0]["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.CertificateConfigForUpdate[0]["UpdatedDate"];
             delete this.CertificateConfigForUpdate[0]["UpdatedBy"];
-            //console.log('dddd',this.CertificateConfigForUpdate[0])
+            ////console.log('dddd',this.CertificateConfigForUpdate[0])
             this.insert(row);
           }
           else {
-            //console.log("this.CertificateConfigForUpdate[0] update", this.CertificateConfigForUpdate[0])
+            ////console.log("this.CertificateConfigForUpdate[0] update", this.CertificateConfigForUpdate[0])
             this.CertificateConfigForUpdate[0]["UpdatedDate"] = new Date();
             this.CertificateConfigForUpdate[0]["UpdatedBy"];
             delete this.CertificateConfigForUpdate[0]["CreatedDate"];
@@ -222,7 +222,7 @@ export class CertificateconfigComponent implements OnInit {
     this.loading = false; this.PageLoading = false;
   }
   insert(row) {
-    console.log("this.CertificateConfigForUpdate", this.CertificateConfigForUpdate)
+    //console.log("this.CertificateConfigForUpdate", this.CertificateConfigForUpdate)
     this.dataservice.postPatch('CertificateConfigs', this.CertificateConfigForUpdate[0], 0, 'post')
       .subscribe(
         (data: any) => {
@@ -235,16 +235,16 @@ export class CertificateconfigComponent implements OnInit {
           }
         }, error => {
           this.loadingFalse();
-          console.log("error on CertificateConfig insert", error);
+          //console.log("error on CertificateConfig insert", error);
         });
   }
   update(row) {
-    console.log("updating", this.CertificateConfigForUpdate[0]);
+    //console.log("updating", this.CertificateConfigForUpdate[0]);
     this.dataservice.postPatch('CertificateConfigs', this.CertificateConfigForUpdate[0], this.CertificateConfigForUpdate[0].CertificateConfigId, 'patch')
       .subscribe(
         (data: any) => {
           row.Action = false;
-          //console.log("data update", data.value);
+          ////console.log("data update", data.value);
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           this.loadingFalse();
         });

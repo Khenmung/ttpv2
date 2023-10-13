@@ -142,7 +142,7 @@ export class OrganizationComponent implements OnInit {
       //var TopMasters:any[]=[];
       this.contentservice.GetParentZeroMasters().subscribe((data: any) => {
         this.TopMasters = [...data.value];
-        //console.log("this.TopMasters",this.TopMasters)
+        ////console.log("this.TopMasters",this.TopMasters)
         var countryparentId = this.TopMasters.filter((f:any) => f.MasterDataName.toLowerCase() == 'country')[0].MasterDataId;
         this.contentservice.GetDropDownDataFromDB(countryparentId, this.FilterOrgSubOrg, commonAppId)
           .subscribe((data: any) => {
@@ -301,7 +301,7 @@ export class OrganizationComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //var customerapp;
-        //console.log("data.value[0]",data.value[0])
+        ////console.log("data.value[0]",data.value[0])
         if (data.value.length > 0) {
           data.value[0].CreatedDate = moment(data.value[0].CreatedDate).format("DD/MM/YYYY")
           data.value[0].ValidTo = moment(data.value[0].ValidTo).format("DD/MM/YYYY")
@@ -341,7 +341,7 @@ export class OrganizationComponent implements OnInit {
     reader.readAsDataURL(files[0]);
     reader.onload = (_event) => {
       this.imgURL = reader.result;
-      //console.log("imgurl",this.imgURL);
+      ////console.log("imgurl",this.imgURL);
     }
   }
   uploadFile() {

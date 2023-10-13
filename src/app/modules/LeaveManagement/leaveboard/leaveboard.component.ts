@@ -73,7 +73,7 @@ export class LeaveboardComponent implements AfterViewInit {
     this.AddRemoveComponent(perObj, comindx);
     
     this.shareddata.ChangePermissionAtParent(this.Permissions.ParentPermission);
-    //console.log('this.Permissions.ParentPermission', this.Permissions.ParentPermission);
+    ////console.log('this.Permissions.ParentPermission', this.Permissions.ParentPermission);
     if (this.Permissions.ParentPermission != 'deny') {
       setTimeout(() => {
         this.renderComponent(0);
@@ -83,7 +83,7 @@ export class LeaveboardComponent implements AfterViewInit {
   }
 
   public tabChange(index: number) {
-    //    //console.log("index", index)
+    //    ////console.log("index", index)
     setTimeout(() => {
       this.renderComponent(index);
     }, 1000);

@@ -187,7 +187,7 @@ export class ExamclassgroupComponent implements OnInit {
           this.ExamClassGroupMapData.ClassGroupId = row.ClassGroupId;
           this.ExamClassGroupMapData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ExamClassGroupMapData.SubOrgId = this.SubOrgId;
-          //console.log("this.ExamClassGroupMapData", this.ExamClassGroupMapData);
+          ////console.log("this.ExamClassGroupMapData", this.ExamClassGroupMapData);
           if (this.ExamClassGroupMapData.ExamClassGroupMapId == 0) {
             this.ExamClassGroupMapData["CreatedDate"] = new Date();
             this.ExamClassGroupMapData["CreatedBy"] = this.LoginUserDetail[0]["userId"];

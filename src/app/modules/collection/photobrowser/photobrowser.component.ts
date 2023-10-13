@@ -63,7 +63,7 @@ export class PhotobrowserComponent implements OnInit { PageLoading=true;
     return this.blueColorScheme[i];
   }
   view(event) {
-    ////console.log('this.Albums.length',event)
+    //////console.log('this.Albums.length',event)
     //debugger;
     this.selectedAlbum = event;
     // let selectedAlbumId = this.Albums.filter(item => {
@@ -90,14 +90,14 @@ export class PhotobrowserComponent implements OnInit { PageLoading=true;
     //list.limitTo =10;
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        //        //console.log(data.value);
+        //        ////console.log(data.value);
         this.Albums = data.value.filter((item, indx) => {
           return indx < 10;
         });
         let minId = Math.min.apply(Math, this.Albums.map(o => o.FileId))
         //let minId = this.Albums.reduce((a, b.FileId)=>Math.min(a.FileId, b.FileId));
-        ////console.log('this.Albums', this.Albums)
-        ////console.log('minId', minId)
+        //////console.log('this.Albums', this.Albums)
+        //////console.log('minId', minId)
         this.getPhotos(minId);
         this.AllAlbums = data.value;
         this.loading = false; this.PageLoading=false;
@@ -130,8 +130,8 @@ export class PhotobrowserComponent implements OnInit { PageLoading=true;
           this.Albums.forEach((album) => {
             count = album.photos.length;
             width = count > 1 ? '160px' : '320px';
-            ////console.log('photo count', count);
-            ////console.log('photo width', width);
+            //////console.log('photo count', count);
+            //////console.log('photo width', width);
 
             album.photos = album.photos.map((photo, indx) => {
               browsePath = globalconstants.apiUrl + "/Image/" + album.FileName + "/" + photo.FileName
@@ -151,7 +151,7 @@ export class PhotobrowserComponent implements OnInit { PageLoading=true;
 
         }
 
-        ////console.log('album', this.Albums);
+        //////console.log('album', this.Albums);
         this.loading = false; this.PageLoading=false;
       })
   }
@@ -179,9 +179,9 @@ export class PhotobrowserComponent implements OnInit { PageLoading=true;
     }
   }
   selected(event) {
-    ////console.log('event',event)
+    //////console.log('event',event)
     this.selectedAlbum = event.target.value;
-    ////console.log('this.selectedAlbum', this.selectedAlbum)
+    //////console.log('this.selectedAlbum', this.selectedAlbum)
     // let tempImages = this.Albums.filter((item)=>{
     //   return item.Album == this.selectedAlbum
     // })
@@ -189,7 +189,7 @@ export class PhotobrowserComponent implements OnInit { PageLoading=true;
   }
   getoldvalue(value: string) {
     this.oldvalue = value;
-    ////console.log('old value', this.oldvalue);
+    //////console.log('old value', this.oldvalue);
   }
   saveCost(value) {
     if (value.length == 0 || value.length > 50) {
@@ -205,10 +205,10 @@ export class PhotobrowserComponent implements OnInit { PageLoading=true;
     let selectedAlbumId = this.Albums.filter(item => {
       return item.UpdatedFileFolderName == this.oldvalue
     })[0].FileId;
-    ////console.log('selectedAlbumId', selectedAlbumId);
+    //////console.log('selectedAlbumId', selectedAlbumId);
     this.dataservice.postPatch('StorageFnPs', albumtoUpdate, selectedAlbumId, 'patch')
       .subscribe(res => {
-        ////console.log(res);
+        //////console.log(res);
       });
   }
 }

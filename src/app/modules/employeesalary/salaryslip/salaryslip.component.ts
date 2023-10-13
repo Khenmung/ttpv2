@@ -255,14 +255,14 @@ export class SalaryslipComponent implements OnInit {
           }
           ]
         })
-        //console.log("this.Organization",this.Organization);
-        //console.log("this.CommonHeader.",this.CommonHeader);
+        ////console.log("this.Organization",this.Organization);
+        ////console.log("this.CommonHeader.",this.CommonHeader);
         var imgobj = this.SalarySlipHeader.filter((f:any) => f.MasterDataName == 'img');
         if (imgobj.length > 0) {
           this.logourl = imgobj[0].Description;
         }
         this.SalarySlipHeader = this.SalarySlipHeader.filter((f:any) => f.MasterDataName != 'img');
-        //console.log("this.commonheadersetting.",commonheadersetting);
+        ////console.log("this.commonheadersetting.",commonheadersetting);
         this.SalarySlipHeader.forEach(header => {
           this.Organization[0].forEach(orgdet => {
             header.Description = header.Description.replaceAll("[" + orgdet.name + "]", orgdet.val);
@@ -295,7 +295,7 @@ export class SalaryslipComponent implements OnInit {
           });
         })
       })
-    //console.log('this.VariableConfigs', this.VariableConfigs);
+    ////console.log('this.VariableConfigs', this.VariableConfigs);
   }
   GetEmpComponents() {
 
@@ -369,7 +369,7 @@ export class SalaryslipComponent implements OnInit {
 
 
     this.loading = true;
-    //console.log("Month", this.Month);
+    ////console.log("Month", this.Month);
     let list: List = new List();
 
     list.fields = [
@@ -390,7 +390,7 @@ export class SalaryslipComponent implements OnInit {
       .subscribe((data: any) => {
         debugger;
         ///////////////////
-        //console.log("data[0].value", data[0].value)
+        ////console.log("data[0].value", data[0].value)
         var _EmpSalaryComponents = [...data[0].value];
         var _EmpVariables = [...data[1].value];
         this.EarnedSalary = [];

@@ -191,13 +191,13 @@ export class VariableConfigComponent implements OnInit {
           this.VariableConfigData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.VariableConfigData.SubOrgId = this.SubOrgId;
           this.VariableConfigData.VariableFormula = row.VariableFormula;
-          //console.log('data', this.VariableConfigData);
+          ////console.log('data', this.VariableConfigData);
           if (this.VariableConfigData.VariableConfigurationId == 0) {
             this.VariableConfigData["CreatedDate"] = new Date();
             this.VariableConfigData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.VariableConfigData["UpdatedDate"] = new Date();
             delete this.VariableConfigData["UpdatedBy"];
-            ////console.log('exam slot', this.ExamStudentSubjectResultData)
+            //////console.log('exam slot', this.ExamStudentSubjectResultData)
             this.insert(row);
           }
           else {
@@ -233,7 +233,7 @@ export class VariableConfigComponent implements OnInit {
     ;
   }
   update(row) {
-    //console.log("this.GradeComponentData", this.VariableConfigData);
+    ////console.log("this.GradeComponentData", this.VariableConfigData);
     this.dataservice.postPatch(this.ListName, this.VariableConfigData, this.VariableConfigData.VariableConfigurationId, 'patch')
       .subscribe(
         (data: any) => {
@@ -269,15 +269,15 @@ export class VariableConfigComponent implements OnInit {
     //debugger;
     //var _colName = event.srcElement.name;
     var formula = element["VariableFormula"];
-    ////console.log("event", _colName);
+    //////console.log("event", _colName);
     //var _amount = percentage ? + this.BasicSalary * (element["ActualFormulaOrAmount"] / 100) : element["ActualFormulaOrAmount"];
     this.VariableConfig.forEach(f => {
       if (formula.includes(f.VariableName))
         formula = formula.replace(f.VariableName, f.VariableAmount);
     })
-    ////console.log('evaluate',min(100,20,10));
+    //////console.log('evaluate',min(100,20,10));
     element["VariableAmount"] = evaluate(formula);//_amount;
-    ////console.log("event", event);
+    //////console.log("event", event);
     element.Action = true;
     //var row = this.StoredForUpdate.filter((s:any) => s.SubjectMarkComponent == _colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
     //row[0][_colName] = element[_colName];

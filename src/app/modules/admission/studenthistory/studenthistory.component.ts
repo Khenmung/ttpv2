@@ -404,7 +404,7 @@ export class StudenthistoryComponent implements OnInit {
   //               this.StudentClassData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
   //               delete this.StudentClassData["UpdatedDate"];
   //               delete this.StudentClassData["UpdatedBy"];
-  //               //console.log('to insert', this.StudentClassData)
+  //               ////console.log('to insert', this.StudentClassData)
   //               this.insert(row);
   //             }
   //             else {

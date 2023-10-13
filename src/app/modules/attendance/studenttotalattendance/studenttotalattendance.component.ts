@@ -203,7 +203,7 @@ export class StudenttotalattendanceComponent implements OnInit {
           this.TotalAttendanceData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.TotalAttendanceData.SubOrgId = this.SubOrgId;
 
-          //console.log("this.TotalAttendanceData", this.TotalAttendanceData);
+          ////console.log("this.TotalAttendanceData", this.TotalAttendanceData);
           if (this.TotalAttendanceData.TotalAttendanceId == 0) {
             this.TotalAttendanceData["CreatedDate"] = new Date();
             this.TotalAttendanceData["CreatedBy"] = this.LoginUserDetail[0]["userId"];

@@ -1,3 +1,8 @@
-.element-row{
-    min-height: 29px;   
-   }
+.element-row {
+    min-height: 29px;
+}
+
+mat-header-cell,
+mat-cell {
+    border-right: 1px solid lightgray;
+}

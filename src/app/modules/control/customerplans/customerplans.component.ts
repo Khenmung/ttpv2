@@ -151,7 +151,7 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
     this.CustomerPlansData.OrgId = this.OrgId;//this.LoginUserDetail[0]["orgId"];
     this.CustomerPlansData.SubOrgId = this.SubOrgId;//this.LoginUserDetail[0]["orgId"];
 
-    //console.log('data', this.CustomerPlansData);
+    ////console.log('data', this.CustomerPlansData);
     if (this.CustomerPlansData.CustomerPlanId == 0) {
       this.CustomerPlansData["CreatedDate"] = new Date();
       this.CustomerPlansData["CreatedBy"] = this.UserId;
@@ -183,7 +183,7 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
           this.nav.navigate(['/auth/login']);
         }, error => {
           this.contentservice.openSnackBar("error occured. Please contact administrator.", globalconstants.ActionText, globalconstants.RedBackground);
-          console.log("customerplan insert error:", error.error);
+          //console.log("customerplan insert error:", error.error);
         });
   }
   logout() {
@@ -365,7 +365,7 @@ export class CustomerPlansComponent implements OnInit { PageLoading=true;
           this.CustomerPlansList = this.CustomerPlansList.filter((f:any) => f.PlanName.toLowerCase() != 'delux');
         }
         this.CustomerPlansList = this.CustomerPlansList.sort((a,b)=>a.Sequence - b.Sequence);
-        //console.log("customer list", this.CustomerPlansList)
+        ////console.log("customer list", this.CustomerPlansList)
         this.dataSource = new MatTableDataSource<any>(this.CustomerPlansList);
         this.loading = false; this.PageLoading=false;
       })

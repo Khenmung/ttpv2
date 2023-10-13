@@ -227,7 +227,7 @@ export class ClassgroupComponent implements OnInit {
             this.classgroupData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.classgroupData["UpdatedDate"] = new Date();
             delete this.classgroupData["UpdatedBy"];
-            console.log("this.classgroupData", this.classgroupData)
+            //console.log("this.classgroupData", this.classgroupData)
             this.insert(row);
           }
           else {

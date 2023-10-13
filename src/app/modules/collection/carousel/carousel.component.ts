@@ -44,7 +44,7 @@ export class CarouselComponent implements OnInit {
     config.animation = true;
     this.route.paramMap.subscribe(item => {
       this.selectedAlbumId = +this.route.snapshot.queryParamMap.get('fileId')!;//item.get('AlbumId')
-      ////console.log('this.selectedAlbum',item);
+      //////console.log('this.selectedAlbum',item);
     })
 
   }
@@ -89,7 +89,7 @@ export class CarouselComponent implements OnInit {
           //   if (data.value.length == 1)
           //   //this.config.animation=false;
           //   this.selectedAlbum = data.value[0].UpdatedFileFolderName;// this.images[0].Album.AlbumName;
-          // ////console.log('this.images',this.images)
+          // //////console.log('this.images',this.images)
         }
         else
           this.error = "No image to display";

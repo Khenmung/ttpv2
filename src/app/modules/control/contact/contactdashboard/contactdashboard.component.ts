@@ -80,7 +80,7 @@ export class ContactdashboardComponent implements OnInit { PageLoading=true;
           let SelectedArr :any[]= [];
           SelectedArr = this.DATA.filter(key => key.Active === 1)
 
-          ////console.log("DATA",this.DATA);  
+          //////console.log("DATA",this.DATA);  
           this.displayedColumns = this.columns.map(c => c.columnDef);
           this.dataSource = new MatTableDataSource(this.DATA);
           this.dataSource.paginator = this.paginator;
@@ -137,7 +137,7 @@ export class ContactdashboardComponent implements OnInit { PageLoading=true;
     //       CreatedDate: new Date()
     //     }
     //   })[0];
-    //   //console.log(element.MessageId);
+    //   ////console.log(element.MessageId);
     this.dataservice.postPatch('Messages', messageDetail, element.MessageId, 'patch')
       .subscribe(
         (data: any) => {

@@ -274,9 +274,9 @@ export class AlbumsComponent implements OnInit {
   // }
 
   selected(event) {
-    ////console.log('event',event)
+    //////console.log('event',event)
     this.selectedAlbum = event.target.value;
-    //    //console.log('this.selectedAlbum', this.selectedAlbum)
+    //    ////console.log('this.selectedAlbum', this.selectedAlbum)
     // let tempImages = this.Albums.filter((item)=>{
     //   return item.Album == this.selectedAlbum
     // })
@@ -284,7 +284,7 @@ export class AlbumsComponent implements OnInit {
   }
   getoldvalue(value: string) {
     this.oldvalue = value;
-    //  //console.log('old value', this.oldvalue);
+    //  ////console.log('old value', this.oldvalue);
   }
   //////////////
   softDelete(row) {
@@ -320,7 +320,7 @@ export class AlbumsComponent implements OnInit {
       Deleted: true
       //UpdatedDate: new Date()
     }
-    console.log("toupdate", toUpdate)
+    //console.log("toupdate", toUpdate)
     this.dataservice.postPatch('StorageFnPs', toUpdate, row.FileId, 'patch')
       .subscribe(res => {
         row.Action = false;
@@ -343,7 +343,7 @@ export class AlbumsComponent implements OnInit {
   //////////////
   updateAlbum(value) {
     debugger;
-    ////console.log(value);
+    //////console.log(value);
     //value.stopPropagation();
     if (this.oldvalue == value)
       return;

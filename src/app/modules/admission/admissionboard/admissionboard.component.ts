@@ -96,7 +96,7 @@ export class AdmissionboardComponent implements AfterViewInit {
   }
 
   public tabChange(index: number) {
-    //    //console.log("index", index)
+    //    ////console.log("index", index)
     setTimeout(() => {
       this.renderComponent(index);
     }, 1000);

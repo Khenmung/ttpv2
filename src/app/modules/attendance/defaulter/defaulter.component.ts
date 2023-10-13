@@ -180,7 +180,7 @@ export class DefaulterComponent implements OnInit {
   saveall() {
     debugger;
     //var toUpdateAttendance = this.StudentAttendanceList.filter((f:any) => f.Action);
-    //console.log("toUpdateAttendance",toUpdateAttendance);
+    ////console.log("toUpdateAttendance",toUpdateAttendance);
     this.NoOfRecordToUpdate = this.StudentAttendanceList.length;
     this.loading = true;
     this.StudentAttendanceList.forEach((record) => {
@@ -337,7 +337,7 @@ export class DefaulterComponent implements OnInit {
         this.StudentAttendanceList = this.StudentAttendanceList.sort((a, b) => {
           return b["AbsentCount"] - a["AbsentCount"] || a.ClassSequence - b.ClassSequence || a.RollNo - b.RollNo
         });
-        //  console.log("this.StudentAttendanceList",this.StudentAttendanceList);
+        //  //console.log("this.StudentAttendanceList",this.StudentAttendanceList);
         this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -434,7 +434,7 @@ export class DefaulterComponent implements OnInit {
             delete this.StudentAttendanceData["CreatedBy"];
             this.StudentAttendanceData["UpdatedDate"] = new Date();
             this.StudentAttendanceData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log("StudentAttendanceData", this.StudentAttendanceData);
+            //console.log("StudentAttendanceData", this.StudentAttendanceData);
             this.update(row);
           }
           row.Action = false;

@@ -189,7 +189,7 @@ export class AddMasterDataComponent implements OnInit {
 
       list.filter = [applicationFilter];// + ") or (OrgId eq " + this.OrgId + " and " + applicationFilter + ")"];
       //debugger;
-      //console.log("GetMastersForAutoComplete",this.SelectedApplicationId)  
+      ////console.log("GetMastersForAutoComplete",this.SelectedApplicationId)  
       this.dataservice.get(list).subscribe((data: any) => {
         var result: any[] = [];
         data.value.forEach(d => {
@@ -446,7 +446,7 @@ export class AddMasterDataComponent implements OnInit {
         else
           this.Parent = this.searchForm.get("ParentId")?.value.MasterDataName;
 
-        ////console.log("parent", this.Parent)
+        //////console.log("parent", this.Parent)
         this.MasterList.sort((a, b) => a.Sequence - b.Sequence);
 
         this.datasource = new MatTableDataSource<IMaster>(this.MasterList);
@@ -474,7 +474,7 @@ export class AddMasterDataComponent implements OnInit {
   }
   getoldvalue(value: string, row) {
     this.oldvalue = row.MasterDataName;
-    //  //console.log('old value', this.oldvalue);
+    //  ////console.log('old value', this.oldvalue);
   }
   SaveRow(row) {
     this.DataToSaveCount = 0;
@@ -552,7 +552,7 @@ export class AddMasterDataComponent implements OnInit {
       mastertoUpdate["OrgId"] = this.UserDetails[0]["orgId"];
       mastertoUpdate["SubOrgId"] = this.SubOrgId;
       //mastertoUpdate["ApplicationId"] = this.SelectedApplicationId;
-      console.log("insert master", mastertoUpdate)
+      //console.log("insert master", mastertoUpdate)
       this.dataservice.postPatch('MasterItems', mastertoUpdate, 0, 'post')
         .subscribe((res: any) => {
           if (res != undefined) {
@@ -587,7 +587,7 @@ export class AddMasterDataComponent implements OnInit {
     else {
       mastertoUpdate["OrgId"] = this.UserDetails[0]["orgId"];
       mastertoUpdate["SubOrgId"] = this.SubOrgId;
-      //console.log('update master', mastertoUpdate);
+      ////console.log('update master', mastertoUpdate);
       this.dataservice.postPatch('MasterItems', mastertoUpdate, row.MasterDataId, 'patch')
         .subscribe(res => {
           row.Action = false;

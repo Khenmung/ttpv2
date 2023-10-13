@@ -219,7 +219,7 @@ export class AbsentListComponent implements OnInit {
             TeacherName: f.Employee.FirstName + " " + f.Employee.LastName
           })
         })
-        console.log("this.Teacher", this.Teachers)
+        //console.log("this.Teacher", this.Teachers)
       })
   }
   SelectedClassCategory = '';
@@ -378,7 +378,7 @@ export class AbsentListComponent implements OnInit {
           })
           //this.StudentAttendanceList.for
         }
-        //console.log("this.StudentAttendanceList", this.StudentAttendanceList);
+        ////console.log("this.StudentAttendanceList", this.StudentAttendanceList);
         this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -392,7 +392,7 @@ export class AbsentListComponent implements OnInit {
     var bSize = b.ClassSequence;
     var aLow = a.RollNo;
     var bLow = b.RollNo;
-    console.log(aLow + " | " + bLow);
+    //console.log(aLow + " | " + bLow);
 
     if (aSize == bSize) {
       return (aLow < bLow) ? -1 : (aLow > bLow) ? 1 : 0;
@@ -535,7 +535,7 @@ export class AbsentListComponent implements OnInit {
                 delete this.StudentAttendanceData["CreatedBy"];
                 this.StudentAttendanceData["UpdatedDate"] = new Date();
                 this.StudentAttendanceData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-                //console.log("StudentAttendanceData", this.StudentAttendanceData);
+                ////console.log("StudentAttendanceData", this.StudentAttendanceData);
                 this.update(item);
               }
 
@@ -600,7 +600,7 @@ export class AbsentListComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         this.ClassSubjects = [];
         data.value.forEach(item => {
           //var _subjectName = '';

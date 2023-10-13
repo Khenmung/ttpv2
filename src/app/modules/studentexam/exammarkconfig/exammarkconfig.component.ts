@@ -139,7 +139,7 @@ export class ExammarkconfigComponent implements OnInit {
     //   var a=evaluate(element.Formula)// // returns Array  [1, 2, 3]
     element.Action = true;
     // row.Action = true;
-    // console.log("three elment of a",a.entries[0])
+    // //console.log("three elment of a",a.entries[0])
   }
   GetExamMarkConfig() {
     debugger;
@@ -338,7 +338,7 @@ export class ExammarkconfigComponent implements OnInit {
           this.ExamMarkConfigData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ExamMarkConfigData.SubOrgId = this.SubOrgId;
           this.ExamMarkConfigData.BatchId = this.SelectedBatchId;
-          //console.log("this.ExamMarkConfigData", this.ExamMarkConfigData)
+          ////console.log("this.ExamMarkConfigData", this.ExamMarkConfigData)
           if (this.ExamMarkConfigData.ExamMarkConfigId == 0) {
             this.ExamMarkConfigData["CreatedDate"] = new Date();
             this.ExamMarkConfigData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
@@ -424,7 +424,7 @@ export class ExammarkconfigComponent implements OnInit {
               }
             }
           });
-          console.log('this.ClassGroupMappings', this.ClassGroupMappings);
+          //console.log('this.ClassGroupMappings', this.ClassGroupMappings);
         }
         else {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
@@ -460,7 +460,7 @@ export class ExammarkconfigComponent implements OnInit {
         this.ExamClassGroupMaps = [...data.value];
         var objExamClassGroupMaps = this.ExamClassGroupMaps.filter(g => g.ExamId == _examId);
         this.FilteredClasses = this.ClassGroupMappings.filter((f: any) => objExamClassGroupMaps.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
-        console.log('this.FilteredClasse', this.FilteredClasses)
+        //console.log('this.FilteredClasse', this.FilteredClasses)
       });
 
     var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
@@ -712,7 +712,7 @@ export class ExammarkconfigComponent implements OnInit {
           }
         })
         this.PageLoading = false;
-        //console.log("exams", this.Exams);
+        ////console.log("exams", this.Exams);
         //this.GetStudentSubjects();
       })
   }

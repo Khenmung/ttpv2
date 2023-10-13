@@ -170,11 +170,11 @@ export class TeacherperiodComponent implements OnInit {
       //" and TeacherSubjectId eq " + row.TeacherSubjectId +   
       //" and TeacherId eq " + row.TeacherId +
       " and Active eq 1"
-    //console.log("this.AllTimeTable", this.AllTimeTable)
+    ////console.log("this.AllTimeTable", this.AllTimeTable)
     var duplicateCheck = alasql("select DayId,PeriodId,TeacherId from ? where DayId = ? and PeriodId = ? and TeacherId = ?",
       [this.DataForAllClasses, row.DayId, row.PeriodId, row.TeacherId])
     if (duplicateCheck.length > 1) {
-      //console.log("duplicateCheck",duplicateCheck);
+      ////console.log("duplicateCheck",duplicateCheck);
       var _detail = '';
       var _dupdetail = this.DataForAllClasses.filter((f:any) => f.DayId == row.DayId && f.PeriodId == row.PeriodId && row.TeacherId == row.TeacherId);
       _dupdetail.forEach(d => {
@@ -209,13 +209,13 @@ export class TeacherperiodComponent implements OnInit {
       this.SchoolTimeTableData.SubOrgId = this.SubOrgId;
       this.SchoolTimeTableData.BatchId = this.SelectedBatchId;
 
-      //console.log('data', this.SchoolTimeTableData);
+      ////console.log('data', this.SchoolTimeTableData);
       if (this.SchoolTimeTableData.TimeTableId == 0) {
         this.SchoolTimeTableData["CreatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.SchoolTimeTableData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
         this.SchoolTimeTableData["UpdatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         delete this.SchoolTimeTableData["UpdatedBy"];
-        ////console.log('exam slot', this.SchoolClassPeriodListData)
+        //////console.log('exam slot', this.SchoolClassPeriodListData)
         this.insert(element, row);
       }
       else {
@@ -320,13 +320,13 @@ export class TeacherperiodComponent implements OnInit {
         filterPeriods = this.AllClassPeriods.filter(a => a.ClassId == distinctcls.ClassId);
 
         if (filterPeriods.length == 0) {
-          console.log("Period not yet defined for this class : " + distinctcls.ClassId);
+          //console.log("Period not yet defined for this class : " + distinctcls.ClassId);
         }
         else {
 
           var forSelectedClsPeriods;
           forSelectedClsPeriods = filterPeriods.sort((a, b) => a.Sequence - b.Sequence);
-          console.log("forSelectedClsPeriods", forSelectedClsPeriods);
+          //console.log("forSelectedClsPeriods", forSelectedClsPeriods);
           debugger;
           this.WeekDays.sort((a, b) => a.Sequence - b.Sequence).forEach(p => {
             if (!this.DayStatisticDisplay.includes(p.MasterDataName))
@@ -451,8 +451,8 @@ export class TeacherperiodComponent implements OnInit {
 
     });
     //});
-    //console.log("PeriodStatisticDisplay", this.PeriodStatisticDisplay);
-    //console.log("this.PeriodStatistics", this.PeriodStatistics);
+    ////console.log("PeriodStatisticDisplay", this.PeriodStatisticDisplay);
+    ////console.log("this.PeriodStatistics", this.PeriodStatistics);
     if (this.PeriodStatistics.length == 0) {
       this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
     }

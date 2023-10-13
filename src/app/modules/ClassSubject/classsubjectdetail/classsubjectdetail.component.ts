@@ -190,7 +190,7 @@ export class ClassSubjectDetailComponent implements OnInit {
 
       if (b.length != 0) {
         _sessionStartEnd = { ...b };
-        ////console.log('b',b)
+        //////console.log('b',b)
         var _Year = new Date(_sessionStartEnd.StartDate).getFullYear();
         var startMonth = new Date(_sessionStartEnd.StartDate).getMonth();
 
@@ -232,7 +232,7 @@ export class ClassSubjectDetailComponent implements OnInit {
     // }, 50);
   }
   // CopyFromPreviousBatch() {
-  //   //console.log("here ", this.PreviousBatchId)
+  //   ////console.log("here ", this.PreviousBatchId)
   //   this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
   //   if (this.PreviousBatchId == -1)
   //     this.contentservice.openSnackBar("Previous batch not defined.",globalconstants.ActionText,globalconstants.RedBackground);
@@ -294,7 +294,7 @@ export class ClassSubjectDetailComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         let classSubjects = data.value.map(item => {
 
           return {
@@ -587,7 +587,7 @@ export class ClassSubjectDetailComponent implements OnInit {
 
   insert(row) {
 
-    //console.log('this.ClassSubjectData', this.ClassSubjectData)
+    ////console.log('this.ClassSubjectData', this.ClassSubjectData)
     //debugger;
     this.dataservice.postPatch('ClassSubjects', this.ClassSubjectData, 0, 'post')
       .subscribe(
@@ -608,7 +608,7 @@ export class ClassSubjectDetailComponent implements OnInit {
         });
   }
   update(row) {
-    console.log('this.ClassSubjectData update', this.ClassSubjectData)
+    //console.log('this.ClassSubjectData update', this.ClassSubjectData)
     this.dataservice.postPatch('ClassSubjects', this.ClassSubjectData, this.ClassSubjectData.ClassSubjectId, 'patch')
       .subscribe(
         (data: any) => {

@@ -439,7 +439,7 @@ export class SyllabusComponent implements OnInit {
           this.SyllabusData.Active = row.Active;
 
           this.SyllabusForUpdate.push(this.SyllabusData);
-          console.log('SyllabusForUpdate', this.SyllabusForUpdate);
+          //console.log('SyllabusForUpdate', this.SyllabusForUpdate);
           // if (this.SyllabusForUpdate[0].SyllabusId == 0)
           //   this.SyllabusForUpdate[0].SyllabusId == null;
 
@@ -486,7 +486,7 @@ export class SyllabusComponent implements OnInit {
         });
   }
   update(row) {
-    //console.log("updating",this.SyllabusForUpdate);
+    ////console.log("updating",this.SyllabusForUpdate);
     this.dataservice.postPatch('SyllabusDetails', this.SyllabusForUpdate[0], this.SyllabusForUpdate[0].SyllabusId, 'patch')
       .subscribe(
         (data: any) => {
@@ -688,7 +688,7 @@ export class SyllabusComponent implements OnInit {
     debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
     //var result = this.allMasterData.filter((f:any)=>f.MasterDataName =='Question Bank ContentUnit')
-    //console.log("result",result)
+    ////console.log("result",result)
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.ContentUnit = this.getDropDownData(globalconstants.MasterDefinitions.school.BOOKCONTENTUNIT);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);

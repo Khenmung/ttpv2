@@ -64,7 +64,7 @@ export class pageDashboardComponent implements OnInit { PageLoading=true;
       .get<IPage[]>(this.list)
       .subscribe({
         next: (arrPage: IPage[]) => {
-          ////console.log('arrpage', arrPage);
+          //////console.log('arrpage', arrPage);
           this.DATA=[];
           let arr :any[]= [];
           Object.keys(arrPage).map(function (key) {
@@ -192,7 +192,7 @@ export class pageDashboardComponent implements OnInit { PageLoading=true;
             Active: 0
           };
           //let checked = this.selection.toggle(element);
-          ////console.log('checked',checked);
+          //////console.log('checked',checked);
           //PageDetail.Active = event.checked == true ? 1 : 0;
           PageDetail.UpdateDate = new Date();
           this.naomitsuService.postPatch('Pages', PageDetail, element.PageId, 'patch')
@@ -210,7 +210,7 @@ export class pageDashboardComponent implements OnInit { PageLoading=true;
       Active: 1
     };
     let checked = this.selection.toggle(element);
-    ////console.log('checked',checked);
+    //////console.log('checked',checked);
     PageDetail.Active = event.checked == true ? 1 : 0;
     PageDetail.UpdateDate = new Date();
     this.naomitsuService.postPatch('Pages', PageDetail, element.PageId, 'patch')
@@ -257,7 +257,7 @@ export class pageDashboardComponent implements OnInit { PageLoading=true;
     this.naomitsuService.get(list)
       .subscribe((data: any) => {
         this.ParentPages = data.value;
-        ////console.log("parent pages", this.ParentPages);
+        //////console.log("parent pages", this.ParentPages);
 
         this.getDetails(parentId);
         //return data.value;

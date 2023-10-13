@@ -55,7 +55,7 @@ export class DisplaypageComponent implements OnInit {
     //     }
     //   })
     // })
-    ////console.log('window', window.location.href);
+    //////console.log('window', window.location.href);
     this.loading = true;
     this.GroupId = 0;
     this.ar.queryParamMap.subscribe(params => {
@@ -183,7 +183,7 @@ export class DisplaypageComponent implements OnInit {
     this.naomitsuService.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
-          ////console.log(data.value[0])
+          //////console.log(data.value[0])
           this.Title = data.value[0].Page.PageTitle;
           this.PageBody = data.value[0].PageBody
           if (this.GroupId > 0)

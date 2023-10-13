@@ -79,7 +79,7 @@ export class RegisterComponent implements OnInit { PageLoading=true;
     })
     // this.mediaSub = this.mediaObserver.media$.subscribe((result: MediaChange) => {
     //   this.deviceXs = result.mqAlias === "xs" ? true : false;
-    //   ////console.log("authlogin",this.deviceXs);
+    //   //////console.log("authlogin",this.deviceXs);
     // });
     this.shareddata.CurrentCustomerPlan.subscribe(p => this.CustomerPlan = p);
   }
@@ -285,11 +285,11 @@ export class RegisterComponent implements OnInit { PageLoading=true;
                 this.isSuccessful = true;
                 this.isSignUpFailed = false;
               }, (error) => {
-                //console.log('creating user error', error);
+                ////console.log('creating user error', error);
 
               });
         }, (error) => {
-          //console.log('creating organization error', error);
+          ////console.log('creating organization error', error);
 
         })
 
@@ -346,7 +346,7 @@ export class RegisterComponent implements OnInit { PageLoading=true;
         this.contentservice.openSnackBar(this.errorMessage,globalconstants.ActionText,globalconstants.RedBackground);
         this.isSignUpFailed = true;
         this.loading=false;this.PageLoading=false;
-        //console.log(err.error)
+        ////console.log(err.error)
       }
     );
   }

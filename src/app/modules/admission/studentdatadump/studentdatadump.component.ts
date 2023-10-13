@@ -420,7 +420,7 @@ export class StudentDatadumpComponent implements OnInit {
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        ////console.log(data.value);
+        //////console.log(data.value);
         if (data.value.length > 0) {
           var formattedData :any[]= [];
           //formattedData = [...data.value];
@@ -727,7 +727,7 @@ export class StudentDatadumpComponent implements OnInit {
             return element;
           })
           //this.ELEMENT_DATA.
-          //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
+          ////console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
           if (this.ELEMENT_DATA.length == 0) {
             this.loading = false;
             this.PageLoading = false;

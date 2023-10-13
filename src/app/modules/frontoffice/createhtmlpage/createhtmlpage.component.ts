@@ -441,7 +441,7 @@ export class CreatehtmlpageComponent implements OnInit {
             this.RulesOrPolicyData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.RulesOrPolicyData["UpdatedDate"] = new Date();
             delete this.RulesOrPolicyData["UpdatedBy"];
-            console.log("rules", this.RulesOrPolicyData)
+            //console.log("rules", this.RulesOrPolicyData)
             this.insert();
           }
           else {
@@ -536,7 +536,7 @@ export class CreatehtmlpageComponent implements OnInit {
             return map;
 
           })
-          console.log("dsfsalj", this.RulesOrPolicyList);
+          //console.log("dsfsalj", this.RulesOrPolicyList);
           this.searchForm.patchValue({ "RulesOrPolicyId": this.RulesOrPolicyList[0].RulesOrPolicyId,
            "Title": this.RulesOrPolicyList[0].Title, "EditorDescription": this.RulesOrPolicyList[0].Description })
         }
@@ -581,7 +581,7 @@ export class UploadAdapter {
   private loader;
   constructor(loader: any) {
     this.loader = loader;
-    console.log(this.readThis(loader.file));
+    //console.log(this.readThis(loader.file));
   }
 
   public upload(): Promise<any> {
@@ -590,12 +590,12 @@ export class UploadAdapter {
   }
 
   readThis(file: File): Promise<any> {
-    console.log(file)
+    //console.log(file)
     let imagePromise: Promise<any> = new Promise((resolve, reject) => {
       var myReader: FileReader = new FileReader();
       myReader.onloadend = (e) => {
         let image = myReader.result;
-        console.log(image);
+        //console.log(image);
         resolve(0);
         return { default: "data:image/png;base64," + image };
 

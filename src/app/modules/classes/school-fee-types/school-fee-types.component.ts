@@ -196,7 +196,7 @@ export class SchoolFeeTypesComponent implements OnInit {
             this.FeeTypeData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.FeeTypeData["UpdatedDate"] = new Date();
             delete this.FeeTypeData["UpdatedBy"];
-            ////console.log('exam slot', this.SlotNClassSubjectData)
+            //////console.log('exam slot', this.SlotNClassSubjectData)
             this.insert(row);
           }
           else {
@@ -300,7 +300,7 @@ export class SchoolFeeTypesComponent implements OnInit {
 
               })
             })
-            // console.log("studentfeedetailxxxx",studentfeedetail)
+            // //console.log("studentfeedetailxxxx",studentfeedetail)
             this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
               .subscribe((data: any) => {
                 this.loading = false;
@@ -308,7 +308,7 @@ export class SchoolFeeTypesComponent implements OnInit {
               },
                 error => {
                   this.loading = false;
-                  console.log("create invoice error", error);
+                  //console.log("create invoice error", error);
                   this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
                 })
           })
@@ -354,7 +354,7 @@ export class SchoolFeeTypesComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           this.FeeTypeList = [...data.value];
         }

@@ -107,7 +107,7 @@ export class SubjectBoardComponent implements AfterViewInit {
   }
 
   public tabChange(index: number) {
-    //    //console.log("index", index)
+    //    ////console.log("index", index)
     setTimeout(() => {
       this.renderComponent(index);
     }, 1000);
@@ -159,7 +159,7 @@ export class SubjectBoardComponent implements AfterViewInit {
 //   tabChanged(tabChangeEvent: number) {
 //     this.selectedIndex = tabChangeEvent;
 //     this.navigateTab(this.selectedIndex);
-//     //   //console.log('tab selected: ' + tabChangeEvent);
+//     //   ////console.log('tab selected: ' + tabChangeEvent);
 //   }
 //   public nextStep() {
 //     this.selectedIndex += 1;

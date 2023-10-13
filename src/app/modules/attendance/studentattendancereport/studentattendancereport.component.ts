@@ -264,8 +264,8 @@ export class StudentattendancereportComponent implements OnInit {
         }
         let absent = 0, Present = 0;
         this.displayedColumns = ["Student"];
-        console.log("this.StudentAttendanceList", this.StudentAttendanceList)
-        console.log("this.Students", this.Students)
+        ////console.log("this.StudentAttendanceList", this.StudentAttendanceList)
+        ////console.log("this.Students", this.Students)
         this.StudentAttendanceList = JSON.parse(JSON.stringify(this.Students.filter((s: any) => s.ClassId == SelectedClassId
           && s.SemesterId == SelectedSemesterId
           && s.SectionId == SelectedSectionId)));
@@ -347,7 +347,7 @@ export class StudentattendancereportComponent implements OnInit {
           // var _ab = (absent - (weekdaysCount + Holidays));
           // stud["Ab"] = _ab < 0 ? 0 : _ab;
         })
-        //console.log("employee",this.Employees)
+        ////console.log("employee",this.Employees)
         this.StudentAttendanceList = this.StudentAttendanceList.sort((a, b) => a.RollNo - b.RollNo)
         this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
         this.dataSource.paginator = this.paginator;

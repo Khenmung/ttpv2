@@ -250,7 +250,7 @@ export class GroupactivityComponent implements OnInit {
             this.insert(row);
           }
           else {
-            //console.log("this.SportsResultForUpdate[0] update", this.SportsResultForUpdate[0])
+            ////console.log("this.SportsResultForUpdate[0] update", this.SportsResultForUpdate[0])
             this.SportsResultForUpdate[0]["UpdatedDate"] = new Date();
             this.SportsResultForUpdate[0]["UpdatedBy"];
             delete this.SportsResultForUpdate[0]["CreatedDate"];
@@ -267,7 +267,7 @@ export class GroupactivityComponent implements OnInit {
     this.loading = false; this.PageLoading = false;
   }
   insert(row) {
-    //console.log("this.SportsResultForUpdate", this.SportsResultForUpdate)
+    ////console.log("this.SportsResultForUpdate", this.SportsResultForUpdate)
     this.dataservice.postPatch('SportResults', this.SportsResultForUpdate, 0, 'post')
       .subscribe(
         (data: any) => {
@@ -280,16 +280,16 @@ export class GroupactivityComponent implements OnInit {
           }
         }, error => {
           this.loadingFalse();
-          console.log("error on sport result insert", error);
+          //console.log("error on sport result insert", error);
         });
   }
   update(row) {
-    //console.log("updating",this.SportsResultForUpdate);
+    ////console.log("updating",this.SportsResultForUpdate);
     this.dataservice.postPatch('SportResults', this.SportsResultForUpdate[0], this.SportsResultForUpdate[0].SportsResultResultId, 'patch')
       .subscribe(
         (data: any) => {
           row.Action = false;
-          console.log("data update", data.value);
+          //console.log("data update", data.value);
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           this.loadingFalse();
         });

@@ -186,7 +186,7 @@ export class WorkhistoryComponent implements OnInit { PageLoading=true;
             this.EmployeeWorkHistoryData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.EmployeeWorkHistoryData["UpdatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
             delete this.EmployeeWorkHistoryData["UpdatedBy"];
-            //console.log('this.EmployeeWorkHistoryData', this.EmployeeWorkHistoryData)
+            ////console.log('this.EmployeeWorkHistoryData', this.EmployeeWorkHistoryData)
             this.insert(row);
           }
           else {

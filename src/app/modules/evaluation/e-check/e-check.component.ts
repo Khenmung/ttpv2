@@ -218,8 +218,8 @@ export class ECheckComponent implements OnInit {
       .subscribe((data: any) => {
         debugger
         this.Result = [...data.value]
-        //console.log("data.value", data.value);
-        //console.log("_classEvaluations", _classEvaluations);
+        ////console.log("data.value", data.value);
+        ////console.log("_classEvaluations", _classEvaluations);
         var item;
         _classEvaluations.forEach(clseval => {
           var existing = this.Result.filter((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId);
@@ -358,8 +358,8 @@ export class ECheckComponent implements OnInit {
       .subscribe((data: any) => {
         debugger
         this.Result = [...data.value]
-        //console.log("data.value", data.value);
-        //console.log("_classEvaluations", _classEvaluations);
+        ////console.log("data.value", data.value);
+        ////console.log("_classEvaluations", _classEvaluations);
         var item;
         this.EvaluatedStudent.forEach(st => {
           let _mark = 0;
@@ -410,7 +410,7 @@ export class ECheckComponent implements OnInit {
             r.Pc = +(r.TotalMark / _FullMark * 100).toFixed(2);
           _previousMark = r.TotalMark;
         })
-        // console.log("StudentResultList", StudentResultList);
+        // //console.log("StudentResultList", StudentResultList);
         this.NoOfRecordToUpdate = 0;
         this.insert(StudentResultList);
         // this.loading = false;
@@ -427,8 +427,8 @@ export class ECheckComponent implements OnInit {
     return _mark;
   }
   ApplyVariables(studentInfo) {
-    //console.log("studentInfo", studentInfo)
-    //console.log("this.AssessmentPrintHeading", this.AssessmentPrintHeading)
+    ////console.log("studentInfo", studentInfo)
+    ////console.log("this.AssessmentPrintHeading", this.AssessmentPrintHeading)
     this.PrintHeading = JSON.parse(JSON.stringify(this.AssessmentPrintHeading));
     this.PrintHeading.forEach((stud, indx) => {
       Object.keys(studentInfo).forEach(studproperty => {
@@ -549,7 +549,7 @@ export class ECheckComponent implements OnInit {
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     //this.EvaluationStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONSTATUS);
     this.AssessmentPrintHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.ASSESSMENTPRINTHEADING);
-    //console.log("this.AssessmentPrintHeading",this.AssessmentPrintHeading)
+    ////console.log("this.AssessmentPrintHeading",this.AssessmentPrintHeading)
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
         this.ClassGroups = [...data.value];
@@ -634,14 +634,14 @@ export class ECheckComponent implements OnInit {
       delete this.EvaluationResultData["CreatedBy"];
       this.EvaluationResultData["UpdatedDate"] = new Date();
       this.EvaluationResultData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-      console.log("StudentAttendanceData update", this.EvaluationResultData);
+      //console.log("StudentAttendanceData update", this.EvaluationResultData);
       this.update(row);
 
     }
   }
 
   // insert(row) {
-  //   console.log("this.StudentAttendanceData", this.StudentAttendanceData);
+  //   //console.log("this.StudentAttendanceData", this.StudentAttendanceData);
   //   this.dataservice.postPatch('Attendances', this.StudentAttendanceData, 0, 'post')
   //     .subscribe(
   //       (data: any) => {
@@ -817,7 +817,7 @@ export class ECheckComponent implements OnInit {
         if (this.EvaluatedStudent.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
-        //console.log("this.StudentEvaluationList", this.EvaluatedStudent)
+        ////console.log("this.StudentEvaluationList", this.EvaluatedStudent)
         this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.EvaluatedStudent);
         this.AssessmentTypeDatasource.paginator = this.paginator;
         this.loading = false;
@@ -887,7 +887,7 @@ export class ECheckComponent implements OnInit {
               this.ClassEvaluations.push(clseval);
             }
           })
-          //   console.log("this.ClassEvaluations", this.ClassEvaluations)
+          //   //console.log("this.ClassEvaluations", this.ClassEvaluations)
         }
         this.loading = false; this.PageLoading = false;
       })
@@ -990,7 +990,7 @@ export class ECheckComponent implements OnInit {
     if (this.EvaluatedStudent.length == 0) {
       this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
     }
-    //console.log("this.StudentEvaluationList", this.EvaluatedStudent)
+    ////console.log("this.StudentEvaluationList", this.EvaluatedStudent)
     this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.EvaluatedStudent);
     this.AssessmentTypeDatasource.paginator = this.paginator;
     this.loading = false;

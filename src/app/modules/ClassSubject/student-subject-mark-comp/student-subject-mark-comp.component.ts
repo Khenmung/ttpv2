@@ -252,7 +252,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
                 this.classSubjectComponentData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
                 delete this.classSubjectComponentData["UpdatedDate"];
                 delete this.classSubjectComponentData["UpdatedBy"];
-                ////console.log('this', this.classSubjectComponentData);
+                //////console.log('this', this.classSubjectComponentData);
                 this.insert(item);
               }
               else {
@@ -423,7 +423,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       })
   }
   CopyFromOtherExam() {
-    //console.log("here ", this.PreviousBatchId)
+    ////console.log("here ", this.PreviousBatchId)
     var _otherExamId = this.searchForm.get("searchCopyExamId")?.value;
     var _examId = this.searchForm.get("searchExamId")?.value;
     this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
@@ -613,7 +613,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
 
         /////////////////////
 
-        //console.log("his.ELEMENT_DATA",this.ELEMENT_DATA);
+        ////console.log("his.ELEMENT_DATA",this.ELEMENT_DATA);
         if (this.ELEMENT_DATA.length == 0)
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         this.ELEMENT_DATA = this.ELEMENT_DATA.sort((a, b) => b.Active - a.Active);
@@ -662,7 +662,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     if (Number.isNaN(value))
       value = 0;
     row.Amount = parseFloat(value);
-    ////console.log('from change', row);
+    //////console.log('from change', row);
   }
 }
 export interface ISubjectMarkComponent {

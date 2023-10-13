@@ -170,7 +170,7 @@ export class TeachersubjectComponent implements OnInit {
 
       if (b.length != 0) {
         _sessionStartEnd = { ...b };
-        ////console.log('b',b)
+        //////console.log('b',b)
         var _Year = new Date(_sessionStartEnd.StartDate).getFullYear();
         var startMonth = new Date(_sessionStartEnd.StartDate).getMonth();
 
@@ -248,7 +248,7 @@ export class TeachersubjectComponent implements OnInit {
 
   }
   // CopyFromPreviousBatch() {
-  //   //console.log("here ", this.PreviousBatchId)
+  //   ////console.log("here ", this.PreviousBatchId)
   //   this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
   //   if (this.PreviousBatchId == -1)
   //     this.contentservice.openSnackBar("Previous batch not defined.",globalconstants.ActionText,globalconstants.RedBackground);
@@ -315,8 +315,8 @@ export class TeachersubjectComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         }
         this.TeacherSubjectList.sort((a, b) => b.Active - a.Active);
-        //console.log("TeacherSubjectList", this.TeacherSubjectList);
-        //console.log("TeacherSubjectList", this.TeacherSubjectList);
+        ////console.log("TeacherSubjectList", this.TeacherSubjectList);
+        ////console.log("TeacherSubjectList", this.TeacherSubjectList);
         this.dataSource = new MatTableDataSource<ITeacherSubject>(this.TeacherSubjectList);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
@@ -370,7 +370,7 @@ export class TeachersubjectComponent implements OnInit {
     this.DataCountToSave = 0;
     //debugger;
     this.loading = true;
-    ////console.log("row.TeacherId", row.TeacherId);
+    //////console.log("row.TeacherId", row.TeacherId);
     if (row.EmployeeId == 0) {
       this.contentservice.openSnackBar("Please select teacher.", globalconstants.ActionText, globalconstants.RedBackground);
       this.loading = false;
@@ -431,7 +431,7 @@ export class TeachersubjectComponent implements OnInit {
 
   insert(row) {
 
-    //console.log('this.TeacherSubjectData', this.TeacherSubjectData)
+    ////console.log('this.TeacherSubjectData', this.TeacherSubjectData)
     //debugger;
     this.dataservice.postPatch('TeacherSubjects', this.TeacherSubjectData, 0, 'post')
       .subscribe(
@@ -517,7 +517,7 @@ export class TeachersubjectComponent implements OnInit {
             });
           }
         })
-        //console.log("this.ClassSubjects", this.ClassSubjects)
+        ////console.log("this.ClassSubjects", this.ClassSubjects)
       })
   }
   TempClassSubject :any[]= [];

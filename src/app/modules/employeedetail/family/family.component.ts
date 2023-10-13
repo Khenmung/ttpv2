@@ -183,7 +183,7 @@ export class FamilyComponent implements OnInit {
             this.EmployeeFamilyData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.EmployeeFamilyData["UpdatedDate"] = new Date();
             delete this.EmployeeFamilyData["UpdatedBy"];
-            //console.log('this.EmployeeFamilyData',this.EmployeeFamilyData)
+            ////console.log('this.EmployeeFamilyData',this.EmployeeFamilyData)
             this.insert(row);
           }
           else {

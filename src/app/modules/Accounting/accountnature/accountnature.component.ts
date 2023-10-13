@@ -347,7 +347,7 @@ export class AccountNatureComponent implements OnInit {
             this.AccountNatureData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.AccountNatureData["UpdatedDate"];
             delete this.AccountNatureData["UpdatedBy"];
-            //console.log('to insert', this.AccountNatureData)
+            ////console.log('to insert', this.AccountNatureData)
             this.insert(row);
           }
           else {
@@ -355,7 +355,7 @@ export class AccountNatureComponent implements OnInit {
             delete this.AccountNatureData["CreatedBy"];
             this.AccountNatureData["UpdatedDate"] = new Date();
             this.AccountNatureData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            //console.log('to update', this.AccountNatureData)
+            ////console.log('to update', this.AccountNatureData)
             this.update(row);
           }
         }

@@ -159,8 +159,8 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   UpdateOrSave(row, valuerow) {
 
     debugger;
-    // console.log("row",row);
-    // console.log("valuerow",valuerow);
+    // //console.log("row",row);
+    // //console.log("valuerow",valuerow);
     this.DataCollection.push(JSON.parse(JSON.stringify(row)));
     if (row.Marks > row.FullMark) {
       this.loading = false; this.PageLoading = false;
@@ -227,7 +227,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         else {
           this.rowCount += 1;
           if (this.DataCollection.length == this.rowCount) {
-            console.log("this.DataCollection", this.DataCollection);
+            //console.log("this.DataCollection", this.DataCollection);
             var _classId = this.searchForm.get("searchClassId")?.value;
             var _sectionId = this.searchForm.get("searchSectionId")?.value;
             var _semesterId = this.searchForm.get("searchSemesterId")?.value;
@@ -261,7 +261,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
                 this.ExamStudentSubjectResultData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
                 this.ExamStudentSubjectResultData["UpdatedDate"] = new Date();
                 delete this.ExamStudentSubjectResultData["UpdatedBy"];
-                console.log("this.ExamStudentSubjectResultData insert", this.ExamStudentSubjectResultData)
+                //console.log("this.ExamStudentSubjectResultData insert", this.ExamStudentSubjectResultData)
                 this.insert(item, valuerow);
               }
               else {
@@ -281,7 +281,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
     //debugger;
     this.ExamStudentSubjectResultData = JSON.parse(JSON.stringify(this.ExamStudentSubjectResultData));
-    //console.log("this.ExamStudentSubjectResultData", this.ExamStudentSubjectResultData);
+    ////console.log("this.ExamStudentSubjectResultData", this.ExamStudentSubjectResultData);
 
     this.dataservice.postPatch('ExamStudentSubjectResults', this.ExamStudentSubjectResultData, 0, 'post')
       .subscribe(
@@ -300,7 +300,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   }
   update(row, valuerow) {
     //this.ExamStudentSubjectResultData = JSON.parse(JSON.stringify(this.ExamStudentSubjectResultData));
-    //console.log("this.ExamStudentSubjectResultData update", this.ExamStudentSubjectResultData);
+    ////console.log("this.ExamStudentSubjectResultData update", this.ExamStudentSubjectResultData);
     this.dataservice.postPatch('ExamStudentSubjectResults', this.ExamStudentSubjectResultData, this.ExamStudentSubjectResultData.ExamStudentSubjectResultId, 'patch')
       .subscribe(
         (data: any) => {
@@ -499,7 +499,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
             }
           }
         })
-        //console.log("this.StudentSubjects",this.StudentSubjects)
+        ////console.log("this.StudentSubjects",this.StudentSubjects)
         this.loading = false;
         this.PageLoading = false;
         this.GetSubjectMarkComponents(_classSubjectId);
@@ -760,7 +760,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
             });
           })
         })
-        //console.log("result", result);
+        ////console.log("result", result);
         var toUpdate = this.searchForm.get("updateCheckBox")?.value;
         //let sectionwiseexist = this.StudentSubjects.filter(sec => sec.SectionId > 0);
         //let semesterwiseexist = this.StudentSubjects.filter(sec => sec.SemesterId > 0);
@@ -773,7 +773,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
             && studentsubject.SectionId == _sectionId
             && studentsubject.SemesterId == _semesterId
         });
-        console.log("filteredStudentSubjects", filteredStudentSubjects)
+        //console.log("filteredStudentSubjects", filteredStudentSubjects)
         filteredStudentSubjects.forEach(studentsubject => {
           studentsubject.Components = studentsubject.Components.filter(c => c.ExamId == _examId)
         });
@@ -892,7 +892,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
         })
         this.ExamStudentSubjectResult = this.ExamStudentSubjectResult.sort((a, b) => a.RollNo - b.RollNo);
-        //console.log("this.ExamStudentSubjectResult", this.ExamStudentSubjectResult)
+        ////console.log("this.ExamStudentSubjectResult", this.ExamStudentSubjectResult)
         if (this.displayedColumns.indexOf("Action") == -1)
           this.displayedColumns.push("Action");
         this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(this.ExamStudentSubjectResult);
@@ -1085,7 +1085,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   onBlur(element, colName) {
     debugger;
     //var _colName = event.srcElement.name;
-    ////console.log("event", event);
+    //////console.log("event", event);
     var row = this.StoredForUpdate.filter((s: any) => s.SubjectMarkComponent == colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
     row[0][colName] = element[colName];
     element.Action = true;
@@ -1216,7 +1216,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           }
         })
         this.PageLoading = false;
-        //console.log("exams", this.Exams);
+        ////console.log("exams", this.Exams);
         //this.GetStudentSubjects();
       })
   }

@@ -106,7 +106,7 @@ export class SubjectTypesComponent implements OnInit {
     row.Action = true;
   }
   // CopyFromPreviousBatch() {
-  //   //console.log("here ", this.PreviousBatchId)
+  //   ////console.log("here ", this.PreviousBatchId)
   //   if (this.PreviousBatchId == -1)
   //     this.contentservice.openSnackBar("Previous batch not defined.",globalconstants.ActionText,globalconstants.RedBackground);
   //   else
@@ -192,7 +192,7 @@ export class SubjectTypesComponent implements OnInit {
             delete this.SubjectTypeData["CreatedBy"];
             this.SubjectTypeData["UpdatedDate"] = new Date();
             this.SubjectTypeData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            //console.log('this', this.SubjectTypeData)
+            ////console.log('this', this.SubjectTypeData)
             this.update(row);
           }
         }

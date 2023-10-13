@@ -385,11 +385,11 @@ export class EActComponent implements OnInit {
             this.StudentEvaluationForUpdate[_lastIndex]["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.StudentEvaluationForUpdate[_lastIndex]["UpdatedDate"];
             delete this.StudentEvaluationForUpdate[_lastIndex]["UpdatedBy"];
-            console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate[0])
+            //console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate[0])
             //this.insert(row);
           }
           else {
-            //console.log("this.StudentEvaluationForUpdate[0] update", this.StudentEvaluationForUpdate[0])
+            ////console.log("this.StudentEvaluationForUpdate[0] update", this.StudentEvaluationForUpdate[0])
             this.StudentEvaluationForUpdate[_lastIndex]["UpdatedDate"] = new Date();
             this.StudentEvaluationForUpdate[_lastIndex]["UpdatedBy"];
             delete this.StudentEvaluationForUpdate[_lastIndex]["CreatedDate"];
@@ -425,11 +425,11 @@ export class EActComponent implements OnInit {
           this.EvaluationSubmitted = false;
 
           this.loadingFalse();
-          console.log("error on student evaluation insert", error);
+          //console.log("error on student evaluation insert", error);
         });
   }
   update(row) {
-    //console.log("updating",this.StudentEvaluationForUpdate);
+    ////console.log("updating",this.StudentEvaluationForUpdate);
     this.dataservice.postPatch('StudentEvaluationResults', this.StudentEvaluationForUpdate[0], this.StudentEvaluationForUpdate[0].StudentEvaluationResultId, 'patch')
       .subscribe(
         (data: any) => {
@@ -538,7 +538,7 @@ export class EActComponent implements OnInit {
         // if (data.value.length > 0) {
         //   row.Submitted = data.value[0].Submitted;
         // }
-        //console.log("row", row);
+        ////console.log("row", row);
         if (!row.Updatable && row.Duration > 0 && data.value.length == 0) {
           //if (!row.TempDuration)
           //row.TempDuration = row.Duration;
@@ -630,7 +630,7 @@ export class EActComponent implements OnInit {
           }
           this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
         })
-        //console.log("this.StudentEvaluationList", this.StudentEvaluationList);
+        ////console.log("this.StudentEvaluationList", this.StudentEvaluationList);
         row.EvaluationStarted = true;
         this.dataSource = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);
         this.dataSource.paginator = this.paginator;
@@ -670,7 +670,7 @@ export class EActComponent implements OnInit {
         this.contentservice.GetEvaluationExamMaps(this.FilterOrgSubOrg, 1)
           .subscribe((data: any) => {
             //this.NowTime = moment();
-            // console.log('this.EvaluationMaster', this.EvaluationMaster)
+            // //console.log('this.EvaluationMaster', this.EvaluationMaster)
             data.value.forEach(m => {
               let EvaluationObj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == m.EvaluationMasterId);
               if (EvaluationObj.length > 0) {
@@ -718,7 +718,7 @@ export class EActComponent implements OnInit {
                   this.Classes = this.Classes.filter(c => c.ClassId == _classId);
                   this.BindSectionSemester(_classId);
                   this.GetStudentClasses(_classId, _semesterId, _sectionId)
-                  //console.log("this.Students[0]", this.Students[0])
+                  ////console.log("this.Students[0]", this.Students[0])
 
 
                   var _classgroupsOfSelectedStudent = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
@@ -963,7 +963,7 @@ export class EActComponent implements OnInit {
               m.StartDate = new Date(_startDate.getFullYear(), _startDate.getMonth(), _startDate.getDate(), 0, 0, 0);
               _time = m.StartTime.split(':')
               m.StartDateAndTime = moment(m.StartDate).add(+_time[0], 'hours').add(+_time[1], 'minutes');// + " " + m.StartTime, 'YYYY-MM-DD HH:mm');
-              console.log(' m.StartDateAndTime after adding minutes', m.StartDateAndTime)
+              //console.log(' m.StartDateAndTime after adding minutes', m.StartDateAndTime)
               StartDateAndTimeDuration = moment(m.StartDateAndTime).add(m.Duration, 'minutes');
             }
             //m.StartDateAndTime =startedTime;

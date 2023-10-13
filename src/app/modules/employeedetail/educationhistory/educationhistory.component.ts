@@ -188,7 +188,7 @@ export class EducationhistoryComponent implements OnInit {
             this.EmployeeEducationHistoryData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.EmployeeEducationHistoryData["UpdatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
             delete this.EmployeeEducationHistoryData["UpdatedBy"];
-            //console.log('this.EmployeeEducationHistoryData', this.EmployeeEducationHistoryData)
+            ////console.log('this.EmployeeEducationHistoryData', this.EmployeeEducationHistoryData)
             this.insert(row);
           }
           else {

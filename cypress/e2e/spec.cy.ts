@@ -66,11 +66,11 @@ describe('template spec', () => {
     //.then((dum) => {
 
 
-    //console.log(cy.get('@btn'))
+    ////console.log(cy.get('@btn'))
     //cy.wrap(cy.get('@btn'), { timeout: 8000 }).click()
     //})
     // cy.window().then(({localStorage})=>{
-    //   console.log(localStorage)
+    //   //console.log(localStorage)
     //   cy.get('#mat-select-value-7').should('have.value','Education Management')
     //   //cy.get('.mat-mdc-form-field.ng-tns-c1205077789-13 > .mat-mdc-text-field-wrapper').click()//.select("Education Management");
     //   //cy.get('[formControlName="searchApplicationId"]').click()

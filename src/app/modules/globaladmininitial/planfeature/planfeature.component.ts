@@ -208,7 +208,7 @@ export class PlanFeatureComponent implements OnInit {
           //this.PlanFeatureData.ParentId = row.ParentId;
           this.PlanFeatureData.ApplicationId = row.ApplicationId;
           this.PlanFeatureData.Active = row.Active;
-          ////console.log("PlanFeaturedata", this.PlanFeatureData)
+          //////console.log("PlanFeaturedata", this.PlanFeatureData)
           if (this.PlanFeatureData.PlanFeatureId == 0) {
             this.insert(row);
           }

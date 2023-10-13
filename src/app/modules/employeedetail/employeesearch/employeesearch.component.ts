@@ -294,7 +294,7 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        ////console.log(data.value);
+        //////console.log(data.value);
         if (data.value.length > 0) {
 
           this.EmployeeData = data.value.map(item => {
@@ -364,7 +364,7 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           this.Employees = data.value.map(history => {
             var _lastname = history.Employee.LastName == null ? '' : " " + history.Employee.LastName

@@ -239,7 +239,7 @@ export class OrganizationpaymentComponent implements OnInit { PageLoading=true;
           .subscribe((data: any) => {
             this.PaymentModes = [...data.value];
             this.loading = false; this.PageLoading=false;
-            console.log("dd",this.PaymentModes)
+            //console.log("dd",this.PaymentModes)
           });
       })
   }

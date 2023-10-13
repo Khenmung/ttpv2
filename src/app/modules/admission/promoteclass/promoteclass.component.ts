@@ -206,8 +206,8 @@ export class PromoteclassComponent implements OnInit {
           this.Permission = perObj[0].permission;
 
         //this.checkBatchIdNSelectedIdEqual = +this.tokenStorage.getCheckEqualBatchId();
-        ////console.log('selected batchid', this.SelectedBatchId);
-        ////console.log('current batchid', this.CurrentBatchId)
+        //////console.log('selected batchid', this.SelectedBatchId);
+        //////console.log('current batchid', this.CurrentBatchId)
         if (this.PromotePermission == 'read')
           this.displayedColumns = [
             'Student',
@@ -614,7 +614,7 @@ export class PromoteclassComponent implements OnInit {
           this.Exams = this.Exams.sort((a, b) => new Date(b.StartDate).getTime() - new Date(a.StartDate).getTime());
           this.searchForm.patchValue({ "searchExamId": this.Exams[0].ExamId });
         }
-        //console.log("this.exams",this.Exams);
+        ////console.log("this.exams",this.Exams);
       })
   }
   PreviousClassId = 0;
@@ -801,7 +801,7 @@ export class PromoteclassComponent implements OnInit {
           this.HeaderTitle = '';
           this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        //console.log("classid",this.StudentClassList)
+        ////console.log("classid",this.StudentClassList)
         this.dataSource = new MatTableDataSource<IStudentClass>(this.StudentClassList.sort((a, b) => +a.RollNo - +b.RollNo));
         //this.dataSource.sort = this.sort;
         //this.dataSource.paginator = this.paginator;
@@ -996,7 +996,7 @@ export class PromoteclassComponent implements OnInit {
                 this.StudentClassData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
                 delete this.StudentClassData["UpdatedDate"];
                 delete this.StudentClassData["UpdatedBy"];
-                console.log('to insert', this.StudentClassData)
+                //console.log('to insert', this.StudentClassData)
                 this.insert(item);
               }
               else {
@@ -1005,7 +1005,7 @@ export class PromoteclassComponent implements OnInit {
                 this.StudentClassData.IsCurrent = false;
                 this.StudentClassData["UpdatedDate"] = new Date();
                 this.StudentClassData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-                console.log('to update', this.StudentClassData)
+                //console.log('to update', this.StudentClassData)
                 this.update(item);
               }
             })
@@ -1129,7 +1129,7 @@ export class PromoteclassComponent implements OnInit {
 
               })
             })
-            // console.log("studentfeedetailxxxx",studentfeedetail)
+            // //console.log("studentfeedetailxxxx",studentfeedetail)
             this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
               .subscribe((data: any) => {
                 this.loading = false;
@@ -1137,7 +1137,7 @@ export class PromoteclassComponent implements OnInit {
               },
                 error => {
                   this.loading = false;
-                  console.log("create invoice error", error);
+                  //console.log("create invoice error", error);
                   this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
                 })
           })
@@ -1210,7 +1210,7 @@ export class PromoteclassComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         var _students: any = [...data.value]; //this.tokenStorage.getStudents()!;
         //_students = _students.filter(a => a.Active == 1);
         this.PreviousBatchStudents = _students.map(student => {

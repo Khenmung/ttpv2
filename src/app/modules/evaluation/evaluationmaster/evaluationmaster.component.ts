@@ -102,7 +102,7 @@ export class EvaluationMasterComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    console.log("environment", globalconstants.apiUrl);
+    //console.log("environment", globalconstants.apiUrl);
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     //this.EmployeeId = +this.tokenStorage.getEmployeeId()!;
     if (this.LoginUserDetail == null)
@@ -212,7 +212,7 @@ export class EvaluationMasterComponent implements OnInit {
       Deleted: true,
       UpdatedDate: new Date()
     }
-    //console.log("toUpdate",toUpdate);
+    ////console.log("toUpdate",toUpdate);
     this.dataservice.postPatch('EvaluationMasters', toUpdate, row.EvaluationMasterId, 'patch')
       .subscribe(res => {
         row.Action = false;
@@ -236,7 +236,7 @@ export class EvaluationMasterComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    console.log('row.StartTime:' + row.StartTime)
+    //console.log('row.StartTime:' + row.StartTime)
     if (row.ClassGroupId == 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please select class group.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -283,7 +283,7 @@ export class EvaluationMasterComponent implements OnInit {
             this.EvaluationMasterData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.EvaluationMasterData["UpdatedDate"] = new Date();
             delete this.EvaluationMasterData["UpdatedBy"];
-            console.log("this.EvaluationMasterData", this.EvaluationMasterData)
+            //console.log("this.EvaluationMasterData", this.EvaluationMasterData)
             this.insert(row);
           }
           else {
@@ -291,7 +291,7 @@ export class EvaluationMasterComponent implements OnInit {
             delete this.EvaluationMasterData["CreatedBy"];
             this.EvaluationMasterData["UpdatedDate"] = new Date();
             this.EvaluationMasterData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log("this.EvaluationMasterData update", this.EvaluationMasterData)
+            //console.log("this.EvaluationMasterData update", this.EvaluationMasterData)
             this.update(row);
           }
         }
@@ -330,7 +330,7 @@ export class EvaluationMasterComponent implements OnInit {
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     var _classGroupId = this.searchForm.get("searchClassGroupId")?.value;
     var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
-    //console.log("classgroup",this.ClassGroups)
+    ////console.log("classgroup",this.ClassGroups)
     if (_evaluationMasterId)
       filterStr += " and EvaluationMasterId eq " + _evaluationMasterId;
     if (_classGroupId)
@@ -372,7 +372,7 @@ export class EvaluationMasterComponent implements OnInit {
         }
         if (pageload)
           this.EvaluationMasterForDropdown = [...this.EvaluationMasterList]
-        //console.log("this.EvaluationMasterList",this.EvaluationMasterList)
+        ////console.log("this.EvaluationMasterList",this.EvaluationMasterList)
         this.dataSource = new MatTableDataSource<IEvaluationMaster>(this.EvaluationMasterList);
         this.dataSource.paginator = this.paging;
         this.loadingFalse();

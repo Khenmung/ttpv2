@@ -153,7 +153,7 @@ export class VerifyResultsComponent implements OnInit {
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
-      //console.log('this.Permission', this.Permission)
+      ////console.log('this.Permission', this.Permission)
       if (this.Permission != 'deny') {
 
         //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -276,7 +276,7 @@ export class VerifyResultsComponent implements OnInit {
           }
         })
         this.ClassSubjects = this.contentservice.getConfidentialData(this.tokenStorage, this.ClassSubjects, "ClassSubject");
-        //console.log("this.ClassSubjects",this.ClassSubjects.filter(f=>f.ClassSubjectId==1136));
+        ////console.log("this.ClassSubjects",this.ClassSubjects.filter(f=>f.ClassSubjectId==1136));
         //this.loading = false;
         this.GetSubjectComponents();
       })
@@ -447,7 +447,7 @@ export class VerifyResultsComponent implements OnInit {
         "PassCount": d["PassCount"]
       });
     })
-    //console.log("verifiedresult", this.VerifiedResult)
+    ////console.log("verifiedresult", this.VerifiedResult)
     this.dataservice.postPatch('ExamStudentResults', this.VerifiedResult, 0, 'post')
       .subscribe(
         (data: any) => {
@@ -456,7 +456,7 @@ export class VerifyResultsComponent implements OnInit {
           this.ClickedVerified = true;
           this.contentservice.openSnackBar("Exam result verified.", globalconstants.ActionText, globalconstants.BlueBackground);
         }, error => {
-          //console.log("error",error);
+          ////console.log("error",error);
           this.contentservice.openSnackBar("Something went wrong. Please try again.", globalconstants.ActionText, globalconstants.RedBackground);
           this.loading = false; this.PageLoading = false;
         })
@@ -560,7 +560,7 @@ export class VerifyResultsComponent implements OnInit {
         this.StudentSubjects = [];
       
         var _data = data.value.filter(x => x.ClassSubjectId == 1136);
-        console.log("data.value",_data)
+        //console.log("data.value",_data)
         //var _studentforselectedClass = this.Students.filter(stud => stud.StudentClasses && stud.StudentClasses[0].ClassId == _classId)
         data.value.forEach(s => {
           _class = '';
@@ -616,7 +616,7 @@ export class VerifyResultsComponent implements OnInit {
           //})
         });
 
-        //console.log("this.StudentSubjects",this.StudentSubjects)
+        ////console.log("this.StudentSubjects",this.StudentSubjects)
         this.GetExamStudentSubjectResults(_examId, _classId, _sectionId, _semesterId);
         this.ClassStrength = this.Students.length + "";
         // this.contentservice.GetStudentClassCount(this.FilterOrgSubOrg, _classId, _sectionId, _semesterId, this.SelectedBatchId)
@@ -748,7 +748,7 @@ export class VerifyResultsComponent implements OnInit {
         subjectsWithNotCompulsory = uniqueTypesOtherthanCompulsoryType.filter(sub => notCompulsorySubjectType.findIndex(fi => fi.SubjectTypeId == sub.SubjectTypeId) > -1);
         let allSubjectCounts = compulsorySubjectCount + subjectsWithNotCompulsory.reduce((acc, current) => acc + current.SelectHowMany, 0);
 
-        console.log("_noOfSubjectForAStudent", allSubjectCounts)
+        //console.log("_noOfSubjectForAStudent", allSubjectCounts)
         this.FullMarkForAllSubjects100Pc = allSubjectCounts * 100;
         ////////  
 
@@ -782,7 +782,7 @@ export class VerifyResultsComponent implements OnInit {
 
             // if (eachsubj.Subject == 'Geography') {
             //   debugger;
-            //   console.log("eachsubj.Subject", eachsubj.Subject);
+            //   //console.log("eachsubj.Subject", eachsubj.Subject);
             // }
             var _objSubjectCategory = this.SubjectCategory.filter((f: any) => f.MasterDataId == eachsubj.SubjectCategoryId)
             if (_objSubjectCategory.length > 0)
@@ -842,7 +842,7 @@ export class VerifyResultsComponent implements OnInit {
                 }
                 /////////////////////
               })
-              //console.log("markPercent",markPercent);
+              ////console.log("markPercent",markPercent);
               var _statusFail = true;
               var ExamResultSubjectMarkData = {
                 ExamResultSubjectMarkId: 0,
@@ -1029,7 +1029,7 @@ export class VerifyResultsComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
 
-        //console.log("this.ExamStudentSubjectResult", this.ExamStudentSubjectResult)
+        ////console.log("this.ExamStudentSubjectResult", this.ExamStudentSubjectResult)
         var sortedresult = this.ExamStudentSubjectResult.filter((f: any) => f.Rank != 0);
         var rankzero = this.ExamStudentSubjectResult.filter((f: any) => f.Rank == 0);
         rankzero.forEach(zerorank => {
@@ -1075,8 +1075,8 @@ export class VerifyResultsComponent implements OnInit {
         this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(sortedresult);
         this.dataSource.paginator = this.nonGradingPaginator;//.toArray()[0];
         //this.dataSource.sort = this.sort.toArray()[0];
-        //console.log("this.ExamStudentSubjectResult",this.ExamStudentSubjectResult);
-        //console.log("columns",this.displayedColumns);
+        ////console.log("this.ExamStudentSubjectResult",this.ExamStudentSubjectResult);
+        ////console.log("columns",this.displayedColumns);
 
         this.GradingDataSource = new MatTableDataSource<any[]>(this.ExamStudentSubjectGrading);
         //this.GradingDataSource.paginator = this.paginator.toArray()[1];
@@ -1084,9 +1084,9 @@ export class VerifyResultsComponent implements OnInit {
 
         this.loading = false;
         this.PageLoading = false;
-        //console.log("ClickedVerified",this.ClickedVerified)
-        //console.log("SectionSelected",this.SectionSelected)
-        //console.log("this.ExamReleased",this.ExamReleased)
+        ////console.log("ClickedVerified",this.ClickedVerified)
+        ////console.log("SectionSelected",this.SectionSelected)
+        ////console.log("this.ExamReleased",this.ExamReleased)
       })
     //})
   }
@@ -1127,7 +1127,7 @@ export class VerifyResultsComponent implements OnInit {
         for (var i = 0; i < _gradeDefinitionsForSpecificSubjectCategory.length; i++) {
           var formula = _gradeDefinitionsForSpecificSubjectCategory[i].Formula
             .replaceAll("[Mark]", result.Marks)
-          console.log("formula", formula)
+          //console.log("formula", formula)
           if (evaluate(formula)) {
             _StudentGrade = _gradeDefinitionsForSpecificSubjectCategory[i].GradeName;
             break;
@@ -1345,7 +1345,7 @@ export class VerifyResultsComponent implements OnInit {
 
     var _startDate, _endDate;
     if (examObj.length > 0 && examObj[0].AttendanceStartDate != null) {
-      //console.log("examObj[0].AttendanceStartDate",examObj[0].AttendanceStartDate)
+      ////console.log("examObj[0].AttendanceStartDate",examObj[0].AttendanceStartDate)
       _startDate = moment(examObj[0].AttendanceStartDate).format('YYYY-MM-DD');
       _endDate = moment(examObj[0].EndDate).format('YYYY-MM-DD');
       _filter += ' and AttendanceDate ge ' + _startDate + ' and AttendanceDate le ' + _endDate;
@@ -1423,7 +1423,7 @@ export class VerifyResultsComponent implements OnInit {
           }
         })
         let test = this.ClassSubjectComponents.filter(f=>f.ClassSubjectId ==1136)
-        console.log("ClassSubjectComponents",test)
+        //console.log("ClassSubjectComponents",test)
         this.loading = false;
         this.PageLoading = false;
       })

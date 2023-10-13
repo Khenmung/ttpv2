@@ -261,7 +261,7 @@ export class BalancesheetComponent implements OnInit {
       });
   }
   FormatData(pdata) {
-    //console.log("this.AccountingVoucherList", this.AccountingVoucherList)
+    ////console.log("this.AccountingVoucherList", this.AccountingVoucherList)
     var sql="select sum(BaseAmount) as Amount,Debit,AccountName,AccountNature,"+
     "AssetSequence,AssetPlus,LnESequence,LnEPlus from ? GROUP BY AccountName,Debit,AccountNature,AssetSequence,AssetPlus,LnESequence,LnEPlus order by AccountName";
      var groupbyDebitCredit = alasql(sql,[pdata]);
@@ -301,7 +301,7 @@ export class BalancesheetComponent implements OnInit {
         result.push(temprow);
       }
     })
-    //console.log("groupbyDebitCredit", groupbyDebitCredit)
+    ////console.log("groupbyDebitCredit", groupbyDebitCredit)
 
     result = result.filter((f:any) => f.Dr!=undefined)
     result.forEach(row => {
@@ -390,7 +390,7 @@ export class BalancesheetComponent implements OnInit {
       this.AccountingVoucherData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
       delete this.AccountingVoucherData["UpdatedDate"];
       delete this.AccountingVoucherData["UpdatedBy"];
-      //console.log('to insert', this.AccountingVoucherData)
+      ////console.log('to insert', this.AccountingVoucherData)
       this.insert(row);
     }
     else {
@@ -398,7 +398,7 @@ export class BalancesheetComponent implements OnInit {
       delete this.AccountingVoucherData["CreatedBy"];
       this.AccountingVoucherData["UpdatedDate"] = new Date();
       this.AccountingVoucherData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-      //console.log('to update', this.AccountingVoucherData)
+      ////console.log('to update', this.AccountingVoucherData)
       this.update(row);
     }
     //        }
@@ -492,7 +492,7 @@ export class BalancesheetComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         data.value.forEach(f => {
           var obj = this.AccountNatureList.filter(n => n.AccountNatureId == f.AccountNatureId)
           if (obj.length > 0) {

@@ -255,7 +255,7 @@ export class ClassgroupmappingComponent implements OnInit {
           this.ClassGroupMappingData.BatchId = this.SelectedBatchId;
           this.ClassGroupMappingData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ClassGroupMappingData.SubOrgId = this.SubOrgId;
-          //console.log("this.ClassGroupMappingData", this.ClassGroupMappingData)
+          ////console.log("this.ClassGroupMappingData", this.ClassGroupMappingData)
           if (this.ClassGroupMappingData.ClassGroupMappingId == 0) {
             this.ClassGroupMappingData["CreatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
             this.ClassGroupMappingData["CreatedBy"] = this.LoginUserDetail[0]["userId"];

@@ -149,7 +149,7 @@ export class GenerateCertificateComponent implements OnInit {
     const styleEl = window.document.createElement('style');
     styleEl.innerText = strStyle;
     headEl.appendChild(styleEl);
-    ////console.log('dd', styleEl)
+    //////console.log('dd', styleEl)
   }
   private _filter(name: string): IStudent[] {
 
@@ -276,7 +276,7 @@ export class GenerateCertificateComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       }
       else {
-        ////console.log('data.value',data.value)
+        //////console.log('data.value',data.value)
         debugger;
         this.StudentForVariables = [];
         var _groupName = '', _activityName = '', _activityCategory = '', _activitySubCategory = '', _activitySession = '', _Rank = '';
@@ -376,7 +376,7 @@ export class GenerateCertificateComponent implements OnInit {
           })
         })
 
-        //console.log('this.StudentForVariables',this.StudentForVariables);
+        ////console.log('this.StudentForVariables',this.StudentForVariables);
         this.GenerateCertificate();
 
       }
@@ -539,7 +539,7 @@ export class GenerateCertificateComponent implements OnInit {
     if (this.backgroundimage.indexOf('http') == -1) {
       this.backgroundimage = 'assets/images/certificatebackground.jpg';
     }
-    ////console.log("_certificateBody",_certificateBody);
+    //////console.log("_certificateBody",_certificateBody);
     // this.Organization[0].forEach(orgdet => {
     //   header.Description = header.Description.replaceAll("[" + orgdet.name + "]", orgdet.val);
     // })
@@ -572,7 +572,7 @@ export class GenerateCertificateComponent implements OnInit {
       this.StyleStr += s.Description;
     });
     //this.styleStrUse ="{"+ styleStr.split('{').join(':{').split('}').join('},') + "}";
-    //console.log("this.styleStr.toString()", styleStr)
+    ////console.log("this.styleStr.toString()", styleStr)
 
     this.loadTheme(this.StyleStr);
 
@@ -745,7 +745,7 @@ export class GenerateCertificateComponent implements OnInit {
             CreatedBy: this.LoginUserDetail[0]["userId"],
             UpdatedDate: new Date()
           }
-          //          console.log("lskjd", insertCertificate);
+          //          //console.log("lskjd", insertCertificate);
           this.insert(insertCertificate);
         }
       });
@@ -953,7 +953,7 @@ export class GenerateCertificateComponent implements OnInit {
     //   .subscribe((data: any) => {
     debugger;
     //this.Students = [...data.value];
-    //  //console.log('data.value', data.value);
+    //  ////console.log('data.value', data.value);
     this.Students = [];
     var _students: any = this.tokenStorage.getStudents()!;
     if (_students.length > 0) {
@@ -1266,8 +1266,8 @@ export class GenerateCertificateComponent implements OnInit {
           }
           ]
         })
-        //console.log("this.Organization",this.Organization);
-        //console.log("this.CommonHeader.",this.CommonHeader);
+        ////console.log("this.Organization",this.Organization);
+        ////console.log("this.CommonHeader.",this.CommonHeader);
 
         this.CommonHeader.forEach(header => {
           this.Organization[0].forEach(orgdet => {
@@ -1398,7 +1398,7 @@ export class GenerateCertificateComponent implements OnInit {
       })
   }
   UpdateStudentCertificates() {
-    //console.log("hi")
+    ////console.log("hi")
   }
   getCertificateDropDown(dropdowntype) {
     var dropdownValues :any[]= [];

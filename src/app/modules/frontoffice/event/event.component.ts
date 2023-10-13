@@ -197,7 +197,7 @@ export class EventComponent implements OnInit {
             this.EventsData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.EventsData["UpdatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
             delete this.EventsData["UpdatedBy"];
-            //console.log('this.EventsData', this.EventsData)
+            ////console.log('this.EventsData', this.EventsData)
             this.insert(row);
           }
           else {
@@ -205,7 +205,7 @@ export class EventComponent implements OnInit {
             delete this.EventsData["CreatedBy"];
             this.EventsData["UpdatedDate"] = new Date();
             this.EventsData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log('this.EventsData', this.EventsData)
+            //console.log('this.EventsData', this.EventsData)
             this.update(row);
           }
         }

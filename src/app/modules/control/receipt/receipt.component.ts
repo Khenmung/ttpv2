@@ -147,7 +147,7 @@ export class ReceiptComponent implements OnInit {
       //this.studentInfoTodisplay.currentbatchId = this.SelectedBatchId;
      
       this.studentInfoTodisplay.StudentClassId = localStorage.getItem("TempStudentClassId");
-      console.log("studentclassid",this.studentInfoTodisplay.StudentClassId);
+      //console.log("studentclassid",this.studentInfoTodisplay.StudentClassId);
       this.shareddata.CurrentFeeDefinitions.subscribe(b => (this.FeeDefinitions = b));
       debugger;
       this.GetMasterData();
@@ -285,7 +285,7 @@ export class ReceiptComponent implements OnInit {
           }
         })
         this.calculateTotal();
-        console.log("this.StudentClassFees", this.StudentClassFees)
+        //console.log("this.StudentClassFees", this.StudentClassFees)
         this.StudentFeePaymentList = this.StudentFeePaymentList.sort((a, b) => a.indx - b.indx);
         this.dataReceiptSource = new MatTableDataSource<any>(this.FeeReceipt);
         this.dataReceiptSource.sort = this.sort;
@@ -323,7 +323,7 @@ export class ReceiptComponent implements OnInit {
       this.ReceiptHeading.forEach(f => {
         f.Description = f.Description ? JSON.parse("{" + f.Description + "}") : ''
       })
-      //console.log("this.ReceiptHeading",this.ReceiptHeading);
+      ////console.log("this.ReceiptHeading",this.ReceiptHeading);
       this.PaymentTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.FEEPAYMENTTYPE);
       this.loading = false; this.PageLoading = false;
     });

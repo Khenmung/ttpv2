@@ -202,7 +202,7 @@ export class StudentviewComponent implements OnInit {
   @ViewChildren("allTabs") allTabs: QueryList<any>
 
   ngAfterViewInit() {
-    ////console.log('total tabs: ' + this.allTabs.first._tabs.length);
+    //////console.log('total tabs: ' + this.allTabs.first._tabs.length);
   }
 
   get f() { return this.studentForm.controls }
@@ -214,7 +214,7 @@ export class StudentviewComponent implements OnInit {
   tabChanged(tabChangeEvent: number) {
     this.selectedIndex = tabChangeEvent;
     this.navigateTab(this.selectedIndex);
-    //   //console.log('tab selected: ' + tabChangeEvent);
+    //   ////console.log('tab selected: ' + tabChangeEvent);
   }
   public nextStep() {
     this.selectedIndex += 1;
@@ -522,7 +522,7 @@ AttendanceAbsentId=0;
   GetMasterData() {
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
-        ////console.log(data.value);
+        //////console.log(data.value);
         this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
         this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
         this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
@@ -693,7 +693,7 @@ AttendanceAbsentId=0;
       BatchId: this.tokenStorage.getSelectedBatchId()
     });
     //debugger;
-    console.log("studentData", this.studentData)
+    //console.log("studentData", this.studentData)
     if (this.studentForm.get("StudentId")?.value == 0) {
       //this.studentData[0].EmailAddress =this.studentForm.get("EmailAddress")?.value;
       this.save();
@@ -738,7 +738,7 @@ AttendanceAbsentId=0;
           }
 
         }, error => {
-          console.log("student insert", error)
+          //console.log("student insert", error)
           var errormsg = globalconstants.formatError(error);
           this.loading = false;
           this.contentservice.openSnackBar(errormsg, globalconstants.ActionText, globalconstants.RedBackground);
@@ -747,7 +747,7 @@ AttendanceAbsentId=0;
   }
 
   update() {
-    ////console.log('student', this.studentForm.value)
+    //////console.log('student', this.studentForm.value)
 
     this.dataservice.postPatch('Students', this.studentData[0], this.StudentId, 'patch')
       .subscribe((result: any) => {
@@ -759,7 +759,7 @@ AttendanceAbsentId=0;
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
       }, error => {
         this.loading = false;
-        console.log("student update", error);
+        //console.log("student update", error);
       })
   }
   CreateInvoice() {
@@ -773,16 +773,16 @@ AttendanceAbsentId=0;
           },
             error => {
               this.loading = false;
-              console.log("error in createInvoice", error);
+              //console.log("error in createInvoice", error);
             })
       },
         error => {
           this.loading = false;
-          console.log("error in getinvoice", error);
+          //console.log("error in getinvoice", error);
         })
   }
   adjustDateForTimeOffset(dateToAdjust) {
-    ////console.log(dateToAdjust)
+    //////console.log(dateToAdjust)
     var offsetMs = dateToAdjust.getTimezoneOffset() * 60000;
     return new Date(dateToAdjust.getTime() - offsetMs);
   }
@@ -997,7 +997,7 @@ AttendanceAbsentId=0;
         this.PageLoading = false;
       },
         err => {
-          console.log("error", err)
+          //console.log("error", err)
         });
   }
 

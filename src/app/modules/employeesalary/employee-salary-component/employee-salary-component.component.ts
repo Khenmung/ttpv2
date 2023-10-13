@@ -222,7 +222,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
             delete this.EmployeeSalaryComponentData["UpdatedBy"];
             
             this.EmployeeSalaryComponentToSave.push(this.EmployeeSalaryComponentData)
-            console.log('EmployeeSalaryComponentData', this.EmployeeSalaryComponentData)
+            //console.log('EmployeeSalaryComponentData', this.EmployeeSalaryComponentData)
             this.insert(row);
           }
           else {
@@ -420,7 +420,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
           });
         })
       })
-    //console.log('this.VariableConfigs', this.VariableConfigs);
+    ////console.log('this.VariableConfigs', this.VariableConfigs);
   }
   GetEmpComponents() {
 
@@ -475,7 +475,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
 
     filterstr += ' and Month eq ' + _Month
     this.loading = true;
-    //console.log("Month", this.Month);
+    ////console.log("Month", this.Month);
     let list: List = new List();
 
     list.fields = [
@@ -500,7 +500,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
       .subscribe((data: any) => {
         debugger;
         ///////////////////
-        console.log("data[0].value",data[0].value)
+        //console.log("data[0].value",data[0].value)
         var _EmpSalaryComponents = [...data[0].value];
         var _EmpVariables = [...data[1].value];
         this.EmployeeVariable = [];
@@ -595,7 +595,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
         else {
           this.EmployeeSalaryComponentToSave = [];
           var formula = '';
-          //console.log("before", this.EmployeeSalaryComponentList)
+          ////console.log("before", this.EmployeeSalaryComponentList)
           this.EmployeeSalaryComponentList.forEach(sal => {
             formula = sal["ActualFormulaOrAmount"];
             if (formula.length == 0)
@@ -616,7 +616,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
               SubOrgId: this.SubOrgId,
             })
           })
-          console.log("this.EmployeeSalaryComponentToSave", this.EmployeeSalaryComponentToSave);
+          //console.log("this.EmployeeSalaryComponentToSave", this.EmployeeSalaryComponentToSave);
           this.dataservice.postPatch('EmpEmployeeSalaryComponents', this.EmployeeSalaryComponentToSave, 0, 'post')
             .subscribe(
               (data: any) => {
@@ -687,7 +687,7 @@ export class EmployeeSalaryComponentComponent implements OnInit {
     // .subscribe((data: any) => {
     //this.CurrentEmployee = 
 
-    //console.log("v inside", this.VariableConfigs)
+    ////console.log("v inside", this.VariableConfigs)
     //})
   }
   getMasterText(arr, itemId) {

@@ -293,7 +293,7 @@ export class searchstudentComponent implements OnInit {
         group: this.Remarks
       }
     )
-    //console.log("Groups", this.Groups)
+    ////console.log("Groups", this.Groups)
     this.UploadTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.UPLOADTYPE);
     this.shareddata.ChangeUploadType(this.UploadTypes);
 
@@ -686,7 +686,7 @@ export class searchstudentComponent implements OnInit {
 
     // this.dataservice.get(list)
     //   .subscribe((data: any) => {
-    //     ////console.log(data.value);
+    //     //////console.log(data.value);
     //     //if (data.value.length > 0) {
     //     //var formattedData: any[] = [];
     //     if (data.value.length > 0) {
@@ -758,7 +758,7 @@ export class searchstudentComponent implements OnInit {
     if (this.ELEMENT_DATA.length == 0)
       this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
     //}
-    //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
+    ////console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
     this.ELEMENT_DATA = this.ELEMENT_DATA.sort((a, b) => a["RollNo"] - b["RollNo"])
     this.dataSource = new MatTableDataSource<IStudent>(this.ELEMENT_DATA);
     this.dataSource.paginator = this.paginator;

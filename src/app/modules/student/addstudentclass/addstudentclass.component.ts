@@ -342,7 +342,7 @@ export class AddstudentclassComponent implements OnInit {
             this.studentclassData.StudentId = this.StudentId;
             this.studentclassData.StudentClassId = row.StudentClassId;
             this.studentclassData.IsCurrent = row.IsCurrent;
-            console.log("this.studentclassData", this.studentclassData)
+            //console.log("this.studentclassData", this.studentclassData)
             if (this.studentclassData.StudentClassId == 0) {
               this.StudentClassId = 0;
               this.studentclassData.AdmissionNo = _year + ClassStrength;
@@ -480,7 +480,7 @@ export class AddstudentclassComponent implements OnInit {
 
               })
             })
-            // console.log("studentfeedetailxxxx",studentfeedetail)
+            // //console.log("studentfeedetailxxxx",studentfeedetail)
             this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
               .subscribe((data: any) => {
                 this.loading = false;
@@ -488,7 +488,7 @@ export class AddstudentclassComponent implements OnInit {
               },
                 error => {
                   this.loading = false;
-                  console.log("create invoice error", error);
+                  //console.log("create invoice error", error);
                   this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
                 })
           })

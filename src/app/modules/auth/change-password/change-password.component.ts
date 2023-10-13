@@ -85,7 +85,7 @@ export class ChangePasswordComponent implements OnInit { PageLoading=true;
     debugger;
     this.authService.CallAPI(payload,'ChangePassword').subscribe(
       (data: any) => {
-        ////console.log(data);
+        //////console.log(data);
         this.isSuccessful = true;
         this.contentservice.openSnackBar("Password changed.",globalconstants.ActionText,globalconstants.BlueBackground);
         this.tokenService.signOut();
@@ -104,7 +104,7 @@ export class ChangePasswordComponent implements OnInit { PageLoading=true;
           }
 
           this.isSignUpFailed = true;
-          //console.log(err.error)
+          ////console.log(err.error)
         }
       }
     );

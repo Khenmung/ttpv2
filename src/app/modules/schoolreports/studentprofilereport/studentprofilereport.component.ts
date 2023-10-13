@@ -174,7 +174,7 @@ export class StudentprofilereportComponent implements OnInit {
       this.contentservice.openSnackBar("Please select evaluation type.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    console.log("ClassEvaluations", this.ClassEvaluations)
+    //console.log("ClassEvaluations", this.ClassEvaluations)
     var _classEvaluations = this.ClassEvaluations.filter((f:any) => f.EvaluationTypeId == _searchEvaluationTypeId
       && (f.ClassId == 0 || f.ClassId == this.ClassId));
     if (_searchExamId > 0) {
@@ -249,7 +249,7 @@ export class StudentprofilereportComponent implements OnInit {
           }
           this.StudentEvaluationList.push(item);
         })
-        console.log("this.StudentEvaluationList", this.StudentEvaluationList)
+        //console.log("this.StudentEvaluationList", this.StudentEvaluationList)
         this.dataSource = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);
         this.loadingFalse();
       });
@@ -273,7 +273,7 @@ export class StudentprofilereportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           this.Students = data.value.map(student => {
             var _classNameobj = this.Classes.filter(c => c.ClassId == student.ClassId);
@@ -372,7 +372,7 @@ export class StudentprofilereportComponent implements OnInit {
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     // var _classGroupId = this.searchForm.get("searchClassGroupId")?.value;
     // var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
-    // //console.log("classgroup",this.ClassGroups)
+    // ////console.log("classgroup",this.ClassGroups)
     // if (_evaluationMasterId)
     //   filterStr += " and EvaluationMasterId eq " + _evaluationMasterId;
     // if (_classGroupId)
@@ -423,7 +423,7 @@ export class StudentprofilereportComponent implements OnInit {
     var item = this.StudentEvaluationList.filter((f:any) => f.StudentEvaluationId == row.StudentEvaluationId);
     item[0].SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.CategoryId);
 
-    ////console.log("dat", this.StudentEvaluationList);
+    //////console.log("dat", this.StudentEvaluationList);
     this.dataSource = new MatTableDataSource(this.StudentEvaluationList);
 
 
@@ -450,7 +450,7 @@ export class StudentprofilereportComponent implements OnInit {
   }
   GetClassEvaluations() {
 
-    ////console.log(this.LoginUserDetail);
+    //////console.log(this.LoginUserDetail);
 
     let list: List = new List();
     list.fields = [
@@ -473,7 +473,7 @@ export class StudentprofilereportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           this.ClassEvaluations = data.value.map(clseval => {
             var _categoryName = ''

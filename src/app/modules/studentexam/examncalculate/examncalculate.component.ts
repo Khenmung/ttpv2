@@ -163,7 +163,7 @@ export class ExamncalculateComponent implements OnInit {
           this.ExamNCalculateData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ExamNCalculateData.SubOrgId = this.SubOrgId;
 
-          //console.log("this.ExamNCalculateData", this.ExamNCalculateData);
+          ////console.log("this.ExamNCalculateData", this.ExamNCalculateData);
           if (this.ExamNCalculateData.ExamNCalculateId == 0) {
             this.ExamNCalculateData["CreatedDate"] = new Date();
             this.ExamNCalculateData["CreatedBy"] = this.LoginUserDetail[0]["userId"];

@@ -159,7 +159,7 @@ export class GetreportComponent implements OnInit {
     if (perObj.length > 0) {
       this.Permission = perObj[0].permission;
     }
-    ////console.log('this.Permission', this.Permission)
+    //////console.log('this.Permission', this.Permission)
     if (this.Permission != 'deny') {
 
       this.ApplicationName = this.LoginUserDetail[0]["org"];
@@ -232,7 +232,7 @@ export class GetreportComponent implements OnInit {
           this.ReportConfigItemData.ReportName = row.ReportName;
           this.ReportConfigItemData.TableNames = row.TableNames;
 
-          ////console.log('data', this.ReportConfigItemData);
+          //////console.log('data', this.ReportConfigItemData);
 
           if (this.ReportConfigItemData.ReportConfigItemId == 0) {
             this.ReportConfigItemData["CreatedDate"] = new Date();
@@ -378,7 +378,7 @@ export class GetreportComponent implements OnInit {
           reportname.DisplayName = reportname.DisplayName == null ? reportname.ReportName : reportname.DisplayName;
           return reportname;
         });
-        //console.log("this.ReportNames", this.ReportNames)
+        ////console.log("this.ReportNames", this.ReportNames)
         this.GetMyReportNames();
         this.loading = false; this.PageLoading = false;
       });
@@ -387,7 +387,7 @@ export class GetreportComponent implements OnInit {
     debugger;
     this.ReportConfigItemList= [];
     this.AvailableReportNames = this.ReportNames.filter(a => a.ParentId == this.BaseReportId);
-    //console.log("this.AvailableReportNames", this.AvailableReportNames);
+    ////console.log("this.AvailableReportNames", this.AvailableReportNames);
     //this.SelectedReportBase =this.AvailableReportNames.filter((f:any)=>f.ReportName.toLowerCase()=='student report')
     this.AvailableReportNames.forEach(r => {
       var temp = this.ReportNames.filter(p => p.ParentId == r.ReportConfigItemId && p.OrgId != 0)
@@ -459,7 +459,7 @@ export class GetreportComponent implements OnInit {
           _ParentId = SelectedReport[0].ParentId;
         }
         var baseReportColumns = this.ReportNames.filter((f:any) => f.ParentId == _ParentId && f.OrgId == 0);
-        //console.log("baseReportColumns", baseReportColumns)
+        ////console.log("baseReportColumns", baseReportColumns)
         var _tableNames = this.AvailableReportNames.filter(m => m.ReportConfigItemId == _ParentId)[0].TableNames.split(',');
         //var _baseColumns = this.ReportNames.filter((f:any)=>f.ParentId == _ParentId && f.OrgId ==0)
         this.ColumnsOfSelectedReports = data.value.map(m => {
@@ -483,7 +483,7 @@ export class GetreportComponent implements OnInit {
         for (var i = 1; i < _tableNames.length; i++) {
           list.lookupFields.push(_tableNames[i])
         }
-        //console.log("ColumnsOfSelectedReports", this.ColumnsOfSelectedReports)
+        ////console.log("ColumnsOfSelectedReports", this.ColumnsOfSelectedReports)
         // filter whose tablenames column are empty
         var fitleredNotNestedColumns = this.ColumnsOfSelectedReports.filter((f:any) => f.TableNames == '');
         var filteredNestedColumns = this.ColumnsOfSelectedReports.filter((f:any) => f.TableNames != '');
@@ -507,7 +507,7 @@ export class GetreportComponent implements OnInit {
         var filter = this.FilterCriteria.join(" and ")
         if (filter.length > 0)
           filter += " and ";
-        ////console.log('filter str', filter);
+        //////console.log('filter str', filter);
 
         list.filter = [this.FilterOrgSubOrg + filter];
 
@@ -518,7 +518,7 @@ export class GetreportComponent implements OnInit {
             //       res.StudentClasses = res.StudentClasses.filter((f:any)=>f.BatchId == this.SelectedBatchId);
             //       return res;
             // });
-            //console.log("result",result)
+            ////console.log("result",result)
             //debugger;
             //var whereDisplayNameNotEmpty = this.ColumnsOfSelectedReports.filter((f:any) => f.DisplayName.length > 0)
             var colTem :any[]= [];
@@ -820,7 +820,7 @@ export class GetreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           var _students: any = this.tokenStorage.getStudents()!;
           _students = _students.filter(stud => data.value.findIndex(fi => fi.StudentId == stud.StudentId) > -1)
@@ -891,7 +891,7 @@ export class GetreportComponent implements OnInit {
   onNgModelChange(event) {
     debugger;
     this.searchCondition1 = event.option[0].value;
-    //console.log('dd', this.searchCondition1);
+    ////console.log('dd', this.searchCondition1);
   }
   ExportToExcel() {
     const datatoExport: Partial<any>[] = [...this.ReportConfigItemList];

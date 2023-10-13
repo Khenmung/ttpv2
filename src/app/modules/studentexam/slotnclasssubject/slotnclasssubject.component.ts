@@ -207,7 +207,7 @@ export class SlotnclasssubjectComponent implements OnInit {
     })
   }
   UpdateOrSave(row) {
-    console.log("row", row)
+    //console.log("row", row)
     this.loading = true;
     debugger;
     var subobject = row.Subject.filter(sub => sub.value == 1)
@@ -262,7 +262,7 @@ export class SlotnclasssubjectComponent implements OnInit {
         }, err => {
           row.Action = false;
           this.loadingFalse();
-          console.log("slot and subject insert", err);
+          //console.log("slot and subject insert", err);
           this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
         });
   }
@@ -281,7 +281,7 @@ export class SlotnclasssubjectComponent implements OnInit {
         }, err => {
           row.Action = false;
           this.loadingFalse();
-          console.log("slot and subject update", err);
+          //console.log("slot and subject update", err);
           this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
         });
   }
@@ -309,7 +309,7 @@ export class SlotnclasssubjectComponent implements OnInit {
       this.SlotNClassSubjectData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
       this.SlotNClassSubjectData["UpdatedDate"] = new Date();
       delete this.SlotNClassSubjectData["UpdatedBy"];
-      ////console.log('exam slot', this.SlotNClassSubjectData)
+      //////console.log('exam slot', this.SlotNClassSubjectData)
       this.insert(row);
     }
     else {
@@ -344,7 +344,7 @@ export class SlotnclasssubjectComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         this.ClassSubjectList = [];
         data.value.forEach(item => {
           var _class = '';
@@ -368,7 +368,7 @@ export class SlotnclasssubjectComponent implements OnInit {
           }
         })
         this.loading = false; this.PageLoading = false;
-        //console.log("this.ClassSubjectList", this.ClassSubjectList);
+        ////console.log("this.ClassSubjectList", this.ClassSubjectList);
       });
   }
 
@@ -437,7 +437,7 @@ export class SlotnclasssubjectComponent implements OnInit {
             }
           }
         })
-        ////console.log('this', this.Exams)
+        //////console.log('this', this.Exams)
         this.Exams = this.Exams.sort((a, b) => {
           return this.getTime(a.StartDate) - this.getTime(b.StartDate)
         })
@@ -494,7 +494,7 @@ export class SlotnclasssubjectComponent implements OnInit {
         })
         this.ExamSlots = [...result];//.sort((a, b) => a.ExamDate.getTime() - b.ExamDate.getTime())
         //this.DistinctExamDate = alasql("select DISTINCT ExamId,ExamDate,ExamDateDetail from ? group by ExamId,ExamDate,ExamDateDetail",[result]);        
-        //console.log("this.DistinctExamDate",this.DistinctExamDate)
+        ////console.log("this.DistinctExamDate",this.DistinctExamDate)
       })
   }
   GetSelectedExamSlot() {
@@ -528,7 +528,7 @@ export class SlotnclasssubjectComponent implements OnInit {
           m.Tooltip = moment(m.ExamDate).format('DD/MM/yyyy') + " - " + _slotName;
           return m;
         });
-        //console.log("allAllSubjectsOfSelectedExam",this.AllSubjectsOfSelectedExam)
+        ////console.log("allAllSubjectsOfSelectedExam",this.AllSubjectsOfSelectedExam)
       })
   }
   emptyresult() {
@@ -709,7 +709,7 @@ export class SlotnclasssubjectComponent implements OnInit {
         if (this.StoreForUpdate.length == 0) {
           this.contentservice.openSnackBar("No record found! Subject not defined in class subject module.", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        //console.log('ClassWiseSubjectDisplay', this.ClassWiseSubjectDisplay)
+        ////console.log('ClassWiseSubjectDisplay', this.ClassWiseSubjectDisplay)
         this.dataSource = new MatTableDataSource<any>(this.ClassWiseSubjectDisplay);
         this.loading = false; this.PageLoading = false;
       })

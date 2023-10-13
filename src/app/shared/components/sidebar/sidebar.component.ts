@@ -97,7 +97,7 @@ export class SidebarComponent implements OnInit {
 
 
         this.shareddata.ChangePageData(this.sideMenu);
-        console.log("inside sidebar")
+        //console.log("inside sidebar")
         this.tokenStorage.saveMenuData(this.sideMenu)
       }
     });

@@ -143,8 +143,8 @@ export class UserconfigreportnameComponent implements OnInit {
       Active: 0,
       Action: false
     }
-    ////console.log('DisplayColumns', this.DisplayColumns)
-    ////console.log('this.ReportConfigItemList', this.ReportConfigItemList)
+    //////console.log('DisplayColumns', this.DisplayColumns)
+    //////console.log('this.ReportConfigItemList', this.ReportConfigItemList)
     this.ReportConfigItemList.push(newdata);
     this.dataSource = new MatTableDataSource(this.ReportConfigItemList);
     this.dataSource.paginator = this.paginator;
@@ -198,7 +198,7 @@ export class UserconfigreportnameComponent implements OnInit {
           this.ReportConfigItemData.ReportName = row.ReportName;
           this.ReportConfigItemData.TableNames = row.TableNames;
 
-          ////console.log('data', this.ReportConfigItemData);
+          //////console.log('data', this.ReportConfigItemData);
 
           if (this.ReportConfigItemData.ReportConfigItemId == 0) {
             this.ReportConfigItemData["CreatedDate"] = new Date();

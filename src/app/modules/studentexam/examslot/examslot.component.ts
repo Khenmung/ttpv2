@@ -110,7 +110,7 @@ export class ExamslotComponent implements OnInit {
   }
   AssignExamDate(selected) {
     var startdate = this.Exams.filter((f:any) => f.ExamId == selected.value)[0].StartDate;
-    //console.log("value", selected.value)
+    ////console.log("value", selected.value)
 
     this.searchForm.patchValue({ "searchExamDate": startdate });
     this.ClearData();
@@ -189,7 +189,7 @@ export class ExamslotComponent implements OnInit {
     list.fields = ["ExamSlotId"];
     list.PageName = "ExamSlots";
     list.filter = [checkFilterString];
-    console.log("query",checkFilterString)
+    //console.log("query",checkFilterString)
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -217,7 +217,7 @@ export class ExamslotComponent implements OnInit {
             this.ExamSlotsData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.ExamSlotsData["UpdatedDate"] = new Date();
             delete this.ExamSlotsData["UpdatedBy"];
-            console.log('exam slot', this.ExamSlotsData)
+            //console.log('exam slot', this.ExamSlotsData)
             this.insert(row);
           }
           else {
@@ -225,12 +225,12 @@ export class ExamslotComponent implements OnInit {
             delete this.ExamSlotsData["CreatedBy"];
             this.ExamSlotsData["UpdatedDate"] = new Date();
             this.ExamSlotsData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log('ExamSlotsData', this.ExamSlotsData);
+            //console.log('ExamSlotsData', this.ExamSlotsData);
             this.update(row);
           }
         }
       }, error => {
-        console.log("error in examslot duplicate check", error)
+        //console.log("error in examslot duplicate check", error)
       });
 
   }
@@ -282,11 +282,11 @@ export class ExamslotComponent implements OnInit {
             })
           }
         })
-        //console.log("exam", this.Exams)
+        ////console.log("exam", this.Exams)
         this.loading = false;
         this.PageLoading = false;
       },err=>{
-        console.log("error in get exams",err);
+        //console.log("error in get exams",err);
       })
   }
   GetExamSlots() {
@@ -385,7 +385,7 @@ export class ExamslotComponent implements OnInit {
         })
         //  _examDate.setDate(_examDate.getDate() + 1);
         //}
-        ////console.log('this', this.ExamSlots)
+        //////console.log('this', this.ExamSlots)
         this.dataSource = new MatTableDataSource<IExamSlots>(this.ExamSlots);
         this.loading = false; this.PageLoading = false;
       })

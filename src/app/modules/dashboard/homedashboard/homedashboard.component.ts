@@ -81,8 +81,8 @@ export class HomeDashboardComponent implements OnInit {
       searchSubOrgId: [0]
     })
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //console.log("HOme dashboard init")
-    //console.log('role',this.Role);
+    ////console.log("HOme dashboard init")
+    ////console.log('role',this.Role);
     //localStorage.setItem('loggedTime','10/11/2023');
     let loggedin = moment(localStorage.getItem('loggedTime'));
     //var loggedTime = new Date(loggedin);
@@ -111,7 +111,7 @@ export class HomeDashboardComponent implements OnInit {
             _today.setHours(0, 0, 0, 0);
             const diffTime = Math.abs(_validTo.getTime() - _today.getTime());
             const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-            //console.log("diffDays", diffDays)
+            ////console.log("diffDays", diffDays)
             var alertDate = localStorage.getItem("alertdate");
             var todaystring = moment(new Date()).format('DD-MM-YYYY')
 
@@ -200,11 +200,11 @@ export class HomeDashboardComponent implements OnInit {
   */
   CheckLocalStorage() {
     if (this.lsTest()) {
-      console.log('localStorage where used'); // log
+      //console.log('localStorage where used'); // log
     } else {
       this.contentservice.openSnackBar("Browser does not support this application.", globalconstants.ActionText, globalconstants.RedBackground);
       document.cookie = "name=1; expires=Mon, 28 Mar 2016 12:00:00 UTC";
-      console.log('Cookie where used'); // log
+      //console.log('Cookie where used'); // log
     }
   }
   sideMenu: any[] = [];
@@ -212,7 +212,7 @@ export class HomeDashboardComponent implements OnInit {
     debugger;
     //let containAdmin = window.location.href.toLowerCase().indexOf('admin');
     let strFilter = '';
-    //console.log("in dashboard")
+    ////console.log("in dashboard")
     strFilter = "PlanId eq " + this.LoginUserDetail[0]["planId"] + " and ApplicationId eq " + pSelectedAppId + " and Active eq 1";
 
     let list: List = new List();
@@ -326,7 +326,7 @@ export class HomeDashboardComponent implements OnInit {
             //this.tokenStorage.saveSubOrgId(_SubOrg.SubOrgId);
           }, error => {
             this.contentservice.openSnackBar("error occured. Please contact administrator.", globalconstants.ActionText, globalconstants.RedBackground);
-            console.log("customerplan insert error:", error.error);
+            //console.log("customerplan insert error:", error.error);
           });
     }
     else {
@@ -671,7 +671,7 @@ export class HomeDashboardComponent implements OnInit {
         this.GetMenuData(this.SelectedAppId);
       }
       //  });
-      //console.log("this.SelectedAppName.toLowerCase()",this.SelectedAppName.toLowerCase())
+      ////console.log("this.SelectedAppName.toLowerCase()",this.SelectedAppName.toLowerCase())
 
 
       // if (this.SelectedAppId > 0) {
@@ -763,7 +763,7 @@ export class HomeDashboardComponent implements OnInit {
           this.Students.push(d);
         });
         this.tokenStorage.saveStudents(this.Students);
-        //console.log("previous students", this.Students);
+        ////console.log("previous students", this.Students);
         this.LoadingFalse();
         this.PageLoading = false;
         if (this.Submitted) {
@@ -791,7 +791,7 @@ export class HomeDashboardComponent implements OnInit {
         if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student')
           this.tokenStorage.saveClassId(__studentClasses[0].ClassId);
         //let _studentWithClass = _students.map((item, i) => Object.assign({}, item, __studentClasses[i]));
-        //console.log("_studentWithClass",_studentWithClass)
+        ////console.log("_studentWithClass",_studentWithClass)
         var _classNameobj: any[] = [];
         var _className = '';
         var _house = '';
@@ -903,7 +903,7 @@ export class HomeDashboardComponent implements OnInit {
     //   "body": "WhatsApp API on Chat API from TTP again"
     // }
     this.http.post(api, data).subscribe((data: any) => {
-      //console.log("messagereturn",data);
+      ////console.log("messagereturn",data);
     });
   }
 }

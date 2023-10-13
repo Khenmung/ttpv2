@@ -157,7 +157,7 @@ export class LeavepolicyComponent implements OnInit {
 
       if (b.length != 0) {
         _sessionStartEnd = { ...b };
-        //console.log('b', b)
+        ////console.log('b', b)
         var _Year = new Date(_sessionStartEnd.StartDate).getFullYear();
         var startMonth = new Date(_sessionStartEnd.StartDate).getMonth();
 
@@ -173,7 +173,7 @@ export class LeavepolicyComponent implements OnInit {
         }
       }
     });
-    ////console.log('monthArray', monthArray);
+    //////console.log('monthArray', monthArray);
     //}, 3000);
     return monthArray;
   }
@@ -212,13 +212,13 @@ export class LeavepolicyComponent implements OnInit {
           this.LeavePolicyData.BatchId = this.SelectedBatchId;
           this.LeavePolicyData.Active = row.Active;
 
-          //console.log('data', this.LeavePolicyData);
+          ////console.log('data', this.LeavePolicyData);
           if (this.LeavePolicyData.LeavePolicyId == 0) {
             this.LeavePolicyData["CreatedDate"] = new Date();
             this.LeavePolicyData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.LeavePolicyData["UpdatedDate"] = new Date();
             delete this.LeavePolicyData["UpdatedBy"];
-            ////console.log('exam slot', this.ExamStudentSubjectResultData)
+            //////console.log('exam slot', this.ExamStudentSubjectResultData)
             this.insert(row);
           }
           else {
@@ -251,7 +251,7 @@ export class LeavepolicyComponent implements OnInit {
         });
   }
   update(row) {
-    ////console.log("this.EmpComponentData", this.EmpComponentData);
+    //////console.log("this.EmpComponentData", this.EmpComponentData);
     this.dataservice.postPatch(this.LeavePolicyListName, this.LeavePolicyData, this.LeavePolicyData.LeavePolicyId, 'patch')
       .subscribe(
         (data: any) => {
@@ -349,7 +349,7 @@ export class LeavepolicyComponent implements OnInit {
           }
         })
         this.loading = false; this.PageLoading = false;
-        ////console.log("employeeid", this.searchForm.get("searchEmployee")?.value.EmployeeId)
+        //////console.log("employeeid", this.searchForm.get("searchEmployee")?.value.EmployeeId)
         //this.GetGradeComponents();
       })
 
@@ -394,7 +394,7 @@ export class LeavepolicyComponent implements OnInit {
             })
         })
 
-        //console.log('LeavePolicyList',this.LeavePolicyList);
+        ////console.log('LeavePolicyList',this.LeavePolicyList);
         if(this.LeavePolicyList.length==0)
         {
           this.contentservice.openSnackBar("No Leave defined.",globalconstants.ActionText,globalconstants.RedBackground);

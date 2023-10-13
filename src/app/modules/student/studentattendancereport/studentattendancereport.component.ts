@@ -189,11 +189,11 @@ export class StudentattendancereportComponent implements OnInit {
             StudentRollNo: att.StudentClass.Student.FirstName + _lastname
           });
         });
-        console.log("this.StudentAttendanceList", this.StudentAttendanceList)
+        //console.log("this.StudentAttendanceList", this.StudentAttendanceList)
         this.AttendanceStatusSum = alasql("select AttendanceStatusId, count(*) as [Total] from ? group by AttendanceStatusId",
           [this.StudentAttendanceList])
        
-        //console.log("this.AttendanceStatusSum",this.AttendanceStatusSum)
+        ////console.log("this.AttendanceStatusSum",this.AttendanceStatusSum)
 
         this.dataSource = new MatTableDataSource<IStudentAttendance>(this.StudentAttendanceList);
         this.dataSource.paginator = this.paginator;
@@ -251,7 +251,7 @@ export class StudentattendancereportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         this.ClassSubjects = [];
         data.value.forEach(item => {
           var _classname = ''

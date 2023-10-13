@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
@@ -13,8 +13,10 @@ import { DatePipe } from '@angular/common';
 import { employee } from './employee';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StudentActivity } from './StudentActivity';
-import * as moment from 'moment';
-import { forEach } from 'mathjs';
+import { MatTableDataSource } from '@angular/material/table';
+import { TableUtil } from '../../../shared/TableUtil';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-excel-data-management',
@@ -22,6 +24,8 @@ import { forEach } from 'mathjs';
   styleUrls: ['./excel-data-management.component.scss']
 })
 export class ExcelDataManagementComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   PageLoading = true;
   ReadyForUpload = false;
   constructor(private servicework: SwUpdate,
@@ -57,6 +61,7 @@ export class ExcelDataManagementComponent implements OnInit {
   Permission = '';
   ColumnsOfSelectedReports: any[] = [];
   ReportConfigItemListName = "ReportConfigItems";
+  DuplicateDisplayCol: any = [];
   ngOnInit() {
     //this.dataSource = new MatTableDataSource<any>(this.ELEMENT_DATA);
     //this.GetMasterData();
@@ -81,7 +86,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
     this.uploadForm = this.fb.group({
       UploadTypeId: [0, [Validators.required]],
-      inputFile:['']
+      inputFile: ['']
     })
     this.FilterOrgSubOrgNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
     this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -112,6 +117,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
 
       this.GetMasterData();
+      this.GetAllStudents();
       //else
       // if (this.SelectedApplicationName == 'edu') {
       //   this.GetStudents();
@@ -119,21 +125,18 @@ export class ExcelDataManagementComponent implements OnInit {
       // }
     }
   }
-  // NotMandatory = ["StudentId", "BankAccountNo", "IFSCCode", "MICRNo", "ContactNo",
-  //   "MotherContactNo", "AlternateContact", "EmailAddress",
-  //   "TransferFromSchool", "TransferFromSchoolBoard", "Remarks"];
-  // NoNeedToCheckBlank = ["StudentId", "BatchId", "BankAccountNo", "IFSCCode", "MICRNo", "ContactNo",
-  //   "MotherContactNo", "AlternateContact", "EmailAddress",
-  //   "TransferFromSchool", "TransferFromSchoolBoard",
-  //   "Gender", "Religion", "Category", "Bloodgroup", "Club", "House",
-  //   "PrimaryContactFatherOrMother", "Remarks"];
-
+  clearall() {
+    this.uploadForm = this.fb.group({
+      UploadTypeId: [0, [Validators.required]],
+      inputFile: ['']
+    })
+  }
   ErrorMessage = '';
   StudentList: any[] = [];
   StudentClassList: any[] = [];
   displayedColumns: any[];
   ELEMENT_DATA: any[] = [];
-  //dataSource: MatTableDataSource<any>;
+  dataSource: MatTableDataSource<any>;
   uploadForm: UntypedFormGroup;
   AllMasterData: any[];
   UploadTypes: any[];
@@ -179,7 +182,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
   onselectchange(event) {
     debugger;
-    //    //console.log('event', event);
+    //    ////console.log('event', event);
     this.SelectedUploadtype = this.UploadTypes.filter(item => item.MasterDataId == event.value)[0].MasterDataName
 
     if (this.SelectedUploadtype.toLowerCase().includes(this.UploadType.CLASSROLLNOMAPPING)) {
@@ -290,7 +293,7 @@ export class ExcelDataManagementComponent implements OnInit {
       //   this.storeData.slice(globalconstants.RowUploadLimit);
       // }
       var data = new Uint8Array(_storeData);
-      ////console.log('data',data)
+      //////console.log('data',data)
       var arr = new Array();
       for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
       var bstr = arr.join("");
@@ -309,7 +312,8 @@ export class ExcelDataManagementComponent implements OnInit {
       else if (this.SelectedUploadtype.toLowerCase().includes(this.UploadType.EMPLOYEEDETAIL)) {
         this.ValidateEmployeeData();
       }
-      if (this.ErrorMessage.length == 0 && !this.SelectedUploadtype.toLowerCase().includes(this.UploadType.STUDENTPROFILE)) {
+      if (this.ErrorMessage.length == 0 && !this.SelectedUploadtype.toLowerCase().includes(this.UploadType.STUDENTPROFILE)
+        && this.AlreadyExistStudent.length == 0) {
         this.ReadyForUpload = true;
         this.snackbar.open("Data is ready for upload. Please click on file upload button.", globalconstants.ActionText,
           globalconstants.BlueBackground);
@@ -685,7 +689,7 @@ export class ExcelDataManagementComponent implements OnInit {
       if (this.ErrorMessage.length == 0)
         this.ELEMENT_DATA.push(element);
     });
-    // console.log("this.ELEMENT_DATA", this.ELEMENT_DATA)
+    // //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA)
   }
   // DateCheck(datestr){
   //     var strArray = datestr.split('/');
@@ -836,20 +840,39 @@ export class ExcelDataManagementComponent implements OnInit {
         }
       }
     });
-    ////console.log('this.ELEMENT_DATA', this.ELEMENT_DATA);
+    //////console.log('this.ELEMENT_DATA', this.ELEMENT_DATA);
   }
-
+  exportArray() {
+    if (this.AlreadyExistStudent.length > 0) {
+      const datatoExport: Partial<any>[] = this.AlreadyExistStudent;
+      TableUtil.exportArrayToExcel(datatoExport, "StudentclassForUpload");
+    }
+  }
+  AlreadyExistStudent: any = [];
   ValidateStudentData() {
     let slno: any = 0;
     debugger;
-    this.ErrorMessage = '';
+
+    this.AlreadyExistStudent = [];
     this.jsonData.forEach((element, indx) => {
       slno = parseInt(indx) + 1;
+      let existingstudent: any = this.AllStudents?.filter((s: any) => s.FirstName.toLowerCase() == element.FirstName.toLowerCase())
+      //&& s.FatherName.toLowerCase() == element.FatherName.toLowerCase())
+      if (existingstudent?.length > 0) {
 
-      // if (element.DOB  && element.DOB != '')
-      //   element.DOB = new Date(element.DOB);
-      // else
-      //   element.DOB = new Date();
+
+        this.AlreadyExistStudent.push({
+          Name: element.FirstName,
+          LastName: element.LastName,
+          FatherName: element.FatherName,
+          MotherName: element.MotherName,
+          PID: existingstudent[0].PID,
+          ClassName: element.ClassAdmissionSought,
+          RollNo: element.RollNo,
+          Section: element.Section
+        })
+        return;
+      }
       if (isNaN(new Date(element.DOB).getTime())) {
         this.ErrorMessage += "Invalid date at row : " + indx;
       }
@@ -1194,7 +1217,16 @@ export class ExcelDataManagementComponent implements OnInit {
       this.ELEMENT_DATA.push(element);
 
     });
-    //console.log("this.ELEMENT_DATA",this.ELEMENT_DATA)
+    this.DuplicateDisplayCol = [
+      "Name",
+      "LastName",
+      "FatherName",
+      "MotherName"
+    ]
+    this.dataSource = new MatTableDataSource(this.AlreadyExistStudent);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    ////console.log("this.ELEMENT_DATA",this.ELEMENT_DATA)
   }
   clear() {
     this.uploadForm.reset();
@@ -1241,7 +1273,7 @@ export class ExcelDataManagementComponent implements OnInit {
                 element.CreatedBy = this.loginDetail[0]["userId"];
                 element.Promoted = 0;
                 this.studentData.push(element);
-                //console.log("student insert",this.studentData)
+                ////console.log("student insert",this.studentData)
                 this.saveStudentClass();
               }
             });
@@ -1270,7 +1302,7 @@ export class ExcelDataManagementComponent implements OnInit {
       }
     }
     catch (ex) {
-      //console.log("something went wrong: ", ex);
+      ////console.log("something went wrong: ", ex);
     }
   }
   readAsHTML() {
@@ -1377,7 +1409,7 @@ export class ExcelDataManagementComponent implements OnInit {
           });
         });
 
-        //console.log("toInsert", toInsert)
+        ////console.log("toInsert", toInsert)
         this.dataservice.postPatch('Students', toInsert, 0, 'post')
           .subscribe((result: any) => {
             this.loading = false; this.PageLoading = false;
@@ -1398,7 +1430,7 @@ export class ExcelDataManagementComponent implements OnInit {
       });
   }
   updateStudentClass() {
-    //console.log("update", this.studentData);
+    ////console.log("update", this.studentData);
     this.dataservice.postPatch('StudentClasses', this.studentData[0], this.studentData[0].StudentClassId, 'patch')
       .subscribe((result: any) => {
         if (this.toUpdate == 0) {
@@ -1409,10 +1441,10 @@ export class ExcelDataManagementComponent implements OnInit {
   }
   saveStudentClass() {
     debugger;
-    //console.log('student class to save', this.studentData[0])
+    ////console.log('student class to save', this.studentData[0])
     this.dataservice.postPatch('StudentClasses', this.studentData[0], 0, 'post')
       .subscribe((result: any) => {
-        //console.log('inserted');
+        ////console.log('inserted');
         let _students: any = this.tokenStorage.getStudents()!;
         let currentstud = _students.filter((stud: any) => stud.StudentId == this.studentData[0].StudentId)
         if (currentstud.length > 0) {
@@ -1495,7 +1527,7 @@ export class ExcelDataManagementComponent implements OnInit {
           this.NoOfStudentInPlan = data.value[0].PersonOrItemCount;
         else
           this.contentservice.openSnackBar("No. Of Student is zero", globalconstants.ActionText, globalconstants.RedBackground);
-        //console.log("this.NoOfStudentInPlan",this.NoOfStudentInPlan)
+        ////console.log("this.NoOfStudentInPlan",this.NoOfStudentInPlan)
 
       })
   }
@@ -1519,7 +1551,33 @@ export class ExcelDataManagementComponent implements OnInit {
 
     //   })
   }
+  AllStudents: any = [];
+  GetAllStudents() {
+    //var filterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+    this.AllStudents = [];
+    let list: List = new List();
+    list.fields = [
+      'StudentId',
+      'FirstName',
+      'LastName',
+      'FatherName',
+      'MotherName',
+      "PID"
+    ];
+    list.PageName = "Students";
+    if (this.loginDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
+      this.FilterOrgSubOrg += " and StudentId eq " + localStorage.getItem("studentId");
+    }
+    list.filter = [this.FilterOrgSubOrg];
+    this.PageLoading = true;
+    this.dataservice.get(list).subscribe((data: any) => {
+      this.AllStudents = data.value.map(m => {
+        m.FirstName = m.FirstName.trim()
+        return m;
+      })
+    })
 
+  }
   GetMasterData() {
     //this.contentservice.GetCommonMasterData(this.loginDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //  .subscribe((data: any) => {

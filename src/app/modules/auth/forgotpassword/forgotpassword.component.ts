@@ -74,7 +74,7 @@ export class ForgotpasswordComponent implements OnInit { PageLoading=true;
     this.loading=true;
     this.authService.CallAPI(payload,'ForgotPassword').subscribe(
       (data: any) => {
-        ////console.log(data);
+        //////console.log(data);
         this.loading=false;this.PageLoading=false;
         this.isSuccessful = true;
         this.contentservice.openSnackBar("Email sent to your register email address.",globalconstants.ActionText,globalconstants.BlueBackground);        
@@ -99,7 +99,7 @@ export class ForgotpasswordComponent implements OnInit { PageLoading=true;
         this.contentservice.openSnackBar(this.errorMessage,globalconstants.ActionText,globalconstants.RedBackground);
         this.isSignUpFailed = true;
         this.loading=false;this.PageLoading=false;
-        //console.log(err.error)
+        ////console.log(err.error)
       }
       //err => {      
         // if (err.error) {
@@ -114,7 +114,7 @@ export class ForgotpasswordComponent implements OnInit { PageLoading=true;
         //   }
 
         //   this.isSignUpFailed = true;
-        //   //console.log(err.error)
+        //   ////console.log(err.error)
         // }
       //}
     );

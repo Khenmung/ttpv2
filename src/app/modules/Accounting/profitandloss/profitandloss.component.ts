@@ -259,7 +259,7 @@ export class ProfitandlossComponent implements OnInit {
       });
   }
   FormatData(pdata) {
-    //console.log("this.AccountingVoucherList", this.AccountingVoucherList)
+    ////console.log("this.AccountingVoucherList", this.AccountingVoucherList)
     var sql = "select sum(BaseAmount) as Amount,Debit,AccountName,AccountNature,IncomeStatementSequence,IncomeStatementPlus," +
       "ExpensePlus,ExpenseSequence from ? GROUP BY AccountName,Debit,AccountNature,IncomeStatementSequence,IncomeStatementPlus," +
       "ExpensePlus,ExpenseSequence order by AccountName";
@@ -300,7 +300,7 @@ export class ProfitandlossComponent implements OnInit {
         result.push(temprow);
       }
     })
-    //console.log("groupbyDebitCredit", groupbyDebitCredit)
+    ////console.log("groupbyDebitCredit", groupbyDebitCredit)
 
     result = result.filter((f:any) => f.Dr != undefined)
     result.forEach(row => {
@@ -414,7 +414,7 @@ export class ProfitandlossComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         data.value.forEach(f => {
           var obj = this.AccountNatureList.filter(n => n.AccountNatureId == f.AccountNatureId)
           if (obj.length > 0) {

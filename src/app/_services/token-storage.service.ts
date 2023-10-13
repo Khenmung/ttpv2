@@ -61,7 +61,7 @@ export class TokenStorageService {
   }
   public getMenuData(): object[] | null {
     // var batch = localStorage.getItem(MENUDATA);
-    // console.log("tokenstorgage", batch)
+    // //console.log("tokenstorgage", batch)
     
     return JSON.parse(localStorage.getItem(MENUDATA) || "[]");
   }

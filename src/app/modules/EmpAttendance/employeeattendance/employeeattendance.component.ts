@@ -263,7 +263,7 @@ export class EmployeeAttendanceComponent implements OnInit {
             });
         })
         //this.EmployeeAttendanceList = this.EmployeeAttendanceList.sort((a, b) => a.RollNo - b.RollNo)
-        //console.log("this.EmployeeAttendanceList",this.EmployeeAttendanceList);
+        ////console.log("this.EmployeeAttendanceList",this.EmployeeAttendanceList);
         if(this.EmployeeAttendanceList.length==0)
         {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage,globalconstants.ActionText,globalconstants.RedBackground);
@@ -320,7 +320,7 @@ export class EmployeeAttendanceComponent implements OnInit {
   saveall() {
     debugger;
     //var toUpdateAttendance = this.EmployeeAttendanceList.filter((f:any) => f.Action);
-    //console.log("toUpdateAttendance",toUpdateAttendance);
+    ////console.log("toUpdateAttendance",toUpdateAttendance);
     this.NoOfRecordToUpdate = this.EmployeeAttendanceList.length;
     this.loading = true;
     this.EmployeeAttendanceList.forEach((record) => {
@@ -376,7 +376,7 @@ export class EmployeeAttendanceComponent implements OnInit {
             this.EmployeeAttendanceData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.EmployeeAttendanceData["UpdatedDate"];
             delete this.EmployeeAttendanceData["UpdatedBy"];
-            console.log("EmployeeAttendanceData", this.EmployeeAttendanceData);
+            //console.log("EmployeeAttendanceData", this.EmployeeAttendanceData);
             this.insert(row);
           }
           else {
@@ -385,7 +385,7 @@ export class EmployeeAttendanceComponent implements OnInit {
             delete this.EmployeeAttendanceData["CreatedBy"];
             this.EmployeeAttendanceData["UpdatedDate"] = new Date();
             this.EmployeeAttendanceData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log("EmployeeAttendanceData", this.EmployeeAttendanceData);
+            //console.log("EmployeeAttendanceData", this.EmployeeAttendanceData);
             this.update(row);
           }
           row.Action = false;
@@ -442,7 +442,7 @@ export class EmployeeAttendanceComponent implements OnInit {
   //   this.dataservice.get(list)
   //     .subscribe((data: any) => {
   //       //debugger;
-  //       //  //console.log('data.value', data.value);
+  //       //  ////console.log('data.value', data.value);
   //       this.ClassSubjects = data.value.map(item => {
   //         // var _classname = ''
   //         // var objCls = this.Classes.filter((f:any) => f.ClassId == item.ClassId)

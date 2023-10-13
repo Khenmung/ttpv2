@@ -134,7 +134,7 @@ export class ClassmasterdashboardComponent implements OnInit {
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.CLASSCOURSE.CLASSTEACHER);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
-      // console.log("this.Permission",this.Permission);
+      // //console.log("this.Permission",this.Permission);
       if (this.Permission == 'deny') {
 
         //this.nav.navigate(['/edu']);
@@ -146,7 +146,7 @@ export class ClassmasterdashboardComponent implements OnInit {
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         //this.CheckPermission = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages[0].SUBJECT.CLASSSUBJECTMAPPING);
-        ////console.log(this.CheckPermission);
+        //////console.log(this.CheckPermission);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.StandardFilterWithPreviousBatchId = globalconstants.getOrgSubOrgFilterWithPreviousBatchId(this.tokenStorage);
@@ -189,7 +189,7 @@ export class ClassmasterdashboardComponent implements OnInit {
     // }, 50);
   }
   CopyFromPreviousBatch() {
-    //console.log("here ", this.PreviousBatchId)
+    ////console.log("here ", this.PreviousBatchId)
     this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
     if (this.PreviousBatchId == -1)
       this.contentservice.openSnackBar("Previous batch not defined.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -271,7 +271,7 @@ export class ClassmasterdashboardComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         //if (_classId != 0 && _teacherId) {
         //if (data.value.length > 0)
         data.value.forEach(element => {
@@ -457,7 +457,7 @@ export class ClassmasterdashboardComponent implements OnInit {
             this.ClassSubjectTeacherData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.ClassSubjectTeacherData["UpdatedDate"];
             delete this.ClassSubjectTeacherData["UpdatedBy"];
-            //console.log('to insert', this.ClassSubjectTeacherData)
+            ////console.log('to insert', this.ClassSubjectTeacherData)
             this.insert(row);
           }
           else {
@@ -466,7 +466,7 @@ export class ClassmasterdashboardComponent implements OnInit {
             delete this.ClassSubjectTeacherData["CreatedBy"];
             this.ClassSubjectTeacherData["UpdatedDate"] = new Date();
             this.ClassSubjectTeacherData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            //console.log('to update', this.ClassSubjectTeacherData)
+            ////console.log('to update', this.ClassSubjectTeacherData)
             this.update(row);
           }
         }

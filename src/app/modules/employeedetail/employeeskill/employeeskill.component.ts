@@ -180,7 +180,7 @@ export class EmployeeskillComponent implements OnInit { PageLoading=true;
             this.EmployeeSkillsData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.EmployeeSkillsData["UpdatedDate"] = this.datepipe.transform(new Date(),'yyyy-MM-dd');
             delete this.EmployeeSkillsData["UpdatedBy"];
-            //console.log('this.EmployeeSkillsData', this.EmployeeSkillsData)
+            ////console.log('this.EmployeeSkillsData', this.EmployeeSkillsData)
             this.insert(row);
           }
           else {

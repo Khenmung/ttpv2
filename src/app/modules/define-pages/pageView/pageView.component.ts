@@ -24,7 +24,7 @@ export class pageViewComponent implements OnInit { PageLoading=true;
        this.res=data.value[0];  
        this.Title=this.res.PageHeader  
        this.content=this.res.PageBody  
-       ////console.log(this.res);  
+       //////console.log(this.res);  
     });  
   }  
 }  

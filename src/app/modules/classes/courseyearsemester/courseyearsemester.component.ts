@@ -227,7 +227,7 @@ export class CourseYearsemesterComponent implements OnInit {
           this.CourseYearSemesterData.BatchId = this.SelectedBatchId;
           this.CourseYearSemesterData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.CourseYearSemesterData.SubOrgId = this.SubOrgId;
-          //console.log("this.CourseYearSemesterData", this.CourseYearSemesterData)
+          ////console.log("this.CourseYearSemesterData", this.CourseYearSemesterData)
           if (this.CourseYearSemesterData.CourseYearSemesterId == 0) {
             this.CourseYearSemesterData["CreatedDate"] = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
             this.CourseYearSemesterData["CreatedBy"] = this.LoginUserDetail[0]["userId"];

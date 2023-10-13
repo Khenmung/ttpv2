@@ -15,15 +15,15 @@
 <div style="z-index: 10;"> -->
 
     <mat-card id="overlay">
-        <mat-card-title style="margin:30px 30px 0px 30px">Select Application</mat-card-title>
-        <mat-card-subtitle>&nbsp;</mat-card-subtitle>
+        <mat-card-title style="margin:0px">Select Application</mat-card-title>
+        <!-- <mat-card-subtitle>&nbsp;</mat-card-subtitle> -->
         <!-- <mat-card-content style="min-height: 100vh;margin-top:-100px; display: flex;flex-direction: column; align-items:center;justify-content: center;">         -->
-        <mat-card-content>
+        <mat-card-content style="padding: 16px 25px 16px 25px;">
             <mat-spinner *ngIf="PageLoading" diameter="25"
                 style="margin-bottom: 15px;position:relative;margin-left: 50%;"></mat-spinner>
             <form [formGroup]="searchForm">
                 <!-- <div style="display:flex"> -->
-                <mat-form-field [style.width.px]="250" appearance="outline">
+                <mat-form-field style="width: 250px;" appearance="outline">
                     <mat-label>Application</mat-label>
                     <mat-select id="ApplicationId" formControlName="searchApplicationId"
                         (selectionChange)="ChangeApplication()">
@@ -47,9 +47,7 @@
                 </mat-form-field>
                 <button [disabled]="loading || !ValueChanged" mat-raised-button color="accent" (click)="submit()">
                     <mat-icon>search</mat-icon>
-                    <mat-icon *ngIf="loading">
-                        <!-- <mat-spinner diameter="20" color="Blue"></mat-spinner> -->
-                    </mat-icon>
+                    
                 </button>
             </form>
             <!-- <button class="mat-button-raised" (click)="sendmessage()">

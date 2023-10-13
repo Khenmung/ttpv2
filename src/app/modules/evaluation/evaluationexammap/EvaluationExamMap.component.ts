@@ -107,7 +107,7 @@ export class EvaluationExamMapComponent implements OnInit {
   ExamClassGroups :any[]= [];
   PageLoad() {
     debugger;
-    console.log("EvaluationUpdatable", this.EvaluationUpdatable)
+    //console.log("EvaluationUpdatable", this.EvaluationUpdatable)
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     if (this.LoginUserDetail == null)
@@ -254,14 +254,14 @@ export class EvaluationExamMapComponent implements OnInit {
               SubOrgId: this.SubOrgId
             });
 
-          //console.log("for udpate",this.EvaluationExamMapForUpdate[0])
+          ////console.log("for udpate",this.EvaluationExamMapForUpdate[0])
           if (this.EvaluationExamMapForUpdate[0].EvaluationExamMapId == 0) {
             this.EvaluationExamMapForUpdate[0]["CreatedDate"] = new Date();
             this.EvaluationExamMapForUpdate[0]["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.EvaluationExamMapForUpdate[0]["UpdatedDate"] = new Date();
             delete this.EvaluationExamMapForUpdate[0]["UpdatedBy"];
             delete this.EvaluationExamMapForUpdate[0]["SubCategories"];
-            //console.log("inserting1", this.EvaluationExamMapForUpdate);
+            ////console.log("inserting1", this.EvaluationExamMapForUpdate);
             this.insert(row);
           }
           else {
@@ -279,7 +279,7 @@ export class EvaluationExamMapComponent implements OnInit {
     this.loading = false; this.PageLoading = false;
   }
   insert(row) {
-    //console.log("inserting",this.EvaluationExamMapForUpdate);
+    ////console.log("inserting",this.EvaluationExamMapForUpdate);
     //debugger;
     this.dataservice.postPatch('EvaluationExamMaps', this.EvaluationExamMapForUpdate[0], 0, 'post')
       .subscribe(
@@ -292,7 +292,7 @@ export class EvaluationExamMapComponent implements OnInit {
         });
   }
   update(row) {
-    //console.log("updating",this.EvaluationExamMapForUpdate);
+    ////console.log("updating",this.EvaluationExamMapForUpdate);
     this.dataservice.postPatch('EvaluationExamMaps', this.EvaluationExamMapForUpdate[0], this.EvaluationExamMapForUpdate[0].EvaluationExamMapId, 'patch')
       .subscribe(
         (data: any) => {
@@ -546,7 +546,7 @@ export class EvaluationExamMapComponent implements OnInit {
   GetEvaluationMasterId() {
     this.EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
     this.EvaluationUpdatable = this.EvaluationNames.filter((f:any) => f.EvaluationMasterId == this.EvaluationMasterId)[0].AppendAnswer;
-    //console.log("EvaluationUpdatable", this.EvaluationUpdatable);
+    ////console.log("EvaluationUpdatable", this.EvaluationUpdatable);
     this.ClearData();
   }
   UpdateActive(row, event) {

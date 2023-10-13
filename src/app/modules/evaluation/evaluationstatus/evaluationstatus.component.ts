@@ -390,11 +390,11 @@ export class EvaluationstatusComponent implements OnInit {
             this.StudentEvaluationForUpdate[_lastIndex]["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.StudentEvaluationForUpdate[_lastIndex]["UpdatedDate"];
             delete this.StudentEvaluationForUpdate[_lastIndex]["UpdatedBy"];
-            //console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate[0])
+            ////console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate[0])
             //this.insert(row);
           }
           else {
-            //console.log("this.StudentEvaluationForUpdate[0] update", this.StudentEvaluationForUpdate[0])
+            ////console.log("this.StudentEvaluationForUpdate[0] update", this.StudentEvaluationForUpdate[0])
             this.StudentEvaluationForUpdate[_lastIndex]["UpdatedDate"] = new Date();
             this.StudentEvaluationForUpdate[_lastIndex]["UpdatedBy"];
             delete this.StudentEvaluationForUpdate[_lastIndex]["CreatedDate"];
@@ -402,7 +402,7 @@ export class EvaluationstatusComponent implements OnInit {
             //this.insert(row);
           }
           if (this.StudentEvaluationForUpdate.length == this.StudentEvaluationList.length) {
-            console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate)
+            //console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate)
             this.insert(row);
           }
         }
@@ -431,11 +431,11 @@ export class EvaluationstatusComponent implements OnInit {
           this.EvaluationSubmitted = false;
 
           this.loadingFalse();
-          console.log("error on student evaluation insert", error);
+          //console.log("error on student evaluation insert", error);
         });
   }
   update(row) {
-    //console.log("updating",this.StudentEvaluationForUpdate);
+    ////console.log("updating",this.StudentEvaluationForUpdate);
     this.dataservice.postPatch('StudentEvaluationResults', this.StudentEvaluationForUpdate[0], this.StudentEvaluationForUpdate[0].StudentEvaluationResultId, 'patch')
       .subscribe(
         (data: any) => {
@@ -557,7 +557,7 @@ export class EvaluationstatusComponent implements OnInit {
         // if (data.value.length > 0) {
         //   row.Submitted = data.value[0].Submitted;
         // }
-        //console.log("row", row);
+        ////console.log("row", row);
         // if (!row.Updatable && row.Duration > 0 && data.value.length == 0) {
         //   //if (!row.TempDuration)
         //   //row.TempDuration = row.Duration;
@@ -660,7 +660,7 @@ export class EvaluationstatusComponent implements OnInit {
 
           })
         })
-        //console.log("this.StudentEvaluationList", this.StudentEvaluationList);
+        ////console.log("this.StudentEvaluationList", this.StudentEvaluationList);
         row[0].EvaluationStarted = true;
         this.dataSource = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);
         this.dataSource.paginator = this.paginator;
@@ -721,7 +721,7 @@ export class EvaluationstatusComponent implements OnInit {
                 this.EvaluationExamMaps.push(m);
               }
             })
-            //console.log("EvaluationExamMaps", this.EvaluationExamMaps)
+            ////console.log("EvaluationExamMaps", this.EvaluationExamMaps)
             this.loading = false;
             this.PageLoading = false;
           })

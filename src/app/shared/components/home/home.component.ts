@@ -70,7 +70,7 @@ export class HomeComponent implements OnInit {
     })
 
     this.mediaSub = this.mediaObserver.asObservable().subscribe((result) => {
-      ////console.log('result',result);
+      //////console.log('result',result);
       this.deviceXs = result[0].mqAlias === "xs" ? true : false;
       if (this.deviceXs) {
         this.openSideBar = false;
@@ -92,8 +92,8 @@ export class HomeComponent implements OnInit {
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       // if (this.SelectedApplicationId > 1)
       this.sideMenu = this.tokenStorage.getMenuData()!;
-      //console.log("home init this.sideMenu", this.sideMenu)
-      // console.log("this.scroller.nativeElement.scrollTop", this.scroller)
+      ////console.log("home init this.sideMenu", this.sideMenu)
+      // //console.log("this.scroller.nativeElement.scrollTop", this.scroller)
       // this.scroller._elementRef.onscroll = () => {
 
       //   let top = this.scroller.nativeElement.scrollTop;
@@ -123,14 +123,14 @@ export class HomeComponent implements OnInit {
     this.opened = !this.opened;
   }
   DownFromMenu(value) {
-    ////console.log('from menu',value);
+    //////console.log('from menu',value);
     if (this.deviceXs)
       this.openSideBar = !this.openSideBar;
   }
   sideBarToggler() {
     //debugger;
     this.openSideBar = !this.openSideBar;
-    ////console.log('this.deviceXs in toggle',this.deviceXs)
+    //////console.log('this.deviceXs in toggle',this.deviceXs)
     if (!this.openSideBar && this.deviceXs)
       this.contentcls = "DeviceXs";
     else if (this.openSideBar && this.deviceXs)
@@ -143,7 +143,7 @@ export class HomeComponent implements OnInit {
   GetMenuData() {
     debugger;
     //let containAdmin = window.location.href.toLowerCase().indexOf('admin');
-    console.log("in home")
+    //console.log("in home")
     let strFilter = '';
     strFilter = "PlanId eq " + this.LoginUserDetail[0]["planId"] + 
     " and ApplicationId eq " + this.SelectedApplicationId + " and Active eq 1";

@@ -396,7 +396,7 @@ export class QuestionComponent implements OnInit {
       this.contentservice.openSnackBar("Please enter Question", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    //console.log("length:" + row.Question.length)
+    ////console.log("length:" + row.Question.length)
     //row.Question = row.Question.replaceAll("'", "''");
     let checkFilterString = "Question eq '" + row.Question + "'";
     if (row.DifficultyLevelId > 0)
@@ -415,7 +415,7 @@ export class QuestionComponent implements OnInit {
     this.QuestionBankData.Active = row.Active;
 
     this.QuestionBankForUpdate.push(this.QuestionBankData);
-    //console.log('dta', this.QuestionBankForUpdate);
+    ////console.log('dta', this.QuestionBankForUpdate);
 
     if (this.QuestionBankForUpdate[0].QuestionBankId == 0) {
       this.QuestionBankForUpdate[0]["CreatedDate"] = new Date();
@@ -458,7 +458,7 @@ export class QuestionComponent implements OnInit {
         });
   }
   update(row) {
-    //console.log("updating",this.QuestionBankForUpdate);
+    ////console.log("updating",this.QuestionBankForUpdate);
     this.dataservice.postPatch('QuestionBanks', this.QuestionBankForUpdate[0], this.QuestionBankForUpdate[0].QuestionBankId, 'patch')
       .subscribe(
         (data: any) => {
@@ -674,7 +674,7 @@ export class QuestionComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
 
         }
-        //console.log("QuestionBankList",data.value)
+        ////console.log("QuestionBankList",data.value)
         this.dataSource = new MatTableDataSource(this.QuestionBankList);
         this.loading = false;
       })
@@ -711,7 +711,7 @@ export class QuestionComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         var _imgURL = globalconstants.apiUrl + "/Uploads/" + this.LoginUserDetail[0]["org"] +
           "/Question photo/"; //+ fileNames[0].FileName;
 
@@ -783,7 +783,7 @@ export class QuestionComponent implements OnInit {
     debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
     //var result = this.allMasterData.filter((f:any)=>f.MasterDataName =='Question Bank ContentUnit')
-    //console.log("result",result)
+    ////console.log("result",result)
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.ContentUnit = this.getDropDownData(globalconstants.MasterDefinitions.school.BOOKCONTENTUNIT);
     this.DifficultyLevels = this.getDropDownData(globalconstants.MasterDefinitions.school.DIFFICULTYLEVEL);

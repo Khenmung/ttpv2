@@ -146,7 +146,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
         //this.ParentDropDown = [...this.TopMenu];
       })
 
-    //console.log("topmenu", this.TopMenu)
+    ////console.log("topmenu", this.TopMenu)
   }
   GetMasterData() {
     var globaladminId = this.contentservice.GetPermittedAppId("globaladmin");
@@ -194,7 +194,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
       .subscribe({
         next: (arrPage:any) => {
           debugger;
-          ////console.log('arrpage', arrPage);
+          //////console.log('arrpage', arrPage);
           let arr :any[]= [];
           Object.keys(arrPage).map(function (key) {
             arr.push({ [key]: arrPage[key] })
@@ -251,7 +251,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
     this.navigate.navigate(['/home/pages/']);
   }
   applyFilter(filterValue: string) {
-    ////console.log("this.AllData", this.AllData.length)
+    //////console.log("this.AllData", this.AllData.length)
     if (filterValue.length > 2) {
       let filtered = this.AllData.filter(item => {
         let parentPage = false;
@@ -286,7 +286,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
   // }
   getoldvalue(value: string) {
     this.oldvalue = value;
-    //  //console.log('old value', this.oldvalue);
+    //  ////console.log('old value', this.oldvalue);
   }
   onBlur(row) {
     row.Action = true;
@@ -472,7 +472,7 @@ export class MenuConfigComponent implements OnInit { PageLoading=true;
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.loading = false; this.PageLoading=false;
-        ////console.log('data',this.PageList)
+        //////console.log('data',this.PageList)
       });
 
   }

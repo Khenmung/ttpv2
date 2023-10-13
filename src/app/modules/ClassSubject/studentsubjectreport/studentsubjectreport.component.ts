@@ -202,11 +202,11 @@ export class StudentSubjectReportComponent implements OnInit {
           && f.Active == 1);
 
         //dbdata = data.value.filter(x =>x.StudentClassSubjects.filter(y=>y.StudentClass.SectionId == _sectionId).length>0)
-        //console.log("this.StudentSubjects", this.StudentSubjects);
+        ////console.log("this.StudentSubjects", this.StudentSubjects);
         data.value.forEach(s => {
           //s.StudentClassSubjects.forEach((inner, index) => {
 
-          //console.log("index",index);
+          ////console.log("index",index);
           var studentcls: any = filteredStudents.filter((f: any) => f.StudentClasses[0].StudentClassId == s.StudentClassId);
           _class = '';
           _subject = '';
@@ -581,7 +581,7 @@ export class StudentSubjectReportComponent implements OnInit {
   //         }
   //       })
   //       this.PageLoading = false;
-  //       //console.log("exams", this.Exams);
+  //       ////console.log("exams", this.Exams);
   //       //this.GetStudentSubjects();
   //     })
   // }

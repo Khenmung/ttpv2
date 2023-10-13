@@ -2,12 +2,12 @@
     <strong>Upload Data</strong>
 </div>
 <div style="min-height: 400px;">
-    
-    <form [formGroup]="uploadForm">        
+
+    <form [formGroup]="uploadForm">
         <div class="row">
-            <input [hidden]="true" formControlName="inputFile" #inputfile type="file" class="form-control" (change)="browseOnChange($event)"
-                placeholder="Upload file" accept=".xlsx">
-        </div>        
+            <input [hidden]="true" formControlName="inputFile" #inputfile type="file" class="form-control"
+                (change)="browseOnChange($event)" placeholder="Upload file" accept=".xlsx">
+        </div>
         <span>
             <span style="margin-right: 15px;">{{selectedFile}}</span>
             <mat-form-field appearance="outline" style="margin-right: 15px;">
@@ -18,60 +18,57 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <button [disabled]="loading || Permission=='read'" 
-                mat-mini-fab 
-                matTooltip="select file" style="margin-right: 15px;"
-                (click)="inputfile.click()">
+            <button [disabled]="loading || Permission=='read'" mat-mini-fab matTooltip="select file"
+                style="margin-right: 15px;" (click)="inputfile.click()">
                 <mat-icon aria-label="photo">attach_file</mat-icon>
             </button>
-            <button [disabled]="loading || ErrorMessage.length>0 || Permission=='read' || !ReadyForUpload" 
-                type="submit" 
-                (click)="readAsJson()"
-                matTooltip="upload file" 
-                mat-raised-button color="accent">
+            <button [disabled]="loading || ErrorMessage.length>0 || Permission=='read' || !ReadyForUpload" type="submit"
+                (click)="readAsJson()" matTooltip="upload file" mat-raised-button color="accent">
                 <mat-icon>file_upload</mat-icon>
                 <mat-icon *ngIf="loading"><mat-spinner diameter="20"></mat-spinner></mat-icon>
             </button>&nbsp;&nbsp;
+            <button [disabled]="loading || Permission=='read'" mat-mini-fab matTooltip="clear all"
+                style="margin-right: 15px;" (click)="clearall()">
+                <mat-icon>clear_all</mat-icon>
+            </button>
             <!-- <button [disabled]="loading" (click)="clear()"
                 matTooltip="clear" mat-mini-fab color="accent">
                 <mat-icon aria-label="file_upload">clear</mat-icon>
             </button> -->
         </span>
         <mat-divider></mat-divider>
+        <div *ngIf="AlreadyExistStudent.length>0">
+            <div style="margin:15px;font-weight: bold;">Duplicate data as below. Download and upload again as Student Class.</div>
+            <mat-table #table [dataSource]="dataSource" style="min-width: 1400px;" matSort>
+                <ng-container *ngFor="let disCol of DuplicateDisplayCol; let colIndex = index"
+                    matColumnDef="{{disCol}}">
+                    <mat-header-cell style="flex:1 1 100px" *matHeaderCellDef mat-sort-header>
+                        {{disCol}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element ">
+                        {{element[disCol]}}
+                    </mat-cell>
+                </ng-container>
 
-        <!-- <mat-table #table [dataSource]="dataSource" style="min-width: 1400px;" matSort>
-        <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-            <mat-header-cell style="flex:1 1 100px" *matHeaderCellDef mat-sort-header>
-                {{disCol}}
-            </mat-header-cell>
-            <mat-cell *matCellDef="let element ">                
-                {{element[disCol]}}
-            </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
-    </mat-table>
-    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50]"></mat-paginator> -->
-        <!-- <div *ngFor="let item of jsonData" fxLayout="row" fxLayoutAlign="space-between center">
-        <div>{{item.StudentId}}</div>
-        <div>{{item.Name}}</div>
-        <div>{{item.FatherName}}</div>
-        <div>{{item.FatherOccupation}}</div>
-        <div>{{item.MotherName}}</div>
-        <div>{{item.MotherOccupation}}</div>
-        <div>{{item.Gender}}</div>
-        <div>{{item.PresentAddress}}</div>
-        <div>{{item.PermanentAddress}}</div>
-        <div>{{item.DOB}}</div>
-        <div>{{item.Bloodgroup}}</div>
-    </div> -->
-
+                <mat-header-row *matHeaderRowDef="DuplicateDisplayCol"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: DuplicateDisplayCol;" class="element-row"></mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;"
+                [pageSizeOptions]="[5,10,20,50]"></mat-paginator>
+            <div>
+                <button (click)="exportArray()" mat-raised-button color="accent">
+                    <mat-icon>download</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="25"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
     </form>
     <div style="display: flex;flex-direction: column;">
         <span style="color:red;margin: 15px;" [innerHTML]="ErrorMessage">
         </span>
-        <span *ngIf="ErrorMessage.length==0 && ELEMENT_DATA.length>0"
+        <span *ngIf="ErrorMessage.length==0 && ELEMENT_DATA.length>0 && AlreadyExistStudent.length==0"
             style="margin:15px;padding: 15px 0px 15px 0px; font-weight: bold;">
             Ready to Upload. Please click on upload button.
         </span>
@@ -89,11 +86,12 @@
     <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
         <ul>
             <li>
-                <div>Whenever student class is uploaded, <b>Fee Type</b> of all uploaded students will be reset to default fee type.</div>
-            </li>            
+                <div>Whenever student class is uploaded, <b>Fee Type</b> of all uploaded students will be reset to
+                    default fee type.</div>
+            </li>
             <li>
                 <div>Class all students uploaded through excel are active immediately.</div>
-            </li>            
+            </li>
         </ul>
     </span>
 </div>

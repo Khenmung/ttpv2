@@ -219,7 +219,7 @@ export class FeeDefinitionComponent implements OnInit {
           this.FeeDefinitionData.BatchId = this.SelectedBatchId;
 
           this.FeeDefinitionData.Active = row.Active;
-          ////console.log('exam slot', this.FeeDefinitionData)
+          //////console.log('exam slot', this.FeeDefinitionData)
 
           if (this.FeeDefinitionData.FeeDefinitionId == 0) {
             this.FeeDefinitionData["CreatedDate"] = new Date();
@@ -302,7 +302,7 @@ export class FeeDefinitionComponent implements OnInit {
           });
 
         }
-        //console.log('this.FeeDefinitionList',this.FeeDefinitionList)
+        ////console.log('this.FeeDefinitionList',this.FeeDefinitionList)
         this.dataSource = new MatTableDataSource<IFeeDefinition>(this.FeeDefinitionList);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

@@ -672,7 +672,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
           }
         })
         this.StudentLedgerList.sort((a, b) => a.Month - b.Month || a.PaymentOrder - b.PaymentOrder);
-        //console.log("this.StudentLedgerList", this.StudentLedgerList)
+        ////console.log("this.StudentLedgerList", this.StudentLedgerList)
         this.dataSource = new MatTableDataSource<ILedger>(this.StudentLedgerList);
         this.loading = false; this.PageLoading = false;
       })
@@ -723,7 +723,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
       //this means balance payment
       if (row.TotalDebit > 0 && row.TotalDebit != row.Balance1) {
         this.getAccountingVoucher(row.LedgerId).subscribe((data: any) => {
-          //console.log("data.value", data.value);
+          ////console.log("data.value", data.value);
           let latestReceipt = data.value.sort((a, b) => b.AccountingVoucherId - a.AccountingVoucherId);
           if (latestReceipt.length > 0)
           //latestReceipt.forEach((accVoucher, indx) => 
@@ -765,7 +765,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
 
           this.miscelenous();
           // this.loading = false; this.PageLoading = false;
-          // //console.log("this.MonthlyDueDetail", this.MonthlyDueDetail);
+          // ////console.log("this.MonthlyDueDetail", this.MonthlyDueDetail);
           // this.billdataSource = new MatTableDataSource<IPaymentDetail>(this.MonthlyDueDetail);
           // this.calculateTotal();
         })//this.getAccountingVoucher(
@@ -826,7 +826,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
           }
         })
         //this.MonthlyDueDetail = this.MonthlyDueDetail.sort((a, b) => a.PaymentOrder - b.PaymentOrder)
-        //console.log("this.MonthlyDueDetail", this.MonthlyDueDetail)
+        ////console.log("this.MonthlyDueDetail", this.MonthlyDueDetail)
         this.miscelenous();
       }//if (row.TotalDebit>0 && row.TotalDebit != row.Balance) 
       this.MonthlyDueDetail = this.MonthlyDueDetail.filter(f => f.FeeName != '');
@@ -899,7 +899,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
 
     //this.MonthlyDueDetail = this.MonthlyDueDetail.sort((a, b) => a.Amount - b.Amount);
     //this.MonthlyDueDetail = this.MonthlyDueDetail.sort((a, b) => a.PaymentOrder - b.PaymentOrder);
-    console.log("this.MonthlyDueDetail ", this.MonthlyDueDetail)
+    //console.log("this.MonthlyDueDetail ", this.MonthlyDueDetail)
     this.MonthlyDueDetail.forEach((row, indx) => {
       row.SlNo = indx + 1;
     });
@@ -1015,7 +1015,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     //this.StudentReceiptData.CreatedDate = new Date();
 
     this.FeePayment.StudentFeeReceipt = this.StudentReceiptData;
-    console.log("this.StudentReceiptData", this.StudentReceiptData)
+    //console.log("this.StudentReceiptData", this.StudentReceiptData)
     var SelectedMonths = this.StudentLedgerList.filter((f: any) => f.Action)
     //this.FeePayment.LedgerAccount["AccountingVoucher"] :any[]= [];
     this.FeePayment.AccountingVoucher = [];
@@ -1106,11 +1106,11 @@ export class AddstudentfeepaymentComponent implements OnInit {
               "CreatedBy": this.LoginUserDetail[0]["userId"],
             });
         }
-        //console.log("this.FeePayment.AccountingVoucher", this.FeePayment);
+        ////console.log("this.FeePayment.AccountingVoucher", this.FeePayment);
       });
     })
 
-    //console.log("this.FeePayment", this.FeePayment);
+    ////console.log("this.FeePayment", this.FeePayment);
     this.dataservice.postPatch(this.FeeReceiptListName, this.FeePayment, 0, 'post')
       .subscribe((data: any) => {
         this.StudentReceiptData.StudentFeeReceiptId = data.StudentFeeReceiptId;
@@ -1172,7 +1172,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   tabChanged(tabChangeEvent: number) {
     this.selectedIndex = tabChangeEvent;
     this.navigateTab(this.selectedIndex);
-    //   //console.log('tab selected: ' + tabChangeEvent);
+    //   ////console.log('tab selected: ' + tabChangeEvent);
   }
   public nextStep() {
     this.selectedIndex += 1;

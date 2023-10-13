@@ -58,7 +58,7 @@ export class AttendanceboardComponent implements AfterViewInit {
     this.SelectedAppName = this.tokenStorage.getSelectedAppName()!;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
-    //console.log("this.SelectedAppName",this.SelectedAppName);
+    ////console.log("this.SelectedAppName",this.SelectedAppName);
     var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.ATTENDANCE.ATTENDANCE)
     if (perObj.length > 0) {
       this.Permissions.ParentPermission = perObj[0].permission;

@@ -241,7 +241,7 @@ export class studentprimaryinfoComponent implements OnInit {
         if (perObj.length > 0) {
           this.FeePaymentPermission = perObj[0].permission;
         }
-        //console.log("this.FeePaymentPermission ", this.FeePaymentPermission);
+        ////console.log("this.FeePaymentPermission ", this.FeePaymentPermission);
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -256,7 +256,7 @@ export class studentprimaryinfoComponent implements OnInit {
   @ViewChildren("allTabs") allTabs: QueryList<any>
 
   ngAfterViewInit() {
-    ////console.log('total tabs: ' + this.allTabs.first._tabs.length);
+    //////console.log('total tabs: ' + this.allTabs.first._tabs.length);
   }
 
   get f() { return this.studentForm.controls }
@@ -268,7 +268,7 @@ export class studentprimaryinfoComponent implements OnInit {
   tabChanged(tabChangeEvent: number) {
     this.selectedIndex = tabChangeEvent;
     this.navigateTab(this.selectedIndex);
-    //   //console.log('tab selected: ' + tabChangeEvent);
+    //   ////console.log('tab selected: ' + tabChangeEvent);
   }
   public nextStep() {
     this.selectedIndex += 1;
@@ -389,7 +389,7 @@ export class studentprimaryinfoComponent implements OnInit {
   GetMasterData() {
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
-        ////console.log(data.value);
+        //////console.log(data.value);
         this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
         this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
         this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
@@ -562,7 +562,7 @@ export class studentprimaryinfoComponent implements OnInit {
         this.PageLoading = false;
       },
         err => {
-          console.log("error", err)
+          //console.log("error", err)
         });
 
   }
@@ -710,7 +710,7 @@ export class studentprimaryinfoComponent implements OnInit {
 
     });
     //debugger;
-    console.log("studentData", this.studentData)
+    //console.log("studentData", this.studentData)
     if (this.studentForm.get("StudentId")?.value == 0) {
       this.studentData[0].SectionId = 0;
       this.studentData[0].SemesterId = 0;
@@ -764,7 +764,7 @@ export class studentprimaryinfoComponent implements OnInit {
           }
 
         }, error => {
-          console.log("student insert", error)
+          //console.log("student insert", error)
           var errormsg = globalconstants.formatError(error);
           this.loading = false;
           this.contentservice.openSnackBar(errormsg, globalconstants.ActionText, globalconstants.RedBackground);
@@ -773,7 +773,7 @@ export class studentprimaryinfoComponent implements OnInit {
   }
 
   update() {
-    ////console.log('student', this.studentForm.value)
+    //////console.log('student', this.studentForm.value)
     this.dataservice.postPatch('Students', this.studentData[0], this.StudentId, 'patch')
       .subscribe((result: any) => {
         this.loading = false; this.PageLoading = false;
@@ -795,7 +795,7 @@ export class studentprimaryinfoComponent implements OnInit {
          
         }, error => {
         this.loading = false;
-        console.log("student update", error);
+        //console.log("student update", error);
       })
   }
   getErrorMessage(pickerInput: string): string {
@@ -815,16 +815,16 @@ export class studentprimaryinfoComponent implements OnInit {
           },
             error => {
               this.loading = false;
-              console.log("error in createInvoice", error);
+              //console.log("error in createInvoice", error);
             })
       },
         error => {
           this.loading = false;
-          console.log("error in getinvoice", error);
+          //console.log("error in getinvoice", error);
         })
   }
   adjustDateForTimeOffset(dateToAdjust: Date) {
-    ////console.log(dateToAdjust)
+    //////console.log(dateToAdjust)
     if (dateToAdjust) {
       var offsetMs = dateToAdjust.getTimezoneOffset() * 60000;
       return new Date(dateToAdjust.getTime() - offsetMs);

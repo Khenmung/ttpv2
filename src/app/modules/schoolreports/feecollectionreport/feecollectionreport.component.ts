@@ -96,7 +96,7 @@ export class FeecollectionreportComponent implements OnInit {
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
-      //      //console.log('this.Permission', this.Permission)
+      //      ////console.log('this.Permission', this.Permission)
       if (this.Permission != 'deny') {
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -121,7 +121,7 @@ export class FeecollectionreportComponent implements OnInit {
               return d;
             })
             this.Months = alasql("select distinct Month,FeeName from ?", [this.Months]);
-            console.log('this.month', this.Months)
+            //console.log('this.month', this.Months)
           })
 
         this.SearchForm = this.fb.group({
@@ -335,7 +335,7 @@ export class FeecollectionreportComponent implements OnInit {
   }
   GetStudents() {
 
-    ////console.log(this.LoginUserDetail);
+    //////console.log(this.LoginUserDetail);
 
     // let list: List = new List();
     // list.fields = [
@@ -354,7 +354,7 @@ export class FeecollectionreportComponent implements OnInit {
     // this.dataservice.get(list)
     //   .subscribe((data: any) => {
     //     //debugger;
-    //     //  //console.log('data.value', data.value);
+    //     //  ////console.log('data.value', data.value);
     //     if (data.value.length > 0) {
     var _students: any = this.tokenStorage.getStudents()!;
     //var _filteredStudents = _students.filter((s: any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
@@ -374,7 +374,7 @@ export class FeecollectionreportComponent implements OnInit {
         _Section = _sectionobj[0].MasterDataName;
 
       //var _RollNo = studentcls.RollNo;
-      //console.log('matchstudent[0].LastName', matchstudent[0].LastName)
+      ////console.log('matchstudent[0].LastName', matchstudent[0].LastName)
       var _lastname = studentcls.LastName ? " " + studentcls.LastName : '';
       var _name = studentcls.FirstName + _lastname;
       //var _fullDescription = _name //+ " - " + _RollNo;//_className + " - " + _Section + " - " + _RollNo;

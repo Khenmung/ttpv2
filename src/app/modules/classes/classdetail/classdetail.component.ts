@@ -250,14 +250,14 @@ export class ClassdetailComponent implements OnInit {
           this.ClassMasterData.BatchId = this.SelectedBatchId;
 
           this.ClassMasterData.Active = row.Active;
-          ////console.log('exam slot', this.ClassMasterData)
+          //////console.log('exam slot', this.ClassMasterData)
 
           if (this.ClassMasterData.ClassId == 0) {
             this.ClassMasterData["CreatedDate"] = new Date();
             this.ClassMasterData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.ClassMasterData["UpdatedDate"] = new Date();
             delete this.ClassMasterData["UpdatedBy"];
-            console.log('ClassMasterData', this.ClassMasterData)
+            //console.log('ClassMasterData', this.ClassMasterData)
             this.insert(row);
           }
           else {
@@ -265,7 +265,7 @@ export class ClassdetailComponent implements OnInit {
             delete this.ClassMasterData["CreatedBy"];
             this.ClassMasterData["UpdatedDate"] = new Date();
             this.ClassMasterData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            console.log('ClassMasterData update', this.ClassMasterData)
+            //console.log('ClassMasterData update', this.ClassMasterData)
             this.update(row);
           }
         }

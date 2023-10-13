@@ -97,7 +97,7 @@ export class ExamtimetableComponent implements OnInit {
     debugger;
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    //console.log('loginuserdetail', this.LoginUserDetail)
+    ////console.log('loginuserdetail', this.LoginUserDetail)
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -158,7 +158,7 @@ export class ExamtimetableComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         this.ClassSubjectList = data.value.map(item => {
           var _class = '';
           var clsObj = this.Classes.filter(c => c.ClassId == item.ClassId);
@@ -292,7 +292,7 @@ export class ExamtimetableComponent implements OnInit {
 
   }
   GetSlotNClassSubjects() {
-    ////console.log("this.searchForm.get(searchClassId).value",this.searchForm.get("searchClassId")?.value)
+    //////console.log("this.searchForm.get(searchClassId).value",this.searchForm.get("searchClassId")?.value)
     //var orgIdSearchstr = this.FilterOrgSubOrgBatchId; // ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and BatchId eq ' + this.SelectedBatchId;
     var filterstr = ' and Active eq 1 ';
     let _examId = this.searchForm.get("searchExamId")?.value;
@@ -386,7 +386,7 @@ export class ExamtimetableComponent implements OnInit {
       let end = b.ExamDate.split('/');
       return new Date(start[2], start[1], start[0]).getTime() - new Date(end[2], end[1], end[0]).getTime()
     });
-    //console.log('_EachExamDate', _EachExamDate)
+    ////console.log('_EachExamDate', _EachExamDate)
     //preparing data for each exam date
     //var timeTableRow = {};
     var _SlotNClassSubjects: any[] = [];
@@ -426,7 +426,7 @@ export class ExamtimetableComponent implements OnInit {
           && moment(f.Slot.ExamDate).format('dd/MM/yyyy') == moment(edate.ExamDate).format('dd/MM/yyyy'))
           .sort((a, b) => a.Slot.Sequence - b.Slot.Sequence);
         //timeTableRow["ExamDate"]["slot" + index]["ClassSubject"] :any[]= [];
-        //console.log("filteredOneSlotSubjects",filteredOneSlotSubjects)
+        ////console.log("filteredOneSlotSubjects",filteredOneSlotSubjects)
 
         var distinctClasses = alasql("select distinct ClassSubject->ClassId as ClassId from ? ", [filteredOneSlotSubjects]);
         oneSlotClasslist = distinctClasses.map(d => {
@@ -441,7 +441,7 @@ export class ExamtimetableComponent implements OnInit {
           return { ["Slot" + index]: slot.SlotName, "ClassName": _className, "ClassId": d.ClassId, "Sequence": _classSequence, "Subjects": '' }
         });
 
-        //console.log("oneSlotClasslist", oneSlotClasslist);
+        ////console.log("oneSlotClasslist", oneSlotClasslist);
         filteredOneSlotSubjects.forEach(f => {
           var _subject = '';
           var obj = this.Subjects.filter((s: any) => s.MasterDataId == f.ClassSubject.SubjectId)
@@ -466,7 +466,7 @@ export class ExamtimetableComponent implements OnInit {
             timeTableRow[inx]["daterow"] = false;
           })
         }
-        //console.log("timeTableRow", timeTableRow)
+        ////console.log("timeTableRow", timeTableRow)
       })
 
       //this.SlotNClassSubjects.push("<div style='background-color:lightgray'>"+header+"</div>");

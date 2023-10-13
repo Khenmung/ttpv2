@@ -194,9 +194,9 @@ export class DailytimetablereportComponent implements OnInit {
         //iterrate through weekdays
         // iterate through class periods
 
-        ////console.log('this.WeekDays',this.WeekDays);
+        //////console.log('this.WeekDays',this.WeekDays);
         var filterPeriods = this.AllClassPeriods.filter(a => a.ClassId == _classId);
-        //console.log("filterPeriods", filterPeriods)
+        ////console.log("filterPeriods", filterPeriods)
         if (filterPeriods.length == 0) {
           this.contentservice.openSnackBar("Period not yet defined for this class.", globalconstants.ActionText, globalconstants.RedBackground);
 
@@ -317,7 +317,7 @@ export class DailytimetablereportComponent implements OnInit {
             this.TeacherSubjectList.push(teachersubject);
           });
         })
-        //console.log("this.TeacherSubjectList", this.TeacherSubjectList);
+        ////console.log("this.TeacherSubjectList", this.TeacherSubjectList);
         this.loading = false;
         this.PageLoading = false;
       });
@@ -361,7 +361,7 @@ export class DailytimetablereportComponent implements OnInit {
 
         this.loading = false;
         this.PageLoading = false;
-        //console.log("this.AllClassPeriods", this.AllClassPeriods);
+        ////console.log("this.AllClassPeriods", this.AllClassPeriods);
       }, error => {
         this.loading = false;
         this.PageLoading = false;

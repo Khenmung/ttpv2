@@ -130,12 +130,12 @@ export class CalendarComponent implements OnInit {
     //     }
     //   })
     // })
-    //console.log("events", this.events);
+    ////console.log("events", this.events);
     var perObj = globalconstants.getPermission(this.tokenservice, globalconstants.Pages.common.misc.CALENDAR);
     if (perObj.length > 0) {
       this.Permission = perObj[0].permission;
     }
-    ////console.log('this.Permission', this.Permission)
+    //////console.log('this.Permission', this.Permission)
     if (this.Permission != 'deny') {
       this.PageLoading = true;
       this.GetEvents();
@@ -272,7 +272,7 @@ export class CalendarComponent implements OnInit {
             }
             this.PageLoading = false;
           });
-        //console.log("events",this.events);
+        ////console.log("events",this.events);
         ///this.activeDayIsOpen = false;
         //this.dayClicked({date:new Date(),events:[]});    
       });
@@ -399,7 +399,7 @@ export class CalendarComponent implements OnInit {
 
 // }
 //   handleDateClick(arg) {
-//     //console.log("arg",arg)
+//     ////console.log("arg",arg)
 //     //alert('date click! ' + arg)
 //   }
 
@@ -407,7 +407,7 @@ export class CalendarComponent implements OnInit {
 //     //debugger;
 //    // value.el.innerHTML
 
-//     //console.log("mouseover",value.detail)
+//     ////console.log("mouseover",value.detail)
 //     //this.contentservice.openSnackBar(value, globalconstants.ActionText, globalconstants.BlueBackground);
 //   }
 //   TimeGridView() {

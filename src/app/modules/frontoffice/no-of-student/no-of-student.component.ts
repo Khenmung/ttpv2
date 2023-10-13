@@ -232,7 +232,7 @@ export class NoOfStudentComponent implements OnInit {
     this.StudentClassList = [];
     // this.dataservice.get(list)
     //   .subscribe((StudentClassesdb: any) => {
-    //console.log("Studenclass no.", StudentClassesdb.value)
+    ////console.log("Studenclass no.", StudentClassesdb.value)
     var errormsg = '';
     this.BoyGirlTotal = [];
     //this.StudentClassList = StudentClassesdb.value.map(student => {
@@ -391,7 +391,7 @@ export class NoOfStudentComponent implements OnInit {
       this.HeaderTitle = '';
       this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
     }
-    //console.log("BoyGirlTotal", this.BoyGirlTotal);
+    ////console.log("BoyGirlTotal", this.BoyGirlTotal);
     var _sorted = pivottedClass.sort((a, b) => +a.Sequence - +b.Sequence);
     this.dataSource = new MatTableDataSource<IStudentClass>(_sorted);
     this.dataSource.sort = this.sort;
@@ -435,7 +435,7 @@ export class NoOfStudentComponent implements OnInit {
   //   // this.dataservice.get(list)
   //   //   .subscribe((data: any) => {
   //   //debugger;
-  //   //  //console.log('data.value', data.value);
+  //   //  ////console.log('data.value', data.value);
   //   var _students: any = this.tokenStorage.getStudents()!;
   //   if (_students.length > 0) {
   //     _students.forEach(student => {

@@ -283,7 +283,7 @@ export class EmployeeAttendanceReportComponent implements OnInit {
 
           emp["Ab"] = _ab < 0 ? 0 : _ab;
         })
-        //console.log("employee",this.Employees)
+        ////console.log("employee",this.Employees)
         //this.EmployeeAttendanceList = this.EmployeeAttendanceList.sort((a, b) => a.RollNo - b.RollNo)
         this.dataSource = new MatTableDataSource<IEmployeeAttendance>(this.EmployeeAttendanceList);
         this.dataSource.paginator = this.paginator;

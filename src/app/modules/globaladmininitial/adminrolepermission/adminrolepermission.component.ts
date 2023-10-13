@@ -269,7 +269,7 @@ export class AdminrolepermissionComponent implements OnInit {
         else
           this.PlanFeaturePages = [];
         this.loading = false; this.PageLoading = false;
-        console.log("PageFeatures", this.TopPageFeatures)
+        //console.log("PageFeatures", this.TopPageFeatures)
       })
   }
   FilterPageFeatures() {
@@ -341,9 +341,9 @@ export class AdminrolepermissionComponent implements OnInit {
         filteredFeature = this.PlanFeaturePages.filter((f: any) => f.ParentId == _ParentId);
         //else
         //  filteredFeature = [...this.PlanFeaturePages];
-        // console.log("filteredFeature")
+        // //console.log("filteredFeature")
         // console.table(filteredFeature)
-        // console.log("data.value")
+        // //console.log("data.value")
         // console.table(data.value)
 
         filteredFeature.forEach(p => {
@@ -493,7 +493,7 @@ export class AdminrolepermissionComponent implements OnInit {
           this.AppRoleData.OrgId = this.searchForm.get("searchCustomerId")?.value.Org.OrganizationId;
           this.AppRoleData.SubOrgId = this.searchForm.get("searchCustomerId")?.value.SubOrgId;
 
-          //console.log('data', this.AppRoleData);
+          ////console.log('data', this.AppRoleData);
           if (this.AppRoleData.ApplicationFeatureRoleId == 0) {
             this.AppRoleData["CreatedDate"] = new Date();
             this.AppRoleData["CreatedBy"] = this.UserDetails[0].userId;
@@ -547,7 +547,7 @@ export class AdminrolepermissionComponent implements OnInit {
   }
   getoldvalue(value: string, row) {
     this.oldvalue = row.MasterDataName;
-    //  //console.log('old value', this.oldvalue);
+    //  ////console.log('old value', this.oldvalue);
   }
 
   getDropDownData(dropdowntype) {

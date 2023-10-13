@@ -129,9 +129,9 @@ export class StudentprogressreportComponent implements OnInit {
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
-      ////console.log('this.Permission', this.Permission)
+      //////console.log('this.Permission', this.Permission)
       if (this.Permission != 'deny') {
-        //console.log("localStorage.getItem(StudentDetail)",localStorage.getItem("StudentDetail"))
+        ////console.log("localStorage.getItem(StudentDetail)",localStorage.getItem("StudentDetail"))
         var studentdetail = [JSON.parse("{" + localStorage.getItem("StudentDetail") + "}")];
         var _studentId = this.tokenStorage.getStudentId()!;
         var _student = this.tokenStorage.getStudents()!;
@@ -144,7 +144,7 @@ export class StudentprogressreportComponent implements OnInit {
           this.StudentName.push({ "Name": s.StudentName, "Class": s.ClassName, "Section": s.Section, "RollNo": s.RollNo })
         })
 
-        //console.log("StudentName",this.StudentName);
+        ////console.log("StudentName",this.StudentName);
         //this.LoginUserDetail = this.tokenStorage.getUserDetail();
         this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
         var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.FEEPAYMENT);
@@ -284,7 +284,7 @@ export class StudentprogressreportComponent implements OnInit {
           }
           ]
         })
-        //console.log("this.Organization",this.Organization);
+        ////console.log("this.Organization",this.Organization);
 
 
         var imgobj = this.CommonHeader.filter((f: any) => f.MasterDataName == 'img');
@@ -292,7 +292,7 @@ export class StudentprogressreportComponent implements OnInit {
           this.logourl = imgobj[0].Description;
         }
         this.CommonHeader = this.CommonHeader.filter((f: any) => f.MasterDataName != 'img');
-        //console.log("this.commonheadersetting.",commonheadersetting);
+        ////console.log("this.commonheadersetting.",commonheadersetting);
         this.CommonHeader.forEach(header => {
           this.Organization[0].forEach(orgdet => {
             header.Description = header.Description.replaceAll("[" + orgdet.name + "]", orgdet.val);
@@ -302,8 +302,8 @@ export class StudentprogressreportComponent implements OnInit {
 
         this.loading = false; this.PageLoading = false;
       });
-    //console.log("this.Organization[0]",this.Organization[0])
-    //console.log("this.CommonHeader",this.CommonHeader)
+    ////console.log("this.Organization[0]",this.Organization[0])
+    ////console.log("this.CommonHeader",this.CommonHeader)
   }
   back() {
     this.nav.navigate(['/edu']);
@@ -522,7 +522,7 @@ export class StudentprogressreportComponent implements OnInit {
           this.GradedMarksResults.push(OverAllGradeRow);
 
         }
-        //console.log("this.GradedMarksResults",this.GradedMarksResults)
+        ////console.log("this.GradedMarksResults",this.GradedMarksResults)
         this.loading = false;
         this.PageLoading = false;
         this.GradedSubjectsDataSource = new MatTableDataSource<any>(this.GradedMarksResults);
@@ -571,7 +571,7 @@ export class StudentprogressreportComponent implements OnInit {
   //   list.filter = [filterStr];
   //   this.dataservice.get(list)
   //     .subscribe((data: any) => {
-  //       //console.log("data", data)
+  //       ////console.log("data", data)
   //       var _class = '';
   //       var _subject = '';
   //       var _section = '';
@@ -646,8 +646,8 @@ export class StudentprogressreportComponent implements OnInit {
   //         })
   //       })
 
-  //       //console.log("this.DisplayColumns", this.DisplayColumns);
-  //       //console.log("shd", progressreport);
+  //       ////console.log("this.DisplayColumns", this.DisplayColumns);
+  //       ////console.log("shd", progressreport);
 
   //       this.dataSource = new MatTableDataSource<any>(progressreport);
   //       this.dataSource.sort = this.sort;
@@ -774,7 +774,7 @@ export class StudentprogressreportComponent implements OnInit {
             }
           }
         });
-        //console.log("this.EvaluationExamMap",this.EvaluationExamMap)
+        ////console.log("this.EvaluationExamMap",this.EvaluationExamMap)
       })
   }
   GetClassEvaluations() {
@@ -921,7 +921,7 @@ export class StudentprogressreportComponent implements OnInit {
         }
 
         //  this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.DisplayOrder - b.DisplayOrder)
-        console.log("this.StudentEvaluationList", this.StudentEvaluationList)
+        //console.log("this.StudentEvaluationList", this.StudentEvaluationList)
         this.dataSourceEvaluation = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);
         this.dataSource.paginator = this.paginator;
         this.loading = false;

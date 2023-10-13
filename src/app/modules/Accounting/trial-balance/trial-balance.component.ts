@@ -225,7 +225,7 @@ export class TrialBalanceComponent implements OnInit {
             this.AccountingVoucherList.push(f);
           }
         })
-        //console.log("this.AccountingVoucherList", this.AccountingVoucherList)
+        ////console.log("this.AccountingVoucherList", this.AccountingVoucherList)
         var groupbyDebitCredit = alasql("select sum(BaseAmount) as Amount,Debit,AccountName from ? GROUP BY AccountName,Debit order by AccountName",
           [this.AccountingVoucherList])
           groupbyDebitCredit = groupbyDebitCredit.sort((a,b)=>a.AccountName -b.AccountName);
@@ -258,7 +258,7 @@ export class TrialBalanceComponent implements OnInit {
               result.push(temprow);
             }
         })
-        //console.log("groupbyDebitCredit", groupbyDebitCredit)
+        ////console.log("groupbyDebitCredit", groupbyDebitCredit)
         //var display = result.filter((f:any) => f.Dr != undefined)
         result.forEach(row=>{
           row.Balance=row.Dr -row.Cr;
@@ -320,7 +320,7 @@ export class TrialBalanceComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        //  //console.log('data.value', data.value);
+        //  ////console.log('data.value', data.value);
         data.value.forEach(f => {
 
           if (f.AccountNature.Active == true) {

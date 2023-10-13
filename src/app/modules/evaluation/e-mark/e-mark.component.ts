@@ -224,7 +224,7 @@ export class EMarkComponent implements OnInit {
         }
         else
           this.EvaluationResultMarkList = this.EvaluationResultMarkList.sort((a, b) => a.Rank - b.Rank)
-        //console.log("this.StudentEvaluationList", this.StudentEvaluationList)
+        ////console.log("this.StudentEvaluationList", this.StudentEvaluationList)
         //row.EvaluationStarted = true;
         this.dataSource = new MatTableDataSource<IStudentEvaluation>(this.EvaluationResultMarkList);
         this.dataSource.paginator = this.paginator;
@@ -250,7 +250,7 @@ export class EMarkComponent implements OnInit {
   }
 
   update(row) {
-    console.log("this.EvaluationResultMarkData", this.EvaluationResultMarkData)
+    //console.log("this.EvaluationResultMarkData", this.EvaluationResultMarkData)
     this.dataservice.postPatch("EvaluationResultMarks", this.EvaluationResultMarkData, this.EvaluationResultMarkData.EvaluationResultMarkId, 'patch')
       .subscribe(
         (data: any) => {
@@ -303,8 +303,8 @@ export class EMarkComponent implements OnInit {
       });
   }
   ApplyVariables(studentInfo) {
-    //console.log("studentInfo", studentInfo)
-    //console.log("this.AssessmentPrintHeading", this.AssessmentPrintHeading)
+    ////console.log("studentInfo", studentInfo)
+    ////console.log("this.AssessmentPrintHeading", this.AssessmentPrintHeading)
     this.PrintHeading = JSON.parse(JSON.stringify(this.AssessmentPrintHeading));
     this.PrintHeading.forEach((stud, indx) => {
       Object.keys(studentInfo).forEach(studproperty => {
@@ -411,7 +411,7 @@ export class EMarkComponent implements OnInit {
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.AssessmentPrintHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.ASSESSMENTPRINTHEADING);
-    //console.log("this.AssessmentPrintHeading",this.AssessmentPrintHeading)
+    ////console.log("this.AssessmentPrintHeading",this.AssessmentPrintHeading)
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
         this.ClassGroups = [...data.value];
@@ -603,7 +603,7 @@ export class EMarkComponent implements OnInit {
         if (this.EvaluatedStudent.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
-        //console.log("this.StudentEvaluationList", this.EvaluatedStudent)
+        ////console.log("this.StudentEvaluationList", this.EvaluatedStudent)
         this.dataSource = new MatTableDataSource<any>(this.EvaluatedStudent);
         this.dataSource.paginator = this.paginator;
         this.loading = false;
@@ -672,7 +672,7 @@ export class EMarkComponent implements OnInit {
               this.ClassEvaluations.push(clseval);
             }
           })
-          //   console.log("this.ClassEvaluations", this.ClassEvaluations)
+          //   //console.log("this.ClassEvaluations", this.ClassEvaluations)
         }
         this.loading = false;
         this.PageLoading = false;
