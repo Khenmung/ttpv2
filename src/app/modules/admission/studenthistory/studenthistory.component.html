@@ -45,6 +45,22 @@
                 {{element.StudentName}}
             </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="FatherName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:flex ;">
+                Father
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.FatherName}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="MotherName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:flex ;">
+                Mother
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.MotherName}}
+            </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="AdmissionDate">
             <mat-header-cell *matHeaderCellDef mat-sort-header style="display:flex ;">
                 Admission Date
@@ -97,12 +113,12 @@
         </ng-container>
         <ng-container matColumnDef="Active">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="SelectALL($event)">
-                </mat-checkbox>
-                &nbsp;Active
+                <!-- <mat-checkbox (click)="$event.stopPropagation()" (change)="SelectALL($event)">
+                </mat-checkbox> -->
+                Active
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                <mat-checkbox [disabled]="true" (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
                     [checked]="element.Active==1?true:false">
                 </mat-checkbox>
             </mat-cell>

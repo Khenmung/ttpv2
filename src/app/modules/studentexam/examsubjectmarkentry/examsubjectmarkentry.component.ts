@@ -731,7 +731,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       "ClassSubjectMarkComponentId,ExamId,ClassSubjectId,SubjectComponentId,FullMark"
     ];
     list.PageName = "ClassSubjectMarkComponents";
-    list.lookupFields = ["ExamStudentSubjectResults($select=ExamStudentSubjectResultId,ExamId,StudentClassId,StudentClassSubjectId,ClassSubjectMarkComponentId,Marks,Grade,ExamStatus,Active)"];
+    list.lookupFields = ["ExamStudentSubjectResults($filter=Deleted eq false;$select=ExamStudentSubjectResultId,ExamId,StudentClassId,StudentClassSubjectId,ClassSubjectMarkComponentId,Marks,Grade,ExamStatus,Active)"];
     list.filter = [this.FilterOrgSubOrgBatchId + filterstr];
     //list.orderBy = "ParentId";
     this.displayedColumns = [

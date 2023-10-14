@@ -30,7 +30,9 @@ mat-cell{
 .mat-column-StudentName{
     flex: 1 0 200px;
 }
-
+.mat-column-FatherName,.mat-column-MotherName,.mat-column-AdmissionDate,.mat-column-SemesterId{
+    flex: 1 0 150px;
+}
 mat-cell:first-of-type{
     padding-left: 0px;
 }

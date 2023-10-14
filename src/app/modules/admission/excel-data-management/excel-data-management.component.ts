@@ -118,6 +118,7 @@ export class ExcelDataManagementComponent implements OnInit {
 
       this.GetMasterData();
       this.GetAllStudents();
+
       //else
       // if (this.SelectedApplicationName == 'edu') {
       //   this.GetStudents();
@@ -132,11 +133,12 @@ export class ExcelDataManagementComponent implements OnInit {
     })
   }
   ErrorMessage = '';
-  StudentList: any[] = [];
+  CurrentBatchStudentList: any[] = [];
   StudentClassList: any[] = [];
   displayedColumns: any[];
   ELEMENT_DATA: any[] = [];
   dataSource: MatTableDataSource<any>;
+  cleanDataSource: MatTableDataSource<any>;
   uploadForm: UntypedFormGroup;
   AllMasterData: any[];
   UploadTypes: any[];
@@ -292,6 +294,7 @@ export class ExcelDataManagementComponent implements OnInit {
       // if (_rowCount > globalconstants.RowUploadLimit) {
       //   this.storeData.slice(globalconstants.RowUploadLimit);
       // }
+      this.ELEMENT_DATA = [];
       var data = new Uint8Array(_storeData);
       //////console.log('data',data)
       var arr = new Array();
@@ -312,8 +315,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else if (this.SelectedUploadtype.toLowerCase().includes(this.UploadType.EMPLOYEEDETAIL)) {
         this.ValidateEmployeeData();
       }
-      if (this.ErrorMessage.length == 0 && !this.SelectedUploadtype.toLowerCase().includes(this.UploadType.STUDENTPROFILE)
-        && this.AlreadyExistStudent.length == 0) {
+      if (this.ErrorMessage.length == 0 && !this.SelectedUploadtype.toLowerCase().includes(this.UploadType.STUDENTPROFILE)) {
         this.ReadyForUpload = true;
         this.snackbar.open("Data is ready for upload. Please click on file upload button.", globalconstants.ActionText,
           globalconstants.BlueBackground);
@@ -753,7 +755,7 @@ export class ExcelDataManagementComponent implements OnInit {
     this.jsonData.forEach((element, indx) => {
       slno = parseInt(indx) + 1;
 
-      let studentFilter: any = this.StudentList.filter((g: any) => g.PID == element.PID);
+      let studentFilter: any = this.AllStudents.filter((g: any) => g.PID == element.PID);
       if (studentFilter.length == 0)
         this.ErrorMessage += "Invalid PID at row " + slno + ":" + element.PID + "<br>";
       if (element.Section) {
@@ -801,10 +803,18 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.StudentClassId = 0;
 
+      var _FeeTypeId = 0;
       var _regularFeeTypeIds: any = this.FeeTypes.filter((f: any) => f.FeeTypeName.toLowerCase() == 'regular');
-      var _regularFeeTypeId = 0;
       if (_regularFeeTypeIds.length > 0)
-        _regularFeeTypeId = _regularFeeTypeIds[0].FeeTypeId;
+        _FeeTypeId = _regularFeeTypeIds[0].FeeTypeId;
+
+      if (element.FeeType) {
+        var _existingFeeTypeObj: any = this.FeeTypes.filter((f: any) => f.FeeTypeName.toLowerCase() == element.FeeType.toLowerCase());
+        if (_existingFeeTypeObj.length > 0) {
+          _FeeTypeId = _existingFeeTypeObj[0].FeeTypeId;
+        }
+      }
+
 
       if (this.ErrorMessage.length == 0) {
         if (element.StudentClassId > 0) {
@@ -831,7 +841,7 @@ export class ExcelDataManagementComponent implements OnInit {
             StudentClassId: element.StudentClassId,
             SemesterId: element.SemesterId,
             IsCurrent: true,
-            FeeTypeId: _regularFeeTypeId,
+            FeeTypeId: _FeeTypeId,
             BatchId: this.SelectedBatchId,
             OrgId: this.loginDetail[0]["orgId"],
             SubOrgId: this.SubOrgId,
@@ -848,7 +858,14 @@ export class ExcelDataManagementComponent implements OnInit {
       TableUtil.exportArrayToExcel(datatoExport, "StudentclassForUpload");
     }
   }
+  NewStudentExportArray() {
+    if (this.ELEMENT_DATA.length > 0) {
+      const datatoExport: Partial<any>[] = this.ELEMENT_DATA;
+      TableUtil.exportArrayToExcel(datatoExport, "NewStudentForUpload");
+    }
+  }
   AlreadyExistStudent: any = [];
+  CleanDisplayCol: any = [];
   ValidateStudentData() {
     let slno: any = 0;
     debugger;
@@ -856,23 +873,11 @@ export class ExcelDataManagementComponent implements OnInit {
     this.AlreadyExistStudent = [];
     this.jsonData.forEach((element, indx) => {
       slno = parseInt(indx) + 1;
-      let existingstudent: any = this.AllStudents?.filter((s: any) => s.FirstName.toLowerCase() == element.FirstName.toLowerCase())
-      //&& s.FatherName.toLowerCase() == element.FatherName.toLowerCase())
-      if (existingstudent?.length > 0) {
+      element.FirstName = element.FirstName.trim();
+      element.FatherName = element.FatherName ? element.FatherName.trim() : '';
+      element.MotherName = element.MotherName ? element.MotherName.trim() : '';
+      element.LastName = element.LastName ? element.LastName.trim() : '';
 
-
-        this.AlreadyExistStudent.push({
-          Name: element.FirstName,
-          LastName: element.LastName,
-          FatherName: element.FatherName,
-          MotherName: element.MotherName,
-          PID: existingstudent[0].PID,
-          ClassName: element.ClassAdmissionSought,
-          RollNo: element.RollNo,
-          Section: element.Section
-        })
-        return;
-      }
       if (isNaN(new Date(element.DOB).getTime())) {
         this.ErrorMessage += "Invalid date at row : " + indx;
       }
@@ -950,6 +955,17 @@ export class ExcelDataManagementComponent implements OnInit {
       }
       else
         element.SemesterId = 0;
+
+      // if (element.FeeType) {
+      //   let FeeTypeFilter: any = this.FeeTypes.filter((g: any) => g.FeeTypeName.toUpperCase() == element.FeeType.trim().toUpperCase());
+      //   if (FeeTypeFilter.length == 0)
+      //     this.ErrorMessage += "Invalid Fee Type at row " + slno + ":" + element.FeeType + "<br>";
+      //   else {
+      //     element.FeeTypeId = FeeTypeFilter[0].FeeTypeId;
+      //   }
+      // }
+      // else
+      //   element.FeeTypeId = 0;
 
       if (element.Category) {
         let Categoryfilter: any = this.Category.filter((g: any) => g.MasterDataName.toLowerCase() == element.Category.toLowerCase());
@@ -1144,6 +1160,12 @@ export class ExcelDataManagementComponent implements OnInit {
       if (element.MICRNo && element.MICRNo.length > 30) {
         this.ErrorMessage += 'MICRNo should not be greater than 30 characters.';
       }
+      if (!element.AdhaarNo)
+        element.AdhaarNo = '';
+      if (!element.AdmissionNo)
+        element.AdmissionNo = '';
+      if (!element.BoardRegistrationNo)
+        element.BoardRegistrationNo = '';
 
       if (element.AdhaarNo && element.AdhaarNo.length > 15) {
         this.ErrorMessage += 'AdhaarNo should not be greater than 15 characters.';
@@ -1213,20 +1235,161 @@ export class ExcelDataManagementComponent implements OnInit {
           element[f.ReportName] = 0;
         }
       })
+      /////////////feetype  
+      var _FeeTypeId = 0;
+      var _regularFeeTypeIds: any = this.FeeTypes.filter((f: any) => f.FeeTypeName.toLowerCase() == 'regular');
+      if (_regularFeeTypeIds.length > 0)
+        _FeeTypeId = _regularFeeTypeIds[0].FeeTypeId;
 
-      this.ELEMENT_DATA.push(element);
+      if (element.FeeType) {
+        var _existingFeeTypeObj: any = this.FeeTypes.filter((f: any) => f.FeeTypeName.toLowerCase() == element.FeeType.toLowerCase());
+        if (_existingFeeTypeObj.length > 0) {
+          _FeeTypeId = _existingFeeTypeObj[0].FeeTypeId;
+        }
+      }
+      element.FeeTypeId = _FeeTypeId;
+      /////end feetype
+
+      let existingstudent: any = this.AllStudents?.filter((s: any) => s.FirstName.toLowerCase() == element.FirstName.toLowerCase()
+      && s.FatherName.toLowerCase() == element.FatherName.toLowerCase())
+      if (existingstudent?.length > 0) {
+
+        let currentStud = this.CurrentBatchStudentList.filter(f => f.StudentClasses
+          && f.StudentClasses.length > 0
+          && f.StudentClasses[0].ClassId == element.ClassID);
+        if (currentStud.length > 0)
+          element.StudentClassId = currentStud[0].StudentClasses[0].StudentClassId;
+        else
+          element.StudentClassId = 0;
+
+        if (element.StudentClassId > 0) {
+          //if studentclassid already exist, dont update classid,FeeTypeId
+          this.AlreadyExistStudent.push({
+            Name: element.FirstName.trim(),
+            LastName: element.LastName.trim(),
+            FatherName: element.FatherName,
+            MotherName: element.MotherName,
+            PID: existingstudent[0].PID,
+            StudentId: +existingstudent[0].StudentId,
+            SectionId: element.SectionId,
+            RollNo: element.RollNo ? element.RollNo : '',
+            SemesterId: element.SemesterId,
+            IsCurrent: true,
+            StudentClassId: element.StudentClassId,
+            BatchId: this.SelectedBatchId,
+            OrgId: this.loginDetail[0]["orgId"],
+            SubOrgId: this.SubOrgId
+          });
+        }
+        else {
+
+          this.AlreadyExistStudent.push({
+            Name: element.FirstName.trim(),
+            LastName: element.LastName.trim(),
+            FatherName: element.FatherName,
+            MotherName: element.MotherName,
+            PID: existingstudent[0].PID,
+            StudentId: +existingstudent[0].StudentId,
+            ClassId: element.ClassAdmissionSought,
+            SectionId: element.SectionId,
+            RollNo: element.RollNo ? element.RollNo : '',
+            StudentClassId: element.StudentClassId,
+            SemesterId: element.SemesterId,
+            IsCurrent: true,
+            FeeTypeId: _FeeTypeId,
+            BatchId: this.SelectedBatchId,
+            OrgId: this.loginDetail[0]["orgId"],
+            SubOrgId: this.SubOrgId,
+            Active: 1
+          });
+        }
+      }
+      else
+        this.ELEMENT_DATA.push(element);
 
     });
     this.DuplicateDisplayCol = [
+      "PID",
       "Name",
       "LastName",
       "FatherName",
       "MotherName"
     ]
+    this.CleanDisplayCol = [
+      "PID",
+      "FirstName",
+      "LastName",
+      "FatherName",
+      "MotherName"
+    ]
     this.dataSource = new MatTableDataSource(this.AlreadyExistStudent);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    ////console.log("this.ELEMENT_DATA",this.ELEMENT_DATA)
+
+    this.cleanDataSource = new MatTableDataSource(this.ELEMENT_DATA);
+
+  }
+  UploadStudentClass() {
+    this.SelectedUploadtype = "student class upload";
+    let studentCls: any = [];
+
+    // this.AlreadyExistStudent.push({
+    //   Name: element.FirstName.trim(),
+    //   LastName: element.LastName.trim(),
+    //   FatherName: element.FatherName,
+    //   MotherName: element.MotherName,
+    //   PID: existingstudent[0].PID,
+    //   StudentId: +existingstudent[0].StudentId,
+    //   ClassId: element.ClassId,
+    //   SectionId: element.SectionId,
+    //   RollNo: element.RollNo ? element.RollNo : '',
+    //   StudentClassId: element.StudentClassId,
+    //   SemesterId: element.SemesterId,
+    //   IsCurrent: true,
+    //   FeeTypeId: _FeeTypeId,
+    //   BatchId: this.SelectedBatchId,
+    //   OrgId: this.loginDetail[0]["orgId"],
+    //   SubOrgId: this.SubOrgId,
+    //   Active: 1
+    // });
+
+    this.AlreadyExistStudent.forEach(item => {
+      if (item.StudentClassId == 0) {
+        studentCls.push({
+          StudentId: item.StudentId,
+          ClassId: item.ClassId,
+          SectionId: item.SectionId,
+          SemesterId: item.SemesterId,
+          RollNo: item.RollNo,
+          StudentClassId: item.StudentClassId,
+          IsCurrent: true,
+          FeeTypeId: item.FeeTypeId,
+          BatchId: this.SelectedBatchId,
+          OrgId: this.loginDetail[0]["orgId"],
+          SubOrgId: this.SubOrgId,
+          Active: 1
+        })
+      }
+      else {
+        studentCls.push({
+          StudentId: item.StudentId,
+          SectionId: item.SectionId,
+          SemesterId: item.SemesterId,
+          RollNo: item.RollNo,
+          StudentClassId: item.StudentClassId,
+          IsCurrent: true,
+          BatchId: this.SelectedBatchId,
+          OrgId: this.loginDetail[0]["orgId"],
+          SubOrgId: this.SubOrgId,
+          Active: 1
+        })
+      }
+    })
+    //console.log("studentCls", studentCls);
+    this.readAsJson(studentCls);
+  }
+  UploadNewStudent() {
+    this.SelectedUploadtype = "student upload";
+    //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA)
+    this.readAsJson(this.ELEMENT_DATA)
   }
   clear() {
     this.uploadForm.reset();
@@ -1238,21 +1401,21 @@ export class ExcelDataManagementComponent implements OnInit {
   }
   toUpdate = 0;
   ErrorCount = 0;
-  readAsJson() {
+  readAsJson(dataToUpload) {
     try {
       this.loading = true;
-      this.toUpdate = this.ELEMENT_DATA.length;
+      this.toUpdate = dataToUpload.length;
       if (this.ErrorMessage.length == 0) {
 
         if (this.SelectedUploadtype.toLowerCase().includes(this.UploadType.CLASSROLLNOMAPPING)) {
-          var noOfStudent = this.ELEMENT_DATA.length;
+          var noOfStudent = dataToUpload.length;
           if (noOfStudent > 300) {
             this.loading = false;
             this.contentservice.openSnackBar("Max. no. of students is 300.", globalconstants.ActionText, globalconstants.RedBackground);
             return;
           }
           else {
-            this.ELEMENT_DATA.forEach((element, indx) => {
+            dataToUpload.forEach((element, indx) => {
               this.toUpdate -= 1;
               this.studentData = [];
               if (!element["Active"])
@@ -1280,7 +1443,7 @@ export class ExcelDataManagementComponent implements OnInit {
           }
         }
         else if (this.SelectedUploadtype.toLowerCase().includes(this.UploadType.STUDENTDATA)) {
-          this.save();
+          this.save(dataToUpload);
         }
         else if (this.SelectedUploadtype.toLowerCase().includes(this.UploadType.EMPLOYEEDETAIL)) {
           this.employee.save(this.ELEMENT_DATA)
@@ -1316,7 +1479,7 @@ export class ExcelDataManagementComponent implements OnInit {
     FileSaver.saveAs(data, "TextFile" + new Date().getTime() + '.txt');
   }
 
-  save() {
+  save(dataToUpload) {
     var toInsert: any = [];
     this.loading = true;
     this.contentservice.GetStudentMaxPID(this.FilterOrgSubOrg)
@@ -1326,9 +1489,9 @@ export class ExcelDataManagementComponent implements OnInit {
           _MaxPID = data.value[0].PID + 1;
         }
         debugger;
-        var UploadedStudent = this.NoOfStudent + this.ELEMENT_DATA.length;
-        if (this.ELEMENT_DATA.length > globalconstants.RowUploadLimit) {
-          this.ELEMENT_DATA.splice(globalconstants.RowUploadLimit);
+        //var UploadedStudent = this.NoOfStudent + dataToUpload.length;
+        if (dataToUpload.length > globalconstants.RowUploadLimit) {
+          dataToUpload.splice(globalconstants.RowUploadLimit);
         }
         // else if (this.NoOfStudent + this.ELEMENT_DATA.length > this.NoOfStudentInPlan) {
         //   this.loading = false;
@@ -1338,7 +1501,7 @@ export class ExcelDataManagementComponent implements OnInit {
         // }
 
 
-        this.ELEMENT_DATA.forEach(row => {
+        dataToUpload.forEach(row => {
           toInsert.push({
             "PID": _MaxPID++,
             "StudentId": row["StudentId"],
@@ -1381,13 +1544,13 @@ export class ExcelDataManagementComponent implements OnInit {
             "PresentAddressCountryId": +row["PresentAddressCountryId"],
             "PresentAddressStateId": +row["PresentAddressStateId"],
             "PrimaryContactFatherOrMother": +row["PrimaryContactFatherOrMother"],
-            "ReasonForLeavingId": +row["ReasonForLeavingId"],
+            "ReasonForLeavingId": +(row["ReasonForLeavingId"]?row["ReasonForLeavingId"]:0),
             "RelationWithContactPerson": row["RelationWithContactPerson"],
             "ReligionId": +row["ReligionId"],
             "StudentDeclaration": +row["StudentDeclaration"],
             "TransferFromSchool": row["TransferFromSchool"],
             "TransferFromSchoolBoard": row["TransferFromSchoolBoard"],
-            "UpdatedBy": row["UpdatedBy"],
+            "UpdatedBy": this.loginDetail[0]["userId"],
             "UpdatedDate": this.datepipe.transform(row["UpdatedDate"], 'yyyy/MM/dd'),
             "CreatedBy": row["CreatedBy"],
             "CreatedDate": this.datepipe.transform(row["CreatedDate"], 'yyyy/MM/dd'),
@@ -1402,14 +1565,16 @@ export class ExcelDataManagementComponent implements OnInit {
             "BoardRegistrationNo": row["BoardRegistrationNo"],
             "Weight": +row["Weight"],
             "Height": +row["Height"],
+            "SemesterId": +row["SemesterId"],
             "SectionId": +row["SectionId"],
+            "FeeTypeId": +row["FeeTypeId"],
             "RollNo": row["RollNo"],
             "AdmissionNo": row["AdmissionNo"],
-            "Notes": row["Notes"]
+            "Notes": row["Notes"],
           });
         });
 
-        ////console.log("toInsert", toInsert)
+        console.log("toInsert", toInsert)
         this.dataservice.postPatch('Students', toInsert, 0, 'post')
           .subscribe((result: any) => {
             this.loading = false; this.PageLoading = false;
@@ -1485,7 +1650,7 @@ export class ExcelDataManagementComponent implements OnInit {
     //     if (data.value.length > 0) {
     this.StudentClassList = [];
 
-    this.StudentList.forEach(s => {
+    this.CurrentBatchStudentList.forEach(s => {
 
       if (s.StudentClasses && s.StudentClasses.length > 0)
         this.StudentClassList.push(s.StudentClasses[0]);
@@ -1545,8 +1710,8 @@ export class ExcelDataManagementComponent implements OnInit {
     let _students = this.tokenStorage.getStudents()!;
 
     //this.StudentList = _students.filter((s: any) => s.Active == 1);
-    this.StudentList = _students.sort((a: any, b: any) => a.ParentId - b.ParentId);
-    this.NoOfStudent = this.StudentList.length;
+    this.CurrentBatchStudentList = _students.sort((a: any, b: any) => a.ParentId - b.ParentId);
+    this.NoOfStudent = this.CurrentBatchStudentList.length;
     this.GetStudentClasses();
 
     //   })
@@ -1568,7 +1733,7 @@ export class ExcelDataManagementComponent implements OnInit {
     if (this.loginDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       this.FilterOrgSubOrg += " and StudentId eq " + localStorage.getItem("studentId");
     }
-    list.filter = [this.FilterOrgSubOrg];
+    list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
     this.PageLoading = true;
     this.dataservice.get(list).subscribe((data: any) => {
       this.AllStudents = data.value.map(m => {
@@ -1577,6 +1742,22 @@ export class ExcelDataManagementComponent implements OnInit {
       })
     })
 
+  }
+  GetFeeTypes() {
+    debugger;
+    this.loading = true;
+    //var filter = globalconstants.getOrgSubOrgBatchIdFilter(this.token);
+    let list: List = new List();
+    list.fields = ["FeeTypeId", "FeeTypeName", "Formula"];
+    list.PageName = "SchoolFeeTypes";
+    list.filter = ["Active eq 1 and OrgId eq " + this.loginDetail[0]["orgId"]];
+
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        this.FeeTypes = [...data.value];
+        this.shareddata.ChangeFeeType(this.FeeTypes);
+        this.loading = false; this.PageLoading = false;
+      })
   }
   GetMasterData() {
     //this.contentservice.GetCommonMasterData(this.loginDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
@@ -1601,6 +1782,7 @@ export class ExcelDataManagementComponent implements OnInit {
       this.ActivityCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
       this.GetStudents();
       this.GetStudentsInPlan();
+      this.GetFeeTypes();
     }
     else if (this.SelectedApplicationName == 'employee') {
       this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.employee.GENDER);

@@ -334,6 +334,10 @@ export class studentprimaryinfoComponent implements OnInit {
   UpdateAsDeleted(StudentId) {
     debugger;
     let toUpdate = {
+      StudentId: StudentId,
+      BatchId: this.SelectedBatchId,
+      OrgId: this.LoginUserDetail[0]['orgId'],
+      SubOrgId: this.SubOrgId,
       Active: 0,
       Deleted: true,
       UpdatedDate: new Date()
@@ -349,7 +353,9 @@ export class studentprimaryinfoComponent implements OnInit {
           this.Students.splice(indx, 1);
         this.tokenStorage.saveStudents(this.Students);
         this.contentservice.openSnackBar(globalconstants.DeletedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-
+        setTimeout(() => {
+          this.route.navigate(['/dashboard'])
+        }, 2000);
       });
   }
   generateDetail() {
@@ -389,66 +395,66 @@ export class studentprimaryinfoComponent implements OnInit {
   GetMasterData() {
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
-        //////console.log(data.value);
-        this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
-        this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
-        this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
-        this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
-        this.Religion = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
-        this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
-        this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
-        this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
-        this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
-        this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-        this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
-        this.AdmissionStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
+    //////console.log(data.value);
+    this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
+    this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
+    this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
+    this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
+    this.Religion = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
+    this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
+    this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
+    this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
+    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
+    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
+    this.AdmissionStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
 
-        this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
-        this.PrimaryContactDefaultId = this.PrimaryContact.filter(contact => contact.MasterDataName.toLowerCase() == "father")[0].MasterDataId;
-        this.PrimaryContactOtherId = this.PrimaryContact.filter(contact => contact.MasterDataName.toLowerCase() == "other")[0].MasterDataId;
-        this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
-        if (this.Genders.length > 0)
-          this.studentForm.patchValue({ Gender: this.Genders[0].MasterDataId });
+    this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
+    this.PrimaryContactDefaultId = this.PrimaryContact.filter(contact => contact.MasterDataName.toLowerCase() == "father")[0].MasterDataId;
+    this.PrimaryContactOtherId = this.PrimaryContact.filter(contact => contact.MasterDataName.toLowerCase() == "other")[0].MasterDataId;
+    this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
+    if (this.Genders.length > 0)
+      this.studentForm.patchValue({ Gender: this.Genders[0].MasterDataId });
 
-        if (this.Bloodgroup.length > 0)
-          this.studentForm.patchValue({ Bloodgroup: this.Bloodgroup[0].MasterDataId });
-        // if (this.Category.length > 0)
-        //   this.studentForm.patchValue({ Category: this.Category[0].MasterDataId });
-        var _admissionStatus = this.AdmissionStatuses.filter(r => r.MasterDataName.toLowerCase() == "admitted");
+    if (this.Bloodgroup.length > 0)
+      this.studentForm.patchValue({ Bloodgroup: this.Bloodgroup[0].MasterDataId });
+    // if (this.Category.length > 0)
+    //   this.studentForm.patchValue({ Category: this.Category[0].MasterDataId });
+    var _admissionStatus = this.AdmissionStatuses.filter(r => r.MasterDataName.toLowerCase() == "admitted");
 
-        //var _religion = this.Religion.filter(r => r.MasterDataName.toLowerCase() == "christian");
-        //if (_religion.length > 0)
-        //  this.studentForm.patchValue({ Religion: _religion[0].MasterDataId });
+    //var _religion = this.Religion.filter(r => r.MasterDataName.toLowerCase() == "christian");
+    //if (_religion.length > 0)
+    //  this.studentForm.patchValue({ Religion: _religion[0].MasterDataId });
 
-        if (_admissionStatus.length == 0) {
-          this.contentservice.openSnackBar("'Admitted' must be defined for admission status.", globalconstants.ActionText, globalconstants.RedBackground);
+    if (_admissionStatus.length == 0) {
+      this.contentservice.openSnackBar("'Admitted' must be defined for admission status.", globalconstants.ActionText, globalconstants.RedBackground);
+      this.loading = false;
+      this.PageLoading = false;
+    }
+    else {
+      this.studentForm.patchValue({ AdmissionStatus: _admissionStatus[0].MasterDataId });
+      this.studentForm.patchValue({ PrimaryContactFatherOrMother: this.PrimaryContactDefaultId });
+      this.studentForm.patchValue({ ReasonForLeavingId: this.ReasonForLeaving.filter(r => r.MasterDataName.toLowerCase() == 'active')[0].MasterDataId });
+      var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+      this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+        this.Classes = [...data.value];
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+        if (this.Classes.length == 0) {
+          this.contentservice.openSnackBar("Please define classes first.", globalconstants.ActionText, globalconstants.RedBackground);
           this.loading = false;
           this.PageLoading = false;
         }
         else {
-          this.studentForm.patchValue({ AdmissionStatus: _admissionStatus[0].MasterDataId });
-          this.studentForm.patchValue({ PrimaryContactFatherOrMother: this.PrimaryContactDefaultId });
-          this.studentForm.patchValue({ ReasonForLeavingId: this.ReasonForLeaving.filter(r => r.MasterDataName.toLowerCase() == 'active')[0].MasterDataId });
-          var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-          this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-            this.Classes = [...data.value];
-            this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-            if (this.Classes.length == 0) {
-              this.contentservice.openSnackBar("Please define classes first.", globalconstants.ActionText, globalconstants.RedBackground);
-              this.loading = false;
-              this.PageLoading = false;
-            }
-            else {
-              this.studentForm.patchValue({ ClassAdmissionSought: this.Classes[0].ClassId });
-              if (this.StudentId > 0)
-                this.GetStudentClassPhoto();
-              //this.GetStudent();
-              this.loading = false;
-              this.PageLoading = false;
-            }
-          });
+          this.studentForm.patchValue({ ClassAdmissionSought: this.Classes[0].ClassId });
+          if (this.StudentId > 0)
+            this.GetStudentClassPhoto();
+          //this.GetStudent();
+          this.loading = false;
+          this.PageLoading = false;
         }
-      //});
+      });
+    }
+    //});
 
   }
   GetStudentClassPhoto() {
@@ -459,10 +465,10 @@ export class studentprimaryinfoComponent implements OnInit {
         var _student = all[0].value;
         //var _studentclass;// = all[1].value;
         this.Students = this.tokenStorage.getStudents()!;
-        var _studentclass =this.Students.filter(s=>s.StudentId == this.StudentId)[0].StudentClasses;
+        var _studentclass = this.Students.filter(s => s.StudentId == this.StudentId)[0].StudentClasses;
         var _photo = all[1].value;
         if (_student.length > 0) {
-          
+
           //var studcls = this.Students.filter(store => store.StudentId == this.StudentId);
           // if (studcls.length > 0)
           //   all[0].value[0].StudentClasses = studcls[0].StudentClasses ? studcls[0].StudentClasses : [];
@@ -785,15 +791,15 @@ export class studentprimaryinfoComponent implements OnInit {
         let studcls = JSON.parse(JSON.stringify(_stud[0].StudentClasses));
         _stud[0] = JSON.parse(JSON.stringify(this.studentData[0]));
         _stud[0].StudentClasses = studcls;
-        this.tokenStorage.saveStudents(_student);        
+        this.tokenStorage.saveStudents(_student);
 
         if (result != null && result.UserId != "") {
-           this.contentservice.openSnackBar(globalconstants.UserLoginCreated, globalconstants.ActionText, globalconstants.BlueBackground);
+          this.contentservice.openSnackBar(globalconstants.UserLoginCreated, globalconstants.ActionText, globalconstants.BlueBackground);
         }
         else
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-         
-        }, error => {
+
+      }, error => {
         this.loading = false;
         //console.log("student update", error);
       })
@@ -874,7 +880,7 @@ export class studentprimaryinfoComponent implements OnInit {
     list.filter = ["StudentId eq " + this.StudentId + " and IsCurrent eq true and BatchId eq " + this.SelectedBatchId];
     list.PageName = "StudentClasses";
     return this.dataservice.get(list);
-    
+
     //list.lookupFields = ["StudentClasses($filter=BatchId eq " + this.SelectedBatchId + ";$select=ClassId,RollNo,SectionId,StudentClassId,StudentId),StorageFnPs($select=FileId,FileName;$filter=StudentId eq " + this.StudentId + ")"]
   }
   GetStudent() {
