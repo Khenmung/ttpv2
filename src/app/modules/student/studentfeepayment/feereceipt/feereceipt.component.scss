@@ -123,6 +123,7 @@ div {
 
 @media print {
     * {
-        font-size: 14px;
+        //font-size: 14px;
+        flex-shrink: 1;
     }
 }

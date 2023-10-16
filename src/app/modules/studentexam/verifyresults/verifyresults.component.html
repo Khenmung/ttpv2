@@ -81,7 +81,7 @@
     <div *ngIf="ExamStudentSubjectResult.length>0">
         <mat-table #table [dataSource]="dataSource" matSort>
             <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-                <mat-header-cell *matHeaderCellDef mat-sort-header
+                <mat-header-cell *matHeaderCellDef mat-sort-header="{{disCol}}"
                     style="writing-mode: tb-rl;transform: rotate(-180deg);width:100%;display:flex; justify-content: flex-start;margin-bottom: 10px;">
                     {{disCol!='Action'?disCol:''}}
                 </mat-header-cell>
