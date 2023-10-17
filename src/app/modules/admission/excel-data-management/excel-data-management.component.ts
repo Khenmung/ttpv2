@@ -1265,8 +1265,7 @@ export class ExcelDataManagementComponent implements OnInit {
         if (element.StudentClassId > 0) {
           //if studentclassid already exist, dont update classid,FeeTypeId
           this.AlreadyExistStudent.push({
-            Name: element.FirstName.trim(),
-            LastName: element.LastName.trim(),
+            Name: element.FirstName.trim() + " " + element.LastName.trim(),
             FatherName: element.FatherName,
             MotherName: element.MotherName,
             PID: existingstudent[0].PID,
@@ -1311,14 +1310,12 @@ export class ExcelDataManagementComponent implements OnInit {
     this.DuplicateDisplayCol = [
       "PID",
       "Name",
-      "LastName",
       "FatherName",
       "MotherName"
     ]
     this.CleanDisplayCol = [
       "PID",
       "FirstName",
-      "LastName",
       "FatherName",
       "MotherName"
     ]

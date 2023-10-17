@@ -33,9 +33,9 @@
             </button> -->
         </span>
         <mat-divider></mat-divider>
-        <div *ngIf="AlreadyExistStudent.length>0" style="display: flex;flex-direction: column;">
+        <div *ngIf="AlreadyExistStudent.length>0 && ErrorMessage.length==0" style="display: flex;flex-direction: column;">
             <div style="margin:15px;font-weight: bold;">Student already exists in the system. Click on upload for uploading new class.</div>
-            <mat-table #table [dataSource]="dataSource" style="min-width: 1400px;" matSort>
+            <mat-table #table [dataSource]="dataSource" matSort>
                 <ng-container *ngFor="let disCol of DuplicateDisplayCol; let colIndex = index"
                     matColumnDef="{{disCol}}">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -64,7 +64,7 @@
                     </mat-icon>
                 </button> -->
             </div>
-            <div *ngIf="ELEMENT_DATA.length>0">
+            <div *ngIf="ELEMENT_DATA.length>0 && ErrorMessage.length==0">
                 <div style="margin:15px;font-weight: bold;">New Students. Click on upload button for uploading new student.</div>
                 <mat-table [dataSource]="cleanDataSource" style="min-width: 1400px;" matSort>
                     <ng-container *ngFor="let disCol of CleanDisplayCol; let colIndex = index"

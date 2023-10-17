@@ -778,10 +778,10 @@ export class VerifyResultsComponent implements OnInit {
 
           var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student)
           forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.SubjectType.localeCompare(b.SubjectType));
-        
+
           forEachSubjectOfStud.forEach(eachsubj => {
             var markPercent = 0;
-            if (ss.Student =='21-Niangliankim -A') {
+            if (ss.Student == '21-Niangliankim -A') {
               debugger;
               //console.log("eachsubj.Subject", eachsubj.Subject);
             }
@@ -800,7 +800,7 @@ export class VerifyResultsComponent implements OnInit {
               return;
             }
             else {
-             
+
               var failedInComponent = false;
 
               ///////////////deciding pass or failed.
@@ -828,14 +828,14 @@ export class VerifyResultsComponent implements OnInit {
               if (totalFullMarkOfAllComp > 0) {
 
                 allComponentsOfCurrentSubjectFromDefn.forEach(thisCompmarkFromDefn => {
-                 
+
                   let thisCompWeightage = +(thisCompmarkFromDefn.FullMark / totalFullMarkOfAllComp * 100).toFixed(5);
 
                   let componentObtainedmark = AllComponentsMarkObtained.filter(eres => eres.StudentClassSubjectId == eachsubj.StudentClassSubjectId
                     && eres.ClassSubjectMarkComponentId == thisCompmarkFromDefn.ClassSubjectMarkComponentId)
 
                   if (componentObtainedmark.length > 0 && componentObtainedmark[0].Marks > 0) {
-                    markPercent += +(componentObtainedmark[0].Marks/thisCompmarkFromDefn.FullMark * thisCompWeightage).toFixed(5) ;
+                    markPercent += +(componentObtainedmark[0].Marks / thisCompmarkFromDefn.FullMark * thisCompWeightage).toFixed(5);
 
                     // let componentfullmarkpercentFromDefn = thisCompmarkFromDefn.FullMark * 100;
                     // let componentPercentOutOfFullMarkFromDefn = parseFloat((componentfullmarkpercentFromDefn / _subjectPassMarkFullMarkFromDefn[0].FullMark).toFixed(5));
@@ -844,7 +844,7 @@ export class VerifyResultsComponent implements OnInit {
                   }
                   if (isNaN(markPercent))
                     markPercent = 0;
-                  
+
                   ////////////////////added for component mark display
                   if (allComponentsOfCurrentSubjectFromDefn.length > 1) {
                     if (this.displayedColumns.indexOf(thisCompmarkFromDefn.SubjectComponentName) == -1 && thisCompmarkFromDefn.SubjectComponentName) {
@@ -968,6 +968,10 @@ export class VerifyResultsComponent implements OnInit {
               //preparing each subject for insert.
               if (ExamResultSubjectMarkData != undefined)
                 this.VerifiedResult.ExamResultSubjectMark.push(JSON.parse(JSON.stringify(ExamResultSubjectMarkData)))
+            }
+            if (ss.Student == '22-Pauthianmung Hanghal -A') {
+              console.log("//markPercent", markPercent)
+              console.log("eachsubj.Subject", eachsubj.Subject + "//")
             }
           })//for each subject of student.
 

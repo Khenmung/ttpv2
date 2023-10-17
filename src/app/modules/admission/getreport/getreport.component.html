@@ -58,18 +58,17 @@
                     </mat-selection-list>
                     <button [disabled]="loading" matTooltip="search" mat-raised-button
                         (click)="getSelectedReportColumn()">
-                         <mat-icon>search</mat-icon>
-                            <mat-icon *ngIf="loading">
-                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                            </mat-icon>
+                        <mat-icon>search</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
                     </button>
                 </div>
             </form>
             <mat-table #table [dataSource]="dataSource" matSort>
                 <ng-container *ngFor="let disCol of DisplayColumns; let colIndex = index" matColumnDef="{{disCol}}">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
-                       {{disCol}}
-
+                        {{disCol}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <!-- <mat-checkbox matTooltip="select all in row" *ngIf="disCol !='Student'"

@@ -30,8 +30,16 @@ mat-cell{
 .mat-column-StudentName{
     flex: 1 0 200px;
 }
-.mat-column-FatherName,.mat-column-MotherName,.mat-column-AdmissionDate,.mat-column-SemesterId{
+.mat-column-FatherName,.mat-column-MotherName,.mat-column-AdmissionDate,.mat-column-Remarks{
     flex: 1 0 150px;
+}
+.mat-column-Semester,.mat-column-Section,.mat-column-RollNo,
+.mat-column-GenderName,.mat-column-ClassName,.mat-column-Batch
+{
+    flex: 1 0 80px;
+}
+.mat-column-PID,.mat-column-Active{
+    flex: 1 0 50px;
 }
 mat-cell:first-of-type{
     padding-left: 0px;

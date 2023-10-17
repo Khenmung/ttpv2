@@ -125,7 +125,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
           return m;
         })
       })
-
+    this.GetSubjectTypes();  
   }
   //displayedColumns = ['position', 'name', 'weight', 'symbol'];
   ClassGroupMappings: any[] = [];
@@ -143,7 +143,9 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
-    this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
+     
+    let objClassSubjects= globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
+    this.SelectedClassSubjects = objClassSubjects.filter(t=>t.SubjectType.toLowerCase()!='optional')
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource<any>([]);
     let obj = this.Classes.filter(c => c.ClassId == _classId);
@@ -322,6 +324,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.MarkComponents = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTMARKCOMPONENT);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
+    //this.SubjectTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
@@ -389,6 +392,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       "ClassId",
       "SemesterId",
       "SectionId",
+      "SubjectTypeId",
       "Active"
     ];
     list.PageName = "ClassSubjects";
@@ -398,11 +402,15 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       .subscribe((data: any) => {
         this.ClassSubjects = [];
         data.value.forEach(cs => {
-          var _class = '';
+          var _class = '',_subjectTypeName='';
           var objclass = this.Classes.filter(c => c.ClassId == cs.ClassId)
           if (objclass.length > 0)
             _class = objclass[0].ClassName;
-
+          let subTypes= this.SubjectTypes.filter(f=>f.SubjectTypeId == cs.SubjectTypeId);
+          if(subTypes.length>0)
+          {
+            _subjectTypeName =subTypes[0].SubjectTypeName;
+          }
           var _subject = ''
           var objsubject = this.Subjects.filter(c => c.MasterDataId == cs.SubjectId)
           if (objsubject.length > 0) {
@@ -415,11 +423,29 @@ export class StudentSubjectMarkCompComponent implements OnInit {
               SemesterId: cs.SemesterId,
               SectionId: cs.SectionId,
               ClassSubject: _class + ' - ' + _subject,
-              SubjectName: _subject
+              SubjectName: _subject,
+              SubjectType:_subjectTypeName
             })
           }
         })
         this.MergeSubjectnComponents();
+      })
+  }
+  SubjectTypes:any =[];
+  GetSubjectTypes() {
+
+    var orgIdSearchstr = this.FilterOrgSubOrg + ' and Active eq 1';
+
+    let list: List = new List();
+    this.loading = true;
+    list.fields = ["SubjectTypeId", "SubjectTypeName", "SelectHowMany"];
+    list.PageName = "SubjectTypes";
+    list.filter = [orgIdSearchstr];
+    //list.orderBy = "ParentId";
+
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        this.SubjectTypes = [...data.value];
       })
   }
   CopyFromOtherExam() {
