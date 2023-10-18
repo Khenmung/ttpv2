@@ -1,7 +1,7 @@
 <div style="padding:15px 15px 10px 15px;">
     <div><strong>Exam Results</strong></div>
 </div>
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<mat-spinner *ngIf="loading || PageLoading" diameter="25" style="position:relative;margin-left: 50%;margin-bottom: 15px;"></mat-spinner>
 <!-- <alert></alert> -->
 <!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
 <form [formGroup]="searchForm">
@@ -45,12 +45,12 @@
     <!-- <mat-checkbox style="margin-right:15px" formControlName="viewMarkPercentCheckBox" (click)="$event.stopPropagation()"
         [checked]="false"> View in Percent
     </mat-checkbox> -->
-    <button style="margin-right: 15px;" [disabled]="loading" mat-raised-button color="accent"
+    <button style="margin-right: 15px;" [disabled]="loading || PageLoading" mat-raised-button color="accent"
         (click)="GetStudentSubjects()">
         <mat-icon>search</mat-icon>
-        <mat-icon *ngIf="loading">
+        <!-- <mat-icon *ngIf="loading">
             <mat-spinner diameter="20" color="Blue"></mat-spinner>
-        </mat-icon>
+        </mat-icon> -->
     </button>
     <button style="margin-right: 30px;" [disabled]="loading" matTooltip="clear all" mat-raised-button (click)="clear()">
         <mat-icon>clear_all</mat-icon>
@@ -79,10 +79,25 @@
 </form>
 <div style="width: 100%;" id="printSection">
     <div *ngIf="ExamStudentSubjectResult.length>0">
+        <div style="display:flex;justify-content: center;">
+            <div style="margin-right: 15px;" *ngIf="logourl.length>0" [innerHTML]="logourl"></div>
+            <div style="display: flex;justify-content: center;flex-direction: column;">
+                <div *ngFor="let item of CommonHeader" [innerHTML]="item.Description|encodeHTML"
+                    style="display: flex;justify-content: center;">
+                </div>
+            </div>
+        </div>
+        <div>&nbsp;</div>
+        <div style="font-size: 25px;color: blue; font-weight: bold;display: flex;width: 100%;justify-content: center;">
+            {{ExamName + ' - ' + BatchName}}</div>
+        <div style="display: flex;width: 100%;justify-content: center;"><b>  {{ClassName}}, {{ SemesterName + SectionName}}</b></div>
+        <div style="display: flex;width: 100%;justify-content: flex-end;">No. Of Subjects:
+                {{AllSubjectCounts}}</div>
+        <div>&nbsp;</div>
         <mat-table #table [dataSource]="dataSource" matSort>
             <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
                 <mat-header-cell *matHeaderCellDef mat-sort-header="{{disCol}}"
-                    style="writing-mode: tb-rl;transform: rotate(-180deg);width:100%;display:flex; justify-content: flex-start;margin-bottom: 10px;">
+                    style="writing-mode: tb-rl;transform: rotate(-180deg);width:100%;display:flex; justify-content: flex-start;">
                     {{disCol!='Action'?disCol:''}}
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element" style="width:100%;align-self: stretch;">
@@ -97,8 +112,8 @@
 
         </mat-table>
     </div>
-    <mat-paginator [hidden]="ExamStudentSubjectResult.length==0" #nonGradingPaginator="matPaginator" style="display: flex;justify-content: center;"
-        [pageSizeOptions]="[10,25,100]"></mat-paginator>
+    <mat-paginator [hidden]="ExamStudentSubjectResult.length==0" #nonGradingPaginator="matPaginator"
+        style="display: flex;justify-content: center;" [pageSizeOptions]="[10,200]"></mat-paginator>
 
     <div *ngIf="ExamStudentSubjectGrading.length>0" style="flex-direction: column;">
         <div style="font-weight: bold;">Grading Subject</div>

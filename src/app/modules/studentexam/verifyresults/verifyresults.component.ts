@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import alasql from 'alasql';
-import { evaluate, number } from 'mathjs';
+import { evaluate } from 'mathjs';
 import * as moment from 'moment';
 import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
@@ -13,7 +13,7 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
-import { EMPTY } from 'rxjs';
+import { EMPTY, forkJoin } from 'rxjs';
 import { TableUtil } from '../../../shared/TableUtil';
 
 @Component({
@@ -141,7 +141,8 @@ export class VerifyResultsComponent implements OnInit {
 
   PageLoad() {
     debugger;
-    this.loading = true;
+    this.Loading(true);
+    this.PageLoading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
@@ -163,10 +164,6 @@ export class VerifyResultsComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.GetMasterData();
-        //this.GetExamClassGroup();
-
-        //this.GetStudentAttendance();
-
       }
     }
   }
@@ -210,8 +207,105 @@ export class VerifyResultsComponent implements OnInit {
     this.ExamStudentSubjectGrading = [];
     this.GradingDataSource = new MatTableDataSource<any[]>(this.ExamStudentSubjectGrading);
   }
+  logourl = '';
+  CommonHeader: any[] = [];
+  Organization: any[] = [];
+  GetOrganization() {
+
+    let list: List = new List();
+    list.fields = [
+      "OrganizationId",
+      "OrganizationName",
+      "LogoPath",
+      "Address",
+      "CityId",
+      "StateId",
+      "CountryId",
+      "WebSite",
+      "Contact",
+      "RegistrationNo",
+      "ValidFrom",
+      "ValidTo"
+
+    ];
+    list.PageName = "Organizations";
+    list.filter = ["OrganizationId eq " + this.LoginUserDetail[0]["orgId"]];
+
+    this.dataservice.get(list)
+      .subscribe((org: any) => {
+        this.Organization = org.value.map(m => {
+          //m.CountryName = '';
+          var countryObj = this.allMasterData.filter((f: any) => f.MasterDataId == m.CountryId);
+          if (countryObj.length > 0)
+            m.Country = countryObj[0].MasterDataName;
+
+          var stateObj = this.allMasterData.filter((f: any) => f.MasterDataId == m.StateId);
+          if (stateObj.length > 0)
+            m.State = stateObj[0].MasterDataName;
+
+          var cityObj = this.allMasterData.filter((f: any) => f.MasterDataId == m.CityId);
+          if (cityObj.length > 0)
+            m.City = cityObj[0].MasterDataName;
+
+          return [{
+            name: "OrganizationId", val: m.OrganizationId
+          }, {
+            name: "Organization", val: m.OrganizationName
+          }, {
+            name: "LogoPath", val: m.LogoPath
+          }, {
+            name: "Address", val: m.Address
+          }, {
+            name: "City", val: m.City
+          }, {
+            name: "State", val: m.State
+          }, {
+            name: "Country", val: m.Country
+          }, {
+            name: "Contact", val: m.Contact
+          }, {
+            name: "RegistrationNo", val: m.RegistrationNo == null ? '' : m.RegistrationNo
+          }, {
+            name: "ValidFrom", val: m.ValidFrom
+          }, {
+            name: "ValidTo", val: m.ValidTo
+          },
+          {
+            name: "WebSite", val: m.WebSite == null ? '' : m.WebSite
+          },
+          {
+            name: "ToDay", val: moment(new Date()).format("DD/MM/YYYY")
+          }
+          ]
+        })
+        ////console.log("this.Organization",this.Organization);
+        ////console.log("this.CommonHeader.",this.CommonHeader);
+        var imgobj = this.CommonHeader.filter((f: any) => f.MasterDataName == 'img');
+        if (imgobj.length > 0) {
+          this.logourl = imgobj[0].Description;
+        }
+        this.CommonHeader = this.CommonHeader.filter((f: any) => f.MasterDataName != 'img');
+        ////console.log("this.commonheadersetting.",commonheadersetting);
+        this.CommonHeader.forEach(header => {
+          this.Organization[0].forEach(orgdet => {
+            header.Description = header.Description.replaceAll("[" + orgdet.name + "]", orgdet.val);
+            // header.Description = header.Description.replaceAll("[" + orgdet.OrganizationAddress + "]", orgdet.val);
+          })
+        })
+        // this.CommonHeader.forEach(header => {
+        //   this.Organization[0].forEach(orgdet => {
+        //     header.Description = header.Description.replaceAll("[" + orgdet.name + "]", orgdet.val);
+        //     // header.Description = header.Description.replaceAll("[" + orgdet.OrganizationAddress + "]", orgdet.val);
+        //   })
+        // })
+
+        //this.loading = false; this.PageLoading = false;
+      });
+    ////console.log("this.Organization[0]",this.Organization[0])
+    ////console.log("this.CommonHeader",this.CommonHeader)
+  }
   GetClassSubject() {
-    this.loading = true;
+    this.Loading(true);
     //let filterStr = 'Active eq 1 and OrgId eq ' + this.LoginUserDetail[0]["orgId"]
     let filterStr = this.FilterOrgSubOrgBatchId + " and Active eq 1";
     let list: List = new List();
@@ -278,7 +372,7 @@ export class VerifyResultsComponent implements OnInit {
         })
         this.ClassSubjects = this.contentservice.getConfidentialData(this.tokenStorage, this.ClassSubjects, "ClassSubject");
         ////console.log("this.ClassSubjects",this.ClassSubjects.filter(f=>f.ClassSubjectId==1136));
-        //this.loading = false;
+        //this.Loading(false);
         this.GetSubjectComponents();
       })
   }
@@ -317,11 +411,16 @@ export class VerifyResultsComponent implements OnInit {
     this.Students = [];
     var studentList = this.tokenStorage.getStudents()!;
     //var _students = studentList.filter((s: any) => s["Active"] == 1 && data.value.findIndex(fi => fi.StudentId == s["StudentId"]) > -1)
-    this.Students = studentList.filter((s: any) => s.StudentClasses
-      && s.StudentClasses.length > 0
-      && s.StudentClasses[0].ClassId == pClassId
-      && s.StudentClasses[0].SemesterId == pSemesterId
-      && s.StudentClasses[0].SectionId == pSectionId)
+    if (pSemesterId == 0 && pSectionId == 0)
+      this.Students = studentList.filter((s: any) => s.StudentClasses
+        && s.StudentClasses.length > 0
+        && s.StudentClasses[0].ClassId == pClassId)
+    else
+      this.Students = studentList.filter((s: any) => s.StudentClasses
+        && s.StudentClasses.length > 0
+        && s.StudentClasses[0].ClassId == pClassId
+        && s.StudentClasses[0].SemesterId == pSemesterId
+        && s.StudentClasses[0].SectionId == pSectionId)
 
     // _students.forEach(f => {
     //   var match = _students.filter(stud => stud["StudentId"] == f.StudentId)
@@ -330,7 +429,7 @@ export class VerifyResultsComponent implements OnInit {
     //   this.Students.push(f);
     // })
 
-    //this.loading = false;
+    //this.Loading(false);
     //})
 
   }
@@ -343,12 +442,12 @@ export class VerifyResultsComponent implements OnInit {
     }
 
     if (this.ExamStudentSubjectResult.length == 0 && this.ExamStudentSubjectGrading.length == 0) {
-      this.loading = false; this.PageLoading = false;
+      this.Loading(false); this.PageLoading = false;
       this.contentservice.openSnackBar("No data to verified.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     else {
-      this.loading = true;
+      this.Loading(true);
       var _examId = this.searchForm.get("searchExamId")?.value;
       var _ExamResultProperties = this.ExamNCalculate.filter(e => e.ExamId == _examId)
       if (_ExamResultProperties.filter((f: any) => f.PropertyName.toLowerCase().includes('attendance')).length > 0) {
@@ -452,19 +551,18 @@ export class VerifyResultsComponent implements OnInit {
     this.dataservice.postPatch('ExamStudentResults', this.VerifiedResult, 0, 'post')
       .subscribe(
         (data: any) => {
-          this.loading = false;
+          this.Loading(false);
           this.PageLoading = false;
           this.ClickedVerified = true;
           this.contentservice.openSnackBar("Exam result verified.", globalconstants.ActionText, globalconstants.BlueBackground);
         }, error => {
           ////console.log("error",error);
           this.contentservice.openSnackBar("Something went wrong. Please try again.", globalconstants.ActionText, globalconstants.RedBackground);
-          this.loading = false; this.PageLoading = false;
+          this.Loading(false); this.PageLoading = false;
         })
   }
   GetExamNCalculate() {
-    this.loading = true;
-    debugger;
+
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";
     let list: List = new List();
     list.fields = ["*"];
@@ -487,9 +585,18 @@ export class VerifyResultsComponent implements OnInit {
             this.ExamNCalculate.push(f);
           }
         })
-        this.loading = false;
       })
   }
+  Loading(pLoading) {
+    this.PageLoading = pLoading;
+    this.loading = pLoading;
+  }
+  ClassName = '';
+  SectionName = '';
+  SemesterName = '';
+  ExamName = '';
+  BatchName = '';
+  AllSubjectCounts = 0;
   GetStudentSubjects() {
     debugger;
     this.ClickedVerified = false;
@@ -508,32 +615,40 @@ export class VerifyResultsComponent implements OnInit {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-
-    this.loading = true;
+    this.ClassName = this.Classes.filter(c => c.ClassId == _classId)[0].ClassName;
+    if (_semesterId)
+      this.SemesterName = this.Semesters.filter(se => se.MasterDataId == _semesterId)[0].MasterDataName;
+    if (_sectionId)
+      this.SectionName = this.Sections.filter(se => se.MasterDataId == _sectionId)[0].MasterDataName;
+    this.ExamName = this.Exams.filter(se => se.ExamId == _examId)[0].ExamName;
+    this.BatchName = this.tokenStorage.getSelectedBatchName()!;
+    this.Loading(true);
     this.GetSpecificStudentGrades();
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
     let filterStr = this.FilterOrgSubOrgBatchId;
     filterStr += " and ClassId eq " + _classId;
-    filterStr += " and SemesterId eq " + _semesterId;
-    filterStr += " and SectionId eq " + _sectionId;
+    if (_semesterId)
+      filterStr += " and SemesterId eq " + _semesterId;
+    if (_sectionId)
+      filterStr += " and SectionId eq " + _sectionId;
     filterStr += " and Active eq 1";
     if (_sectionId > 0) {
       this.SectionSelected = true;
 
 
     }
-    if (_sectionId == 0 && this.SelectedClassCategory == 'high school') {
-      this.SectionSelected = false;
-      this.loading = false;
-      this.contentservice.openSnackBar("Please select section.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
-    if (this.SelectedClassCategory == 'college' && _semesterId == 0) {
-      this.SectionSelected = false;
-      this.loading = false;
-      this.contentservice.openSnackBar("Please select semester.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
+    // if (_sectionId == 0 && this.SelectedClassCategory == 'high school') {
+    //   this.SectionSelected = false;
+    //   this.Loading(false);
+    //   this.contentservice.openSnackBar("Please select section.", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
+    // if (this.SelectedClassCategory == 'college' && _semesterId == 0) {
+    //   this.SectionSelected = false;
+    //   this.Loading(false);
+    //   this.contentservice.openSnackBar("Please select semester.", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
     if (this.SelectedClassCategory == 'college' && _semesterId > 0) {
       this.SectionSelected = true;
     }
@@ -635,6 +750,7 @@ export class VerifyResultsComponent implements OnInit {
       TableUtil.exportArrayToExcel(datatoExport, "examresultwithmarkdetail");
     }
   }
+
   GetExamStudentSubjectResults(pExamId, pClassId, pSectionId, pSemesterId) {
     this.ClickedVerified = false;
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -645,10 +761,10 @@ export class VerifyResultsComponent implements OnInit {
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId;
     var filterstr = " and ExamId eq " + pExamId;
     filterstr += " and ClassId eq " + pClassId;
-    //if (pSemesterId)
-    filterstr += " and SemesterId eq " + pSemesterId;
-    //if (pSectionId)
-    filterstr += " and SectionId eq " + pSectionId;
+    if (pSemesterId)
+      filterstr += " and SemesterId eq " + pSemesterId;
+    if (pSectionId)
+      filterstr += " and SectionId eq " + pSectionId;
     filterstr += " and Active eq 1";
 
     let list: List = new List();
@@ -675,7 +791,7 @@ export class VerifyResultsComponent implements OnInit {
         debugger;
         //var result = examComponentResult.value.filter(x => x.StudentClassSubjectId == 40592);
         var StudentOwnSubjects: any[] = [];
-
+        this.AllSubjectCounts = 0;
         //1. Select student's subjects
         //2. Select all components for the selected class semester section subject mark components
         //3. Get all existing or entered component mark from no. 2
@@ -684,19 +800,26 @@ export class VerifyResultsComponent implements OnInit {
         // Loop through subjects of each student
         ///Loop through each subject Component With Passmark greater than Zero to decide pass or failed.
         // loop through each subject Components
-        StudentOwnSubjects = this.StudentSubjects.filter(studentsubject => {
-          return studentsubject.ClassId == pClassId
-            && studentsubject.SectionId == pSectionId
-            && studentsubject.SemesterId == pSemesterId
-            && studentsubject.SelectHowMany > 0;
-        });
+        if (pSemesterId == 0 && pSectionId == 0)
+          StudentOwnSubjects = this.StudentSubjects.filter(studentsubject => {
+            return studentsubject.ClassId == pClassId
+              && studentsubject.SelectHowMany > 0;
+          });
+        else
+          StudentOwnSubjects = this.StudentSubjects.filter(studentsubject => {
+            return studentsubject.ClassId == pClassId
+              && studentsubject.SectionId == pSectionId
+              && studentsubject.SemesterId == pSemesterId
+              && studentsubject.SelectHowMany > 0;
+          });
 
         var _ClsSectionSemSubjectsMarkCompntDefn: any[] = [];
+        
         _ClsSectionSemSubjectsMarkCompntDefn = this.ClassSubjectComponents.filter(c =>
           c.ClassId == pClassId
           && c.ExamId == pExamId
-          && c.SectionId == pSectionId// ? pSectionId : c.SectionId
-          && c.SemesterId == pSemesterId);// ? pSemesterId : c.SemesterId);
+          && c.SectionId == pSectionId ? pSectionId : c.SectionId
+          && c.SemesterId == pSemesterId ? pSemesterId : c.SemesterId);
         if (_ClsSectionSemSubjectsMarkCompntDefn.length == 0) {
           _ClsSectionSemSubjectsMarkCompntDefn = this.ClassSubjectComponents.filter(c =>
             c.ClassId == pClassId
@@ -747,15 +870,15 @@ export class VerifyResultsComponent implements OnInit {
         var uniqueTypesOtherthanCompulsoryType = alasql("select distinct SubjectTypeId,SubjectType,SelectHowMany from ?", [subjectsWithNotCompulsory]);
 
         subjectsWithNotCompulsory = uniqueTypesOtherthanCompulsoryType.filter(sub => notCompulsorySubjectType.findIndex(fi => fi.SubjectTypeId == sub.SubjectTypeId) > -1);
-        let allSubjectCounts = compulsorySubjectCount + subjectsWithNotCompulsory.reduce((acc, current) => acc + current.SelectHowMany, 0);
+        this.AllSubjectCounts = compulsorySubjectCount + subjectsWithNotCompulsory.reduce((acc, current) => acc + current.SelectHowMany, 0);
 
         //console.log("_noOfSubjectForAStudent", allSubjectCounts)
-        this.FullMarkForAllSubjects100Pc = allSubjectCounts * 100;
+        this.FullMarkForAllSubjects100Pc = this.AllSubjectCounts * 100;
         ////////  
 
         //for each student
         filteredIndividualStud.forEach(ss => {
-
+          let _totalPercent = 0
           //intial columns
           ForGrading = {
             "StudentClassId": ss.StudentClassId,
@@ -781,10 +904,10 @@ export class VerifyResultsComponent implements OnInit {
 
           forEachSubjectOfStud.forEach(eachsubj => {
             var markPercent = 0;
-            if (ss.Student == '21-Niangliankim -A') {
-              debugger;
-              //console.log("eachsubj.Subject", eachsubj.Subject);
-            }
+            // if (ss.Student == '21-Niangliankim -A') {
+            //   debugger;
+            //   //console.log("eachsubj.Subject", eachsubj.Subject);
+            // }
             var _objSubjectCategory = this.SubjectCategory.filter((f: any) => f.MasterDataId == eachsubj.SubjectCategoryId)
             if (_objSubjectCategory.length > 0)
               _subjectCategoryName = _objSubjectCategory[0].MasterDataName.toLowerCase();
@@ -829,13 +952,13 @@ export class VerifyResultsComponent implements OnInit {
 
                 allComponentsOfCurrentSubjectFromDefn.forEach(thisCompmarkFromDefn => {
 
-                  let thisCompWeightage = +(thisCompmarkFromDefn.FullMark / totalFullMarkOfAllComp * 100).toFixed(5);
+                  let thisCompWeightage = +((thisCompmarkFromDefn.FullMark / totalFullMarkOfAllComp) * 100).toFixed(5);
 
                   let componentObtainedmark = AllComponentsMarkObtained.filter(eres => eres.StudentClassSubjectId == eachsubj.StudentClassSubjectId
                     && eres.ClassSubjectMarkComponentId == thisCompmarkFromDefn.ClassSubjectMarkComponentId)
 
                   if (componentObtainedmark.length > 0 && componentObtainedmark[0].Marks > 0) {
-                    markPercent += +(componentObtainedmark[0].Marks / thisCompmarkFromDefn.FullMark * thisCompWeightage).toFixed(5);
+                    markPercent += +((componentObtainedmark[0].Marks / thisCompmarkFromDefn.FullMark) * thisCompWeightage).toFixed(5);
 
                     // let componentfullmarkpercentFromDefn = thisCompmarkFromDefn.FullMark * 100;
                     // let componentPercentOutOfFullMarkFromDefn = parseFloat((componentfullmarkpercentFromDefn / _subjectPassMarkFullMarkFromDefn[0].FullMark).toFixed(5));
@@ -925,9 +1048,9 @@ export class VerifyResultsComponent implements OnInit {
                   }
                   else
                     ForNonGrading["PassCount"] += 1;
-                  if (eachsubj.Subject == 'Geography') {
-                    debugger;
-                  }
+                  // if (eachsubj.Subject == 'Geography') {
+                  //   debugger;
+                  // }
                   if (this.displayedColumns.indexOf(eachsubj.Subject) == -1 && eachsubj.Subject.length > 0)
                     this.displayedColumns.push(eachsubj.Subject)
                   if (markObtained.length > 0) {
@@ -942,9 +1065,11 @@ export class VerifyResultsComponent implements OnInit {
                       _processedmark = markObtained[0].Marks;
 
                     ForNonGrading[eachsubj.Subject] = (failedInComponent || _statusFail) ? "(" + _processedmark + ")" : _processedmark;
-                    ForNonGrading["Total Marks"] = (parseFloat(ForNonGrading["Total Marks"]) + parseFloat(markObtained[0].Marks)).toFixed(2);
-                    let _totalPercent = (parseFloat(ForNonGrading["Total Percent"]) + markPercent)
-                    ForNonGrading["Total Percent"] = +(_totalPercent).toFixed(2);
+                    ForNonGrading["Total Marks"] = (parseFloat(ForNonGrading["Total Marks"]) + parseFloat(markObtained[0].Marks));//.toFixed(2);
+                    _totalPercent = (parseFloat(ForNonGrading["Total Percent"]) + markPercent)
+                    // if (ss.Student == '22-Pauthianmung Hanghal -A')
+                    //   console.log("before tofixed(2)", _totalPercent);
+                    ForNonGrading["Total Percent"] = +(_totalPercent);//.toFixed(2);
                   }
                 }
               }
@@ -969,10 +1094,10 @@ export class VerifyResultsComponent implements OnInit {
               if (ExamResultSubjectMarkData != undefined)
                 this.VerifiedResult.ExamResultSubjectMark.push(JSON.parse(JSON.stringify(ExamResultSubjectMarkData)))
             }
-            if (ss.Student == '22-Pauthianmung Hanghal -A') {
-              console.log("//markPercent", markPercent)
-              console.log("eachsubj.Subject", eachsubj.Subject + "//")
-            }
+            // if (ss.Student == '22-Pauthianmung Hanghal -A') {
+            //   console.log("//markPercent", markPercent)
+            //   console.log("eachsubj.Subject", eachsubj.Subject + "//")
+            // }
           })//for each subject of student.
 
           if (errormessageforEachSubject.length == 0) {
@@ -980,6 +1105,8 @@ export class VerifyResultsComponent implements OnInit {
             // }
             // else {
             //for each subject display 
+            ForNonGrading["Total Percent"] = ForNonGrading["Total Percent"].toFixed(2);
+            ForNonGrading["Total Marks"] = ForNonGrading["Total Marks"].toFixed(2);
             this.ExamStudentSubjectResult.push(ForNonGrading);
             this.ExamStudentSubjectGrading.push(ForGrading);
           }
@@ -987,7 +1114,7 @@ export class VerifyResultsComponent implements OnInit {
 
         if (errormessageforEachSubject.length > 0) {
           //var distinctsubjecterror = alasql("select ")
-          this.loading = false;
+          this.Loading(false);
           this.contentservice.openSnackBar("Subject component not defined for " + errormessageforEachSubject.join(', '), globalconstants.ActionText, globalconstants.RedBackground);
           return;
         }
@@ -1106,7 +1233,7 @@ export class VerifyResultsComponent implements OnInit {
         //this.GradingDataSource.paginator = this.paginator.toArray()[1];
         //this.GradingDataSource.sort = this.sort.toArray()[1];
 
-        this.loading = false;
+        this.Loading(false);
         this.PageLoading = false;
         ////console.log("ClickedVerified",this.ClickedVerified)
         ////console.log("SectionSelected",this.SectionSelected)
@@ -1164,7 +1291,7 @@ export class VerifyResultsComponent implements OnInit {
 
   ClassCategory: any[] = [];
   GetMasterData() {
-    this.loading = true;
+    this.Loading(true);
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
@@ -1177,6 +1304,8 @@ export class VerifyResultsComponent implements OnInit {
     this.SubjectCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTCATEGORY);
     this.ExamResultProperties = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMRESULTPROPERTY);
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
+    this.CommonHeader = this.getDropDownData(globalconstants.MasterDefinitions.common.COMMONPRINTHEADING);
+
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       this.Classes = data.value.map(m => {
         let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
@@ -1189,27 +1318,23 @@ export class VerifyResultsComponent implements OnInit {
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);;
       this.GetSubjectTypes();
     });
+    let funcCallArray = [this.GetClassGroup(), this.GetClassGroupMapping(), this.GetExams(), this.GetOrganization(), this.GetStudentGradeDefn()];
+    forkJoin(funcCallArray)
+      .subscribe((data: any) => {
+        this.Loading(false);
+      })
 
-    this.GetClassGroup();
-    this.GetClassGroupMapping();
-    this.GetExams();
-    //this.GetStudents(0);
-
-    this.GetStudentGradeDefn();
-    this.loading = false;
-    this.PageLoading = false;
+    //this.Loading(false);
+    //this.PageLoading = false;
   }
   GetClassGroup() {
-    this.loading = true;
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
         this.ClassGroups = [...data.value];
-        this.loading = false;
       })
   }
   ClassGroupMapping: any[] = [];
   GetClassGroupMapping() {
-    this.loading = true;
     this.contentservice.GetClassGroupMapping(this.FilterOrgSubOrg, 1)
       .subscribe((data: any) => {
         //debugger;
@@ -1218,11 +1343,9 @@ export class VerifyResultsComponent implements OnInit {
           if (f.ClassGroup) {
             f.GroupName = f.ClassGroup.GroupName;
             this.ClassGroupMapping.push(f);
-
           }
 
         });
-        this.loading = false;
       })
   }
   GetStudentGradeDefn() {
@@ -1230,7 +1353,6 @@ export class VerifyResultsComponent implements OnInit {
     this.contentservice.GetStudentGrade(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
         this.StudentGrades = [...data.value];
-        this.loading = false;
       })
   }
 
@@ -1316,7 +1438,6 @@ export class VerifyResultsComponent implements OnInit {
     }
   }
   GetExams() {
-    this.loading = true;
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId + " and Active eq 1";
 
     let list: List = new List();
@@ -1396,14 +1517,14 @@ export class VerifyResultsComponent implements OnInit {
   SubjectTypes: any[] = [];
   GetSubjectTypes() {
     var orgIdSearchstr = this.FilterOrgSubOrg + " and Active eq 1";
-    this.loading = true;
+    this.Loading(true);
     let list: List = new List();
 
     list.fields = ["SubjectTypeId", "SubjectTypeName", "SelectHowMany"];
     list.PageName = "SubjectTypes";
     list.filter = [orgIdSearchstr];
     //list.orderBy = "ParentId";
-    this.loading = true;
+    this.Loading(true);
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -1414,7 +1535,7 @@ export class VerifyResultsComponent implements OnInit {
   }
   GetSubjectComponents() {
 
-    this.loading = true;
+    this.Loading(true);
     let list: List = new List();
 
     list.fields = ["ClassSubjectMarkComponentId", "ExamId", "SubjectComponentId", "ClassSubjectId", "FullMark", "PassMark", "OverallPassMark"];
@@ -1448,7 +1569,7 @@ export class VerifyResultsComponent implements OnInit {
         })
         let test = this.ClassSubjectComponents.filter(f => f.ClassSubjectId == 1136)
         //console.log("ClassSubjectComponents",test)
-        this.loading = false;
+        this.Loading(false);
         this.PageLoading = false;
       })
   }

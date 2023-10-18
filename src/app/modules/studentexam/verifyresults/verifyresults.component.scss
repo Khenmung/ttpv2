@@ -41,9 +41,22 @@ mat-cell{
     justify-content:center;
     min-width: 50px;
 }
-mat-row, mat-footer-row{
+mat-row,mat-header-row, mat-footer-row{
     min-height: 35px;
+    border-bottom: 1px solid lightgray;
 }
+.mat-mdc-cell{
+    border-bottom-style: none;
+}
+@media print {
+    .mat-mdc-cell,.mat-mdc-header-cell {
+      color: black;
+      background-color: white;
+      border: 1px solid lightgray;
+      border-right-style: none;
+      border-bottom-style: none;
+    }    
+  }
 // .element-row{
 //     align-items: baseline;
 // }

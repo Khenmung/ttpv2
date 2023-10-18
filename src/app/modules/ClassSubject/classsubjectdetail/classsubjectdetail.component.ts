@@ -254,8 +254,10 @@ export class ClassSubjectDetailComponent implements OnInit {
       this.contentservice.openSnackBar("Please select class/course", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
-    if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
+    if (_sectionId)
+      filterStr += " and SectionId eq " + _sectionId;
+    if (_semesterId)
+      filterStr += " and SemesterId eq " + _semesterId;
 
 
     //list.filter = ["OrgId eq " + this.LoginUserDetail[0]["orgId"] + " and BatchId eq " + this.SelectedBatchId + " and Active eq 1"];
@@ -325,7 +327,7 @@ export class ClassSubjectDetailComponent implements OnInit {
               //ClassSubjectId: previousbatch==1?0:existing[0].ClassSubjectId,
               ClassSubjectId: existing[0].ClassSubjectId,
               SubjectId: existing[0].SubjectId,
-              SubjectName: this.Subjects.filter(c => c.MasterDataId == existing[0].SubjectId)[0].MasterDataName,
+              SubjectName: s.MasterDataName,// this.Subjects.filter(c => c.MasterDataId == existing[0].SubjectId)[0].MasterDataName,
               SubjectTypeId: existing[0].SubjectTypeId,
               SubjectCategoryId: existing[0].SubjectCategoryId,
               SelectHowMany: existing[0].SelectHowMany,
@@ -365,7 +367,7 @@ export class ClassSubjectDetailComponent implements OnInit {
         this.dataSource = new MatTableDataSource<IClassSubject>(this.ClassSubjectList);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        this.dataSource.filterPredicate = this.createFilter();
+        //this.dataSource.filterPredicate = this.createFilter();
         this.loading = false; this.PageLoading = false;
       });
   }
@@ -547,7 +549,7 @@ export class ClassSubjectDetailComponent implements OnInit {
         else {
           this.RowCount += 1;
           if (this.DataCollection.length == this.RowCount) {
-           
+
             this.DataCollection.forEach(item => {
 
               this.ClassSubjectData.Active = item.Active;
