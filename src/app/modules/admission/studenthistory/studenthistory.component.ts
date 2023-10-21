@@ -217,10 +217,12 @@ export class StudenthistoryComponent implements OnInit {
         return;
       }
       _paramstr += " and contains(FirstName,'" + _studentName + "')";
-    } 
+    }
+
     if (_paramstr.length == 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
     }
     //filterStr += " and IsCurrent eq true";
     let list: List = new List();

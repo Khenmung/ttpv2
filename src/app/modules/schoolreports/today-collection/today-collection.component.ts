@@ -300,8 +300,8 @@ export class TodayCollectionComponent implements OnInit {
         this.DateWiseCollection.forEach(element => rows.push(element, { detailRow: true, element }));
         ////console.log("rows", rows)
         this.dataSource = new MatTableDataSource(rows);
-        //this.dataSource.paginator = this.paginator;
-        //this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
         this.loading = false;
         this.PageLoading = false;
         this.Reload = false;

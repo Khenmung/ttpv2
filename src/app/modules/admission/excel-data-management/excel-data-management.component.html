@@ -22,7 +22,7 @@
                 style="margin-right: 15px;" (click)="inputfile.click()">
                 <mat-icon aria-label="photo">attach_file</mat-icon>
             </button>
-            
+
             <button [disabled]="loading || Permission=='read'" mat-mini-fab matTooltip="clear all"
                 style="margin-right: 15px;" (click)="clearall()">
                 <mat-icon>clear_all</mat-icon>
@@ -33,8 +33,10 @@
             </button> -->
         </span>
         <mat-divider></mat-divider>
-        <div *ngIf="AlreadyExistStudent.length>0 && ErrorMessage.length==0" style="display: flex;flex-direction: column;">
-            <div style="margin:15px;font-weight: bold;">Student already exists in the system. Click on upload for uploading new class.</div>
+        <div *ngIf="AlreadyExistStudent.length>0 && ErrorMessage.length==0"
+            style="display: flex;flex-direction: column;">
+            <div style="margin:15px;font-weight: bold;">Student already exists in the system. Click on upload for
+                uploading new class.</div>
             <mat-table #table [dataSource]="dataSource" matSort>
                 <ng-container *ngFor="let disCol of DuplicateDisplayCol; let colIndex = index"
                     matColumnDef="{{disCol}}">
@@ -52,8 +54,9 @@
             <mat-paginator style="display: flex;justify-content: center;"
                 [pageSizeOptions]="[5,10,20,50]"></mat-paginator>
             <div>
-                <button [disabled]="loading || ErrorMessage.length>0 || Permission=='read' || !ReadyForUpload" type="submit"
-                    (click)="UploadStudentClass()" matTooltip="upload new student class" mat-raised-button color="accent">
+                <button [disabled]="loading || ErrorMessage.length>0 || Permission=='read' || !ReadyForUpload"
+                    type="submit" (click)="UploadStudentClass()" matTooltip="upload new student class" mat-raised-button
+                    color="accent">
                     <mat-icon>file_upload</mat-icon>
                     <mat-icon *ngIf="loading"><mat-spinner diameter="20"></mat-spinner></mat-icon>
                 </button>&nbsp;&nbsp;
@@ -64,36 +67,37 @@
                     </mat-icon>
                 </button> -->
             </div>
-            <div *ngIf="ELEMENT_DATA.length>0 && ErrorMessage.length==0">
-                <div style="margin:15px;font-weight: bold;">New Students. Click on upload button for uploading new student.</div>
-                <mat-table [dataSource]="cleanDataSource" style="min-width: 1400px;" matSort>
-                    <ng-container *ngFor="let disCol of CleanDisplayCol; let colIndex = index"
-                        matColumnDef="{{disCol}}">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header>
-                            {{disCol}}
-                        </mat-header-cell>
-                        <mat-cell *matCellDef="let element">
-                            {{element[disCol]}}
-                        </mat-cell>
-                    </ng-container>
-                    <mat-header-row *matHeaderRowDef="CleanDisplayCol"></mat-header-row>
-                    <mat-row *matRowDef="let row; columns: CleanDisplayCol;" class="element-row"></mat-row>
-                </mat-table>
-                <mat-paginator style="display: flex;justify-content: center;"
-                    [pageSizeOptions]="[5,10,20,50]"></mat-paginator>
-                <div>
-                    <button [disabled]="loading || ErrorMessage.length>0 || Permission=='read' || !ReadyForUpload" type="submit"
-                        (click)="UploadNewStudent()" matTooltip="upload new student" mat-raised-button color="accent">
-                        <mat-icon>file_upload</mat-icon>
-                        <mat-icon *ngIf="loading"><mat-spinner diameter="20"></mat-spinner></mat-icon>
-                    </button>
-                    <!-- <button (click)="NewStudentExportArray()" mat-raised-button color="accent">
+        </div>
+        <div *ngIf="ELEMENT_DATA.length>0 && ErrorMessage.length==0">
+            <div style="margin:15px;font-weight: bold;">New Students. Click on upload button for uploading new student.
+            </div>
+            <mat-table [dataSource]="cleanDataSource" style="min-width: 1400px;" matSort>
+                <ng-container *ngFor="let disCol of CleanDisplayCol; let colIndex = index" matColumnDef="{{disCol}}">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{disCol}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element[disCol]}}
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="CleanDisplayCol"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: CleanDisplayCol;" class="element-row"></mat-row>
+            </mat-table>
+            <mat-paginator style="display: flex;justify-content: center;"
+                [pageSizeOptions]="[5,10,20,50]"></mat-paginator>
+            <div>
+                <button [disabled]="loading || ErrorMessage.length>0 || Permission=='read' || !ReadyForUpload"
+                    type="submit" (click)="UploadNewStudent()" matTooltip="upload new student" mat-raised-button
+                    color="accent">
+                    <mat-icon>file_upload</mat-icon>
+                    <mat-icon *ngIf="loading"><mat-spinner diameter="20"></mat-spinner></mat-icon>
+                </button>
+                <!-- <button (click)="NewStudentExportArray()" mat-raised-button color="accent">
                         <mat-icon>download</mat-icon>
                         <mat-icon *ngIf="loading">
                             <mat-spinner diameter="25"></mat-spinner>
                         </mat-icon>
                     </button> -->
-                </div>
             </div>
         </div>
     </form>
@@ -109,21 +113,20 @@
             <span><mat-spinner diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner></span>
         </span>
     </div>
-</div>
-<div style="margin-top:30px;" data-expand="false" #expandWrap>
-    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
-        <mat-icon>info</mat-icon>
-        Guides..
-    </span>
-    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
-        <ul>
-            <li>
-                <div>Whenever student class is uploaded, <b>Fee Type</b> of all uploaded students will be reset to
-                    default fee type.</div>
-            </li>
-            <li>
-                <div>Class all students uploaded through excel are active immediately.</div>
-            </li>
-        </ul>
-    </span>
-</div>
+    <div style="margin-top:30px;" data-expand="false" #expandWrap>
+        <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+            <mat-icon>info</mat-icon>
+            Guides..
+        </span>
+        <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+            <ul>
+                <li>
+                    <div>Whenever student class is uploaded, <b>Fee Type</b> of all uploaded students will be reset to
+                        default fee type.</div>
+                </li>
+                <li>
+                    <div>Class all students uploaded through excel are active immediately.</div>
+                </li>
+            </ul>
+        </span>
+    </div>

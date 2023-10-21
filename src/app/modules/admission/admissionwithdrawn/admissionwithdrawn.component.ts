@@ -220,10 +220,10 @@ export class AdmissionWithdrawnComponent {
       filterStr += " and PID eq " + _pid;
     if (_name.length > 0)
       filterStr += " and (FirstName eq '" + _name + "' or LastName eq '" + _name + "')";
-    if (filterStr.length == 0 || filterStr.length <3)
-      this.contentservice.openSnackBar('Please enter search criteria.', globalconstants.ActionText, globalconstants.RedBackground);
-    else
-      filterStr = this.FilterOrgSubOrg + filterStr;
+    // if (filterStr.length == 0 || filterStr.length <3)
+    //   this.contentservice.openSnackBar('Please enter search criteria.', globalconstants.ActionText, globalconstants.RedBackground);
+    // else
+    filterStr = this.FilterOrgSubOrg + filterStr;
 
 
     this.Students = [];
@@ -246,7 +246,7 @@ export class AdmissionWithdrawnComponent {
       "Active"
     ];
     list.PageName = "Students";
-    list.lookupFields = ["StudentClasses($select=StudentClassId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,BatchId,IsCurrent,HouseId,StudentId)"];
+    list.lookupFields = ["StudentClasses($filter=BatchId eq " + this.SelectedBatchId + ";$select=UpdatedDate,StudentClassId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,BatchId,IsCurrent,HouseId,StudentId)"];
 
     list.filter = [filterStr + " and (Active eq 0 or BatchId eq 0)"];
     this.loading = true;
