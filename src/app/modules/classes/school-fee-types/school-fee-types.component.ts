@@ -361,6 +361,7 @@ export class SchoolFeeTypesComponent implements OnInit {
         else {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
+        this.FeeTypeList = this.FeeTypeList.sort((a,b)=>b.Active -a.Active);
         this.dataSource = new MatTableDataSource<IFeeType>(this.FeeTypeList);
         this.dataSource.paginator = this.paginator;
         this.loadingFalse();

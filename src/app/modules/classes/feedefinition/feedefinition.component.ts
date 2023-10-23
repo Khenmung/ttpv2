@@ -302,6 +302,7 @@ export class FeeDefinitionComponent implements OnInit {
           });
 
         }
+        this.FeeDefinitionList = this.FeeDefinitionList.sort((a,b)=> b.Active - a.Active);
         ////console.log('this.FeeDefinitionList',this.FeeDefinitionList)
         this.dataSource = new MatTableDataSource<IFeeDefinition>(this.FeeDefinitionList);
         this.dataSource.paginator = this.paginator;

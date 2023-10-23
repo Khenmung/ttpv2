@@ -77,9 +77,9 @@
                                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                                     <mat-cell *matCellDef="let element">
                                         <mat-checkbox
-                                            [disabled]="loading || (element.TotalDebit!=0 && element.Balance1==0) || Permission=='read'"
+                                            [disabled]="loading || (element.BaseAmount1!=0 && element.Balance1==0) || Permission=='read'"
                                             mat-mini-fab (change)="SelectRow(element,$event)"
-                                            [checked]="(element.TotalDebit!=0 && element.Balance1==0)">
+                                            [checked]="(element.BaseAmount1!=0 && element.Balance1==0)">
                                         </mat-checkbox>
                                     </mat-cell>
                                 </ng-container>

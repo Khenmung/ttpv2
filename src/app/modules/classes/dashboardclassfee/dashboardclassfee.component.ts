@@ -756,7 +756,7 @@ export class DashboardclassfeeComponent implements OnInit {
     }
     //this.ELEMENT_DATA =
     ////console.log("this.CurrentMonthYear", this.CurrentMonthYear);
-    this.ELEMENT_DATA.sort((a, b) => b.Active - a.Active);
+    this.ELEMENT_DATA.sort((a:any, b:any) => a.PaymentOrder - b.PaymentOrder);
     //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
     this.dataSource = new MatTableDataSource<Element>(this.ELEMENT_DATA);
     this.dataSource.paginator = this.paginator;

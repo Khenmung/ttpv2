@@ -232,8 +232,7 @@ export class HomeDashboardComponent implements OnInit {
 
       this.sideMenu = [];
       data.value.forEach(m => {
-        if(m.Page.PageTitle=="Pages")
-        {
+        if (m.Page.PageTitle == "Pages") {
           debugger;
         }
         permission = this.LoginUserDetail[0]["applicationRolePermission"].filter(r => r.applicationFeature.toLowerCase().trim() == m.Page.PageTitle.toLowerCase().trim()
@@ -458,6 +457,7 @@ export class HomeDashboardComponent implements OnInit {
   Semesters: any[] = [];
   Sections: any[] = [];
   Classes: any[] = [];
+  Remarks: any[] = [];
   // GetMasterData(SelectedAppId) {
   //   return this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, SelectedAppId)
 
@@ -492,6 +492,7 @@ export class HomeDashboardComponent implements OnInit {
         if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
           this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
           this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
+          this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
           //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
           //   this.Classes = [...data.value];
@@ -624,6 +625,7 @@ export class HomeDashboardComponent implements OnInit {
 
           this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
           this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
+          this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
           var selectedItem = this.SubOrganization.filter((s: any) => s.MasterDataId == this.SubOrgId);
           this.searchForm.patchValue({ "searchSubOrgId": selectedItem[0] });
 
@@ -738,6 +740,10 @@ export class HomeDashboardComponent implements OnInit {
           if (_classNameobj.length > 0)
             _className = _classNameobj[0].ClassName;
 
+          var _remark = '';
+          var _remarkObj = this.Remarks.filter((f: any) => f.MasterDataId == d.RemarkId);
+          if (_remarkObj.length > 0)
+          _remark = _remarkObj[0].MasterDataName;
           var _Section = '';
           var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == d.StudentClasses[0].SectionId);
           if (_sectionobj.length > 0)
@@ -760,6 +766,7 @@ export class HomeDashboardComponent implements OnInit {
           d.ClassName = _className;
           d.Section = _Section;
           d.Semester = _semester;
+          d.Remarks = _remark;
           this.Students.push(d);
         });
         this.tokenStorage.saveStudents(this.Students);
@@ -796,6 +803,8 @@ export class HomeDashboardComponent implements OnInit {
         var _className = '';
         var _house = '';
         var _Section = '';
+        let _remark ='';
+        var _semester = '';
         var _studentClassId = 0;
         _students.forEach(d => {
           _classNameobj = [];
@@ -812,6 +821,12 @@ export class HomeDashboardComponent implements OnInit {
             var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studcls[0].SectionId);
             if (_sectionobj.length > 0)
               _Section = _sectionobj[0].MasterDataName;
+            var _semesterobj = this.Semesters.filter((f: any) => f.MasterDataId == studcls[0].SemesterId);
+            if (_semesterobj.length > 0)
+              _semester = _semesterobj[0].MasterDataName;
+            var _remarkobj = this.Remarks.filter((f: any) => f.MasterDataId == studcls[0].SectionId);
+            if (_remarkobj.length > 0)
+              _remark = _remarkobj[0].MasterDataName;
             var _RollNo = studcls[0].RollNo;
             _studentClassId = studcls[0].StudentClassId;
           }
@@ -827,6 +842,7 @@ export class HomeDashboardComponent implements OnInit {
           d.ClassName = _className;
           d.Section = _Section;
           d.StudentClasses = studcls;
+          d.Remarks = _remark;
           this.Students.push(d);
 
         })

@@ -48,6 +48,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   //isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
   PaymentTypes: any[] = [];
   FeeCategories: any[] = [];
+  Remarks:any=[];
   OffLineReceiptNo = '';
   CashAmount = 0;
   PaymentTypeId = 0;
@@ -83,7 +84,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
     PayAmount: 0,
     StudentClassId: 0,
     ReceiptNo: 0,
-    ReceiptDate: new Date()
+    ReceiptDate: new Date(),
+    Remarks:''
   }
   FeePayment: {
     StudentFeeReceipt: {},
@@ -364,6 +366,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   CustomerHeading: any[] = [];
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
+    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
     //this.shareddata.CurrentFeeDefinitions.subscribe((f: any) => {
     //  this.FeeDefinitions = [...f];
     //  if (this.FeeDefinitions.length == 0) {
@@ -480,6 +483,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
               this.studentInfoTodisplay.Formula = data.value[0].FeeType.Formula;
               this.studentInfoTodisplay.RollNo = data.value[0].RollNo;
               this.studentInfoTodisplay.StudentName = _studdetail[0].FirstName + _lastname;
+
+              this.studentInfoTodisplay.Remarks = _studdetail[0].Remarks;
 
               var _sectionName = '';
               var obj = this.Sections.filter(cls => cls.MasterDataId == data.value[0].SectionId)
@@ -771,8 +776,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
         })//this.getAccountingVoucher(
       }
       else {
-        var SelectedMonthFees = this.StudentClassFees.filter((f: any) => f.Month == row.Month || f.Month == 0);
-        //  debugger;
+        var SelectedMonthFees = this.StudentClassFees.filter((f: any) => (f.Month == row.Month || f.Month == 0) 
+        && f.Active==1);
+          debugger;
         SelectedMonthFees = SelectedMonthFees.sort((a, b) => b.Month - a.Month);
         var AmountAfterFormulaApplied = 0;
 
@@ -811,7 +817,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
               BaseAmount: f.Amount,
               PaymentOrder: f.PaymentOrder,
               BaseAmountForCalc: +AmountAfterFormulaApplied,
-              Amount: +AmountAfterFormulaApplied,
+              Amount: +AmountAfterFormulaApplied<0?0:+AmountAfterFormulaApplied,
               BalancePayment: false,
               Balance: 0,
               Month: row.Month,
