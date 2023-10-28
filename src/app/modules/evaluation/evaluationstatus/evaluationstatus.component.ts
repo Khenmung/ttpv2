@@ -89,7 +89,9 @@ export class EvaluationstatusComponent implements OnInit {
   }
   StudentEvaluationForUpdate: any[] = [];
   displayedColumns = [
-    'Student',
+    'PID',
+    'RollNo',
+    'Student',    
     'Description'
   ];
   searchForm: UntypedFormGroup;
@@ -586,7 +588,7 @@ export class EvaluationstatusComponent implements OnInit {
             }
             else {
               existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
-                && (!f.StudentEvaluationAnswers || f.StudentEvaluationAnswers.length==0)
+                && (!f.StudentEvaluationAnswers || f.StudentEvaluationAnswers.length>0)
                 && f.ClassEvaluationId == clseval.ClassEvaluationId);
             }
             if (existing.length > 0) {
@@ -612,7 +614,9 @@ export class EvaluationstatusComponent implements OnInit {
                 StudentEvaluationAnswers: existing[0].StudentEvaluationAnswers,
                 StudentClassId: eachstud.StudentClassId,
                 StudentId: eachstud.StudentId,
-                Student: eachstud.Name,
+                Student: eachstud.FirstName,
+                PID:eachstud.PID,
+                RollNo:eachstud.RollNo,
                 CatSequence: clseval.DisplayOrder,
                 QuestionnaireType: clseval.QuestionnaireType,
                 ClassEvaluationAnswerOptionParentId: clseval.ClassEvaluationAnswerOptionParentId,
@@ -630,37 +634,40 @@ export class EvaluationstatusComponent implements OnInit {
               }
               this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
             }
-            // else if (!_statusId) {
-            //   clseval.ClassEvaluationOptions.forEach(f => f.checked = false);
-            //   item = {
-            //     AutoId: SlNo,
-            //     ClassEvaluationOptions: clseval.ClassEvaluationOptions,
-            //     StudentClassId: eachstud.StudentClassId,
-            //     StudentId: eachstud.StudentId,
-            //     Student: eachstud.Name,
-            //     CatSequence: clseval.DisplayOrder,
-            //     QuestionnaireType: clseval.QuestionnaireType,
-            //     AnswerOptionsId: 0,
-            //     Description: globalconstants.decodeSpecialChars(clseval.Description),
-            //     AnswerText: '',
-            //     History: '',
-            //     Points: 0,
-            //     Updatable: row[0].Updatable,
-            //     StudentEvaluationResultId: 0,
-            //     ClassEvaluationAnswerOptionParentId: clseval.ClassEvaluationAnswerOptionParentId,
-            //     EvaluationExamMapId: row[0].EvaluationExamMapId,
-            //     ClassEvaluationId: clseval.ClassEvaluationId,
-            //     Active: 0,
-            //     EvaluationMasterId: row[0].EvaluationMasterId,
-            //     MultipleAnswer: clseval.MultipleAnswer,
-            //     StudentEvaluationAnswers: []
-            //   }
-            //   this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
-            // }
+            else if (!_statusId) {
+              clseval.ClassEvaluationOptions.forEach(f => f.checked = false);
+              item = {
+                AutoId: SlNo,
+                ClassEvaluationOptions: clseval.ClassEvaluationOptions,
+                StudentClassId: eachstud.StudentClassId,
+                StudentId: eachstud.StudentId,
+                Student: eachstud.FirstName,
+                PID:eachstud.PID,
+                RollNo:eachstud.RollNo,
+                CatSequence: clseval.DisplayOrder,
+                QuestionnaireType: clseval.QuestionnaireType,
+                AnswerOptionsId: 0,
+                Description: globalconstants.decodeSpecialChars(clseval.Description),
+                AnswerText: '',
+                History: '',
+                Points: 0,
+                Updatable: row[0].Updatable,
+                StudentEvaluationResultId: 0,
+                ClassEvaluationAnswerOptionParentId: clseval.ClassEvaluationAnswerOptionParentId,
+                EvaluationExamMapId: row[0].EvaluationExamMapId,
+                ClassEvaluationId: clseval.ClassEvaluationId,
+                Active: 0,
+                EvaluationMasterId: row[0].EvaluationMasterId,
+                MultipleAnswer: clseval.MultipleAnswer,
+                StudentEvaluationAnswers: []
+              }
+              this.StudentEvaluationList.push(JSON.parse(JSON.stringify(item)));
+            }
 
           })
         })
         ////console.log("this.StudentEvaluationList", this.StudentEvaluationList);
+        //this.StudentEvaluationList = this.StudentEvaluationList.sort((a,b)=>a.PID -b.PID);
         row[0].EvaluationStarted = true;
         this.dataSource = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);
         this.dataSource.paginator = this.paginator;
@@ -1050,18 +1057,20 @@ export class EvaluationstatusComponent implements OnInit {
             _semester = "-" + _SemesterObj[0].MasterDataName;
           var _lastname = student.LastName == null ? '' : " " + student.LastName;
           _name = student.FirstName + _lastname;
-          var _fullDescription = _RollNo + "-" + _name + "-" + _className + _section + _semester;
+          var _fullDescription = _name + "-" + _className + _section + _semester;
           this.Students.push({
             StudentClassId: _studentClassId,
             StudentId: student.StudentId,
             ClassId: _classId,
             RollNo: _RollNo,
+            FirstName:_name,
             Name: _fullDescription,
+            PID:student.PID
           });
         }
       }
     })
-    this.Students = this.Students.sort((a, b) => a.RollNo.localeCompare(b.RollNo))
+    this.Students = this.Students.sort((a, b) => a.FirstName.localeCompare(b.FirstName))//RollNo.localeCompare(b.RollNo))
     this.GetEvaluationMapping();
     //})
   }

@@ -159,57 +159,7 @@ export class studentprimaryinfoComponent implements OnInit {
     //  this.route.navigate(["/edu"]);
     //else {
 
-    this.studentForm = this.fb.group({
-      ReasonForLeaving: [0],
-      StudentId: [0],
-      FirstName: ['', [Validators.required]],
-      LastName: [''],
-      FatherName: [''],
-      FatherOccupation: [''],
-      MotherName: [''],
-      MotherOccupation: [''],
-      Gender: [0, [Validators.required]],
-      PresentAddress: ['', [Validators.required]],
-      PermanentAddress: ['', [Validators.required]],
-      DOB: [new Date(), [Validators.required]],
-      Bloodgroup: [0, [Validators.required]],
-      Category: [0, [Validators.required]],
-      ClassAdmissionSought: [0, [Validators.required]],
-      Religion: [0, [Validators.required]],
-      AccountHolderName: [''],
-      BankAccountNo: [''],
-      IFSCCode: [''],
-      MICRNo: [''],
-      AdhaarNo: [''],
-      Photo: [''],
-      PersonalNo: ['', [Validators.required]],
-      WhatsAppNumber: [''],
-      FatherContactNo: [''],
-      MotherContactNo: [''],
-      PrimaryContactFatherOrMother: [0],
-      NameOfContactPerson: [''],
-      RelationWithContactPerson: [''],
-      ContactPersonContactNo: [''],
-      AlternateContact: [''],
-      EmailAddress: [''],
-      LastSchoolPercentage: [''],
-      TransferFromSchool: [''],
-      TransferFromSchoolBoard: [''],
-      Club: [0],
-      AdmissionStatus: [0],
-      AdmissionDate: [new Date()],
-      House: [0],
-      Remarks: [0],
-      Notes: [''],
-      IdentificationMark: [''],
-      BoardRegistrationNo: [''],
-      Weight: [0],
-      Height: [0],
-      Active: [1]
-    });
-    this.PID = this.tokenStorage.getPID()!;
-    this.StudentId = this.tokenStorage.getStudentId()!;;
-    this.StudentClassId = this.tokenStorage.getStudentClassId()!;
+    
   }
   FeePaymentPermission = '';
   ngOnInit(): void {
@@ -237,6 +187,57 @@ export class studentprimaryinfoComponent implements OnInit {
       }
 
       if (this.Permission != 'deny') {
+        this.studentForm = this.fb.group({
+          ReasonForLeaving: [0],
+          StudentId: [0],
+          FirstName: ['', [Validators.required]],
+          LastName: [''],
+          FatherName: [''],
+          FatherOccupation: [''],
+          MotherName: [''],
+          MotherOccupation: [''],
+          Gender: [0, [Validators.required]],
+          PresentAddress: ['', [Validators.required]],
+          PermanentAddress: ['', [Validators.required]],
+          DOB: [new Date(), [Validators.required]],
+          Bloodgroup: [0, [Validators.required]],
+          Category: [0, [Validators.required]],
+          ClassAdmissionSought: [0, [Validators.required]],
+          Religion: [0, [Validators.required]],
+          AccountHolderName: [''],
+          BankAccountNo: [''],
+          IFSCCode: [''],
+          MICRNo: [''],
+          AdhaarNo: [''],
+          Photo: [''],
+          PersonalNo: ['', [Validators.required]],
+          WhatsAppNumber: [''],
+          FatherContactNo: [''],
+          MotherContactNo: [''],
+          PrimaryContactFatherOrMother: [0],
+          NameOfContactPerson: [''],
+          RelationWithContactPerson: [''],
+          ContactPersonContactNo: [''],
+          AlternateContact: [''],
+          EmailAddress: [''],
+          LastSchoolPercentage: [''],
+          TransferFromSchool: [''],
+          TransferFromSchoolBoard: [''],
+          Club: [0],
+          AdmissionStatus: [0],
+          AdmissionDate: [new Date()],
+          House: [0],
+          Remarks: [0],
+          Notes: [''],
+          IdentificationMark: [''],
+          BoardRegistrationNo: [''],
+          Weight: [0],
+          Height: [0],
+          Active: [1]
+        });
+        this.PID = this.tokenStorage.getPID()!;
+        this.StudentId = this.tokenStorage.getStudentId()!;;
+        this.StudentClassId = this.tokenStorage.getStudentClassId()!;
         var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.FEEPAYMENT);
         if (perObj.length > 0) {
           this.FeePaymentPermission = perObj[0].permission;
@@ -465,10 +466,10 @@ export class studentprimaryinfoComponent implements OnInit {
         var _student = all[0].value;
         //var _studentclass;// = all[1].value;
         this.Students = this.tokenStorage.getStudents()!;
-        var _studentclass = this.Students.filter(s => s.StudentId == this.StudentId)[0].StudentClasses;
+        
         var _photo = all[1].value;
         if (_student.length > 0) {
-
+          var _studentclass = this.Students.filter(s => s.StudentId == this.StudentId)[0].StudentClasses;
           //var studcls = this.Students.filter(store => store.StudentId == this.StudentId);
           // if (studcls.length > 0)
           //   all[0].value[0].StudentClasses = studcls[0].StudentClasses ? studcls[0].StudentClasses : [];
@@ -745,8 +746,10 @@ export class studentprimaryinfoComponent implements OnInit {
             this.studentForm.patchValue({
               StudentId: result.StudentId
             })
+            
             this.PID = result.PID;
             this.StudentId = result.StudentId;
+            this.studentData[0].StudentId = this.StudentId;
             // if (result != null && result.UserId != "")
             //   this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
             // else
@@ -759,12 +762,26 @@ export class studentprimaryinfoComponent implements OnInit {
             this.tokenStorage.saveStudentClassId(this.StudentClassId + "");
 
             let _student: any[] = this.tokenStorage.getStudents()!;
-            let _studCls = this.studentData[0]["StudentClasses"].push(result);
-            _student?.push(_studCls);
+            this.studentData[0]["StudentClasses"] =[];
+            let _studCls ={
+              StudentClassId:this.StudentClassId,
+              StudentId:this.StudentId,
+              ClassId:result.ClassId,
+              SectionId:result.SectionId,
+              SemesterId:result.SemesterId,
+              FeeTypeId:result.FeeTypeId,
+              RollNo:result.RollNo,
+              Active:result.Active,
+              BatchId:result.BatchId,
+              AdmissionDate:result.AdmissionDate,
+              Remarks:result.Remarks
+            } 
+            this.studentData[0]["StudentClasses"].push(_studCls);
+            _student?.push(this.studentData[0]);
             this.tokenStorage.saveStudents(_student);
 
             this.CreateInvoice();
-            this.GetStudentClassPhoto();
+            //this.GetStudentClassPhoto();
             this.Edited = false;
 
           }

@@ -434,7 +434,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
   GetStudentClass() {
     debugger;
-    if (this.studentInfoTodisplay.StudentClassId == undefined || this.studentInfoTodisplay.StudentClassId == 0) {
+    if (!this.studentInfoTodisplay.StudentClassId) {
       this.contentservice.openSnackBar("Please define class for this student.", globalconstants.ActionText, globalconstants.RedBackground);
       this.nav.navigate(["/edu"]);
     }
@@ -465,10 +465,11 @@ export class AddstudentfeepaymentComponent implements OnInit {
         .subscribe((data: any) => {
           debugger;
           if (data.value.length > 0) {
-            if (data.value[0].FeeType == undefined) {
+            if (!data.value[0].FeeType) {
               this.contentservice.openSnackBar("Fee Type not yet defined.", globalconstants.ActionText, globalconstants.RedBackground);
               //this.snackbar.open("Fee type not yet defined.",'Dimiss',{duration:10000});
-              this.loading = false; this.PageLoading = false;
+              this.loading = false; 
+              this.PageLoading = false;
             }
             else {
               let _studdetail: any = this.Students.filter((s: any) => s.StudentId == data.value[0].StudentId)
@@ -523,6 +524,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
   GetStudentFeePayment() {
     debugger;
+    
     if (this.studentInfoTodisplay.StudentId == 0) {
       this.nav.navigate(["/edu"]);
     }
@@ -560,7 +562,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
 
   GetClassFee() {
     //debugger;
-    if (this.studentInfoTodisplay.ClassId == undefined || this.studentInfoTodisplay.ClassId == 0 || this.SelectedBatchId == 0) {
+    if (!this.studentInfoTodisplay.ClassId || this.SelectedBatchId == 0) {
       //this.alert.error('Invalid Id', this.optionsNoAutoClose);
       this.contentservice.openSnackBar("Invalid Id", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -679,7 +681,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
         this.StudentLedgerList.sort((a, b) => a.Month - b.Month || a.PaymentOrder - b.PaymentOrder);
         ////console.log("this.StudentLedgerList", this.StudentLedgerList)
         this.dataSource = new MatTableDataSource<ILedger>(this.StudentLedgerList);
-        this.loading = false; this.PageLoading = false;
+        this.loading = false; 
+        this.PageLoading = false;
       })
   }
   ApplyVariables(formula) {

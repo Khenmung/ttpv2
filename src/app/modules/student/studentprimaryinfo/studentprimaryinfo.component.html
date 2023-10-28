@@ -30,8 +30,7 @@
                             </mat-form-field>
                         </mat-grid-tile>
                         <mat-grid-tile [colspan]="1" [rowspan]="2">
-                            <div style="margin-bottom: 15px;" *ngIf="StudentId>0" fxLayout="row"
-                                fxLayoutAlign="space-between center">
+                            <div style="margin-bottom: 15px;" *ngIf="StudentId>0" style="display: flex;justify-content: center;">
                                 <span style="color:red;" *ngIf="message">{{message}}</span>
                                 <input #inputfile [hidden]="true" type="file" accept='image/*'
                                     (change)="preview(inputfile.files)" />

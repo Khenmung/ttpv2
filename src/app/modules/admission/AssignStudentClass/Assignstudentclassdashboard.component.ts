@@ -213,7 +213,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         this.GetFeeTypes();
       }
       else {
-        this.loading = false; this.PageLoading = false;
+        this.loading = false; 
+        this.PageLoading = false;
       }
       //this.GetStudents();
     }
@@ -902,9 +903,19 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   }
   GetData(previousbatch) {
     this.HeaderTitle = '';
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
+    if(!_classId && !_FeeTypeId)
+    {
+      this.contentservice.openSnackBar("Please select either class or Fee type.",globalconstants.ActionText,globalconstants.RedBackground);
+      return;
+    }
+    this.loading=true;
+    this.PageLoading=true;
+
     this.GetStudentClasses('')
       .subscribe((StudentClassesdb: any) => {
-        var _classId = this.searchForm.get("searchClassId")?.value;
+        
         this.GetExamResult(this.SelectedBatchId, _classId)
           .subscribe((examresult: any) => {
 

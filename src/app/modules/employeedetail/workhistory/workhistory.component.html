@@ -6,7 +6,7 @@
     <!-- <alert></alert> -->
     <div style="padding: 15px;" fxLayout="row wrap">
         <div style="width: 100%;">
-          
+
             <mat-table #table [dataSource]="dataSource">
                 <ng-container matColumnDef="EmpWorkHistoryId">
                     <mat-header-cell *matHeaderCellDef>Id
@@ -50,7 +50,8 @@
                     <mat-cell *matCellDef="let element">
                         <mat-form-field appearance="outline" [style.width.px]="150">
                             <mat-label>from</mat-label>
-                            <input [(ngModel)]="element.FromDate" [value]="element.FromDate" matInput [matDatepicker]="FromDate" autocomplete="off">
+                            <input [(ngModel)]="element.FromDate" [value]="element.FromDate" matInput
+                                [matDatepicker]="FromDate" autocomplete="off">
                             <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
                             <mat-datepicker #FromDate></mat-datepicker>
                         </mat-form-field>
@@ -61,8 +62,8 @@
                     <mat-cell *matCellDef="let element">
                         <mat-form-field appearance="outline" [style.width.px]="150">
                             <mat-label>To</mat-label>
-                            <input [value]="element.ToDate" [(ngModel)]="element.ToDate" 
-                            matInput [matDatepicker]="ToDate" autocomplete="off">
+                            <input [value]="element.ToDate" [(ngModel)]="element.ToDate" matInput
+                                [matDatepicker]="ToDate" autocomplete="off">
                             <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>
                             <mat-datepicker #ToDate></mat-datepicker>
                         </mat-form-field>
@@ -79,15 +80,15 @@
                 </ng-container>
                 <ng-container matColumnDef="Action">
                     <mat-header-cell *matHeaderCellDef>
-                        <button [disabled]="loading || Permission=='read'|| EmployeeId==0" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+                        <button [disabled]="loading || Permission=='read'|| EmployeeId==0" matTooltip="add new"
+                            mat-mini-fab (click)="AddNew()">
                             <mat-icon>add</mat-icon>
                         </button>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
-                        <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save" 
-mat-raised-button color="accent"
-                            (click)="UpdateOrSave(element)">
-                             <mat-icon>save</mat-icon>
+                        <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                            mat-raised-button color="accent" (click)="UpdateOrSave(element)">
+                            <mat-icon>save</mat-icon>
                             <mat-icon *ngIf="loading">
                                 <mat-spinner diameter="20" color="Blue"></mat-spinner>
                             </mat-icon>
