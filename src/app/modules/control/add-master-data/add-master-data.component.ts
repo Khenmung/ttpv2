@@ -188,7 +188,7 @@ export class AddMasterDataComponent implements OnInit {
       //list.lookupFields = ["PlanAndMasterItems($filter=PlanId eq " + this.UserDetails[0]["planId"] + ";$select=MasterDataId,PlanAndMasterDataId)"];
 
       list.filter = [applicationFilter];// + ") or (OrgId eq " + this.OrgId + " and " + applicationFilter + ")"];
-      //debugger;
+      debugger;
       ////console.log("GetMastersForAutoComplete",this.SelectedApplicationId)  
       this.dataservice.get(list).subscribe((data: any) => {
         var result: any[] = [];
@@ -555,7 +555,7 @@ export class AddMasterDataComponent implements OnInit {
       //console.log("insert master", mastertoUpdate)
       this.dataservice.postPatch('MasterItems', mastertoUpdate, 0, 'post')
         .subscribe((res: any) => {
-          if (res != undefined) {
+          if (res) {
             row.MasterDataId = res.MasterDataId;
             row.Action = false;
             this.MasterList = this.tokenStorage.getMasterData()!;

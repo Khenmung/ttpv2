@@ -124,7 +124,7 @@ export class StudentattendancereportComponent implements OnInit {
           this.GetMasterData();
           var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-            this.Classes = [...data.value];
+            if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
             this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
           })
           this.GetClassSubject();

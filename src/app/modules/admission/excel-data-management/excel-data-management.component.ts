@@ -110,7 +110,7 @@ export class ExcelDataManagementComponent implements OnInit {
         this.SelectedApplicationName = apps[0].appShortName;
       }
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        this.Classes = [...data.value];
+        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
 
       });
@@ -169,6 +169,7 @@ export class ExcelDataManagementComponent implements OnInit {
   PrimaryContact: any[] = [];
   Location: any[] = [];
   Remarks: any[] = [];
+  Remark2: any[] = [];
   ActivityCategory: any[] = [];
   ActivitySubCategory: any[] = [];
   PrimaryContactFatherOrMother: any[] = [];
@@ -1042,12 +1043,28 @@ export class ExcelDataManagementComponent implements OnInit {
         let remarkObj: any = this.Remarks.filter((g: any) => g.MasterDataName.toLowerCase() == element.Remarks.toLowerCase());
         if (remarkObj.length == 0)
           this.ErrorMessage += "Invalid remark at row " + slno + ":" + element.Remarks + "<br>";
-        else
+        else {
+
           element.RemarkId = remarkObj[0].MasterDataId;
+
+
+        }
+      }
+      else {
+        element.RemarkId = 0;
+      }
+      if (element.Remark2) {
+
+        let remark2Obj: any = this.Remark2.filter((g: any) => g.MasterDataName.toLowerCase() == element.Remark2.toLowerCase());
+
+        if (remark2Obj.length == 0)
+          this.ErrorMessage += "Invalid remark2 at row " + slno + ":" + element.Remark2 + "<br>";
+        else
+          element.Remark2Id = remark2Obj[0].MasterDataId;
+
       }
       else
-        element.RemarkId = 0;
-      debugger;
+        element.Remark2Id = 0;
       if (element.PermanentAddressCountry) {
         let CountryObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressCountry.toLowerCase());
         if (CountryObj.length == 0)
@@ -1251,7 +1268,7 @@ export class ExcelDataManagementComponent implements OnInit {
       /////end feetype
 
       let existingstudent: any = this.AllStudents?.filter((s: any) => s.FirstName.toLowerCase() == element.FirstName.toLowerCase()
-      && s.FatherName.toLowerCase() == element.FatherName.toLowerCase())
+        && s.FatherName.toLowerCase() == element.FatherName.toLowerCase())
       if (existingstudent?.length > 0) {
 
         let currentStud = this.CurrentBatchStudentList.filter(f => f.StudentClasses
@@ -1541,7 +1558,7 @@ export class ExcelDataManagementComponent implements OnInit {
             "PresentAddressCountryId": +row["PresentAddressCountryId"],
             "PresentAddressStateId": +row["PresentAddressStateId"],
             "PrimaryContactFatherOrMother": +row["PrimaryContactFatherOrMother"],
-            "ReasonForLeavingId": +(row["ReasonForLeavingId"]?row["ReasonForLeavingId"]:0),
+            "ReasonForLeavingId": +(row["ReasonForLeavingId"] ? row["ReasonForLeavingId"] : 0),
             "RelationWithContactPerson": row["RelationWithContactPerson"],
             "ReligionId": +row["ReligionId"],
             "StudentDeclaration": +row["StudentDeclaration"],
@@ -1558,6 +1575,7 @@ export class ExcelDataManagementComponent implements OnInit {
             "AdmissionDate": row["AdmissionDate"],
             "BatchId": +row["BatchId"],
             "RemarkId": +row["RemarkId"],
+            "Remark2Id": +row["Remark2Id"],
             "IdentificationMark": row["IdentificationMark"],
             "BoardRegistrationNo": row["BoardRegistrationNo"],
             "Weight": +row["Weight"],
@@ -1571,7 +1589,7 @@ export class ExcelDataManagementComponent implements OnInit {
           });
         });
 
-        console.log("toInsert", toInsert)
+        //console.log("toInsert", toInsert)
         this.dataservice.postPatch('Students', toInsert, 0, 'post')
           .subscribe((result: any) => {
             this.loading = false; this.PageLoading = false;
@@ -1774,7 +1792,8 @@ export class ExcelDataManagementComponent implements OnInit {
       this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
       this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
       this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
-      this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
+      this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+      this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
       this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
       this.ActivityCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
       this.GetStudents();

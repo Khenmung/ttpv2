@@ -15,7 +15,7 @@ mat-cell:first-of-type {
 .mat-column-ProvideCertificate,
 .mat-column-DisplayResult,
 .mat-column-Active,
-.mat-column-AppendAnswer,
+.mat-column-ETypeId,
 .mat-column-EvaluationMasterId,
 .mat-column-Confidential {
     flex: 1 0 100px;
@@ -27,6 +27,7 @@ mat-cell:first-of-type {
 }
 
 .mat-column-Action,
+.mat-column-ETypeId,
 .mat-column-ClassGroupId {
     flex: 1 0 145px;
 }

@@ -1,16 +1,14 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
-import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
@@ -23,22 +21,22 @@ export class ClassdetailComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   ClassMasterListName = 'ClassMasters';
-  Applications :any[]= [];
+  Applications: any[] = [];
   loading = false;
   SelectedApplicationId = 0;
-  SelectedBatchId = 0;SubOrgId = 0;
-  ClassMasterList: IClassMaster[]= [];
+  SelectedBatchId = 0; SubOrgId = 0;
+  ClassMasterList: IClassMaster[] = [];
   filteredOptions: Observable<IClassMaster[]>;
   dataSource: MatTableDataSource<IClassMaster>;
-  allMasterData :any[]= [];
-  ClassMasters :any[]= [];
-  ClassCategory:any[]=[];
-  Durations :any[]= [];
-  StudyArea :any[]= [];
-  StudyMode :any[]= [];
+  allMasterData: any[] = [];
+  ClassMasters: any[] = [];
+  ClassCategory: any[] = [];
+  Durations: any[] = [];
+  StudyArea: any[] = [];
+  StudyMode: any[] = [];
   Permission = 'deny';
   ExamId = 0;
   ClassMasterData = {
@@ -49,13 +47,13 @@ export class ClassdetailComponent implements OnInit {
     MaxStudent: 0,
     StartDate: Date,
     EndDate: Date,
-    CategoryId:0,
+    CategoryId: 0,
     StudyAreaId: 0,
     StudyModeId: 0,
     Confidential: false,
     Sequence: 0,
     BatchId: 0,
-    OrgId: 0,SubOrgId: 0,
+    OrgId: 0, SubOrgId: 0,
     Active: 0
   };
   PreviousBatchId = 0;
@@ -72,8 +70,8 @@ export class ClassdetailComponent implements OnInit {
     "StartDate",
     "EndDate",
     "CategoryId",
-   //"StudyAreaId",
-   // "StudyModeId",
+    //"StudyAreaId",
+    // "StudyModeId",
     "Confidential",
     "Active",
     "Action"
@@ -109,7 +107,7 @@ export class ClassdetailComponent implements OnInit {
 
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -128,10 +126,10 @@ export class ClassdetailComponent implements OnInit {
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.StandardFilterWithPreviousBatchId = globalconstants.getOrgSubOrgFilterWithPreviousBatchId(this.tokenStorage);
         if (this.ClassMasters.length == 0) {
-          var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+          var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
             this.ClassMasters = [...data.value];
-            this.ClassMasters = this.ClassMasters.sort((a,b)=>a.Sequence - b.Sequence);
+            this.ClassMasters = this.ClassMasters.sort((a, b) => a.Sequence - b.Sequence);
           })
         }
         this.GetMasterData();
@@ -148,7 +146,7 @@ export class ClassdetailComponent implements OnInit {
       DurationId: 0,
       MinStudent: 0,
       MaxStudent: 0,
-      CategoryId:0,
+      CategoryId: 0,
       StartDate: new Date(),
       EndDate: new Date(),
       StudyAreaId: 0,
@@ -162,8 +160,8 @@ export class ClassdetailComponent implements OnInit {
     this.ClassMasterList.push(newdata);
     this.dataSource = new MatTableDataSource<IClassMaster>(this.ClassMasterList);
   }
-  ClearData(){
-    this.ClassMasterList =[];
+  ClearData() {
+    this.ClassMasterList = [];
     this.dataSource = new MatTableDataSource<IClassMaster>(this.ClassMasterList);
   }
   onBlur(element) {
@@ -209,7 +207,7 @@ export class ClassdetailComponent implements OnInit {
       this.loading = false; this.PageLoading = false;
       return;
     }
-    if (row.CategoryId ==0) {
+    if (row.CategoryId == 0) {
       this.contentservice.openSnackBar("Please select category", globalconstants.ActionText, globalconstants.RedBackground);
       this.loading = false; this.PageLoading = false;
       return;
@@ -244,7 +242,7 @@ export class ClassdetailComponent implements OnInit {
           this.ClassMasterData.CategoryId = row.CategoryId;
           this.ClassMasterData.StudyAreaId = row.StudyAreaId;
           this.ClassMasterData.StudyModeId = row.StudyModeId;
-          this.ClassMasterData.Confidential = row.Confidential?row.Confidential:false;
+          this.ClassMasterData.Confidential = row.Confidential ? row.Confidential : false;
           this.ClassMasterData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ClassMasterData.SubOrgId = this.SubOrgId;
           this.ClassMasterData.BatchId = this.SelectedBatchId;
@@ -282,6 +280,9 @@ export class ClassdetailComponent implements OnInit {
         (data: any) => {
           row.ClassId = data.ClassId;
           row.Action = false;
+          let classes = this.tokenStorage.getClasses()!;
+          classes.push(this.ClassMasterData);
+          this.tokenStorage.saveClasses(classes);
           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           this.loadingFalse()
         });
@@ -292,6 +293,12 @@ export class ClassdetailComponent implements OnInit {
       .subscribe(
         (data: any) => {
           row.Action = false;
+          let classes = this.tokenStorage.getClasses()!;
+          let obj = classes.filter((c: any) => c.ClassId == this.ClassMasterData.ClassId);
+          if (obj.length > 0) {
+            obj[0] = this.ClassMasterData;
+          }
+          this.tokenStorage.saveClasses(classes);
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           this.loadingFalse();
         });
@@ -301,7 +308,7 @@ export class ClassdetailComponent implements OnInit {
 
     this.loading = true;
     let filterStr = '';
-    filterStr =this.FilterOrgSubOrg;
+    filterStr = this.FilterOrgSubOrg;
 
     var _searchClassName = this.searchForm.get("searchClassName")?.value;
     if (_searchClassName > 0) {
@@ -383,7 +390,7 @@ export interface IClassMaster {
   MaxStudent: number;
   StartDate: Date;
   EndDate: Date;
-  CategoryId:number,
+  CategoryId: number,
   StudyAreaId: number;
   StudyModeId: number;
   Sequence: number;

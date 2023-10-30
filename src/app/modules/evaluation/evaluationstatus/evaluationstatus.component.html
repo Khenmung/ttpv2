@@ -16,7 +16,7 @@
     <div style="padding:15px 15px 10px 15px;">
         <div><strong>E-Status</strong></div>
     </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <div style="width: 100%;">
         <form [formGroup]="searchForm">
 
@@ -39,7 +39,7 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()"
-            style="margin-right: 15px;width:200px">
+                style="margin-right: 15px;width:200px">
                 <mat-label>section</mat-label>
                 <mat-select formControlName="searchSectionId" (selectionChange)="GetStudentClasses()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
@@ -177,8 +177,8 @@
                                 {{element.Description}}</div>
                         </div>
                         <div style="display: flex;flex-direction: column;padding: 15px; margin:15px 15px 15px 15px;width: 100%;"
-                            *ngIf="element.Updatable && element.ClassEvaluationAnswerOptionParentId==0 && element.QuestionnaireType=='Questionnaire'">
-                            <pre>
+                            *ngIf="element.EType && element.ClassEvaluationAnswerOptionParentId==0 && element.QuestionnaireType=='Questionnaire'">
+                            <pre *ngIf="element.History.length>0">
                         <span [innerHTML]="element.History| encodeHTML">
                         </span>
                             </pre>
@@ -191,7 +191,7 @@
                             <mat-hint style="display:flex;justify-content: flex-end;">{{input.value?.length || 0}}/600
                             </mat-hint>
                         </div>
-                        <div *ngIf="!element.Updatable 
+                        <div *ngIf="element.EType.toLowerCase()!== StudentProfile 
                         && element.ClassEvaluationAnswerOptionParentId==0 
                         && element.QuestionnaireType=='Questionnaire'">
                             <mat-form-field appearance="outline" style="width:100%">

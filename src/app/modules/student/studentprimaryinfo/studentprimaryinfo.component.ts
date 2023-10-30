@@ -159,7 +159,7 @@ export class studentprimaryinfoComponent implements OnInit {
     //  this.route.navigate(["/edu"]);
     //else {
 
-    
+
   }
   FeePaymentPermission = '';
   ngOnInit(): void {
@@ -227,7 +227,8 @@ export class studentprimaryinfoComponent implements OnInit {
           AdmissionStatus: [0],
           AdmissionDate: [new Date()],
           House: [0],
-          Remarks: [0],
+          RemarkId: [0],
+          Remark2Id: [0],
           Notes: [''],
           IdentificationMark: [''],
           BoardRegistrationNo: [''],
@@ -393,6 +394,7 @@ export class studentprimaryinfoComponent implements OnInit {
   }
   Sections: any[] = [];
   Semesters: any[] = [];
+  Remark2:any[]=[];
   GetMasterData() {
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
@@ -405,7 +407,8 @@ export class studentprimaryinfoComponent implements OnInit {
     this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
     this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
     this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
-    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
+    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+    this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.AdmissionStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
@@ -438,7 +441,7 @@ export class studentprimaryinfoComponent implements OnInit {
       this.studentForm.patchValue({ ReasonForLeavingId: this.ReasonForLeaving.filter(r => r.MasterDataName.toLowerCase() == 'active')[0].MasterDataId });
       var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-        this.Classes = [...data.value];
+        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
         if (this.Classes.length == 0) {
           this.contentservice.openSnackBar("Please define classes first.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -466,7 +469,7 @@ export class studentprimaryinfoComponent implements OnInit {
         var _student = all[0].value;
         //var _studentclass;// = all[1].value;
         this.Students = this.tokenStorage.getStudents()!;
-        
+
         var _photo = all[1].value;
         if (_student.length > 0) {
           var _studentclass = this.Students.filter(s => s.StudentId == this.StudentId)[0].StudentClasses;
@@ -538,7 +541,8 @@ export class studentprimaryinfoComponent implements OnInit {
               House: stud.HouseId,
               AdmissionStatus: stud.AdmissionStatusId,
               AdmissionDate: stud.AdmissionDate,
-              Remarks: stud.RemarkId,
+              RemarkId: stud.RemarkId,
+              Remark2Id: stud.Remark2Id,
               Notes: stud.Notes,
               Active: stud.Active,
               ReasonForLeaving: stud.ReasonForLeavingId,
@@ -701,7 +705,8 @@ export class studentprimaryinfoComponent implements OnInit {
       TransferFromSchoolBoard: this.studentForm.get("TransferFromSchoolBoard")?.value,
       ClubId: this.studentForm.get("Club")?.value,
       HouseId: this.studentForm.get("House")?.value,
-      RemarkId: this.studentForm.get("Remarks")?.value,
+      RemarkId: this.studentForm.get("RemarkId")?.value,
+      Remark2Id: this.studentForm.get("Remark2Id")?.value,
       AdmissionStatusId: this.studentForm.get("AdmissionStatus")?.value,
       AdmissionDate: this.adjustDateForTimeOffset(new Date(this.studentForm.get("AdmissionDate")?.value)),
       Notes: this.studentForm.get("Notes")?.value,
@@ -746,7 +751,7 @@ export class studentprimaryinfoComponent implements OnInit {
             this.studentForm.patchValue({
               StudentId: result.StudentId
             })
-            
+
             this.PID = result.PID;
             this.StudentId = result.StudentId;
             this.studentData[0].StudentId = this.StudentId;
@@ -762,20 +767,20 @@ export class studentprimaryinfoComponent implements OnInit {
             this.tokenStorage.saveStudentClassId(this.StudentClassId + "");
 
             let _student: any[] = this.tokenStorage.getStudents()!;
-            this.studentData[0]["StudentClasses"] =[];
-            let _studCls ={
-              StudentClassId:this.StudentClassId,
-              StudentId:this.StudentId,
-              ClassId:result.ClassId,
-              SectionId:result.SectionId,
-              SemesterId:result.SemesterId,
-              FeeTypeId:result.FeeTypeId,
-              RollNo:result.RollNo,
-              Active:result.Active,
-              BatchId:result.BatchId,
-              AdmissionDate:result.AdmissionDate,
-              Remarks:result.Remarks
-            } 
+            this.studentData[0]["StudentClasses"] = [];
+            let _studCls = {
+              StudentClassId: this.StudentClassId,
+              StudentId: this.StudentId,
+              ClassId: result.ClassId,
+              SectionId: result.SectionId,
+              SemesterId: result.SemesterId,
+              FeeTypeId: result.FeeTypeId,
+              RollNo: result.RollNo,
+              Active: result.Active,
+              BatchId: result.BatchId,
+              AdmissionDate: result.AdmissionDate,
+              Remarks: result.Remarks
+            }
             this.studentData[0]["StudentClasses"].push(_studCls);
             _student?.push(this.studentData[0]);
             this.tokenStorage.saveStudents(_student);
@@ -821,6 +826,7 @@ export class studentprimaryinfoComponent implements OnInit {
         //console.log("student update", error);
       })
   }
+  
   getErrorMessage(pickerInput: string): string {
     if (!pickerInput || pickerInput === '') {
       return 'Please choose a date.';
@@ -943,6 +949,7 @@ export class studentprimaryinfoComponent implements OnInit {
       "ClubId",
       "HouseId",
       "RemarkId",
+      "Remark2Id",
       "AdmissionStatusId",
       "AdmissionDate",
       "Notes",
@@ -977,6 +984,7 @@ export class studentprimaryinfoComponent implements OnInit {
       "PID": stud.PID,
       "Active": stud.Active,
       "RemarkId": stud.RemarkId,
+      "Remark2Id": stud.Remark2Id,
       "GenderId": stud.GenderId,
       "HouseId": stud.HouseId,
       "EmailAddress": stud.EmailAddress,

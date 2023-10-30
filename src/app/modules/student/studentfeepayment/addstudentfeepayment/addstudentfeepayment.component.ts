@@ -301,7 +301,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
         this.shareddata.CurrentSection.subscribe(fy => (this.Sections = fy));
         var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-          this.Classes = [...data.value];
+          if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
           this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
           this.GetMasterData();
         });
@@ -366,7 +366,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   CustomerHeading: any[] = [];
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
-    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
+    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
     //this.shareddata.CurrentFeeDefinitions.subscribe((f: any) => {
     //  this.FeeDefinitions = [...f];
     //  if (this.FeeDefinitions.length == 0) {

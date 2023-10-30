@@ -22,7 +22,7 @@ import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-d
 export class EMarkComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  EvaluationUpdatable = false;
+  EvaluationEType = false;
   RowsToUpdate = -1;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
@@ -158,7 +158,7 @@ export class EMarkComponent implements OnInit {
         // if (this.Classes.length == 0) {
 
         //   this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        //     this.Classes = [...data.value];
+        //     if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         //   });
         // }
         
@@ -486,7 +486,7 @@ export class EMarkComponent implements OnInit {
       'Duration',
       'ClassGroupId',
       'DisplayResult',
-      'AppendAnswer',
+      'ETypeId',
       'ProvideCertificate',
       'FullMark',
       'PassMark',
@@ -527,11 +527,11 @@ export class EMarkComponent implements OnInit {
   }
   FilteredClasses: any[] = [];
   FilteredExams: any[] = [];
-  GetUpdatable() {
+  GetEType() {
     debugger;
     var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
     if (_evaluationMasterId > 0)
-      this.EvaluationUpdatable = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId)[0].AppendAnswer;
+      this.EvaluationEType = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId)[0].ETypeId;
     var _classgroupObj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId)
     var _classGroupId = 0;
     var _evaluationexammapforselectedEvaluation = this.EvaluationExamMap.filter(ee => ee.EvaluationMasterId == _evaluationMasterId);

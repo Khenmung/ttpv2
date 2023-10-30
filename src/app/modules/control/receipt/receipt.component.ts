@@ -128,7 +128,7 @@ export class ReceiptComponent implements OnInit {
       //this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = "OrgId eq 1 and SubOrgId eq " + globalconstants.globalAdminBillingSubOrgId;
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        this.Classes = [...data.value];
+        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         var obj = this.Classes.filter((f:any) => f.ClassId == this.studentInfoTodisplay.ClassId)
         if (obj.length > 0)
           this.studentInfoTodisplay.StudentClassName = obj[0].ClassName;

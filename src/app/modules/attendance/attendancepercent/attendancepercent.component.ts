@@ -119,7 +119,7 @@ export class AttendancepercentComponent implements OnInit {
         this.GetMasterData();
         //var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         // this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        //   this.Classes = [...data.value];
+        //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         // })
         var _sessionStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
         var startDate = new Date(_sessionStartEnd["StartDate"]);

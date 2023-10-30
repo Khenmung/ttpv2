@@ -71,7 +71,7 @@ export class EvaluationboardComponent implements AfterViewInit {
     var comindx = this.components.indexOf(EActComponent);
     this.AddRemoveComponent(perObj, comindx);
 
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.ETYPE);
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATION);
     var comindx = this.components.indexOf(EvaluationMasterComponent);
     this.AddRemoveComponent(perObj, comindx);
 

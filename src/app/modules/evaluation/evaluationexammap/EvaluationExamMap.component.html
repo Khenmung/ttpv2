@@ -12,7 +12,7 @@
     <div style="padding:15px 15px 10px 15px;">
         <div><strong>E-Mapping</strong></div>
     </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <!-- <alert></alert> -->
     <div style="padding: 15px 15px 15px 0px;" fxLayout="row wrap">
         <div style="width: 100%;">
@@ -33,7 +33,7 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <!-- <span *ngIf="!EvaluationUpdatable && EvaluationUpdatable!=null">
+                <!-- <span *ngIf="!EvaluationEType && EvaluationEType!=null">
                 <mat-form-field appearance="outline" [style.width.px]="200">
                     <mat-label>Exam/Test/Session</mat-label>
                     <mat-select formControlName="searchExamId">

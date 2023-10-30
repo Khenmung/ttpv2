@@ -111,7 +111,7 @@ export class CourseYearsemesterComponent implements OnInit {
 
         this.GetMasterData();
         // this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        //   this.Classes = [...data.value];
+        //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         //   this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
         // });
       }
@@ -317,7 +317,7 @@ export class CourseYearsemesterComponent implements OnInit {
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER)
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-      this.Classes = [...data.value];
+      if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
       this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       this.loading = false; this.PageLoading = false;
     });

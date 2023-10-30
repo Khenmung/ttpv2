@@ -157,7 +157,7 @@ export class StudentprogressreportComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          this.Classes = [...data.value];
+          if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
           this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
         });
         this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, 0)
@@ -753,7 +753,7 @@ export class StudentprogressreportComponent implements OnInit {
       'Active',
     ];
     list.PageName = "EvaluationExamMaps";
-    list.lookupFields = ["EvaluationMaster($select=Active,EvaluationMasterId,ClassGroupId,EvaluationName,AppendAnswer)"];
+    list.lookupFields = ["EvaluationMaster($select=Active,EvaluationMasterId,ClassGroupId,EvaluationName,ETypeId)"];
     list.filter = [this.FilterOrgSubOrg + ' and Active eq true'];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -763,7 +763,7 @@ export class StudentprogressreportComponent implements OnInit {
           var _ExamName = '';
           var obj = this.CurrentStudentClassGroups.filter(g => g.ClassGroupId == f.EvaluationMaster.ClassGroupId);
 
-          if (obj.length > 0 && f.EvaluationMaster.Active == 1 && f.EvaluationMaster.AppendAnswer == 0) {
+          if (obj.length > 0 && f.EvaluationMaster.Active == 1 && f.EvaluationMaster.ETypeId == 0) {
             var objexam = this.Exams.filter(e => e.ExamId == f.ExamId)
             if (objexam.length > 0) {
               _ExamName = objexam[0].ExamName;
@@ -791,13 +791,13 @@ export class StudentprogressreportComponent implements OnInit {
     ];
 
     list.PageName = "ClassEvaluations";
-    list.lookupFields = ["EvaluationMaster($select=AppendAnswer)"]
+    list.lookupFields = ["EvaluationMaster($select=ETypeId)"]
     list.filter = ['OrgId eq ' + this.LoginUserDetail[0]["orgId"]];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.ClassEvaluations = [];
-        var _data = data.value.filter((f: any) => f.EvaluationMaster.AppendAnswer == false);
+        var _data = data.value.filter((f: any) => f.EvaluationMaster.ETypeId == false);
         if (_data.length > 0) {
           _data.forEach(clseval => {
             var obj = this.QuestionnaireTypes.filter((f: any) => f.MasterDataId == clseval.QuestionnaireTypeId);

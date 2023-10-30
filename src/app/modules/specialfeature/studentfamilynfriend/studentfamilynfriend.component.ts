@@ -639,7 +639,7 @@ export class StudentfamilynfriendComponent implements OnInit {
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-      this.Classes = [...data.value];
+      if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.GetStudentClasses();
     });

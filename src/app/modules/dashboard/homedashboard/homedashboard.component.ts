@@ -429,13 +429,6 @@ export class HomeDashboardComponent implements OnInit {
       this.filterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
 
-
-
-      // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedAppId)
-      //   .subscribe((data: any) => {
-      //     this.tokenStorage.saveMasterData([...data.value]);
-      //     this.allMasterData = [...data.value];
-      //   });
       this.GetMenuData(SelectedAppId);
       // if (selectedApp[0].applicationName.toLowerCase() == 'education management')
       //   this.GetStudentClass(SelectedAppId, selectedApp[0]);
@@ -492,10 +485,10 @@ export class HomeDashboardComponent implements OnInit {
         if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
           this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
           this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
-          this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
+          this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
           //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-          //   this.Classes = [...data.value];
+          //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
           //   this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
           //   let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
           //   //if selected batch is current batch.
@@ -630,8 +623,16 @@ export class HomeDashboardComponent implements OnInit {
           this.searchForm.patchValue({ "searchSubOrgId": selectedItem[0] });
 
           if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
-            this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
-              this.Classes = [...data.value];
+            
+            this.Classes = this.tokenStorage.getClasses()!;
+
+            let refresh = 0;
+            if (this.Classes.length === 0)
+              refresh = 1;
+
+            this.contentservice.GetClasses(this.filterOrgSubOrg,refresh).subscribe((data: any) => {
+              if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+              this.tokenStorage.saveClasses(this.Classes);
               this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
               let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
               if (this.CurrentBatchId == this.SelectedBatchId)
@@ -657,7 +658,7 @@ export class HomeDashboardComponent implements OnInit {
 
           //   if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
           //     this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
-          //       this.Classes = [...data.value];
+          //       if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
           //       this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
           //       let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
           //       if (this.CurrentBatchId == this.SelectedBatchId)
@@ -743,7 +744,7 @@ export class HomeDashboardComponent implements OnInit {
           var _remark = '';
           var _remarkObj = this.Remarks.filter((f: any) => f.MasterDataId == d.RemarkId);
           if (_remarkObj.length > 0)
-          _remark = _remarkObj[0].MasterDataName;
+            _remark = _remarkObj[0].MasterDataName;
           var _Section = '';
           var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == d.StudentClasses[0].SectionId);
           if (_sectionobj.length > 0)
@@ -803,7 +804,7 @@ export class HomeDashboardComponent implements OnInit {
         var _className = '';
         var _house = '';
         var _Section = '';
-        let _remark ='';
+        let _remark = '';
         var _semester = '';
         var _studentClassId = 0;
         _students.forEach(d => {
@@ -891,6 +892,7 @@ export class HomeDashboardComponent implements OnInit {
       "PID",
       "Active",
       "RemarkId",
+      "Remark2Id",
       "GenderId",
       "HouseId",
       "EmailAddress",

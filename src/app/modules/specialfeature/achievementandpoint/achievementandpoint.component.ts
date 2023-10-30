@@ -109,7 +109,7 @@ export class AchievementandpointComponent implements OnInit {
         this.GetMasterData();
         // if (this.Classes.length == 0) {
         //   this.contentservice.GetClasses(this.LoginUserDetail[0]["orgId"]).subscribe((data: any) => {
-        //     this.Classes = [...data.value];
+        //     if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         //     this.loading = false;
         //     this.PageLoading = false;
         //   });

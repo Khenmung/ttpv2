@@ -16,14 +16,14 @@
     <div style="padding:15px 15px 10px 15px;">
         <div><strong>E-Mark</strong></div>
     </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <!-- <alert></alert> -->
     <div style="padding: 15px 15px 15px 0px;">
         <div style="width: 100%;">
             <form [formGroup]="searchForm">
                 <mat-form-field appearance="outline" [style.width.px]="350">
                     <mat-label>Evaluation type</mat-label>
-                    <mat-select formControlName="searchEvaluationMasterId" (selectionChange)="GetUpdatable()">
+                    <mat-select formControlName="searchEvaluationMasterId" (selectionChange)="GetEType()">
                         <mat-option *ngFor="let item of EvaluationMaster" [value]="item.EvaluationMasterId">
                             {{item.EvaluationName}}
                         </mat-option>
@@ -74,7 +74,7 @@
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field> -->
-                <!-- <span *ngIf="!EvaluationUpdatable">
+                <!-- <span *ngIf="!EvaluationEType">
                 <mat-form-field appearance="outline" [style.width.px]="200">
                     <mat-label>Exam/Test/Session</mat-label>
                     <mat-select formControlName="searchExamId">

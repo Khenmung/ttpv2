@@ -143,7 +143,7 @@ export class StudentprofilereportComponent implements OnInit {
         if (this.Classes.length == 0) {
           var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-            this.Classes = [...data.value];
+            if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
             this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
           });
 
@@ -383,7 +383,7 @@ export class StudentprofilereportComponent implements OnInit {
       "EvaluationMasterId",
       "EvaluationName",
       "Description",
-      "AppendAnswer",
+      "ETypeId",
       "Duration",
       "StartDate",
       "StartTime",

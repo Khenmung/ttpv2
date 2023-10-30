@@ -99,7 +99,7 @@
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <mat-form-field appearance="outline">
-                                <mat-select [disabled]="element.Updatable"
+                                <mat-select [disabled]="element.EType.toLowerCase() == StudentProfile"
                                     [(ngModel)]="element.ClassEvaluationAnswerOptionParentId"
                                     (selectionChange)="onBlur(element)"
                                     [value]="element.ClassEvaluationAnswerOptionParentId">
@@ -116,7 +116,7 @@
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <mat-form-field appearance="outline">
-                                <mat-select [disabled]="element.Updatable" [(ngModel)]="element.ExamId"
+                                <mat-select [disabled]="element.EType.toLowerCase() == StudentProfile" [(ngModel)]="element.ExamId"
                                     (selectionChange)="onBlur(element)" [value]="element.ExamId">
                                     <mat-option [value]="0">--Exam--</mat-option>
                                     <mat-option *ngFor="let item of FilteredExam" [value]="item.ExamId">

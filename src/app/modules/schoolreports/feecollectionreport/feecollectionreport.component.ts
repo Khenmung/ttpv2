@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import alasql from 'alasql';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { ContentService } from '../../../shared/content.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
@@ -50,15 +50,19 @@ export class FeecollectionreportComponent implements OnInit {
     "Name",
     "ClassRollNoSection",
     "RollNo",
-    //"MonthName",
-
+    "FeePaymentStatusId",
+    "Active",
+    "Action"
 
   ]
   UnpaidDisplayColumns = [
     "SlNo",
     "Name",
     "ClassRollNoSection",
-    "RollNo"
+    "RollNo",
+    "FeePaymentStatusId",
+    "Active",
+    "Action"
 
   ]
   filteredOptions: Observable<IStudent[]>;
@@ -67,8 +71,22 @@ export class FeecollectionreportComponent implements OnInit {
   SelectedBatchId = 0; SubOrgId = 0;
   dataSource: MatTableDataSource<ITodayReceipt>;
   UnpaidDataSource: MatTableDataSource<INotPaidStudent>;
-  SearchForm: UntypedFormGroup;
+  searchForm: UntypedFormGroup;
   ErrorMessage: string = '';
+  FeePaymentStatuses: any = [];
+  FeePaymentRelatedList: any = [];
+  FeePaymentRelatedData = {
+    FeePaymentRelatedId: 0,
+    StudentClassId: 0,
+    ClassId: 0,
+    SectionId: 0,
+    SemesterId: 0,
+    FeepaymentStatusId: 0,
+    Active: 0,
+    Deleted: false,
+    OrgId: 0,
+    SubOrgId: 0
+  };
   //alert: any;
   constructor(private servicework: SwUpdate,
     private dataservice: NaomitsuService,
@@ -105,12 +123,25 @@ export class FeecollectionreportComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.shareddata.CurrentFeeDefinitions.subscribe(c => (this.FeeDefinitions = c));
         //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-        this.Batches = this.tokenStorage.getBatches()!;;
-        this.shareddata.CurrentSection.subscribe(c => (this.Sections = c));
+        this.Batches = this.tokenStorage.getBatches()!;
+        //this.shareddata.CurrentSection.subscribe(c => (this.Sections = c));
+
+        this.GetMasterData();
 
         var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-          this.Classes = [...data.value];
+          let result: any[] = [];
+          if (data.value)
+            result = [...data.value];
+          else
+            result = [...data];
+          result.forEach(m => {
+            let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
+            if (obj.length > 0) {
+              m.Category = obj[0].MasterDataName.toLowerCase();
+              this.Classes.push(m);
+            }
+          });
           this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
         });
         this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, 0)
@@ -124,15 +155,17 @@ export class FeecollectionreportComponent implements OnInit {
             //console.log('this.month', this.Months)
           })
 
-        this.SearchForm = this.fb.group({
+        this.searchForm = this.fb.group({
           searchStudentName: [0],
           searchClassId: [0],
-          // searchSectionId: [0],
+          searchSectionId: [0],
+          searchSemesterId: [0],
           searchMonth: [0],
-          PaidNotPaid: ['']
+          PaidNotPaid: [''],
+          searchFeePaymentStatusId: [0]
         })
 
-        this.filteredOptions = this.SearchForm.get("searchStudentName")?.valueChanges
+        this.filteredOptions = this.searchForm.get("searchStudentName")?.valueChanges
           .pipe(
             startWith(''),
             map(value => typeof value === 'string' ? value : value.Name),
@@ -155,11 +188,11 @@ export class FeecollectionreportComponent implements OnInit {
     debugger;
     this.Months = this.contentservice.GetSessionFormattedMonths();
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-    this.GetMasterData();
+    //this.GetMasterData();
     this.GetStudents();
   }
   get f() {
-    return this.SearchForm.controls;
+    return this.searchForm.controls;
   }
   exportArray() {
     if (this.ELEMENT_DATA.length > 0) {
@@ -167,15 +200,16 @@ export class FeecollectionreportComponent implements OnInit {
       TableUtil.exportArrayToExcel(datatoExport, "feepaymentstatus");
     }
   }
+
   GetStudentFeePaymentReport() {
     debugger;
     this.ErrorMessage = '';
     let filterstring = this.FilterOrgSubOrgBatchId;
 
-    var selectedMonth = this.SearchForm.get("searchMonth")?.value;
-    var _selectedClassId = this.SearchForm.get("searchClassId")?.value;
-    var paidNotPaid = this.SearchForm.get("PaidNotPaid")?.value;
-    //var studentclassId = this.SearchForm.get("searchStudentName")?.value.StudentClassId;
+    var selectedMonth = this.searchForm.get("searchMonth")?.value;
+    var _selectedClassId = this.searchForm.get("searchClassId")?.value;
+    var paidNotPaid = this.searchForm.get("PaidNotPaid")?.value;
+    //var studentclassId = this.searchForm.get("searchStudentName")?.value.StudentClassId;
     var nestedFilter = '';
 
     if (selectedMonth == 0) {
@@ -213,16 +247,17 @@ export class FeecollectionreportComponent implements OnInit {
     list.filter = [filterstring + nestedFilter];
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource<ITodayReceipt>(this.ELEMENT_DATA);
-    this.dataservice.get(list)
+
+    forkJoin(this.dataservice.get(list), this.getFeePaymentRelateds())
       .subscribe((data: any) => {
         //debugger;
         var result: any[] = [];
-        if (data.value.length > 0) {
+        if (data[0].value.length > 0) {
           //this.TotalStudentCount = data.value.length;
           var _className = '';
           var _sectionName = '';
 
-          data.value.forEach((item, indx) => {
+          data[0].value.forEach((item, indx) => {
             _className = '';
             _sectionName = '';
             let stud = this.Students.filter(f => f.StudentClassId == item.StudentClassId)
@@ -243,8 +278,12 @@ export class FeecollectionreportComponent implements OnInit {
                 result.push({
                   Name: item.Name,
                   ClassRollNoSection: _className + '-' + _sectionName,
+                  StudentClassId: item.StudentClassId,
                   RollNo: item.RollNo,
                   Section: _sectionName,
+                  SectionId: item.SectionId,
+                  SemesterId: item.SemesterId,
+                  ClassId: item.ClassId,
                   Month: item.Month,
                   Sequence: clsobj[0].Sequence,
                   PID: item.PID
@@ -254,20 +293,38 @@ export class FeecollectionreportComponent implements OnInit {
           });
           debugger;
           //result =result.sort((a,b)=>a.Sequence - b.Sequence);
-          this.ELEMENT_DATA = alasql("select PID,Name,ClassRollNoSection,RollNo,Sequence,Section,MAX(Month) month from ? group by PID,Name,Sequence,ClassRollNoSection,Section,RollNo", [result]);
+          this.ELEMENT_DATA = alasql("select PID,Name,ClassRollNoSection,ClassId,SemesterId,SectionId,StudentClassId,RollNo,Sequence,Section,MAX(Month) month from ? group by PID,Name,Sequence,ClassRollNoSection,Section,RollNo,ClassId,SemesterId,SectionId,StudentClassId", [result]);
           // if (paidNotPaid == 'NotPaid')
           //   this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f: any) => f.month == 0); //.sort((a, b) => a.month - b.month)
           // else
           //   this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f: any) => f.month > 0); //.sort((a, b) => a.month - b.month)
           this.loading = false;
           this.PageLoading = false;
+          var _feePaymentStatusId = this.searchForm.get("searchFeePaymentStatusId")?.value;
           this.TotalPaidStudentCount = this.ELEMENT_DATA.length;
           if (this.ELEMENT_DATA.length == 0) {
             this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
           }
 
           this.ELEMENT_DATA = this.ELEMENT_DATA.sort((a, b) => a.Sequence - b.Sequence || a.Section.localeCompare(b.Section) || a.RollNo - b.RollNo);
+          //if (data[1].value.length > 0) {
+          this.ELEMENT_DATA.forEach(item => {
+            let studentstatus = data[1].value.filter(d => d.StudentClassId == item.StudentClassId
+              && d.FeepaymentStatusId == (_feePaymentStatusId?_feePaymentStatusId:d.FeepaymentStatusId));
+            if (studentstatus.length > 0) {
+              item.Active = studentstatus[0].Active;
+              item.FeePaymentRelatedId = studentstatus[0].FeePaymentRelatedId;
+              item.FeepaymentStatusId = studentstatus[0].FeepaymentStatusId;
+            }
+            else {
+              item.Active = false;
+              item.FeePaymentRelatedId = 0
+              item.FeepaymentStatusId = (_feePaymentStatusId?_feePaymentStatusId:0);
+            }
+            
 
+          })
+          //}
           this.dataSource = new MatTableDataSource<ITodayReceipt>(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
@@ -282,6 +339,39 @@ export class FeecollectionreportComponent implements OnInit {
         this.PageLoading = false;
 
       })
+  }
+  UpdateActive(row, event) {
+    row.Active = event.checked;
+    row.Action = true;
+  }
+  getFeePaymentRelateds() {
+
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _feePaymentStatusId = this.searchForm.get("searchFeePaymentStatusId")?.value;
+    let filterstr = this.FilterOrgSubOrg;
+    filterstr += " and ClassId eq " + _classId;
+    filterstr += " and SemesterId eq " + _semesterId;
+    filterstr += " and SectionId eq " + _sectionId;
+    if (_feePaymentStatusId)
+      filterstr += " and FeepaymentStatusId eq " + _feePaymentStatusId;
+
+    let list: List = new List();
+    list.fields = [
+      'StudentClassId',
+      'ClassId',
+      'FeePaymentRelatedId',
+      'FeepaymentStatusId',
+      'SectionId',
+      'SemesterId',
+      'Active'
+    ];
+    list.PageName = "FeePaymentRelateds";
+    list.filter = [filterstr];
+    return this.dataservice.get(list);
+    // .subscribe((data: any) => {
+    // })
   }
   getStudentClasses() {
     let list: List = new List();
@@ -318,11 +408,160 @@ export class FeecollectionreportComponent implements OnInit {
         }
       });
   }
+  Save(row) {
+    this.DataToUpdate = 1;
+    this.FeePaymentRelatedList=[];
+    this.UpdateOrSave(row);
+  }
+  UpdateOrSave(row) {
 
+    debugger;
+    this.loading = true;
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    //var _FeepaymentStatusId = this.searchForm.get("searchFeePaymentStatusId")?.value;
+    let checkFilterString = this.FilterOrgSubOrg;
+    if (_classId) {
+      checkFilterString += " and ClassId eq " + _classId
+    }
+    else {
+      this.loading = false;
+      this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+    if (row.FeePaymentStatusId > 0) {
+      checkFilterString += " and FeepaymentStatusId eq " + row.FeePaymentStatusId;
+    }
+    checkFilterString += " and Active eq true";
+
+    if (row.FeePaymentRelatedId > 0)
+      checkFilterString += " and FeePaymentRelatedId ne " + row.FeePaymentRelatedId;
+
+    let list: List = new List();
+    list.fields = ["FeePaymentRelatedId"];
+    list.PageName = "FeePaymentRelateds";
+    list.filter = [checkFilterString];
+
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        debugger;
+        if (data.value.length > 0) {
+          this.loading = false;
+          this.PageLoading = false;
+          //row.EvaluationSubmitted = false;
+          this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
+        }
+        else {
+          this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+          this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+
+
+
+          this.FeePaymentRelatedData =
+          {
+            FeePaymentRelatedId: row.FeePaymentRelatedId,
+            StudentClassId: row.StudentClassId,
+            ClassId: row.ClassId,
+            SectionId: row.SectionId,
+            SemesterId: row.SemesterId,
+            FeepaymentStatusId: row.FeePaymentStatusId,
+            Active: row.Active,
+            Deleted: false,
+            OrgId: this.LoginUserDetail[0]["orgId"],
+            SubOrgId: this.SubOrgId
+          };
+
+          if (this.FeePaymentRelatedData.FeePaymentRelatedId == 0) {
+            this.FeePaymentRelatedData["CreatedDate"] = new Date();
+            this.FeePaymentRelatedData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
+            delete this.FeePaymentRelatedData["UpdatedDate"];
+            delete this.FeePaymentRelatedData["UpdatedBy"];
+            ////console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate[0])
+            //this.insert(row);
+          }
+          else {
+            ////console.log("this.StudentEvaluationForUpdate[0] update", this.StudentEvaluationForUpdate[0])
+            this.FeePaymentRelatedData["UpdatedDate"] = new Date();
+            this.FeePaymentRelatedData["UpdatedBy"];
+            delete this.FeePaymentRelatedData["CreatedDate"];
+            delete this.FeePaymentRelatedData["CreatedBy"];
+            //this.insert(row);
+          }
+          this.FeePaymentRelatedList.push(this.FeePaymentRelatedData)
+          if (this.DataToUpdate == this.FeePaymentRelatedList.length) {
+            //console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate)
+            this.insert(row);
+          }
+            
+        }
+      });
+  }
+  DataToUpdate = 0;
+  saveall() {
+    this.FeePaymentRelatedList =[];
+    let toupdate = this.ELEMENT_DATA.filter(c => c.Active);
+    this.DataToUpdate = toupdate.length;
+    toupdate.forEach(item => {
+      this.UpdateOrSave(item);
+    })
+  }
+  loadingFalse() {
+    this.loading = false;
+    this.PageLoading = false;
+  }
+  insert(row) {
+    this.dataservice.postPatch('FeePaymentRelateds', this.FeePaymentRelatedList, 0, 'post')
+      .subscribe(
+        (data: any) => {
+
+          row.FeePaymentRelatedId = data.FeePaymentRelatedId;
+          row.Action = false;
+
+        }, error => {
+
+          this.loadingFalse();
+          //console.log("error on student evaluation insert", error);
+        });
+  }
+  update(row) {
+    ////console.log("updating",this.StudentEvaluationForUpdate);
+    this.dataservice.postPatch('FeePaymentRelateds', this.FeePaymentRelatedList, 0, 'post')
+      .subscribe(
+        (data: any) => {
+          row.Action = false;
+          this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
+          this.loadingFalse();
+        });
+  }
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.FeePaymentStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.FEEPAYMENTSTATUS);
+    this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
 
+  }
+  SelectedClassCategory = '';
+  ClassCategory: any[] = [];
+  Semesters: any[] = [];
+  getCollegeCategory() {
+    return globalconstants.CategoryCollege;
+  }
+  getHighSchoolCategory() {
+    return globalconstants.CategoryHighSchool;
+  }
+  BindSectionSemester() {
+    let _classId = this.searchForm.get("searchClassId")?.value;
+    let obj = this.Classes.filter(c => c.ClassId == _classId);
+    if (obj.length > 0) {
+      this.SelectedClassCategory = obj[0].Category.toLowerCase();
+    }
+    this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
+    this.ClearData();
+  }
+  ClearData() {
+    this.ELEMENT_DATA = [];
+    this.dataSource = new MatTableDataSource<any>(this.ELEMENT_DATA);
+    this.FeePaymentRelatedList = [];
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
@@ -335,27 +574,6 @@ export class FeecollectionreportComponent implements OnInit {
   }
   GetStudents() {
 
-    //////console.log(this.LoginUserDetail);
-
-    // let list: List = new List();
-    // list.fields = [
-    //   'StudentClassId',
-    //   'StudentId',
-    //   'ClassId',
-    //   'RollNo',
-    //   'SectionId',
-    //   'SemesterId'
-    // ];
-
-    // list.PageName = "StudentClasses";
-    // //list.lookupFields = ["Student($select=FirstName,LastName)"]
-    // list.filter = ['OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and IsCurrent eq true and BatchId eq ' + this.SelectedBatchId];
-
-    // this.dataservice.get(list)
-    //   .subscribe((data: any) => {
-    //     //debugger;
-    //     //  ////console.log('data.value', data.value);
-    //     if (data.value.length > 0) {
     var _students: any = this.tokenStorage.getStudents()!;
     //var _filteredStudents = _students.filter((s: any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
     var _filteredStudents = _students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0);

@@ -1,5 +1,5 @@
 <div style="padding: 15px;font-weight: bold;">Essential Data</div>
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
 <!-- <alert></alert> -->
 <br>
 <form [formGroup]="searchForm">
@@ -71,7 +71,10 @@
                                        || element.MasterDataName=='Helper'  
                                        || element.MasterDataName=='Teaching'  
                                        || element.MasterDataName=='Exam'  
-                                       || element.MasterDataName=='Non Teaching')" 
+                                       || element.MasterDataName=='Non Teaching' 
+                                       || element.MasterDataName=='Fee Related' 
+                                       || element.MasterDataName=='Exam Related' 
+                                       || element.MasterDataName=='Student Profile')" 
                                        matInput
                         [value]="element.MasterDataName" 
                         [(ngModel)]="element.MasterDataName" 

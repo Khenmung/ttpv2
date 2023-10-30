@@ -74,7 +74,7 @@ export class TokenStorageService {
     if (batch) {
       return JSON.parse(batch);
     }
-    return [{}];
+    return [];
 
   }
   public saveMasterData(token: any): void {
@@ -86,7 +86,7 @@ export class TokenStorageService {
     if (master) {
       return JSON.parse(master);
     }
-    return [{}];
+    return [];
 
   }
   public saveStudents(token: any): void {
@@ -98,7 +98,7 @@ export class TokenStorageService {
     if (students) {
       return JSON.parse(students);
     }
-    return [{}];
+    return [];
 
   }
   public saveClasses(token: any): void {
@@ -110,7 +110,7 @@ export class TokenStorageService {
     if (_classes) {
       return JSON.parse(_classes);
     }
-    return [{}];
+    return [];
 
   }
   public saveStudentSearch(token: any): void {
@@ -122,7 +122,7 @@ export class TokenStorageService {
     if (batch) {
       return JSON.parse(batch);
     }
-    return [{}];
+    return [];
 
   }
   public saveCurrentBatchStartEnd(token: any): void {

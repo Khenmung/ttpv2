@@ -1137,7 +1137,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.ClassGroups = [...data.value];
       });
     // this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-    //   this.Classes = [...data.value];
+    //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
     //   this.GetClassSubject();
     // })
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {

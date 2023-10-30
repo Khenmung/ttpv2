@@ -124,7 +124,7 @@ export class AbsentListComponent implements OnInit {
         this.GetTeachers();
         // var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-        //   this.Classes = [...data.value];
+        //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         // })
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
           this.Classes = data.value.map(m => {

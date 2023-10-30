@@ -113,7 +113,7 @@ export class SchooltimetableComponent implements OnInit {
       if (this.Permission != 'deny') {
         // var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-        //   this.Classes = [...data.value];
+        //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         //   this.GetMasterData();

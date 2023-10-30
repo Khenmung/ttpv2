@@ -2,7 +2,6 @@ import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import alasql from 'alasql';
 import * as moment from 'moment';
 import { NgxFileDropEntry } from 'ngx-file-drop';
 import { ImageCropperComponent } from 'ngx-image-cropper';
@@ -190,7 +189,7 @@ export class StudentviewComponent implements OnInit {
         this.GetAchievementAndPoint();
 
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          this.Classes = [...data.value];
+          if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
           this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
           this.loading = false;
           this.PageLoading = false;
@@ -519,6 +518,7 @@ export class StudentviewComponent implements OnInit {
   }
 AttendancePresentId=0;
 AttendanceAbsentId=0;
+Remark2 :any=[];
   GetMasterData() {
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
@@ -531,7 +531,8 @@ AttendanceAbsentId=0;
         this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
         this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
         this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
-        this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
+        this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+        this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
         this.AdmissionStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
         this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
         this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);

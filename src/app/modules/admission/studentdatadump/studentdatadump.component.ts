@@ -26,53 +26,53 @@ export class StudentDatadumpComponent implements OnInit {
   @ViewChild("table") tableRef: ElementRef;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   loading = false;
   FilterOrgSubOrgNBatchId = '';
   FilterOrgSubOrg = '';
   //filterBatchIdNOrgId = '';
-  ELEMENT_DATA: IStudent[]= [];
+  ELEMENT_DATA: IStudent[] = [];
   dataSource: MatTableDataSource<IStudent>;
-  displayedColumns :any[]= [];
-  allMasterData :any[]= [];
-  Students :any[]= [];
-  Genders :any[]= [];
-  Classes :any[]= [];
-  Batches :any[]= [];
-  Bloodgroup :any[]= [];
-  Category :any[]= [];
-  Religion :any[]= [];
+  displayedColumns: any[] = [];
+  allMasterData: any[] = [];
+  Students: any[] = [];
+  Genders: any[] = [];
+  Classes: any[] = [];
+  Batches: any[] = [];
+  Bloodgroup: any[] = [];
+  Category: any[] = [];
+  Religion: any[] = [];
   States = []
-  Remarks :any[]= [];
-  PrimaryContact :any[]= [];
-  Location :any[]= [];
-  LanguageSubjUpper :any[]= [];
-  LanguageSubjLower :any[]= [];
-  FeeType :any[]= [];
-  FeeDefinitions :any[]= [];
-  Sections :any[]= [];
-  Semesters :any[]= [];
-  Houses :any[]= [];
-  StudentClasses :any[]= [];
-  UploadTypes :any[]= [];
-  ReasonForLeaving :any[]= [];
-  Siblings :any[]= [];
-  AdmissionStatus :any[]= [];
-  Clubs :any[]= [];
+  Remarks: any[] = [];
+  PrimaryContact: any[] = [];
+  Location: any[] = [];
+  LanguageSubjUpper: any[] = [];
+  LanguageSubjLower: any[] = [];
+  FeeType: any[] = [];
+  FeeDefinitions: any[] = [];
+  Sections: any[] = [];
+  Semesters: any[] = [];
+  Houses: any[] = [];
+  StudentClasses: any[] = [];
+  UploadTypes: any[] = [];
+  ReasonForLeaving: any[] = [];
+  Siblings: any[] = [];
+  AdmissionStatus: any[] = [];
+  Clubs: any[] = [];
   SelectedApplicationId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
-  SelectedBatchStudentIDRollNo :any[]= [];
+  SelectedBatchStudentIDRollNo: any[] = [];
   StudentClassId = 0;
   StudentId = 0;
-  StudentFamilyNFriendList :any[]= [];
+  StudentFamilyNFriendList: any[] = [];
   studentSearchForm: UntypedFormGroup;
   filteredStudents: Observable<IStudent[]>;
   filteredFathers: Observable<IStudent[]>;
   filteredMothers: Observable<IStudent[]>;
   LoginUserDetail;
   FeePaymentPermission = '';
-  ClassGroups :any[]= [];
-  ClassGroupMapping :any[]= [];
+  ClassGroups: any[] = [];
+  ClassGroupMapping: any[] = [];
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
     private dataservice: NaomitsuService,
@@ -127,8 +127,8 @@ export class StudentDatadumpComponent implements OnInit {
 
 
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        this.Classes = [...data.value];
-        this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       });
 
 
@@ -167,94 +167,95 @@ export class StudentDatadumpComponent implements OnInit {
   displayFnM(stud: IStudent): string {
     return stud && stud.MotherName ? stud.MotherName : '';
   }
-  Groups :any[]= [];
+  Groups: any[] = [];
   GetMasterData() {
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
 
-        //this.shareddata.ChangeMasterData(data.value);
-        this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
+    //this.shareddata.ChangeMasterData(data.value);
+    this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
 
-        this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
-        this.shareddata.ChangeReasonForLeaving(this.ReasonForLeaving);
+    this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
+    this.shareddata.ChangeReasonForLeaving(this.ReasonForLeaving);
 
-        //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
-        this.Batches = this.tokenStorage.getBatches()!;
-        this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
-        this.shareddata.ChangeCategory(this.Category);
+    //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
+    this.Batches = this.tokenStorage.getBatches()!;
+    this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
+    this.shareddata.ChangeCategory(this.Category);
 
-        this.Religion = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
-        this.shareddata.ChangeReligion(this.Religion);
+    this.Religion = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
+    this.shareddata.ChangeReligion(this.Religion);
 
-        this.States = this.getDropDownData(globalconstants.MasterDefinitions.common.STATE);
-        this.shareddata.ChangeStates(this.States);
+    this.States = this.getDropDownData(globalconstants.MasterDefinitions.common.STATE);
+    this.shareddata.ChangeStates(this.States);
 
-        this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
-        this.shareddata.ChangePrimaryContact(this.PrimaryContact);
+    this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
+    this.shareddata.ChangePrimaryContact(this.PrimaryContact);
 
-        this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
-        this.shareddata.ChangeLocation(this.Location);
+    this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
+    this.shareddata.ChangeLocation(this.Location);
 
-        this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
-        this.shareddata.ChangeGenders(this.Genders);
+    this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
+    this.shareddata.ChangeGenders(this.Genders);
 
-        this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
-        this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
-        this.AdmissionStatus = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
-        this.shareddata.ChangeBloodgroup(this.Bloodgroup);
+    this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
+    this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
+    this.AdmissionStatus = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
+    this.shareddata.ChangeBloodgroup(this.Bloodgroup);
 
-        this.LanguageSubjUpper = this.getDropDownData(globalconstants.MasterDefinitions.school.LANGUAGESUBJECTUPPERCLS);
-        this.shareddata.ChangeLanguageSubjectUpper(this.LanguageSubjUpper);
+    this.LanguageSubjUpper = this.getDropDownData(globalconstants.MasterDefinitions.school.LANGUAGESUBJECTUPPERCLS);
+    this.shareddata.ChangeLanguageSubjectUpper(this.LanguageSubjUpper);
 
-        this.LanguageSubjLower = this.getDropDownData(globalconstants.MasterDefinitions.school.LANGUAGESUBJECTLOWERCLS);
-        this.shareddata.ChangeLanguageSubjectLower(this.LanguageSubjLower);
-        this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
-        this.contentservice.GetFeeDefinitions(this.FilterOrgSubOrg, 1).subscribe((f: any) => {
-          this.FeeDefinitions = [...f.value];
-          this.shareddata.ChangeFeeDefinition(this.FeeDefinitions);
-        });
+    this.LanguageSubjLower = this.getDropDownData(globalconstants.MasterDefinitions.school.LANGUAGESUBJECTLOWERCLS);
+    this.shareddata.ChangeLanguageSubjectLower(this.LanguageSubjLower);
+    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+    this.contentservice.GetFeeDefinitions(this.FilterOrgSubOrg, 1).subscribe((f: any) => {
+      this.FeeDefinitions = [...f.value];
+      this.shareddata.ChangeFeeDefinition(this.FeeDefinitions);
+    });
 
-        this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-        this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
-        this.shareddata.ChangeSection(this.Sections);
+    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
+    this.shareddata.ChangeSection(this.Sections);
 
-        this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
-        this.Clubs.forEach(c => {
-          c.type = 'ClubId'
-        })
-        this.Houses.forEach(h => {
-          h.type = 'HouseId'
-        })
-        this.Remarks.forEach(h => {
-          h.type = 'RemarkId'
-        })
-        this.Groups.push({
-          name: "Club",
-          disable: true,
-          group: this.Clubs
-        },
-          {
-            name: "House",
-            disable: true,
-            group: this.Houses
-          },
-          {
-            name: "Remarks",
-            disable: true,
-            group: this.Remarks
-          }
-        )
+    this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
+    this.Clubs.forEach(c => {
+      c.type = 'ClubId'
+    })
+    this.Houses.forEach(h => {
+      h.type = 'HouseId'
+    })
+    this.Remarks.forEach(h => {
+      h.type = 'RemarkId'
+    })
+    this.Groups.push(
+      {
+        name: "Club",
+        disable: true,
+        group: this.Clubs
+      },
+      {
+        name: "House",
+        disable: true,
+        group: this.Houses
+      },
+      {
+        name: "Remarks",
+        disable: true,
+        group: this.Remarks
+      }
+    )
 
-        this.shareddata.ChangeHouse(this.Houses);
+    this.shareddata.ChangeHouse(this.Houses);
 
-        this.UploadTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.UPLOADTYPE);
-        this.shareddata.ChangeUploadType(this.UploadTypes);
+    this.UploadTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.UPLOADTYPE);
+    this.shareddata.ChangeUploadType(this.UploadTypes);
 
-        this.loading = false; this.PageLoading = false;
-        this.getSelectedBatchStudentIDRollNo();
-        this.GetStudentClasses();
+    this.loading = false; this.PageLoading = false;
+    this.getSelectedBatchStudentIDRollNo();
+    this.GetStudentClasses();
 
-     // });
+    // });
 
   }
   getDropDownData(dropdowntype) {
@@ -304,12 +305,12 @@ export class StudentDatadumpComponent implements OnInit {
     let studentclass = this.SelectedBatchStudentIDRollNo.filter(sid => sid.StudentId == element.StudentId);
     if (studentclass.length > 0) {
       var _clsName = '';
-      var objcls = this.Classes.filter((f:any) => f.ClassId == studentclass[0].ClassId);
+      var objcls = this.Classes.filter((f: any) => f.ClassId == studentclass[0].ClassId);
       if (objcls.length > 0)
         _clsName = objcls[0].ClassName
 
       var _sectionName = '';
-      var sectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclass[0].SectionId)
+      var sectionObj = this.Sections.filter((f: any) => f.MasterDataId == studentclass[0].SectionId)
       if (sectionObj.length > 0)
         _sectionName = sectionObj[0].MasterDataName;
       this.StudentClassId = studentclass[0].StudentClassId
@@ -422,12 +423,12 @@ export class StudentDatadumpComponent implements OnInit {
       .subscribe((data: any) => {
         //////console.log(data.value);
         if (data.value.length > 0) {
-          var formattedData :any[]= [];
+          var formattedData: any[] = [];
           //formattedData = [...data.value];
           data.value.filter(sc => {
             let reason = this.ReasonForLeaving.filter(r => r.MasterDataId == sc.Student.ReasonForLeavingId)
             //if (sc.StudentClasses.length > 0) {
-            var obj = this.FeeType.filter((f:any) => f.FeeTypeId == sc.FeeTypeId);
+            var obj = this.FeeType.filter((f: any) => f.FeeTypeId == sc.FeeTypeId);
             if (obj.length > 0) {
               sc.FeeType = obj[0].FeeTypeName
             }
@@ -447,7 +448,7 @@ export class StudentDatadumpComponent implements OnInit {
             var _lastname = element.Student.LastName == null ? '' : " " + element.Student.LastName;
             element.Name = element.Student.FirstName + _lastname;
             if (element.RemarkId > 0) {
-              var obj = this.Remarks.filter((f:any) => f.MasterDataId == element.Student.RemarkId);
+              var obj = this.Remarks.filter((f: any) => f.MasterDataId == element.Student.RemarkId);
               if (obj.length > 0)
                 element.Remarks = obj[0].MasterDataName;
               else
@@ -810,14 +811,14 @@ export class StudentDatadumpComponent implements OnInit {
       var _className = '';
       var _section = '';
       var _studentClassId = 0;
-      var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
+      var studentclassobj = this.StudentClasses.filter((f: any) => f.StudentId == student.StudentId);
       if (studentclassobj.length > 0) {
         _studentClassId = studentclassobj[0].StudentClassId;
         var _classNameobj = this.Classes.filter(c => c.ClassId == studentclassobj[0].ClassId);
 
         if (_classNameobj.length > 0)
           _className = _classNameobj[0].ClassName;
-        var _SectionObj = this.Sections.filter((f:any) => f.MasterDataId == studentclassobj[0].SectionId)
+        var _SectionObj = this.Sections.filter((f: any) => f.MasterDataId == studentclassobj[0].SectionId)
 
         if (_SectionObj.length > 0)
           _section = _SectionObj[0].MasterDataName;

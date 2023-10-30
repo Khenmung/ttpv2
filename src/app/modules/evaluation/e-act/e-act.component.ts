@@ -20,8 +20,9 @@ import { SwUpdate } from '@angular/service-worker';
 export class EActComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  //EvaluationUpdatable: any = null;
+  //EvaluationEType: any = null;
   //AlreadyAnswered = false;
+  StudentProfile = 'student profile';
   RowsToUpdate = -1;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
@@ -302,7 +303,7 @@ export class EActComponent implements OnInit {
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     let checkFilterString = this.FilterOrgSubOrg + " and ClassEvaluationId eq " + row.ClassEvaluationId;
-    if (!row.Updatable) {
+    if (row.EType.toLowerCase() != this.StudentProfile) {
       checkFilterString += " and EvaluationExamMapId eq " + row.EvaluationExamMapId +
         " and StudentClassId eq " + this.StudentClassId
     }
@@ -333,7 +334,7 @@ export class EActComponent implements OnInit {
 
           var _toappend = '', _answerText = '', _history = '', _studentClassId = 0;
           _answerText = row.AnswerText;
-          if (row.Updatable) {
+          if (row.EType.toLowerCase() === this.StudentProfile) {
             if (this.EvaluationSubmitted && !this.boolSaveAsDraft) {
               var _borderwidth = "border-width:0px 1px 1px 1px;"
               if (row.History == "") {
@@ -539,7 +540,7 @@ export class EActComponent implements OnInit {
         //   row.Submitted = data.value[0].Submitted;
         // }
         ////console.log("row", row);
-        if (!row.Updatable && row.Duration > 0 && data.value.length == 0) {
+        if (row.EType.toLowerCase() != this.StudentProfile && row.Duration > 0 && data.value.length == 0) {
           //if (!row.TempDuration)
           //row.TempDuration = row.Duration;
           this.startTimer(row);
@@ -592,7 +593,7 @@ export class EActComponent implements OnInit {
               ClassEvaluationAnswerOptionParentId: clseval.ClassEvaluationAnswerOptionParentId,
               EvaluationExamMapId: existing[0].EvaluationExamMapId,
               Points: existing[0].Points,
-              Updatable: row.Updatable,
+              EType: row.EType,
               Description: globalconstants.decodeSpecialChars(clseval.Description),
               History: existing[0].History,
               AnswerText: globalconstants.decodeSpecialChars(existing[0].AnswerText),
@@ -617,7 +618,7 @@ export class EActComponent implements OnInit {
               AnswerText: '',
               History: '',
               Points: 0,
-              Updatable: row.Updatable,
+              EType: row.EType,
               StudentEvaluationResultId: 0,
               ClassEvaluationAnswerOptionParentId: clseval.ClassEvaluationAnswerOptionParentId,
               EvaluationExamMapId: row.EvaluationExamMapId,
@@ -677,7 +678,7 @@ export class EActComponent implements OnInit {
                 m.EvaluationName = EvaluationObj[0].EvaluationName;
                 m.Duration = EvaluationObj[0].Duration;
                 m.TempDuration = EvaluationObj[0].Duration;
-                m.Updatable = EvaluationObj[0].AppendAnswer;
+                m.EType = EvaluationObj[0].EType;
                 m.StartTime = EvaluationObj[0].StartTime;
                 m.StartDate = EvaluationObj[0].StartDate;
 
@@ -778,13 +779,13 @@ export class EActComponent implements OnInit {
       });
   }
   EvaluationForSelectedClassSemesterSection: any[] = [];
+  ETypes: any[] = [];
   GetMasterData() {
     this.loading = true;
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
     this.ClassGroupTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUPTYPE);
-
-
+    this.ETypes = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONTYPE);
     this.RatingOptions = this.getDropDownData(globalconstants.MasterDefinitions.school.RATINGOPTION);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
@@ -858,7 +859,7 @@ export class EActComponent implements OnInit {
       'StartTime',
       'ClassGroupId',
       'DisplayResult',
-      'AppendAnswer',
+      'ETypeId',
       'ProvideCertificate',
       'Confidential',
       'FullMark',
@@ -873,7 +874,16 @@ export class EActComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
 
-        var result = [...data.value];
+        let result:any =[];
+
+        data.value.forEach(item => {
+          let obj = this.ETypes.filter(t => t.MasterDataId == item.ETypeId)
+          if (obj.length > 0) {
+            item.EType = obj[0].MasterDataName;
+            result.push(item)
+          }
+
+        })
         this.EvaluationMaster = this.contentservice.getConfidentialData(this.tokenStorage, result, "EvaluationName");
         //this.loadingFalse();
         this.GetExams();
@@ -885,7 +895,7 @@ export class EActComponent implements OnInit {
 
   //   var _obj = this.EvaluationMaster.filter((f:any) => f.EvaluationMasterId == _EvaluationMasterId)
   //   if (_obj.length > 0) {
-  //     this.EvaluationUpdatable = _obj[0].AppendAnswer;
+  //     this.EvaluationEType = _obj[0].ETypeId;
   //     this.ExamDurationMinutes = _obj[0].Duration;
   //   }
   // }
@@ -986,7 +996,7 @@ export class EActComponent implements OnInit {
             var existing = this.StudentSubmittedEvaluations.filter((f: any) => f.EvaluationExamMapId == m.EvaluationExamMapId)
             if (existing.length > 0) {
               m.Submitted = true;
-              if (m.Updatable)
+              if (m.EType.toLowerCase() == this.StudentProfile)
                 this.RelevantEvaluationListForSelectedStudent.push(m);
             }
             else {
@@ -998,7 +1008,7 @@ export class EActComponent implements OnInit {
 
 
             // var existing = this.StudentSubmittedEvaluations.filter((f: any) => f.EvaluationExamMapId == m.EvaluationExamMapId)
-            // if (existing.length > 0 || m.Updatable) {
+            // if (existing.length > 0 || m.EType) {
             //     //m.EvaluationResultMarkId = existing[0].EvaluationResultMarkId
             //     this.RelevantEvaluationListForSelectedStudent.push(m);
             // }

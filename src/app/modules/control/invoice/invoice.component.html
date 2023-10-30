@@ -24,7 +24,7 @@
         </span> -->
     </mat-card-subtitle>
     <mat-card-content style="margin: 0px 20px 20px 20px;">
-        <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+        <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
         <mat-tab-group [selectedIndex]="selectedIndex" (selectedIndexChange)="tabChanged($event)">
             <mat-tab>
                 <ng-template mat-tab-label>

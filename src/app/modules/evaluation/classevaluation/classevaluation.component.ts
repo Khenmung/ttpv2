@@ -26,13 +26,14 @@ export class ClassEvaluationComponent implements OnInit {
   @ViewChild(ClassEvaluationOptionComponent) option: ClassEvaluationOptionComponent;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  LoginUserDetail:any[]= [];
-  ClassGroups :any[]= [];
+  StudentProfile ="student profile";
+  LoginUserDetail: any[] = [];
+  ClassGroups: any[] = [];
   CurrentRow: any = {};
   selectedIndex = 0;
   selectedRowIndex = -1;
   RowToUpdate = -1;
-  EvaluationNames :any[]= [];
+  EvaluationNames: any[] = [];
   ClassEvaluationIdTopass = 0;
   SelectedApplicationId = 0;
   StudentClassId = 0;
@@ -40,20 +41,20 @@ export class ClassEvaluationComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  ClassEvaluationOptionList :any[]= [];
-  ClassEvaluationList: IClassEvaluation[]= [];
+  ClassEvaluationOptionList: any[] = [];
+  ClassEvaluationList: IClassEvaluation[] = [];
   //EvaluationMasterId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
-  QuestionnaireTypes :any[]= [];
-  SubCategories :any[]= [];
-  Classes :any[]= [];
-  ClassSubjects :any[]= [];
-  Exams :any[]= [];
-  ExamNames :any[]= [];
+  QuestionnaireTypes: any[] = [];
+  SubCategories: any[] = [];
+  Classes: any[] = [];
+  ClassSubjects: any[] = [];
+  Exams: any[] = [];
+  ExamNames: any[] = [];
   //SelectedClassSubjects :any[]= [];
   filteredOptions: Observable<IClassEvaluation[]>;
   dataSource: MatTableDataSource<IClassEvaluation>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
 
   ClassEvaluationData = {
     ClassEvaluationId: 0,
@@ -68,8 +69,8 @@ export class ClassEvaluationComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
-  EvaluationMasterForClassGroup :any[]= [];
-  ClassEvaluationForUpdate :any[]= [];
+  EvaluationMasterForClassGroup: any[] = [];
+  ClassEvaluationForUpdate: any[] = [];
   displayedColumns = [
     'ClassEvaluationId',
     'Description',
@@ -112,7 +113,7 @@ export class ClassEvaluationComponent implements OnInit {
   displayFn(user: IStudent): string {
     return user && user.Name ? user.Name : '';
   }
-  ExamClassGroups :any[]= [];
+  ExamClassGroups: any[] = [];
   PageLoad() {
     debugger;
     this.loading = true;
@@ -133,8 +134,8 @@ export class ClassEvaluationComponent implements OnInit {
         this.GetMasterData();
         if (this.Classes.length == 0) {
           this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-            this.Classes = [...data.value];
-            this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+            if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+            this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
             this.loading = false; this.PageLoading = false;
           });
           //this.GetClassEvaluation();
@@ -169,7 +170,7 @@ export class ClassEvaluationComponent implements OnInit {
     return str.replace(format, function (m) { return map[m]; });
     //return str.replace(/[&<>"']/g, function(m) { return map[m]; });
   }
-  FilteredExam :any[]= [];
+  FilteredExam: any[] = [];
   SelectEvaluation() {
     debugger;
     var _searchClassGroupId = this.searchForm.get("searchClassGroupId")?.value;
@@ -179,10 +180,10 @@ export class ClassEvaluationComponent implements OnInit {
     this.FilteredExam = this.Exams.filter(e => examsOfSelectGroup.findIndex(x => x.ExamId == e.ExamId) > -1);
     this.ClearData();
   }
-ClearData(){
-  this.ClassEvaluationList =[];
-  this.dataSource = new MatTableDataSource<any>(this.ClassEvaluationList);
-}
+  ClearData() {
+    this.ClassEvaluationList = [];
+    this.dataSource = new MatTableDataSource<any>(this.ClassEvaluationList);
+  }
   GetExams() {
 
     this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 1)
@@ -201,7 +202,7 @@ ClearData(){
       })
   }
   SelectSubCategory(pCategoryId) {
-    this.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == pCategoryId.value);
+    this.SubCategories = this.allMasterData.filter((f: any) => f.ParentId == pCategoryId.value);
   }
   delete(element) {
     this.openDialog(element);
@@ -284,7 +285,7 @@ ClearData(){
       Description: '',
       MultipleAnswer: 0,
       ExamId: 0,
-      Marks:0,
+      Marks: 0,
       EvaluationMasterId: _EvaluationMasterId,
       ClassEvaluationAnswerOptionParentId: 0,
       DisplayOrder: 0,
@@ -296,7 +297,7 @@ ClearData(){
     this.dataSource = new MatTableDataSource(this.ClassEvaluationList);
   }
   SaveAll() {
-    var _toUpdate = this.ClassEvaluationList.filter((f:any) => f.Action);
+    var _toUpdate = this.ClassEvaluationList.filter((f: any) => f.Action);
     this.RowToUpdate = _toUpdate.length;
     _toUpdate.forEach(question => {
       this.RowToUpdate--;
@@ -369,7 +370,7 @@ ClearData(){
         QuestionnaireTypeId: row.QuestionnaireTypeId,
         MultipleAnswer: row.MultipleAnswer,
         ExamId: row.ExamId,
-        Marks:row.Marks,
+        Marks: row.Marks,
         ClassEvaluationAnswerOptionParentId: row.ClassEvaluationAnswerOptionParentId,
         EvaluationMasterId: row.EvaluationMasterId,
         Description: globalconstants.encodeSpecialChars(row.Description),
@@ -481,13 +482,13 @@ ClearData(){
         //  ////console.log('data.value', data.value);
         if (data.value.length > 0) {
           data.value.forEach(item => {
-            var _updatable = false;
-            var obj = this.EvaluationNames.filter((f:any) => f.EvaluationMasterId == item.EvaluationMasterId);
+            var _EType = '';
+            var obj = this.EvaluationNames.filter((f: any) => f.EvaluationMasterId == item.EvaluationMasterId);
             if (obj.length > 0) {
-              _updatable = obj[0].AppendAnswer;
+              _EType = obj[0].EType;
               item.Action = false;
               item.Description = globalconstants.decodeSpecialChars(item.Description);
-              item.Updatable = _updatable;
+              item.EType = _EType;
               this.ClassEvaluationList.push(item);
             }
             //return item;
@@ -519,7 +520,7 @@ ClearData(){
       'ClassGroupId',
       'Description',
       'Duration',
-      'AppendAnswer',
+      'ETypeId',
       'DisplayResult',
       'ProvideCertificate',
       'Confidential',
@@ -535,7 +536,15 @@ ClearData(){
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
-          this.EvaluationNames = this.contentservice.getConfidentialData(this.tokenStorage, data.value, "EvaluationName");
+
+          data.value.forEach(item => {
+            let obj = this.ETypes.filter(e => e.MasterDataId == item.ETypeId)
+            if (obj.length > 0) {
+              item.EType = obj[0].MasterDataName;
+              this.EvaluationNames.push(item);
+            }
+          })
+          this.EvaluationNames = this.contentservice.getConfidentialData(this.tokenStorage, this.EvaluationNames, "EvaluationName");
         }
         //this.loadingFalse();
       });
@@ -584,7 +593,7 @@ ClearData(){
       .subscribe((data: any) => {
         this.ClassSubjects = data.value.map(m => {
           var _subjectname = "";
-          var subjectobj = this.allMasterData.filter((f:any) => f.MasterDataId == m.SubjectId);
+          var subjectobj = this.allMasterData.filter((f: any) => f.MasterDataId == m.SubjectId);
           if (subjectobj.length > 0)
             _subjectname = subjectobj[0].MasterDataName;
           m.SubjectName = _subjectname;
@@ -602,12 +611,13 @@ ClearData(){
     // var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     // this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects,_classId,_sectionId,_semesterId);
   }
-
+  ETypes: any = [];
   GetMasterData() {
     debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
+    this.ETypes = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONTYPE);
     this.GetExams();
     this.GetClassSubjects();
     this.GetClassEvaluationOption();
@@ -632,7 +642,7 @@ ClearData(){
   CategoryChanged(row) {
     debugger;
     row.Action = true;
-    row.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == row.ClassEvalCategoryId);
+    row.SubCategories = this.allMasterData.filter((f: any) => f.ParentId == row.ClassEvalCategoryId);
   }
   UpdateMultiAnswer(row, event) {
     row.MultipleAnswer = event.checked ? 1 : 0;
@@ -667,7 +677,7 @@ export interface IClassEvaluation {
   MultipleAnswer: number;
   ExamId: number;
   Description: string;
-  Marks:number;
+  Marks: number;
   ClassEvaluationAnswerOptionParentId: number;
   DisplayOrder: number;
   Active: number;

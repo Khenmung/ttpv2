@@ -136,7 +136,7 @@ export class AppuserdashboardComponent implements OnInit {
       this.SelectedApplicationName = this.tokenStorage.getSelectedAppName()!;
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        this.Classes = [...data.value];
+        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       });
       this.GetMasterData();

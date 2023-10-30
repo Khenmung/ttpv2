@@ -20,6 +20,7 @@ import { List } from '../../../shared/interface';
 export class EvaluationstatusComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  StudentProfile = 'student profile';
   RowsToUpdate = -1;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
@@ -91,7 +92,7 @@ export class EvaluationstatusComponent implements OnInit {
   displayedColumns = [
     'PID',
     'RollNo',
-    'Student',    
+    'Student',
     'Description'
   ];
   searchForm: UntypedFormGroup;
@@ -309,7 +310,7 @@ export class EvaluationstatusComponent implements OnInit {
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     let checkFilterString = this.FilterOrgSubOrg + " and ClassEvaluationId eq " + row.ClassEvaluationId;
-    if (!row.Updatable) {
+    if (row.EType.toLowerCase() !== this.StudentProfile) {
       checkFilterString += " and EvaluationExamMapId eq " + row.EvaluationExamMapId +
         " and StudentClassId eq " + this.StudentClassId
     }
@@ -340,7 +341,7 @@ export class EvaluationstatusComponent implements OnInit {
 
           var _toappend = '', _answerText = '', _history = '', _studentClassId = 0;
           _answerText = row.AnswerText;
-          if (row.Updatable) {
+          if (row.EType.toLowerCase() === this.StudentProfile) {
             if (this.EvaluationSubmitted && !this.boolSaveAsDraft) {
               var _borderwidth = "border-width:0px 1px 1px 1px;"
               if (row.History == "") {
@@ -549,7 +550,7 @@ export class EvaluationstatusComponent implements OnInit {
     ];
 
     list.PageName = "StudentEvaluationResults";
-    list.lookupFields = ["StudentEvaluationAnswers($select=StudentEvaluationAnswerId,StudentEvaluationResultId,ClassEvaluationAnswerOptionsId,Active)"];
+    list.lookupFields = ["StudentEvaluationAnswers(" + filterAnswers + ";$select=StudentEvaluationAnswerId,StudentEvaluationResultId,ClassEvaluationAnswerOptionsId,Active)"];
 
     list.filter = [filterStr];
     this.StudentEvaluationList = [];
@@ -560,7 +561,7 @@ export class EvaluationstatusComponent implements OnInit {
         //   row.Submitted = data.value[0].Submitted;
         // }
         ////console.log("row", row);
-        // if (!row.Updatable && row.Duration > 0 && data.value.length == 0) {
+        // if (!row.EType && row.Duration > 0 && data.value.length == 0) {
         //   //if (!row.TempDuration)
         //   //row.TempDuration = row.Duration;
         //   this.startTimer(row);
@@ -577,7 +578,7 @@ export class EvaluationstatusComponent implements OnInit {
             }
             else
               SlNo = '';
-            var existing:any[] = [];
+            var existing: any[] = [];
             if (_statusId) {
               existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
                 && f.StudentEvaluationAnswers
@@ -588,7 +589,7 @@ export class EvaluationstatusComponent implements OnInit {
             }
             else {
               existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
-                && (!f.StudentEvaluationAnswers || f.StudentEvaluationAnswers.length>0)
+                && (!f.StudentEvaluationAnswers || f.StudentEvaluationAnswers.length > 0)
                 && f.ClassEvaluationId == clseval.ClassEvaluationId);
             }
             if (existing.length > 0) {
@@ -615,14 +616,14 @@ export class EvaluationstatusComponent implements OnInit {
                 StudentClassId: eachstud.StudentClassId,
                 StudentId: eachstud.StudentId,
                 Student: eachstud.FirstName,
-                PID:eachstud.PID,
-                RollNo:eachstud.RollNo,
+                PID: eachstud.PID,
+                RollNo: eachstud.RollNo,
                 CatSequence: clseval.DisplayOrder,
                 QuestionnaireType: clseval.QuestionnaireType,
                 ClassEvaluationAnswerOptionParentId: clseval.ClassEvaluationAnswerOptionParentId,
                 EvaluationExamMapId: existing[0].EvaluationExamMapId,
                 Points: existing[0].Points,
-                Updatable: row[0].Updatable,
+                EType: row[0].EType,
                 Description: globalconstants.decodeSpecialChars(clseval.Description),
                 History: existing[0].History,
                 AnswerText: globalconstants.decodeSpecialChars(existing[0].AnswerText),
@@ -642,8 +643,8 @@ export class EvaluationstatusComponent implements OnInit {
                 StudentClassId: eachstud.StudentClassId,
                 StudentId: eachstud.StudentId,
                 Student: eachstud.FirstName,
-                PID:eachstud.PID,
-                RollNo:eachstud.RollNo,
+                PID: eachstud.PID,
+                RollNo: eachstud.RollNo,
                 CatSequence: clseval.DisplayOrder,
                 QuestionnaireType: clseval.QuestionnaireType,
                 AnswerOptionsId: 0,
@@ -651,7 +652,7 @@ export class EvaluationstatusComponent implements OnInit {
                 AnswerText: '',
                 History: '',
                 Points: 0,
-                Updatable: row[0].Updatable,
+                EType: row[0].EType,
                 StudentEvaluationResultId: 0,
                 ClassEvaluationAnswerOptionParentId: clseval.ClassEvaluationAnswerOptionParentId,
                 EvaluationExamMapId: row[0].EvaluationExamMapId,
@@ -709,7 +710,7 @@ export class EvaluationstatusComponent implements OnInit {
                 m.EvaluationName = EvaluationObj[0].EvaluationName;
                 m.Duration = EvaluationObj[0].Duration;
                 m.TempDuration = EvaluationObj[0].Duration;
-                m.Updatable = EvaluationObj[0].AppendAnswer;
+                m.EType = EvaluationObj[0].EType;
                 m.StartTime = EvaluationObj[0].StartTime;
                 m.StartDate = EvaluationObj[0].StartDate;
 
@@ -756,13 +757,13 @@ export class EvaluationstatusComponent implements OnInit {
 
       });
   }
+  ETypes: any[] = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
     this.ClassGroupTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUPTYPE);
-
-
+    this.ETypes = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONTYPE);
     this.RatingOptions = this.getDropDownData(globalconstants.MasterDefinitions.school.RATINGOPTION);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
@@ -851,7 +852,7 @@ export class EvaluationstatusComponent implements OnInit {
       'StartTime',
       'ClassGroupId',
       'DisplayResult',
-      'AppendAnswer',
+      'ETypeId',
       'ProvideCertificate',
       'Confidential',
       'FullMark',
@@ -865,8 +866,14 @@ export class EvaluationstatusComponent implements OnInit {
     this.EvaluationMaster = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-
-        var result = [...data.value];
+        let result: any = [];
+        data.value.forEach(item => {
+          let obj = this.ETypes.filter(e => e.MasterDataId == item.ETypeId);
+          if (obj.length > 0) {
+            item.EType = obj[0].MasterDataName;
+            result.push(item)
+          }
+        });
         this.EvaluationMaster = this.contentservice.getConfidentialData(this.tokenStorage, result, "EvaluationName");
         //this.loadingFalse();
         this.GetExams();
@@ -878,7 +885,7 @@ export class EvaluationstatusComponent implements OnInit {
 
   //   var _obj = this.EvaluationMaster.filter((f:any) => f.EvaluationMasterId == _EvaluationMasterId)
   //   if (_obj.length > 0) {
-  //     this.EvaluationUpdatable = _obj[0].AppendAnswer;
+  //     this.EvaluationEType = _obj[0].ETypeId;
   //     this.ExamDurationMinutes = _obj[0].Duration;
   //   }
   // }
@@ -1063,9 +1070,9 @@ export class EvaluationstatusComponent implements OnInit {
             StudentId: student.StudentId,
             ClassId: _classId,
             RollNo: _RollNo,
-            FirstName:_name,
+            FirstName: _name,
             Name: _fullDescription,
-            PID:student.PID
+            PID: student.PID
           });
         }
       }

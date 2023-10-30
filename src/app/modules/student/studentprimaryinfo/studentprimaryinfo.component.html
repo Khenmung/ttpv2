@@ -1,6 +1,6 @@
 <div style="width:auto">
     <div style="padding: 15px 0px 0px 15px;font-weight: bold;">Student Detail</div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <!-- <alert></alert> -->
     <form [formGroup]="studentForm">
         <mat-tab-group #changeEvent [selectedIndex]="selectedIndex" (selectedIndexChange)="tabChanged($event)"
@@ -30,7 +30,8 @@
                             </mat-form-field>
                         </mat-grid-tile>
                         <mat-grid-tile [colspan]="1" [rowspan]="2">
-                            <div style="margin-bottom: 15px;" *ngIf="StudentId>0" style="display: flex;justify-content: center;">
+                            <div style="margin-bottom: 15px;" *ngIf="StudentId>0"
+                                style="display: flex;justify-content: center;">
                                 <span style="color:red;" *ngIf="message">{{message}}</span>
                                 <input #inputfile [hidden]="true" type="file" accept='image/*'
                                     (change)="preview(inputfile.files)" />
@@ -449,10 +450,20 @@
                     </div>
                     <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline">
-                            <mat-label>Remarks</mat-label>
-                            <mat-select id="ddRemarks" formControlName="Remarks" (selectionChange)="OnBlur()">
-                                <mat-option [value]="Defaultvalue">---</mat-option>
+                            <mat-label>Remark 1</mat-label>
+                            <mat-select id="ddRemark1" formControlName="RemarkId"
+                                (selectionChange)="OnBlur()">
+                                <mat-option [value]="Defaultvalue">select</mat-option>
                                 <mat-option *ngFor="let p of Remarks" [value]="p.MasterDataId">
+                                    {{p.MasterDataName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Remark 2</mat-label>
+                            <mat-select id="ddRemark2" formControlName="Remark2Id" (selectionChange)="OnBlur()">
+                                <mat-option [value]="Defaultvalue">select</mat-option>
+                                <mat-option *ngFor="let p of Remark2" [value]="p.MasterDataId">
                                     {{p.MasterDataName}}
                                 </mat-option>
                             </mat-select>
@@ -463,13 +474,14 @@
                             <input id="txtIdentificationMark" formControlName="IdentificationMark" (blur)="OnBlur()"
                                 autocomplete="Off" matInput [maxlength]="50">
                         </mat-form-field>
+
+                    </div>
+                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline">
                             <mat-label>Board Registration No.</mat-label>
                             <input id="txtBoardRegistrationNo" formControlName="BoardRegistrationNo" (blur)="OnBlur()"
                                 autocomplete="Off" matInput [maxlength]="15">
                         </mat-form-field>
-                    </div>
-                    <div style="display:flex;margin-left: 15px;">
                         <mat-form-field appearance="outline" style="width:450px">
                             <mat-label>Notes</mat-label>
                             <textarea rows="1" id="txtAreaNotes" cols="50" (blur)="OnBlur()" [maxlength]="256" matInput

@@ -597,7 +597,7 @@ export class SyllabusComponent implements OnInit {
       'ClassGroupId',
       'Description',
       'Duration',
-      'AppendAnswer',
+      'ETypeId',
       'DisplayResult',
       'ProvideCertificate',
       'FullMark',

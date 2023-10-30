@@ -55,6 +55,7 @@ export class searchstudentComponent implements OnInit {
   Religion: any[] = [];
   States = []
   Remarks: any[] = [];
+  Remark2: any[] = [];
   PrimaryContact: any[] = [];
   Location: any[] = [];
   LanguageSubjUpper: any[] = [];
@@ -149,7 +150,7 @@ export class searchstudentComponent implements OnInit {
 
       //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-      //   this.Classes = [...data.value];
+      //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
       this.GetMasterData();
 
       this.GetFeeTypes();
@@ -256,7 +257,8 @@ export class searchstudentComponent implements OnInit {
 
     this.LanguageSubjLower = this.getDropDownData(globalconstants.MasterDefinitions.school.LANGUAGESUBJECTLOWERCLS);
     this.shareddata.ChangeLanguageSubjectLower(this.LanguageSubjLower);
-    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
+    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+    this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
     this.contentservice.GetFeeDefinitions(this.FilterOrgSubOrg, 1).subscribe((f: any) => {
       this.FeeDefinitions = [...f.value];
       this.shareddata.ChangeFeeDefinition(this.FeeDefinitions);
@@ -277,21 +279,28 @@ export class searchstudentComponent implements OnInit {
     this.Remarks.forEach(h => {
       h.type = 'RemarkId'
     })
-    this.Groups.push({
-      name: "Club",
-      disable: true,
-      group: this.Clubs
-    },
+    this.Groups.push(
+      {
+        name: "Remark 1",
+        disable: true,
+        group: this.Remarks
+      },
+      {
+        name: "Remark 2",
+        disable: true,
+        group: this.Remark2
+      },
+      {
+        name: "Club",
+        disable: true,
+        group: this.Clubs
+      },
       {
         name: "House",
         disable: true,
         group: this.Houses
-      },
-      {
-        name: "Remarks",
-        disable: true,
-        group: this.Remarks
       }
+     
     )
     ////console.log("Groups", this.Groups)
     this.UploadTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.UPLOADTYPE);
@@ -659,7 +668,7 @@ export class searchstudentComponent implements OnInit {
       this.tokenStorage.saveStudentSearch(this.StudentSearch);
     else
       this.tokenStorage.saveStudentSearch([]);
-    
+
     if (_PID == 0 && _studentId == 0) {
       if (_ClassId > 0 && _semesterId == 0 && _sectionId == 0) {
         filteredStudents = filteredStudents.filter(fromallstud => fromallstud.StudentClasses
@@ -920,9 +929,9 @@ export class searchstudentComponent implements OnInit {
       //if (studentclassobj.length > 0) {
       if (student.StudentClasses && student.StudentClasses.length > 0) {
         _studentClassId = student.StudentClasses[0].StudentClassId;
-        if (student.FirstName && student.FirstName.includes('Bertrand')) {
-          debugger;
-        }
+        // if (student.FirstName && student.FirstName.includes('Bertrand')) {
+        //   debugger;
+        // }
         var _classNameobj = this.Classes.filter(c => c.ClassId == student.StudentClasses[0].ClassId);
         if (_classNameobj.length > 0)
           _className = _classNameobj[0].ClassName;

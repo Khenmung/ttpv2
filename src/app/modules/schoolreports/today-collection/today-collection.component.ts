@@ -122,7 +122,7 @@ export class TodayCollectionComponent implements OnInit {
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          this.Classes = [...data.value];
+          if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
           this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
           this.GetMasterData();
         });

@@ -734,7 +734,7 @@ export class TeacheroffperiodComponent implements OnInit {
     this.Batches = this.tokenStorage.getBatches()!;
     this.GetTeachers();
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-      this.Classes = [...data.value];
+      if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
       this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       this.GetClassSubject();
     });

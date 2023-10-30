@@ -58,6 +58,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   FeeTypes: any[] = [];
   Sections: any[] = [];
   Remarks: any[] = [];
+  Remark2: any[] = [];
   StudentGrades: any[] = [];
   ClassCategory: any[] = [];
   Selectzero = 0;
@@ -1357,7 +1358,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.StudentGrades = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTGRADE);
-    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARKS);
+    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+    this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);
     this.RollNoGenerationSortBy = "Sort by: " + this.RollNoGeneration.filter((f: any) => f.MasterDataName.toLowerCase() == 'sort by')[0].Logic;
     this.loading = false; this.PageLoading = false;

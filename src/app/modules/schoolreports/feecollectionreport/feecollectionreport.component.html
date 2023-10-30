@@ -1,9 +1,9 @@
 <div style="padding: 15px;"><strong>Fee Payment Status</strong></div>
 <!-- <alert></alert> -->
-<form [formGroup]="SearchForm">
+<form [formGroup]="searchForm">
     <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="30px">
 
-        <div style="padding: 15px 10px 2px 15px;height: 55px;">
+        <div style="flex: 0 0 220px;height: 55px;">
             <mat-radio-group formControlName="PaidNotPaid">
                 <mat-radio-button class="example-margin" checked="false" value="Paid">Paid</mat-radio-button>&nbsp;
                 <mat-radio-button class="example-margin" checked="true" value="NotPaid">Not Paid</mat-radio-button>
@@ -27,22 +27,40 @@
         </mat-form-field> -->
         <mat-form-field appearance="outline">
             <mat-label>Class</mat-label>
-            <mat-select formControlName="searchClassId">
+            <mat-select formControlName="searchClassId" (selectionChange)="BindSectionSemester()">
                 <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
                     {{item.ClassName}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <!--<mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()">
+            <mat-label>Semester</mat-label>
+            <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
+                <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()">
             <mat-label>Section</mat-label>
-            <mat-select formControlName="searchSectionId">
-                <mat-option [value]="Defaultvalue">--section--</mat-option>
+            <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
                     {{item.MasterDataName}}
                 </mat-option>
             </mat-select>
-        </mat-form-field> -->
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="searchFeePaymentStatusId">
+                <mat-option [value]="Defaultvalue">select</mat-option>
+                <mat-option *ngFor="let item of FeePaymentStatuses" [value]="item.MasterDataId">
+                    {{item.MasterDataName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
         <button [disabled]="loading" mat-raised-button color="accent" (click)="GetStudentFeePaymentReport()">
             <mat-icon>search</mat-icon>
             <mat-icon *ngIf="loading">
@@ -74,8 +92,51 @@
                     {{element.ClassRollNoSection}}
                 </mat-cell>
             </ng-container>
+            <ng-container matColumnDef="FeePaymentStatusId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
+                        <mat-select [(ngModel)]="element.FeepaymentStatusId" [value]="element.FeepaymentStatusId">
+                            <mat-option [value]="Defaultvalue">select</mat-option>
+                            <mat-option *ngFor="let item of FeePaymentStatuses"
+                                [value]="item.MasterDataId">{{item.MasterDataName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Active">
+                <mat-header-cell *matHeaderCellDef style="justify-content: center;">Yes/No
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" style="justify-content: center;">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateActive(element,$event)"
+                        [checked]="element.Active">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef>
+                    <button [disabled]="loading || Permission=='read'"
+                    *ngIf="ELEMENT_DATA.length>0" matTooltip="save all" mat-mini-fab
+                    color="accent" (click)="saveall()">
+                    <mat-icon>all_out</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" style="display: flex;justify-content: center;">
+                    <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                        mat-raised-button color="accent" (click)="Save(element)">
+                        <mat-icon>save</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
             <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: DisplayColumns;" fxLayoutAlign="space-between center" fxLayout="row">
+            <mat-row *matRowDef="let row; columns: DisplayColumns;" style="margin-top:7px" fxLayoutAlign="space-between center" fxLayout="row">
             </mat-row>
         </mat-table>
     </div>

@@ -12,7 +12,7 @@
     <div style="padding:15px 15px 10px 15px;">
         <div><strong>Evaluation</strong></div>
     </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <!-- <alert></alert> -->
     <!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
     <form [formGroup]="searchForm">
@@ -113,12 +113,20 @@
                 </mat-checkbox>
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="AppendAnswer">
-            <mat-header-cell *matHeaderCellDef> Updatable </mat-header-cell>
+        <ng-container matColumnDef="ETypeId">
+            <mat-header-cell *matHeaderCellDef> Type </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateUpdatable(element,$event)"
-                    [checked]="element.AppendAnswer">
-                </mat-checkbox>
+                <!-- <mat-checkbox (click)="$event.stopPropagation()" (change)="updateEType(element,$event)"
+                    [checked]="element.ETypeId">
+                </mat-checkbox> -->
+                <mat-form-field appearance="outline">
+                    <mat-select (selectionChange)="onBlur(element)" [value]="element.ETypeId"
+                        [(ngModel)]="element.ETypeId">
+                        <mat-option [value]="Defaultvalue">select</mat-option>
+                        <mat-option *ngFor="let item of ETypes" [value]="item.MasterDataId">{{item.MasterDataName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="ProvideCertificate">

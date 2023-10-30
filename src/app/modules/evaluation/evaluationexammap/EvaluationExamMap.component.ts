@@ -24,7 +24,7 @@ export class EvaluationExamMapComponent implements OnInit {
   @Output() NotifyParent: EventEmitter<number> = new EventEmitter();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  EvaluationUpdatable: any = null;
+  EvaluationEType: any = null;
   EvaluationMasterId = 0;
   LoginUserDetail:any[]= [];
   CurrentRow: any = {};
@@ -107,7 +107,7 @@ export class EvaluationExamMapComponent implements OnInit {
   ExamClassGroups :any[]= [];
   PageLoad() {
     debugger;
-    //console.log("EvaluationUpdatable", this.EvaluationUpdatable)
+    //console.log("EvaluationEType", this.EvaluationEType)
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     if (this.LoginUserDetail == null)
@@ -126,7 +126,7 @@ export class EvaluationExamMapComponent implements OnInit {
         this.GetMasterData();
         if (this.Classes.length == 0) {
           this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-            this.Classes = [...data.value];
+            if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
             this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
           });
         }
@@ -207,7 +207,7 @@ export class EvaluationExamMapComponent implements OnInit {
 
     this.loading = true;
     let checkFilterString = this.FilterOrgSubOrg + " and Active eq true";
-    if (!this.EvaluationUpdatable) {
+    if (!this.EvaluationEType) {
 
       if (row.ExamId > 0)
         checkFilterString += " and ExamId eq " + row.ExamId;
@@ -320,7 +320,7 @@ export class EvaluationExamMapComponent implements OnInit {
       'ClassGroupId',
       'Duration',
       'DisplayResult',
-      'AppendAnswer',
+      'ETypeId',
       'ProvideCertificate',
       'Confidential',
       'FullMark',
@@ -545,8 +545,8 @@ export class EvaluationExamMapComponent implements OnInit {
 
   GetEvaluationMasterId() {
     this.EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
-    this.EvaluationUpdatable = this.EvaluationNames.filter((f:any) => f.EvaluationMasterId == this.EvaluationMasterId)[0].AppendAnswer;
-    ////console.log("EvaluationUpdatable", this.EvaluationUpdatable);
+    this.EvaluationEType = this.EvaluationNames.filter((f:any) => f.EvaluationMasterId == this.EvaluationMasterId)[0].ETypeId;
+    ////console.log("EvaluationEType", this.EvaluationEType);
     this.ClearData();
   }
   UpdateActive(row, event) {

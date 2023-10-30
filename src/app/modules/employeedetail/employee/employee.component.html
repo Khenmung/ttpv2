@@ -1,5 +1,5 @@
 <div style="font-weight:bold;padding: 15px 15px 15px 0px;">Employee Detail</div>
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-left: 50%;"></mat-spinner>
+<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
 <!-- <alert></alert> -->
 <form [formGroup]="EmployeeForm">
     <mat-tab-group #changeEvent [selectedIndex]="selectedIndex" (selectedIndexChange)="tabChanged($event)"

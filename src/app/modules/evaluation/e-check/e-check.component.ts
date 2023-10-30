@@ -20,7 +20,7 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 export class ECheckComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  EvaluationUpdatable = false;
+  EvaluationEType = false;
   RowsToUpdate = -1;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
@@ -146,7 +146,7 @@ export class ECheckComponent implements OnInit {
         // if (this.Classes.length == 0) {
         //   var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         //   this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-        //     this.Classes = [...data.value];
+        //     if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         //   });
         // }
 
@@ -188,7 +188,7 @@ export class ECheckComponent implements OnInit {
     this.ApplyVariables(row);
 
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    if (this.EvaluationUpdatable)
+    if (this.EvaluationEType)
       filterStr += ' and StudentId eq ' + row.StudentId
     else {
       filterStr += ' and StudentClassId eq ' + row.StudentClassId
@@ -556,7 +556,7 @@ export class ECheckComponent implements OnInit {
       });
     // var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     //       this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-    //   this.Classes = [...data.value];
+    //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
     // });
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
@@ -712,7 +712,7 @@ export class ECheckComponent implements OnInit {
       'Duration',
       'ClassGroupId',
       'DisplayResult',
-      'AppendAnswer',
+      'ETypeId',
       'ProvideCertificate',
       'FullMark',
       'PassMark',
@@ -739,13 +739,13 @@ export class ECheckComponent implements OnInit {
   }
   FilteredClasses: any[] = [];
   FilteredExams: any[] = [];
-  GetUpdatable() {
+  GetEType() {
     debugger;
     var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
     let ObjEvaluationMaster: any = [];
     if (_evaluationMasterId > 0)
       ObjEvaluationMaster = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId);
-    this.EvaluationUpdatable = ObjEvaluationMaster[0].AppendAnswer;
+    this.EvaluationEType = ObjEvaluationMaster[0].ETypeId;
     //var _classgroupObj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId)
     var _classGroupId = 0;
     var _evaluationexammapforselectedEvaluation = this.EvaluationExamMap.filter(ee => ee.EvaluationMasterId == _evaluationMasterId);
@@ -955,13 +955,13 @@ export class ECheckComponent implements OnInit {
     //   .subscribe((data: any) => {
     //     this.StudentClasses = [...data.value];
     this.GetStudents(_searchClassId, _searchSectionId, _searchSemesterId);
-    if (this.EvaluationUpdatable)
-      this.ForUpdatableEvaluation(_searchClassId, _searchSectionId, _searchSemesterId, _evaluationMasterId, _examId);
+    if (this.EvaluationEType)
+      this.ForETypeEvaluation(_searchClassId, _searchSectionId, _searchSemesterId, _evaluationMasterId, _examId);
     else
       this.GetEvaluationMapping(_searchClassId, _searchSectionId, _searchSemesterId, _evaluationdetail[0].EvaluationExamMapId, _evaluationMasterId, _examId);
     //  })
   }
-  ForUpdatableEvaluation(pClassId, pSectionId, pSemesterId, pEvaluationMasterId, pExamId) {
+  ForETypeEvaluation(pClassId, pSectionId, pSemesterId, pEvaluationMasterId, pExamId) {
     var _students: any[] = [];
     var _evaluationName = this.EvaluationMaster.filter(e => e.EvaluationMasterId == pEvaluationMasterId)[0].EvaluationName;
     //if (pSectionId > 0)

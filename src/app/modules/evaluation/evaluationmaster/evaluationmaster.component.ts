@@ -48,7 +48,7 @@ export class EvaluationMasterComponent implements OnInit {
     StartTime: '',
     ClassGroupId: 0,
     DisplayResult: false,
-    AppendAnswer: false,
+    ETypeId: false,
     ProvideCertificate: false,
     FullMark: 0,
     PassMark: 0,
@@ -64,7 +64,7 @@ export class EvaluationMasterComponent implements OnInit {
     "StartDate",
     "FullMark",
     "PassMark",
-    "AppendAnswer",
+    "ETypeId",
     "Confidential",
     //"ProvideCertificate",
     "Active",
@@ -109,7 +109,7 @@ export class EvaluationMasterComponent implements OnInit {
       this.nav.navigate(['/auth/login']);
     else {
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.ETYPE);
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATION);
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
@@ -139,7 +139,7 @@ export class EvaluationMasterComponent implements OnInit {
       ClassGroupId: 0,
       DisplayResult: false,
       ProvideCertificate: false,
-      AppendAnswer: false,
+      ETypeId: 0,
       FullMark: 0,
       PassMark: 0,
       Confidential: false,
@@ -176,10 +176,10 @@ export class EvaluationMasterComponent implements OnInit {
     row.Action = true;
     row.ProvideCertificate = value.checked;
   }
-  updateUpdatable(row, value) {
+  updateEType(row, element) {
     debugger;
     row.Action = true;
-    row.AppendAnswer = value.checked; //? 1: 0;
+    row.ETypeId = element.value; //? 1: 0;
   }
   delete(element) {
     this.openDialog(element);
@@ -267,7 +267,7 @@ export class EvaluationMasterComponent implements OnInit {
           this.EvaluationMasterData.Description = globalconstants.encodeSpecialChars(row.Description);
           this.EvaluationMasterData.DisplayResult = row.DisplayResult;
           this.EvaluationMasterData.ProvideCertificate = row.ProvideCertificate;
-          this.EvaluationMasterData.AppendAnswer = row.AppendAnswer;
+          this.EvaluationMasterData.ETypeId = row.ETypeId;
           this.EvaluationMasterData.Duration = row.Duration == null ? 0 : row.Duration;
           this.EvaluationMasterData.StartDate = row.StartDate;
           this.EvaluationMasterData.StartTime = row.StartTime;
@@ -341,7 +341,7 @@ export class EvaluationMasterComponent implements OnInit {
       "EvaluationMasterId",
       "EvaluationName",
       "Description",
-      "AppendAnswer",
+      "ETypeId",
       "Duration",
       "StartDate",
       "StartTime",
@@ -399,10 +399,12 @@ export class EvaluationMasterComponent implements OnInit {
         }
       })
   }
+  ETypes: any[] = [];
+  Defaultvalue =0;
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
-
+    this.ETypes = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONTYPE)
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
         this.ClassGroups = [...data.value];
@@ -436,7 +438,7 @@ export interface IEvaluationMaster {
   StartDate: any;
   ClassGroupId: number;
   DisplayResult: boolean;
-  AppendAnswer: boolean;
+  ETypeId: number;
   ProvideCertificate
   FullMark: number;
   PassMark: number;

@@ -169,7 +169,7 @@ export class GetreportComponent implements OnInit {
       this.FilterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.FilterOrgSubOrgBatchId= globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
           this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        this.Classes = [...data.value];
+        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
       })
     }
@@ -276,7 +276,7 @@ export class GetreportComponent implements OnInit {
   IfStudentActivityMethods() {
     // var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     //       this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-    //   this.Classes = [...data.value];
+    //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
     //   this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
     // })
     this.GetStudents();
