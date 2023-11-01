@@ -130,7 +130,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   //displayedColumns = ['position', 'name', 'weight', 'symbol'];
   ClassGroupMappings: any[] = [];
   displayedColumns = ['ClassSubjectMarkComponentId',
-    //'ClassSubject', 
+    'ClassSubject', 
     'SubjectComponent',
     'FullMark',
     'PassMark',

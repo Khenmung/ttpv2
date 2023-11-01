@@ -181,7 +181,7 @@ export class FiledragAndDropComponent implements OnInit {
       return;
     debugger;
     
-    var extensions = ["image", "text/plain","application/vnd.ms-excel", "application/pdf", "csv","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+    var extensions = ["image/png","image/gif","image/jpeg", "text/plain","application/vnd.ms-excel", "application/pdf", "csv","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
     var mimeType = files[0].type;
     //if (mimeType.match(/image\/*/) == null) {
     if (extensions.indexOf(mimeType) == -1) {

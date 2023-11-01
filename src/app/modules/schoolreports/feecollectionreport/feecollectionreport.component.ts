@@ -46,11 +46,12 @@ export class FeecollectionreportComponent implements OnInit {
   CurrentBatch: string = '';
   Students: any[] = [];
   DisplayColumns = [
+    "FeePaymentRelatedId",
     "PID",
     "Name",
     "ClassRollNoSection",
     "RollNo",
-    "FeePaymentStatusId",
+    "FeepaymentStatusId",
     "Active",
     "Action"
 
@@ -60,7 +61,7 @@ export class FeecollectionreportComponent implements OnInit {
     "Name",
     "ClassRollNoSection",
     "RollNo",
-    "FeePaymentStatusId",
+    "FeepaymentStatusId",
     "Active",
     "Action"
 
@@ -207,21 +208,23 @@ export class FeecollectionreportComponent implements OnInit {
     let filterstring = this.FilterOrgSubOrgBatchId;
 
     var selectedMonth = this.searchForm.get("searchMonth")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     var _selectedClassId = this.searchForm.get("searchClassId")?.value;
     var paidNotPaid = this.searchForm.get("PaidNotPaid")?.value;
     //var studentclassId = this.searchForm.get("searchStudentName")?.value.StudentClassId;
     var nestedFilter = '';
-
-    if (selectedMonth == 0) {
-      this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar("Please select month.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
     if (paidNotPaid == '') {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please select paid or not paid option.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
+    if (selectedMonth == 0) {
+      this.loading = false; this.PageLoading = false;
+      this.contentservice.openSnackBar("Please select month.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+    
     this.loading = true;
     if (paidNotPaid == 'NotPaid')
       //nestedFilter = "$filter=TotalCredit gt 0 and Balance gt 0 and Month eq " + selectedMonth + ";";
@@ -229,11 +232,24 @@ export class FeecollectionreportComponent implements OnInit {
     else
       nestedFilter = " and TotalDebit gt 0 and Balance eq 0 and Month eq " + selectedMonth;
 
-    if (_selectedClassId > 0) {
+    if (_selectedClassId) {
       filterstring += ' and ClassId eq ' + _selectedClassId;
     }
-
-    //filterstring += " and IsCurrent eq true" // and Active eq 1"//report needed even though the student is deactivated.
+    else {
+      this.loading = false;
+      this.contentservice.openSnackBar("Please select student class.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+    if(!_sectionId && !_semesterId)
+    {
+      this.loading = false;
+      this.contentservice.openSnackBar("Please select semester/section.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+    if (_semesterId)
+      filterstring += ' and SemsterId eq ' + _semesterId;
+    if (_sectionId)
+      filterstring += ' and SectionId eq ' + _sectionId;
 
     let list: List = new List();
     list.fields = [
@@ -293,7 +309,10 @@ export class FeecollectionreportComponent implements OnInit {
           });
           debugger;
           //result =result.sort((a,b)=>a.Sequence - b.Sequence);
-          this.ELEMENT_DATA = alasql("select PID,Name,ClassRollNoSection,ClassId,SemesterId,SectionId,StudentClassId,RollNo,Sequence,Section,MAX(Month) month from ? group by PID,Name,Sequence,ClassRollNoSection,Section,RollNo,ClassId,SemesterId,SectionId,StudentClassId", [result]);
+          let str = "select PID,Name,ClassRollNoSection,ClassId,SemesterId,SectionId,StudentClassId,RollNo,Sequence,Section," +
+            "MAX(Month) month from ? " +
+            "group by PID,Name,Sequence,ClassRollNoSection,Section,RollNo,ClassId,SemesterId,SectionId,StudentClassId"
+          this.ELEMENT_DATA = alasql(str, [result]);
           // if (paidNotPaid == 'NotPaid')
           //   this.ELEMENT_DATA = this.ELEMENT_DATA.filter((f: any) => f.month == 0); //.sort((a, b) => a.month - b.month)
           // else
@@ -310,19 +329,17 @@ export class FeecollectionreportComponent implements OnInit {
           //if (data[1].value.length > 0) {
           this.ELEMENT_DATA.forEach(item => {
             let studentstatus = data[1].value.filter(d => d.StudentClassId == item.StudentClassId
-              && d.FeepaymentStatusId == (_feePaymentStatusId?_feePaymentStatusId:d.FeepaymentStatusId));
+              && d.FeepaymentStatusId == (_feePaymentStatusId ? _feePaymentStatusId : d.FeepaymentStatusId));
             if (studentstatus.length > 0) {
               item.Active = studentstatus[0].Active;
               item.FeePaymentRelatedId = studentstatus[0].FeePaymentRelatedId;
               item.FeepaymentStatusId = studentstatus[0].FeepaymentStatusId;
             }
-            else {
+            else if (!_feePaymentStatusId) {
               item.Active = false;
-              item.FeePaymentRelatedId = 0
-              item.FeepaymentStatusId = (_feePaymentStatusId?_feePaymentStatusId:0);
+              item.FeePaymentRelatedId = 0;
+              item.FeepaymentStatusId = 0;
             }
-            
-
           })
           //}
           this.dataSource = new MatTableDataSource<ITodayReceipt>(this.ELEMENT_DATA);
@@ -344,6 +361,9 @@ export class FeecollectionreportComponent implements OnInit {
     row.Active = event.checked;
     row.Action = true;
   }
+  UpdateStatus(row) {
+    row.Action = true;
+  }
   getFeePaymentRelateds() {
 
     var _classId = this.searchForm.get("searchClassId")?.value;
@@ -352,8 +372,10 @@ export class FeecollectionreportComponent implements OnInit {
     var _feePaymentStatusId = this.searchForm.get("searchFeePaymentStatusId")?.value;
     let filterstr = this.FilterOrgSubOrg;
     filterstr += " and ClassId eq " + _classId;
-    filterstr += " and SemesterId eq " + _semesterId;
-    filterstr += " and SectionId eq " + _sectionId;
+    if (_semesterId)
+      filterstr += " and SemesterId eq " + _semesterId;
+    if (_sectionId)
+      filterstr += " and SectionId eq " + _sectionId;
     if (_feePaymentStatusId)
       filterstr += " and FeepaymentStatusId eq " + _feePaymentStatusId;
 
@@ -410,28 +432,30 @@ export class FeecollectionreportComponent implements OnInit {
   }
   Save(row) {
     this.DataToUpdate = 1;
-    this.FeePaymentRelatedList=[];
+    this.FeePaymentRelatedList = [];
     this.UpdateOrSave(row);
   }
   UpdateOrSave(row) {
 
-    debugger;
+    //debugger;
     this.loading = true;
     var _classId = this.searchForm.get("searchClassId")?.value;
     //var _FeepaymentStatusId = this.searchForm.get("searchFeePaymentStatusId")?.value;
     let checkFilterString = this.FilterOrgSubOrg;
     if (_classId) {
-      checkFilterString += " and ClassId eq " + _classId
+      checkFilterString += " and ClassId eq " + _classId;
     }
     else {
       this.loading = false;
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    if (row.FeePaymentStatusId > 0) {
-      checkFilterString += " and FeepaymentStatusId eq " + row.FeePaymentStatusId;
+    checkFilterString += " and StudentClassId eq " + row.StudentClassId;
+
+    if (row.FeepaymentStatusId > 0) {
+      checkFilterString += " and FeepaymentStatusId eq " + row.FeepaymentStatusId;
     }
-    checkFilterString += " and Active eq true";
+    //checkFilterString += " and Active eq true";
 
     if (row.FeePaymentRelatedId > 0)
       checkFilterString += " and FeePaymentRelatedId ne " + row.FeePaymentRelatedId;
@@ -454,8 +478,6 @@ export class FeecollectionreportComponent implements OnInit {
           this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
           this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
 
-
-
           this.FeePaymentRelatedData =
           {
             FeePaymentRelatedId: row.FeePaymentRelatedId,
@@ -463,7 +485,7 @@ export class FeecollectionreportComponent implements OnInit {
             ClassId: row.ClassId,
             SectionId: row.SectionId,
             SemesterId: row.SemesterId,
-            FeepaymentStatusId: row.FeePaymentStatusId,
+            FeepaymentStatusId: row.FeepaymentStatusId,
             Active: row.Active,
             Deleted: false,
             OrgId: this.LoginUserDetail[0]["orgId"],
@@ -491,13 +513,13 @@ export class FeecollectionreportComponent implements OnInit {
             //console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate)
             this.insert(row);
           }
-            
+
         }
       });
   }
   DataToUpdate = 0;
   saveall() {
-    this.FeePaymentRelatedList =[];
+    this.FeePaymentRelatedList = [];
     let toupdate = this.ELEMENT_DATA.filter(c => c.Active);
     this.DataToUpdate = toupdate.length;
     toupdate.forEach(item => {
@@ -515,8 +537,10 @@ export class FeecollectionreportComponent implements OnInit {
 
           row.FeePaymentRelatedId = data.FeePaymentRelatedId;
           row.Action = false;
-
-        }, error => {
+          this.loadingFalse();
+          this.contentservice.openSnackBar("Data Saved successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
+        },
+        error => {
 
           this.loadingFalse();
           //console.log("error on student evaluation insert", error);

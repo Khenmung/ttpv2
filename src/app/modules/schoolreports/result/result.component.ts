@@ -257,7 +257,7 @@ export class ResultComponent implements OnInit {
       filterstr += " and SemesterId eq " + _semesterId;
       filterstr += " and SectionId eq " + _sectionId;
     }
-    filterstr += " and Active eq 1";
+    filterstr += " and ExamId eq " + _examId +" and Active eq 1";
 
     let list: List = new List();
     list.fields = [
@@ -271,7 +271,7 @@ export class ResultComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
-        ////console.log("examresults1",data.value);
+        //console.log("examresults1", data.value);
         var _students: any = this.tokenStorage.getStudents()!;
         var classMarks = this.ClassSubjectComponents.filter(c => c.ClassId == _classId);
         if (classMarks.length > 0)
@@ -345,12 +345,15 @@ export class ResultComponent implements OnInit {
         var _previouspercent = 0;
         PassStudent = PassStudent.sort((a, b) => b["Percent"] - a["Percent"])
         PassStudent.forEach(p => {
-          if (_previouspercent != p["Percent"]) {
+          if (_previouspercent != p["Percent"] && +p["Percent"] !== 0) {
             _rank += 1;
           }
+          else if (+p["Percent"] === 0)
+            _rank = 0;
           p.Rank = _rank;
           _previouspercent = p["Percent"];
         })
+        //console.log("this.ExamStudentResult",this.ExamStudentResult)
         this.ExamStudentResult = this.GetRank(this.ExamStudentResult);
         this.ExamStudentResult = PassStudent.sort((a, b) => a.Rank - b.Rank)
         this.passdataSource = new MatTableDataSource(this.ExamStudentResult);
@@ -364,12 +367,13 @@ export class ResultComponent implements OnInit {
   }
   GetRank(pSortedresult) {
     let _rank, lastDigit;
+    //console.log("pSortedresult",pSortedresult);
     pSortedresult.forEach(item => {
       _rank = item.Rank + "";
       lastDigit = _rank.substring(_rank.length - 1)
       switch (lastDigit) {
         case "0":
-          if (_rank == "0")
+          if (_rank === "0" || _rank == 0)
             _rank = ""
           else
             _rank = _rank + "th"

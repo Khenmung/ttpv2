@@ -72,6 +72,10 @@
 <div>
     <div id="printSection">
         <mat-table #table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="FeePaymentRelatedId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.FeePaymentRelatedId}} </mat-cell>
+            </ng-container>
             <ng-container matColumnDef="PID">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> PID </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.PID}} </mat-cell>
@@ -92,11 +96,11 @@
                     {{element.ClassRollNoSection}}
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="FeePaymentStatusId">
+            <ng-container matColumnDef="FeepaymentStatusId">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
-                        <mat-select [(ngModel)]="element.FeepaymentStatusId" [value]="element.FeepaymentStatusId">
+                        <mat-select [(ngModel)]="element.FeepaymentStatusId" [value]="element.FeepaymentStatusId" (selectionChange)="UpdateStatus(element)">
                             <mat-option [value]="Defaultvalue">select</mat-option>
                             <mat-option *ngFor="let item of FeePaymentStatuses"
                                 [value]="item.MasterDataId">{{item.MasterDataName}}
@@ -116,14 +120,14 @@
             </ng-container>
             <ng-container matColumnDef="Action">
                 <mat-header-cell *matHeaderCellDef>
-                    <button [disabled]="loading || Permission=='read'"
+                    <!-- <button [disabled]="loading || Permission=='read'"
                     *ngIf="ELEMENT_DATA.length>0" matTooltip="save all" mat-mini-fab
                     color="accent" (click)="saveall()">
                     <mat-icon>all_out</mat-icon>
                     <mat-icon *ngIf="loading">
                         <mat-spinner diameter="20" color="Blue"></mat-spinner>
                     </mat-icon>
-                </button>
+                </button> -->
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element" style="display: flex;justify-content: center;">
                     <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"

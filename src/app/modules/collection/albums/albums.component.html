@@ -1,7 +1,7 @@
 <!-- <mat-card>
     <mat-card-title style="padding: 20px;">Manage Files/Folders</mat-card-title>
     <mat-card-content> -->
-<div style="padding: 20px;font-weight: bold;">Folder</div>
+<div style="padding: 20px;font-weight: bold;">File</div>
 <mat-spinner *ngIf="PageLoading" diameter="25"
     style="margin-bottom:15px;position:relative;margin-left: 50%;"></mat-spinner>
 <form [formGroup]="searchForm">
@@ -9,6 +9,7 @@
         <mat-form-field appearance="outline" [style.width.px]="350">
             <mat-label>Category</mat-label>
             <mat-select formControlName="searchFileCategoryId">
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let option of FileCategory" [value]="option.MasterDataId">
                     {{option.MasterDataName}}
                 </mat-option>

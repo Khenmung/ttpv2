@@ -17,6 +17,7 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { IStudent } from '../../admission/AssignStudentClass/Assignstudentclassdashboard.component';
 import { SwUpdate } from '@angular/service-worker';
+import moment from 'moment';
 
 @Component({
   selector: 'app-today-collection',
@@ -122,11 +123,11 @@ export class TodayCollectionComponent implements OnInit {
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+          if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
           this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
           this.GetMasterData();
         });
-        
+
         this.GetEmployees();
       }
     }
@@ -165,6 +166,16 @@ export class TodayCollectionComponent implements OnInit {
     this.allRowsExpanded = !this.allRowsExpanded;
     this.expandedElement = null;
   }
+  convertUTCDateToLocalDate(date) {
+    var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+
+    var offset = date.getTimezoneOffset() / 60;
+    var hours = date.getHours();
+
+    newDate.setHours(hours - offset);
+
+    return newDate;   
+}
   GetStudentFeePaymentDetails() {
     debugger;
     this.ErrorMessage = '';
@@ -215,14 +226,15 @@ export class TodayCollectionComponent implements OnInit {
           _students = this.Students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.ClassId == _classId) > -1);
         else
           _students = [...this.Students];
-
+        //console.log("data.value", data.value)
         data.value.forEach(db => {
           var obj = this.Employees.filter(e => e.UserId == db.CreatedBy);
           if (obj.length > 0)
             db.ReceivedBy = obj[0].ShortName;
+
           var studcls = _students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.StudentClassId == db.StudentClassId) > -1);
           if (studcls.length > 0) {
-
+            db.ReceiptDate = this.convertUTCDateToLocalDate(new Date(db.ReceiptDate)).toLocaleString('hi-IN');
             db.StudentClasses = studcls;
             db.PID = studcls[0].PID;
 

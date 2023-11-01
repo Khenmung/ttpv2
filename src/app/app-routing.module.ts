@@ -12,6 +12,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/collection/photogallery.module').then(m => m.PhotogalleryModule)
   },
   {
+    path: 'edu/doc',
+    loadChildren: () => import('./modules/collection/photogallery.module').then(m => m.PhotogalleryModule)
+  },
+  {
     path: 'edu/questionbank',
     loadChildren: () => import('./modules/questionbank/questionbank.module').then(m => m.QuestionbankModule)
   },

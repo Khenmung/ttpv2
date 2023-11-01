@@ -1,7 +1,8 @@
 <div style="padding:15px 15px 10px 15px;">
     <div><strong>Exam Results</strong></div>
 </div>
-<mat-spinner *ngIf="loading || PageLoading" diameter="25" style="position:relative;margin-left: 50%;margin-bottom: 15px;"></mat-spinner>
+<mat-spinner *ngIf="loading || PageLoading" diameter="25"
+    style="position:relative;margin-left: 50%;margin-bottom: 15px;"></mat-spinner>
 <!-- <alert></alert> -->
 <!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
 <form [formGroup]="searchForm">
@@ -90,9 +91,12 @@
         <div>&nbsp;</div>
         <div style="font-size: 25px;color: blue; font-weight: bold;display: flex;width: 100%;justify-content: center;">
             {{ExamName + ' - ' + BatchName}}</div>
-        <div style="display: flex;width: 100%;justify-content: center;"><b>  {{ClassName}}, {{ SemesterName + SectionName}}</b></div>
-        <div style="display: flex;width: 100%;justify-content: flex-end;">No. Of Subjects:
-                {{AllSubjectCounts}}</div>
+        <div style="display: flex;width: 100%;justify-content: center;"><b> {{ClassName}}, {{ SemesterName +
+                SectionName}}</b></div>
+        <div style="display: flex;width: 100%;justify-content: flex-end;flex-direction: column;">
+            <div>No. Of Subjects : {{AllSubjectCounts}}</div>
+            <div>Total Full Mark : {{TotalMarkingSubjectFullMark}}</div>
+        </div>
         <div>&nbsp;</div>
         <mat-table #table [dataSource]="dataSource" matSort>
             <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">

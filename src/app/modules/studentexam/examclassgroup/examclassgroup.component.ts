@@ -42,12 +42,14 @@ export class ExamclassgroupComponent implements OnInit {
     ExamClassGroupMapId: 0,
     ExamId: 0,
     ClassGroupId: 0,
+    MarkConvertTo:0,
     OrgId: 0, SubOrgId: 0,
     Active: false
   };
   displayedColumns = [
     "ExamClassGroupMapId",
     "GroupName",
+    "MarkConvertTo",
     "Active",
     "Action"
   ];
@@ -185,6 +187,7 @@ export class ExamclassgroupComponent implements OnInit {
           this.ExamClassGroupMapData.Active = row.Active;
           this.ExamClassGroupMapData.ExamId = row.ExamId;
           this.ExamClassGroupMapData.ClassGroupId = row.ClassGroupId;
+          this.ExamClassGroupMapData.MarkConvertTo = row.MarkConvertTo;
           this.ExamClassGroupMapData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ExamClassGroupMapData.SubOrgId = this.SubOrgId;
           ////console.log("this.ExamClassGroupMapData", this.ExamClassGroupMapData);
@@ -315,7 +318,7 @@ export class ExamclassgroupComponent implements OnInit {
       "ExamClassGroupMapId",
       "ExamId",
       "ClassGroupId",
-      //"ClassGroupMappingId",
+      "MarkConvertTo",
       "Active"];
 
     list.PageName = this.ExamClassGroupMapListName;

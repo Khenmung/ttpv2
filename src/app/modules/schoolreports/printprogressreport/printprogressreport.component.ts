@@ -379,6 +379,11 @@ export class PrintprogressreportComponent implements OnInit {
     //let filterStr = 'Active eq 1 and StudentClassId eq ' + this.StudentClassId;
     let filterStr = this.filterOrgSubOrg
     filterStr += " and ClassId eq " + _classId;
+    if(!_semesterId && !_sectionId)
+    {
+      this.contentservice.openSnackBar("Please select section/semester.",globalconstants.ActionText,globalconstants.RedBackground);
+      return;
+    }
     if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
     if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
     filterStr += " and Active eq 1";
@@ -397,11 +402,11 @@ export class PrintprogressreportComponent implements OnInit {
     //list.lookupFields = ["ClassSubject($select=SubjectCategoryId,ClassId)"];
     list.filter = [filterStr];
 
-
+    this.loading=true;
     let sources = [this.dataservice.get(list), this.GetClassSubject()];
     forkJoin(sources)
       .subscribe((data: any) => {
-        debugger;
+        //debugger;
         let classSubject = [...data[1].value];// globalconstants.getFilteredClassSubjects(data[1].value,_classId,_sectionId,_semesterId);
         this.StudentSubjects = [];
         data[0].value.forEach(ss => {
@@ -701,7 +706,8 @@ export class PrintprogressreportComponent implements OnInit {
     this.CommonHeader = this.getDropDownData(globalconstants.MasterDefinitions.common.COMMONPRINTHEADING);
     this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [];
-      data.value.map(m => {
+      let result = data.value?data.value:data;
+      result.forEach(m => {
         let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();

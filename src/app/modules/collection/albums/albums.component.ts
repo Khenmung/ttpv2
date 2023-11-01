@@ -43,7 +43,7 @@ export class AlbumsComponent implements OnInit {
   loading: boolean = false;
   error: string = '';
   searchForm: UntypedFormGroup;
-
+  Defaultvalue=0;
   images: any[];
   Albums: any[] = [];
   AllAlbums: any[] = [];
@@ -190,13 +190,15 @@ export class AlbumsComponent implements OnInit {
     if (_folderName) {
       folderSearch += " and UpdatedFileFolderName eq '" + _folderName + "'";
     }
-    if (_categoryId > 0) {
+    if (_categoryId) {
       folderSearch += " and CategoryId eq " + _categoryId;
     }
+    else
+    {
+      this.contentservice.openSnackBar("Please select file category.",globalconstants.ActionText,globalconstants.RedBackground);
+      return;
+    }
 
-    // else {
-    //   return;
-    // }
     let list: List = new List();
     list.fields = ["FileId", "FileName", "CategoryId", "FileOrFolder", "Description", "ParentId", "UpdatedFileFolderName", "UploadDate"];
     list.PageName = "StorageFnPs";

@@ -269,7 +269,7 @@ export class AdminrolepermissionComponent implements OnInit {
         else
           this.PlanFeaturePages = [];
         this.loading = false; this.PageLoading = false;
-        //console.log("PageFeatures", this.TopPageFeatures)
+        console.log("PageFeatures", this.TopPageFeatures)
       })
   }
   FilterPageFeatures() {

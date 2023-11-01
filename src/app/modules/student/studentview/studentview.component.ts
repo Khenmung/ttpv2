@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
@@ -30,7 +30,7 @@ export class StudentviewComponent implements OnInit {
   Edit = false;
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  LoginUserDetail :any[]= [];
+  LoginUserDetail: any[] = [];
   StudentLeaving = false;
   StudentName = '';
   StudentClassId = 0;
@@ -44,36 +44,36 @@ export class StudentviewComponent implements OnInit {
   formdata: FormData;
   StudentId = 0;
   loading = false;
-  Classes :any[]= [];
-  Sections :any[]= [];
-  Clubs :any[]= [];
-  Genders :any[]= [];
-  Category :any[]= [];
-  Bloodgroup :any[]= [];
-  Religion :any[]= [];
+  Classes: any[] = [];
+  Sections: any[] = [];
+  Clubs: any[] = [];
+  Genders: any[] = [];
+  Category: any[] = [];
+  Bloodgroup: any[] = [];
+  Religion: any[] = [];
   MaxPID = 0;
   Permission = '';
-  PrimaryContact :any[]= [];
-  Location :any[]= [];
-  allMasterData :any[]= [];
-  ReasonForLeaving :any[]= [];
-  studentData :any[]= [];
-  AttendanceStatus:any[]=[];
-  AdmissionStatuses :any[]= [];
-  ColumnsOfSelectedReports :any[]= [];
-  Semesters :any[]= [];
-  CourseYears :any[]= [];
+  PrimaryContact: any[] = [];
+  Location: any[] = [];
+  allMasterData: any[] = [];
+  ReasonForLeaving: any[] = [];
+  studentData: any[] = [];
+  AttendanceStatus: any[] = [];
+  AdmissionStatuses: any[] = [];
+  ColumnsOfSelectedReports: any[] = [];
+  Semesters: any[] = [];
+  CourseYears: any[] = [];
   CountryId = 0;
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   PrimaryContactDefaultId = 0;
   PrimaryContactOtherId = 0;
   displayContactPerson = false;
-  Houses :any[]= [];
-  Remarks :any[]= [];
+  Houses: any[] = [];
+  Remarks: any[] = [];
   studentForm: UntypedFormGroup;
   Edited = false;
-  public files: NgxFileDropEntry[]= [];
+  public files: NgxFileDropEntry[] = [];
   @ViewChild(ImageCropperComponent, { static: true }) imageCropper: ImageCropperComponent;
 
   preview(files) {
@@ -141,15 +141,14 @@ export class StudentviewComponent implements OnInit {
     });
   }
 
-  constructor(private servicework: SwUpdate,
+  constructor(
+    //private servicework: SwUpdate,
     private contentservice: ContentService,
     private dataservice: NaomitsuService,
     private route: Router,
-    private fb: UntypedFormBuilder,
     private fileUploadService: FileUploadService,
     private shareddata: SharedataService,
     private tokenStorage: TokenStorageService,
-    private sanitizer: DomSanitizer
 
   ) {
 
@@ -189,10 +188,11 @@ export class StudentviewComponent implements OnInit {
         this.GetAchievementAndPoint();
 
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
           this.loading = false;
           this.PageLoading = false;
+          this.GetStudentClass();
         });
 
       }
@@ -245,32 +245,35 @@ export class StudentviewComponent implements OnInit {
     this.OnBlur();
   }
 
-  Batches :any[]= [];
-  StudentClasses :any[]= [];
+  Batches: any[] = [];
+  StudentClasses: any[] = [];
   GetStudentClass() {
     debugger;
-    var filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+    // var filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
 
-    if (this.StudentId > 0 && this.StudentClassId > 0) {
+     if (this.StudentId > 0 && this.StudentClassId > 0) {
 
-      let list: List = new List();
-      list.fields = [
-        "StudentClassId", "ClassId",
-        "StudentId", "RollNo", "SectionId", "AdmissionNo",
-        "BatchId", "FeeTypeId", "CourseYearId", "SemesterId",
-        "AdmissionDate", "Remarks", "Active"];
-      list.PageName = "StudentClasses";
-      list.filter = [filterOrgIdNBatchId + " and StudentClassId eq " + this.StudentClassId];
+    //   let list: List = new List();
+    //   list.fields = [
+    //     "StudentClassId", "ClassId",
+    //     "StudentId", "RollNo", "SectionId", "AdmissionNo",
+    //     "BatchId", "FeeTypeId", "CourseYearId", "SemesterId",
+    //     "AdmissionDate", "Remarks", "Active"];
+    //   list.PageName = "StudentClasses";
+    //   list.filter = [filterOrgIdNBatchId + " and StudentClassId eq " + this.StudentClassId];
 
-      this.dataservice.get(list)
-        .subscribe((data: any) => {
-          if (data.value.length > 0) {
+    //   this.dataservice.get(list)
+    //     .subscribe((data: any) => {
+      let stucls:any = this.tokenStorage.getStudents()!;
+      stucls = stucls.filter((s:any)=>s.StudentId == this.StudentId);
+
+          if (stucls.length > 0) {
             var _class = ''
-            var _classObj = this.Classes.filter((f:any) => f.ClassId == data.value[0].ClassId);
+            var _classObj = this.Classes.filter((f: any) => f.ClassId == stucls[0].StudentClasses[0].ClassId);
             if (_classObj.length > 0)
               _class = _classObj[0].ClassName;
             var _semester = ''
-            var _semesterObj = this.Semesters.filter((f:any) => f.MasterDataId == data.value[0].SemesterId);
+            var _semesterObj = this.Semesters.filter((f: any) => f.MasterDataId == stucls[0].StudentClasses[0].SemesterId);
             if (_semesterObj.length > 0)
               _semester = _semesterObj[0].MasterDataName;
             // var _courseYear = ''
@@ -279,35 +282,35 @@ export class StudentviewComponent implements OnInit {
             //   _courseYear = _courseYearObj[0].MasterDataName;
 
             var _section = ''
-            var _sectionObj = this.Sections.filter((f:any) => f.MasterDataId == data.value[0].SectionId);
+            var _sectionObj = this.Sections.filter((f: any) => f.MasterDataId == stucls[0].StudentClasses[0].SectionId);
             if (_sectionObj.length > 0)
               _section = _sectionObj[0].MasterDataName;
 
             var _feeType = ''
-            var _feeTypeObj = this.FeeType.filter((f:any) => f.FeeTypeId == data.value[0].FeeTypeId);
+            var _feeTypeObj = this.FeeType.filter((f: any) => f.FeeTypeId == stucls[0].StudentClasses[0].FeeTypeId);
             if (_feeTypeObj.length > 0)
               _feeType = _feeTypeObj[0].FeeTypeName;
 
             var _batch = ''
             this.Batches = this.tokenStorage.getBatches()!;;
-            var _batchObj = this.Batches.filter((f:any) => f.BatchId == data.value[0].BatchId);
+            var _batchObj = this.Batches.filter((f: any) => f.BatchId == stucls[0].StudentClasses[0].BatchId);
             if (_batchObj.length > 0)
               _batch = _batchObj[0].BatchName;
 
 
-            var admissiondate = moment(data.value[0].AdmissionDate).isBefore("1970-01-01")
+            var admissiondate = moment(stucls[0].StudentClasses[0].AdmissionDate).isBefore("1970-01-01")
             this.StudentClasses = [
-              { Text: 'Admission No.', Value: data.value[0].AdmissionNo },
+              { Text: 'Admission No.', Value: stucls[0].StudentClasses[0].AdmissionNo },
               { Text: 'Class', Value: _class },
               { Text: 'Section', Value: _section },
               { Text: 'Semester', Value: _semester },
-             // { Text: 'Year', Value: _courseYear },
-              { Text: 'Roll No.', Value: data.value[0].RollNo },
+              // { Text: 'Year', Value: _courseYear },
+              { Text: 'Roll No.', Value: stucls[0].StudentClasses[0].RollNo },
               { Text: 'Batch', Value: _batch },
               { Text: 'Fee Type', Value: _feeType },
-              { Text: 'Admission Date', Value: admissiondate ? moment() : moment(data.value[0].AdmissionDate).format('DD/MM/YYYY') },
-              { Text: 'Remarks', Value: data.value[0].Remarks },
-              { Text: 'Active', Value: data.value[0].Active == 1 ? 'Yes' : 'No' }
+              { Text: 'Admission Date', Value: admissiondate ? moment() : moment(stucls[0].StudentClasses[0].AdmissionDate).format('DD/MM/YYYY') },
+              { Text: 'Remarks', Value: stucls[0].StudentClasses[0].Remarks },
+              { Text: 'Active', Value: stucls[0].StudentClasses[0].Active == 1 ? 'Yes' : 'No' }
             ];
           }
           else {
@@ -318,7 +321,7 @@ export class StudentviewComponent implements OnInit {
               { Text: 'Section', Value: '' },
               { Text: 'RollNo', Value: '' },
               { Text: 'Semester', Value: '' },
-             // { Text: 'Year', Value: '' },
+              // { Text: 'Year', Value: '' },
               { Text: 'BatchId', Value: '' },
               { Text: 'Fee Type', Value: '' },
               { Text: 'Admission Date', Value: '' },
@@ -330,15 +333,15 @@ export class StudentviewComponent implements OnInit {
           this.datasourceStudentClassInfo = new MatTableDataSource<any>(this.StudentClasses);
           this.loading = false;
           this.PageLoading = false;
-        });
+        //});
     }
     else {
       this.loading = false;
       this.PageLoading = false;
     }
   }
-  StudentAttendanceList :any[]= [];
-  AttendanceStatusSum :any[]= [];
+  StudentAttendanceList: any[] = [];
+  AttendanceStatusSum: any[] = [];
   GetStudentAttendance() {
     debugger;
 
@@ -374,15 +377,15 @@ export class StudentviewComponent implements OnInit {
         if (this.AttendanceStatusSum.length > 0) {
           var _present = 0
           var _absent = 0;
-          var _presentObj = this.StudentAttendanceList.filter((f:any) => f.AttendanceStatusId == this.AttendancePresentId)
+          var _presentObj = this.StudentAttendanceList.filter((f: any) => f.AttendanceStatusId == this.AttendancePresentId)
           //if (_presentObj.length > 0)
-            _present = _presentObj.length;
+          _present = _presentObj.length;
 
-          var _absentObj = this.StudentAttendanceList.filter((f:any) => f.AttendanceStatusId == this.AttendanceAbsentId)
+          var _absentObj = this.StudentAttendanceList.filter((f: any) => f.AttendanceStatusId == this.AttendanceAbsentId)
           if (_absentObj.length > 0)
             _absent = _absentObj.length;
 
-          var _AttendanceInfoList:any = [
+          var _AttendanceInfoList: any = [
             { "Text": "Present", Value: _present },
             { "Text": "Absent", Value: _absent }
           ]
@@ -390,8 +393,8 @@ export class StudentviewComponent implements OnInit {
         this.datasourceAttendanceInfo = new MatTableDataSource<any>(_AttendanceInfoList);
       })
   }
-  SportsResultList :any[]= [];
-  ActivityNames :any[]= [];
+  SportsResultList: any[] = [];
+  ActivityNames: any[] = [];
 
   DisplayActivity = ["Secured", "Achievement", "SportsNameId", "CategoryId", "AchievementDate"];
 
@@ -426,12 +429,12 @@ export class StudentviewComponent implements OnInit {
           var objachievement = this.AchievementAndPoints.filter(a => a.AchievementAndPointId == m.RankId);
           if (objachievement.length > 0) {
             m.Rank = objachievement[0].Rank;
-            var obj = this.ActivityNames.filter((f:any) => f.MasterDataId == m.SportsNameId);
+            var obj = this.ActivityNames.filter((f: any) => f.MasterDataId == m.SportsNameId);
             if (obj.length > 0)
               m.SportsName = obj[0].MasterDataName;
             else
               m.SportsName = '';
-            m.SubCategories = this.allMasterData.filter((f:any) => f.ParentId == m.CategoryId);
+            m.SubCategories = this.allMasterData.filter((f: any) => f.ParentId == m.CategoryId);
             m.Achievement = globalconstants.decodeSpecialChars(m.Achievement);
             m.Action = false;
             this.SportsResultList.push(m);
@@ -443,7 +446,7 @@ export class StudentviewComponent implements OnInit {
       });
 
   }
-  AchievementAndPoints :any[]= [];
+  AchievementAndPoints: any[] = [];
   GetAchievementAndPoint() {
     //debugger;
     var filterOrgId = "OrgId eq " + this.LoginUserDetail[0]['orgId'] + " and Active eq true";
@@ -459,7 +462,7 @@ export class StudentviewComponent implements OnInit {
         this.GetSportsResult();
       })
   }
-  StudentFamilyNFriendList :any[]= [];
+  StudentFamilyNFriendList: any[] = [];
   StudentFamilyNFriendListName = 'StudentFamilyNFriends';
 
   GetStudentFamilyNFriends() {
@@ -516,41 +519,39 @@ export class StudentviewComponent implements OnInit {
       })
 
   }
-AttendancePresentId=0;
-AttendanceAbsentId=0;
-Remark2 :any=[];
+  AttendancePresentId = 0;
+  AttendanceAbsentId = 0;
+  Remark2: any = [];
   GetMasterData() {
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
-        //////console.log(data.value);
-        this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
-        this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
-        this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
-        this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
-        this.Religion = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
-        this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
-        this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
-        this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
-        this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
-        this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
-        this.AdmissionStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
-        this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-        this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
-        this.ActivityNames = this.getDropDownData(globalconstants.MasterDefinitions.common.ACTIVITYNAME);
-        this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
-        this.PrimaryContactDefaultId = this.PrimaryContact.filter(contact => contact.MasterDataName.toLowerCase() == "father")[0].MasterDataId;
-        this.PrimaryContactOtherId = this.PrimaryContact.filter(contact => contact.MasterDataName.toLowerCase() == "other")[0].MasterDataId;
-        this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
-        this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
-        this.AttendancePresentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='present')[0].MasterDataId;
-        this.AttendanceAbsentId = this.AttendanceStatus.filter((f:any)=>f.MasterDataName.toLowerCase()=='absent')[0].MasterDataId;
-        //this.GetAchievementAndPoint();
-        //this.studentForm.patchValue({ PrimaryContactFatherOrMother: this.PrimaryContactDefaultId });
-        //this.studentForm.patchValue({ ReasonForLeavingId: this.ReasonForLeaving.filter(r => r.MasterDataName.toLowerCase() == 'active')[0].MasterDataId });
-        if (this.StudentId > 0)
-          this.GetStudent();
+    //////console.log(data.value);
+    this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
+    this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
+    this.Bloodgroup = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
+    this.Category = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
+    this.Religion = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
+    this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
+    this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
+    this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
+    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+    this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
+    this.AdmissionStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
+    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
+    this.ActivityNames = this.getDropDownData(globalconstants.MasterDefinitions.common.ACTIVITYNAME);
+    this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
+    this.PrimaryContactDefaultId = this.PrimaryContact.filter(contact => contact.MasterDataName.toLowerCase() == "father")[0].MasterDataId;
+    this.PrimaryContactOtherId = this.PrimaryContact.filter(contact => contact.MasterDataName.toLowerCase() == "other")[0].MasterDataId;
+    this.ReasonForLeaving = this.getDropDownData(globalconstants.MasterDefinitions.school.REASONFORLEAVING);
+    this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
+    this.AttendancePresentId = this.AttendanceStatus.filter((f: any) => f.MasterDataName.toLowerCase() == 'present')[0].MasterDataId;
+    this.AttendanceAbsentId = this.AttendanceStatus.filter((f: any) => f.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
+    
+    if (this.StudentId > 0)
+      this.GetStudent();
 
-     // });
+    // });
 
   }
   getDropDownData(dropdowntype) {
@@ -575,219 +576,13 @@ Remark2 :any=[];
     this.Edited = true;
   }
   ErrorMessage = '';
-  SaveOrUpdate() {
-
-    var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f:any) => f.Active == 1);
-    this.ErrorMessage = '';
-    _MandatoryColumns.forEach(b => {
-      if (this.studentForm.get(b.ReportName)?.value == undefined
-        || this.studentForm.get(b.ReportName)?.value == null
-        || this.studentForm.get(b.ReportName)?.value.length == 0
-        || this.studentForm.get(b.ReportName)?.value == 0) {
-        this.ErrorMessage += b.ReportName + " is required.\n";
-      }
-    })
-
-    // if (this.studentForm.get("FirstName")?.value == 0) {
-    //   errorMessage += "First Name is required.\n";
-    // }
-    // if (this.studentForm.get("FatherName")?.value == 0) {
-    //   errorMessage += "Father name is required.\n";
-
-    // }
-    // if (this.studentForm.get("BloodgroupId")?.value == 0) {
-    //   errorMessage += "Please select blood group.\n";
-
-    // }
-    // if (this.studentForm.get("GenderId")?.value == 0) {
-    //   errorMessage += "Please select gender.\n";
-
-    // }
-    // if (this.studentForm.get("ReligionId")?.value == 0) {
-    //   errorMessage += "Please select religion.\n";
-
-    // }
-    // if (this.studentForm.get("CategoryId")?.value == 0) {
-    //   errorMessage += "Please select Category.\n";
-    // }
-    // if (this.studentForm.get("ClassAdmissionSought")?.value == 0) {
-    //   errorMessage += "Please select Class for which admission is sought.\n";
-    // }
-    // if (this.studentForm.get("AdmissionStatusId")?.value == 0) {
-    //   errorMessage += "Please select admission status.\n";
-    // }
-    // if (this.studentForm.get("ContactNo")?.value == 0) {
-    //   errorMessage += "Please provide contact no..\n";
-    // }
-    // if (this.studentForm.get("WhatsAppNumber")?.value == 0) {
-    //   errorMessage += "Please provide whatsapp no..\n";
-    // }
-
-    if (this.ErrorMessage.length > 0) {
-      this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar(this.ErrorMessage, globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
-    this.loading = true;
-    var _email = this.studentForm.get("EmailAddress")?.value;
-    if (_email.length > 0) {
-      var checkduppayload = { 'Id': this.StudentId, 'Email': _email }
-      this.contentservice.CheckEmailDuplicate(checkduppayload)
-        .subscribe((data: any) => {
-          if (data) {
-            this.loading = false; this.PageLoading = false;
-            this.contentservice.openSnackBar("Email already in use.", globalconstants.ActionText, globalconstants.RedBackground);
-            return;
-          }
-        });
-    }
-    this.studentData = [];
-    //var _studentId = this.studentForm.get("StudentId")?.value;
-    this.studentData.push({
-      StudentId: this.StudentId,
-      FirstName: this.studentForm.get("FirstName")?.value,
-      LastName: this.studentForm.get("LastName")?.value,
-      FatherName: this.studentForm.get("FatherName")?.value,
-      FatherOccupation: this.studentForm.get("FatherOccupation")?.value,
-      MotherName: this.studentForm.get("MotherName")?.value,
-      MotherOccupation: this.studentForm.get("MotherOccupation")?.value,
-      GenderId: this.studentForm.get("Gender")?.value,
-      PermanentAddress: this.studentForm.get("PermanentAddress")?.value,
-      PresentAddress: this.studentForm.get("PresentAddress")?.value,
-      DOB: this.adjustDateForTimeOffset(this.studentForm.get("DOB")?.value),
-      BloodgroupId: this.studentForm.get("Bloodgroup")?.value,
-      CategoryId: this.studentForm.get("Category")?.value,
-      AccountHolderName: this.studentForm.get("AccountHolderName")?.value,
-      BankAccountNo: this.studentForm.get("BankAccountNo")?.value,
-      IFSCCode: this.studentForm.get("IFSCCode")?.value,
-      MICRNo: this.studentForm.get("MICRNo")?.value,
-      AdhaarNo: this.studentForm.get("AdhaarNo")?.value,
-      Photo: this.studentForm.get("Photo")?.value,
-      ReligionId: this.studentForm.get("Religion")?.value,
-      PersonalNo: this.studentForm.get("PersonalNo")?.value,
-      WhatsAppNumber: this.studentForm.get("WhatsAppNumber")?.value,
-      FatherContactNo: this.studentForm.get("FatherContactNo")?.value,
-      MotherContactNo: this.studentForm.get("MotherContactNo")?.value,
-      PrimaryContactFatherOrMother: this.studentForm.get("PrimaryContactFatherOrMother")?.value,
-      NameOfContactPerson: this.studentForm.get("NameOfContactPerson")?.value,
-      RelationWithContactPerson: this.studentForm.get("RelationWithContactPerson")?.value,
-      ContactPersonContactNo: this.studentForm.get("ContactPersonContactNo")?.value,
-      AlternateContact: this.studentForm.get("AlternateContact")?.value,
-      ClassAdmissionSought: this.studentForm.get("ClassAdmissionSought")?.value,
-      LastSchoolPercentage: this.studentForm.get("LastSchoolPercentage")?.value,
-      TransferFromSchool: this.studentForm.get("TransferFromSchool")?.value,
-      TransferFromSchoolBoard: this.studentForm.get("TransferFromSchoolBoard")?.value,
-      ClubId: this.studentForm.get("Club")?.value,
-      HouseId: this.studentForm.get("House")?.value,
-      RemarkId: this.studentForm.get("Remarks")?.value,
-      AdmissionStatusId: this.studentForm.get("AdmissionStatus")?.value,
-      AdmissionDate: this.studentForm.get("AdmissionDate")?.value,
-      //Remarks: this.studentForm.get("Remarks")?.value,
-      EmailAddress: _email,
-      Active: this.studentForm.get("Active")?.value == true ? 1 : 0,
-      ReasonForLeavingId: this.studentForm.get("ReasonForLeaving")?.value,
-      OrgId: this.LoginUserDetail[0]["orgId"],
-      SubOrgId: this.SubOrgId,
-      IdentificationMark: this.studentForm.get("IdentificationMark")?.value,
-      Height: this.studentForm.get("Height")?.value,
-      Weight: this.studentForm.get("Weight")?.value,
-      BatchId: this.tokenStorage.getSelectedBatchId()
-    });
-    //debugger;
-    //console.log("studentData", this.studentData)
-    if (this.studentForm.get("StudentId")?.value == 0) {
-      //this.studentData[0].EmailAddress =this.studentForm.get("EmailAddress")?.value;
-      this.save();
-    }
-    else {
-      this.update();
-    }
-
-  }
-
-  save() {
-    debugger;
-    this.studentForm.patchValue({ AlternateContact: "" });
-    this.contentservice.GetStudentMaxPID(this.FilterOrgSubOrg).subscribe((data: any) => {
-      var _MaxPID = 1;
-      if (data.value.length > 0) {
-        _MaxPID = +data.value[0].PID + 1;
-      }
-      this.studentData[0].PID = _MaxPID;
-
-      this.dataservice.postPatch('Students', this.studentData, 0, 'post')
-        .subscribe((result: any) => {
-          debugger;
-          if (result != undefined) {
-            this.studentForm.patchValue({
-              StudentId: result.StudentId
-            })
-            this.StudentId = result.StudentId;
-            // if (result != null && result.UserId != "")
-            //   this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-            // else
-            this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-
-            //this.StudentClassId = this.studentForm.get("ClassAdmissionSought")?.value;
-            this.loading = false; this.PageLoading = false;
-            this.tokenStorage.saveStudentId(this.StudentId + "")
-            //this.tokenStorage.saveStudentClassId(this.StudentClassId + "");
-            this.CreateInvoice();
-            this.GetStudent();
-            this.Edited = false;
-
-          }
-
-        }, error => {
-          //console.log("student insert", error)
-          var errormsg = globalconstants.formatError(error);
-          this.loading = false;
-          this.contentservice.openSnackBar(errormsg, globalconstants.ActionText, globalconstants.RedBackground);
-        })
-    })
-  }
-
-  update() {
-    //////console.log('student', this.studentForm.value)
-
-    this.dataservice.postPatch('Students', this.studentData[0], this.StudentId, 'patch')
-      .subscribe((result: any) => {
-        this.loading = false; this.PageLoading = false;
-        this.Edited = false;
-        if (result != null && result.UserId != "")
-          this.contentservice.openSnackBar(globalconstants.UserLoginCreated, globalconstants.ActionText, globalconstants.BlueBackground);
-        else
-          this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-      }, error => {
-        this.loading = false;
-        //console.log("student update", error);
-      })
-  }
-  CreateInvoice() {
-    this.contentservice.getInvoice(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedBatchId, this.StudentClassId,0,0,0)
-      .subscribe((data: any) => {
-
-        this.contentservice.createInvoice(data, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
-          .subscribe((data: any) => {
-            //this.loading = false; this.PageLoading=false;
-            //this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-          },
-            error => {
-              this.loading = false;
-              //console.log("error in createInvoice", error);
-            })
-      },
-        error => {
-          this.loading = false;
-          //console.log("error in getinvoice", error);
-        })
-  }
+  
   adjustDateForTimeOffset(dateToAdjust) {
     //////console.log(dateToAdjust)
     var offsetMs = dateToAdjust.getTimezoneOffset() * 60000;
     return new Date(dateToAdjust.getTime() - offsetMs);
   }
-  FeeType :any[]= [];
+  FeeType: any[] = [];
   GetFeeTypes() {
     debugger;
     this.loading = true;
@@ -799,7 +594,6 @@ Remark2 :any=[];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.FeeType = [...data.value];
-        this.GetStudentClass();
       })
   }
   getFields(pModuleName) {
@@ -807,21 +601,21 @@ Remark2 :any=[];
       .subscribe((data: any) => {
         var _baseReportId = 0;
         if (data.value.length > 0) {
-          _baseReportId = data.value.filter((f:any) => f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
-          var _studentModuleObj = data.value.filter((f:any) => f.ReportName == pModuleName && f.ParentId == _baseReportId)
+          _baseReportId = data.value.filter((f: any) => f.ReportName == 'Reports' && f.ParentId == 0)[0].ReportConfigItemId;
+          var _studentModuleObj = data.value.filter((f: any) => f.ReportName == pModuleName && f.ParentId == _baseReportId)
           var _studentModuleId = 0;
           if (_studentModuleObj.length > 0) {
             _studentModuleId = _studentModuleObj[0].ReportConfigItemId;
           }
 
-          var _orgStudentModuleObj = data.value.filter((f:any) => f.ParentId == _studentModuleId
+          var _orgStudentModuleObj = data.value.filter((f: any) => f.ParentId == _studentModuleId
             && f.SubOrgId == this.SubOrgId && f.OrgId == this.LoginUserDetail[0]["orgId"] && f.Active == 1);
           var _orgStudentModuleId = 0;
           if (_orgStudentModuleObj.length > 0) {
             _orgStudentModuleId = _orgStudentModuleObj[0].ReportConfigItemId;
           }
 
-          this.ColumnsOfSelectedReports = data.value.filter((f:any) => f.ParentId == _orgStudentModuleId)
+          this.ColumnsOfSelectedReports = data.value.filter((f: any) => f.ParentId == _orgStudentModuleId)
 
         }
 
@@ -841,17 +635,20 @@ Remark2 :any=[];
     //debugger;
     this.loading = true;
     let list: List = new List();
-    list.fields = ["*"];//"StudentId", "Name", "FatherName", "MotherName", "FatherContactNo", "MotherContactNo", "Active"];
-    list.PageName = "Students";
-    list.lookupFields = ["StudentClasses($filter=BatchId eq " + this.SelectedBatchId + ";$select=StudentClassId,StudentId),StorageFnPs($select=FileId,FileName;$filter=StudentId eq " + this.StudentId + ")"]
+    list.fields = ["FileId,FileName"];
+    list.PageName = "StorageFnPs";
+    //list.lookupFields = ["StudentClasses($filter=BatchId eq " + this.SelectedBatchId + ";$select=StudentClassId,StudentId),StorageFnPs($select=FileId,FileName;$filter=StudentId eq " + this.StudentId + ")"]
     list.filter = ["StudentId eq " + this.StudentId];
 
     debugger;
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        if (data.value.length > 0) {
-          data.value.forEach(stud => {
+        let _student: any = this.tokenStorage.getStudents()!;
+        _student = _student.filter((s: any) => s.StudentId == this.StudentId)
+        if (_student.length > 0) {
+          _student.forEach(stud => {
+            stud.StorageFnPs = data.value;
             if (stud.StudentClasses.length > 0) {
               this.StudentClassId = stud.StudentClasses[0].StudentClassId;
               this.tokenStorage.saveStudentClassId(this.StudentClassId + "");
@@ -862,57 +659,61 @@ Remark2 :any=[];
             this.shareddata.ChangeStudentName(StudentName);
 
             var _gender = '';
-            var _genderObj = this.Genders.filter((f:any) => f.MasterDataId == stud.GenderId)
+            var _genderObj = this.Genders.filter((f: any) => f.MasterDataId == stud.GenderId)
             if (_genderObj.length > 0)
               _gender = _genderObj[0].MasterDataName;
 
             var _religion = '';
-            var _religionObj = this.Religion.filter((f:any) => f.MasterDataId == stud.ReligionId)
+            var _religionObj = this.Religion.filter((f: any) => f.MasterDataId == stud.ReligionId)
             if (_religionObj.length > 0)
               _religion = _religionObj[0].MasterDataName;
 
             var _category = '';
-            var _categoryObj = this.Category.filter((f:any) => f.MasterDataId == stud.CategoryId)
+            var _categoryObj = this.Category.filter((f: any) => f.MasterDataId == stud.CategoryId)
             if (_category.length > 0)
               _category = _categoryObj[0].MasterDataName;
 
             var _bloodGroup = '';
-            var _bloodGroupObj = this.Bloodgroup.filter((f:any) => f.MasterDataId == stud.BloodgroupId)
+            var _bloodGroupObj = this.Bloodgroup.filter((f: any) => f.MasterDataId == stud.BloodgroupId)
             if (_bloodGroupObj.length > 0)
               _bloodGroup = _bloodGroupObj[0].MasterDataName;
 
             var _classAdmissionSought = '';
-            var _classAdmissionSoughtObj = this.Classes.filter((f:any) => f.ClassId == stud.ClassAdmissionSought)
+            var _classAdmissionSoughtObj = this.Classes.filter((f: any) => f.ClassId == stud.ClassAdmissionSought)
             if (_classAdmissionSoughtObj.length > 0)
               _classAdmissionSought = _classAdmissionSoughtObj[0].ClassName;
 
             var _club = '';
-            var _clubObj = this.Clubs.filter((f:any) => f.MasterDataId == stud.ClubId)
+            var _clubObj = this.Clubs.filter((f: any) => f.MasterDataId == stud.ClubId)
             if (_clubObj.length > 0)
               _club = _clubObj[0].MasterDataName;
 
             var _house = '';
-            var _houseObj = this.Houses.filter((f:any) => f.MasterDataId == stud.HouseId)
+            var _houseObj = this.Houses.filter((f: any) => f.MasterDataId == stud.HouseId)
             if (_houseObj.length > 0)
               _house = _houseObj[0].ClassName;
 
             var _remark = '';
-            var _remarkObj = this.Remarks.filter((f:any) => f.MasterDataId == stud.RemarkId)
+            var _remarkObj = this.Remarks.filter((f: any) => f.MasterDataId == stud.RemarkId)
             if (_remarkObj.length > 0)
               _remark = _remarkObj[0].MasterDataName;
+            var _remark2 = '';
+            var _remark2Obj = this.Remark2.filter((f: any) => f.MasterDataId == stud.Remark2Id)
+            if (_remark2Obj.length > 0)
+              _remark2 = _remark2Obj[0].MasterDataName;
 
             var _admissionStatus = '';
-            var _admissionStatusObj = this.AdmissionStatuses.filter((f:any) => f.MasterDataId == stud.AdmissionStatusId)
+            var _admissionStatusObj = this.AdmissionStatuses.filter((f: any) => f.MasterDataId == stud.AdmissionStatusId)
             if (_admissionStatusObj.length > 0)
               _admissionStatus = _admissionStatusObj[0].MasterDataName;
 
             var _reasonForLeaving = '';
-            var _reasonForLeavingObj = this.ReasonForLeaving.filter((f:any) => f.MasterDataId == stud.ReasonForLeavingId)
+            var _reasonForLeavingObj = this.ReasonForLeaving.filter((f: any) => f.MasterDataId == stud.ReasonForLeavingId)
             if (_reasonForLeavingObj.length > 0)
               _reasonForLeaving = _reasonForLeavingObj[0].MasterDataName;
 
             var _primaryContact = '';
-            var _primaryContactObj = this.PrimaryContact.filter((f:any) => f.MasterDataId == stud.PrimaryContactFatherOrMother)
+            var _primaryContactObj = this.PrimaryContact.filter((f: any) => f.MasterDataId == stud.PrimaryContactFatherOrMother)
             if (_primaryContactObj.length > 0)
               _primaryContact = _primaryContactObj[0].MasterDataName;
 
@@ -962,7 +763,8 @@ Remark2 :any=[];
               { Text: 'House', Value: _house },
               { Text: 'Admission Status', Value: _admissionStatus },
               { Text: 'Admission Date', Value: moment(stud.AdmissionDate).format('DD/MM/YYYY') },
-              { Text: 'Remarks', Value: _remark },
+              { Text: 'Remark 1', Value: _remark },
+              { Text: 'Remark 2', Value: _remark2 },
               { Text: 'Reason For Leaving', Value: _reasonForLeaving },
               { Text: 'Identification Mark', Value: stud.IdentificationMark },
               { Text: 'Weight', Value: stud.Weight },
@@ -996,7 +798,8 @@ Remark2 :any=[];
         }
         this.loading = false;
         this.PageLoading = false;
-      },
+      }
+        ,
         err => {
           //console.log("error", err)
         });

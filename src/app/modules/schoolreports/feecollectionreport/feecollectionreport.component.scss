@@ -7,6 +7,10 @@ mat-card{
 .mat-column-FeePaymentStatusId,.mat-column-Name{
     flex:1 0 160px;
 }
-.mat-column-ClassRollNoSection{
-    flex:1 0 120px;
+.mat-column-ClassRollNoSection,.mat-column-FeepaymentStatusId{
+    flex:2 0 140px;
+}
+.mat-column-RollNo,.mat-column-PID,.mat-column-Active,.mat-column-Action
+{
+    flex:1 0 80px;
 }

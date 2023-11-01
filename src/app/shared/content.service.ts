@@ -133,7 +133,7 @@ export class ContentService implements OnInit {
       "ExamClassGroupMapId",
       "ExamId",
       "ClassGroupId",
-      //"ClassGroupMappingId"
+      "MarkConvertTo"
     ];
     list.PageName = "ExamClassGroupMaps";
     list.filter = [orgIdSearchstr];
