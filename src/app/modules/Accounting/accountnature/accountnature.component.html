@@ -20,7 +20,7 @@
                 <mat-option *ngFor="let item of FilteredAccountNature" [value]="item.AccountNatureId">{{item.AccountName}}
                 </mat-option>
             </mat-select>
-        </mat-form-field> -->
+        </mat-form-field> --> 
         <button [disabled]="loading" mat-raised-button color="accent" (click)="GetAccountNature()">
             <mat-icon>search</mat-icon>
             <mat-icon *ngIf="loading">

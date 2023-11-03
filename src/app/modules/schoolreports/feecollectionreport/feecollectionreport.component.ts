@@ -237,15 +237,15 @@ export class FeecollectionreportComponent implements OnInit {
     }
     else {
       this.loading = false;
-      this.contentservice.openSnackBar("Please select student class.", globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    if(!_sectionId && !_semesterId)
-    {
-      this.loading = false;
-      this.contentservice.openSnackBar("Please select semester/section.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
+    // if(!_sectionId && !_semesterId)
+    // {
+    //   this.loading = false;
+    //   this.contentservice.openSnackBar("Please select semester/section.", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
     if (_semesterId)
       filterstring += ' and SemsterId eq ' + _semesterId;
     if (_sectionId)

@@ -159,12 +159,17 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   UpdateOrSave(row, valuerow) {
 
     debugger;
-    // //console.log("row",row);
-    // //console.log("valuerow",valuerow);
+    //row added immediately here and rowcount is increased after duplicate check to make sure 
+    // insert/update does not happen if any issue occured.
     this.DataCollection.push(JSON.parse(JSON.stringify(row)));
     if (row.Marks > row.FullMark) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Marks cannot be greater than FullMark (" + row.FullMark + ").", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+    if (isNaN(row.Marks)) {
+      this.loading = false; this.PageLoading = false;
+      this.contentservice.openSnackBar("Marks should be a number.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     if (row.Marks > 1000) {
@@ -227,13 +232,14 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         else {
           this.rowCount += 1;
           if (this.DataCollection.length == this.rowCount) {
+            this.rowCount = 0;
             //console.log("this.DataCollection", this.DataCollection);
             var _classId = this.searchForm.get("searchClassId")?.value;
             var _sectionId = this.searchForm.get("searchSectionId")?.value;
             var _semesterId = this.searchForm.get("searchSemesterId")?.value;
 
             this.DataCollection.forEach(item => {
-
+             
               let _examstatus = 0;
               if (item.Marks >= item.PassMark)
                 _examstatus = this.ExamStatuses.filter((f: any) => f.MasterDataName.toLowerCase() == "pass")[0].MasterDataId;
@@ -288,11 +294,14 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         (data: any) => {
           row.ExamStudentSubjectResultId = data.ExamStudentSubjectResultId;
           valuerow.Action = false;
-
+          this.rowCount += 1;
           this.loading = false; this.PageLoading = false;
           // this.rowSave += 1;
-          if (this.rowCount == this.displayedColumns.length - 2) {
+          if (this.rowCount == this.DataCollection.length){
             this.loading = false; this.PageLoading = false;
+            this.DataToSave.forEach(item=>{
+              item.Action =false;
+            })
             this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
           //this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
@@ -306,9 +315,12 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         (data: any) => {
           //this.loading = false; this.PageLoading=false;
           valuerow.Action = false;
-          //this.rowSave += 1;
-          if (this.rowCount == this.displayedColumns.length - 2) {
+          this.rowCount += 1;
+          if (this.rowCount == this.DataCollection.length){// this.displayedColumns.length - 2) {
             this.loading = false; this.PageLoading = false;
+            this.DataToSave.forEach(item=>{
+              item.Action =false;
+            })
             this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
           //this.contentservice.openSnackBar(globalconstants.UpdatedMessage,globalconstants.ActionText,globalconstants.BlueBackground);
@@ -1057,12 +1069,13 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       record.Action = !record.Action;
     })
   }
+  DataToSave :any=[];
   SaveAll() {
     this.DataCollection = [];
 
-    let _DataToSave = this.ExamStudentSubjectResult.filter(f => f.Action);
+    this.DataToSave = this.ExamStudentSubjectResult.filter(f => f.Action);
     this.rowCount = 0;
-    _DataToSave.forEach(record => {
+    this.DataToSave.forEach(record => {
 
       for (var prop in record) {
 

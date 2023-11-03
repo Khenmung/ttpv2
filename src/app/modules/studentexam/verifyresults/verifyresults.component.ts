@@ -523,6 +523,11 @@ export class VerifyResultsComponent implements OnInit {
         this.AttendanceDisplay = '';
         this.ClassStrength = '';
       }
+      let _totalMarks = 0;
+      if (this.FullMarkForAllSubjects100Pc)
+        _totalMarks = +d["Total Percent"];
+      else
+        _totalMarks = +d["Total Marks"];
 
       this.VerifiedResult.ExamStudentResult.push({
         "ExamStudentResultId": 0,
@@ -535,7 +540,7 @@ export class VerifyResultsComponent implements OnInit {
         "Rank": d["Rank"],
         "Division": d["Division"],
         "MarkPercent": +d["Percentage"],
-        "TotalMarks": d["Total Marks"],
+        "TotalMarks": _totalMarks ,
         "Attendance": this.AttendanceDisplay,
         "ClassStrength": this.ClassStrength,
         "OrgId": this.LoginUserDetail[0]["orgId"],
@@ -721,7 +726,7 @@ export class VerifyResultsComponent implements OnInit {
     if (this.ExamStudentSubjectResult.length > 0) {
       let toExport = [...this.ExamStudentSubjectResult, ...this.ExamStudentSubjectGrading];
       const datatoExport: Partial<any>[] = toExport;
-      TableUtil.exportArrayToExcel(datatoExport, "examresultwithmarkdetail");
+      TableUtil.exportArrayToExcel(datatoExport, "ResultMarks-" + this.ExamName + "-" + this.ClassName + this.SemesterName + this.SectionName);
     }
   }
   TotalMarkingSubjectFullMark = 0;
@@ -1116,7 +1121,11 @@ export class VerifyResultsComponent implements OnInit {
         if (this.ExamStudentSubjectResult.length > 0) {
           //if (_subjectCategoryName == 'marking') {
           var _markingId = this.SubjectCategory.filter((f: any) => f.MasterDataName.toLowerCase() == 'marking')[0].MasterDataId;
-          this.displayedColumns.push("Total Marks", "Percentage", "Rank", "Division");
+          if (this.FullMarkForAllSubjects100Pc)
+            this.displayedColumns.push("Total Marks", "Total Percent", "Percentage", "Rank", "Division");
+          else
+            this.displayedColumns.push("Total Marks", "Percentage", "Rank", "Division");
+
           var _SelectedClassStudentGrades = this.SelectedClassStudentGrades.filter((f: any) => f.SubjectCategoryId == _markingId);
 
           if (_SelectedClassStudentGrades.length > 0) {
@@ -1129,15 +1138,12 @@ export class VerifyResultsComponent implements OnInit {
               if (this.FullMarkForAllSubjects100Pc)
                 result["Percentage"] = ((result["Total Percent"] / this.FullMarkForAllSubjects100Pc) * 100).toFixed(2);
               else {
-               // console.log("sumOfAllFullMark", sumOfAllFullMark)
-               // console.log("result[Total Marks]-------", result["Total Marks"]);
-
                 result["Percentage"] = ((result["Total Marks"] / this.TotalMarkingSubjectFullMark) * 100).toFixed(2);
               }
 
               for (var i = 0; i < _SelectedClassStudentGrades.length; i++) {
                 var formula = _SelectedClassStudentGrades[i].Formula
-                  .replaceAll("[TMO]",result["Total Marks"])
+                  .replaceAll("[TMO]", result["Total Marks"])
                   .replaceAll("[Percentage]", result["Percentage"])
                   .replaceAll("[TFM]", result.FullMark)
                   .replaceAll("[PassCount]", result.PassCount)

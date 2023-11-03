@@ -12,6 +12,7 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
+import { TableUtil } from '../../../shared/TableUtil';
 
 @Component({
   selector: 'app-result',
@@ -141,6 +142,14 @@ export class ResultComponent implements OnInit {
         this.GetMasterData();
         this.GetSubjectComponents();
       }
+    }
+  }
+  ExportArray() {
+    
+    if (this.ExamStudentResult.length > 0) {
+      let toExport = [...this.ExamStudentResult, ...this.PromotedStudent,this.FailStudent,this.ResultAtAGlance];
+      const datatoExport: Partial<any>[] = toExport;
+      TableUtil.exportArrayToExcel(toExport, this.ExamName);
     }
   }
   clear() { }

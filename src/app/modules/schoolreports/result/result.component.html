@@ -16,7 +16,8 @@
     <div style="padding:15px 15px 10px 15px;">
         <div><strong>Exam Results</strong></div>
     </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25"
+        style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <!-- <alert></alert> -->
     <div style="padding: 15px;" fxLayout="row wrap">
         <div style="width: 100%;">
@@ -63,6 +64,11 @@
                 </button>
                 <button [disabled]="loading" matTooltip="clear all" mat-raised-button (click)="clear()">
                     <mat-icon>clear_all</mat-icon>
+                </button>
+                <button [disabled]="loading || Permission=='read'"
+                    *ngIf="ExamStudentResult.length>0 || PromotedStudent.length>0" matTooltip="export"
+                    (click)="ExportArray()" [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
+                    <mat-icon>download</mat-icon>
                 </button>
             </form>
             <div id="printSection">
