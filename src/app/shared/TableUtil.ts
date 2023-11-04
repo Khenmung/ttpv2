@@ -10,7 +10,7 @@ const getFileName = (name: string) => {
   };
 };
 export class TableUtil {
-  static exportTableToExcel(tableId: string, name?: string) {
+  static exportTableToExcel(tableId: string, name: string) {
     let { sheetName, fileName } = getFileName(name);
     let targetTableElm = document.getElementById(tableId);
     let wb = XLSX.utils.table_to_book(targetTableElm, <XLSX.Table2SheetOpts>{
@@ -19,7 +19,7 @@ export class TableUtil {
     XLSX.writeFile(wb, `${fileName}.xlsx`);
   }
 
-  static exportArrayToExcel(arr: any[], name?: string) {
+  static exportArrayToExcel(arr: any[], name: string) {
     let { sheetName, fileName } = getFileName(name);
 
     var wb = XLSX.utils.book_new();

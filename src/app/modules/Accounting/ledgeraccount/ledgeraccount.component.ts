@@ -339,7 +339,7 @@ export class LedgerAccountComponent implements OnInit {
   GetAccountNature() {
     //debugger;
     this.loading = true;
-    let filterStr = 'Active eq true and (OrgId eq 0 or (' + this.FilterOrgSubOrg +"))";
+    let filterStr = this.FilterOrgSubOrg + ' and Active eq true';
 
     let list: List = new List();
     list.fields = [

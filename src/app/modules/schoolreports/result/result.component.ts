@@ -145,11 +145,20 @@ export class ResultComponent implements OnInit {
     }
   }
   ExportArray() {
-    
+    debugger;
     if (this.ExamStudentResult.length > 0) {
-      let toExport = [...this.ExamStudentResult, ...this.PromotedStudent,this.FailStudent,this.ResultAtAGlance];
+      let _resultAtAGlance: any = [];
+      this.ResultAtAGlance.forEach(item => {
+        _resultAtAGlance.push({
+          Student: item.Text,
+          SectionId: item.Val
+        })
+      })
+      let toExport = this.ExamStudentResult.concat(this.PromotedStudent, this.FailStudent, _resultAtAGlance);
+      //console.log(toExport);
       const datatoExport: Partial<any>[] = toExport;
-      TableUtil.exportArrayToExcel(toExport, this.ExamName);
+      TableUtil.exportArrayToExcel(datatoExport, this.ExamNameShort.replace(' ','_'));
+      //TableUtil.exportArrayToExcel(this.ResultAtAGlance, this.ExamName);
     }
   }
   clear() { }
@@ -230,6 +239,7 @@ export class ResultComponent implements OnInit {
   ResultAtAGlance: any[] = [];
   PromotedStudent: any[] = [];
   FailStudent: any[] = [];
+  ExamNameShort = '';
   GetExamStudentResults() {
 
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -256,7 +266,12 @@ export class ResultComponent implements OnInit {
       _section = " " + this.Sections.filter((s: any) => s.MasterDataId == _sectionId)[0].MasterDataName;
     }
     this.ClassName = this.Classes.filter(c => c.ClassId == _classId)[0].ClassName + _section;
-    this.ExamName = "Exam: " + this.Exams.filter(c => c.ExamId == _examId)[0].ExamName;
+
+    let objexamname = this.Exams.filter(c => c.ExamId == _examId);
+    if (objexamname.length > 0)
+      this.ExamNameShort = objexamname[0].ExamName;
+
+    this.ExamName = "Exam: " + this.ExamNameShort;
     this.loading = true;
 
     filterstr = " and ClassId eq " + _classId;
@@ -266,7 +281,7 @@ export class ResultComponent implements OnInit {
       filterstr += " and SemesterId eq " + _semesterId;
       filterstr += " and SectionId eq " + _sectionId;
     }
-    filterstr += " and ExamId eq " + _examId +" and Active eq 1";
+    filterstr += " and ExamId eq " + _examId + " and Active eq 1";
 
     let list: List = new List();
     list.fields = [

@@ -252,7 +252,7 @@ export class AccountNatureComponent implements OnInit {
       });
   }
   GetAccountNatureAutoComplete() {
-    let filterStr = '(OrgId eq 0 or (' + this.FilterOrgSubOrg + ")) and Active eq true";
+    let filterStr = this.FilterOrgSubOrg + " and  Active eq true";
     this.loading = true;
 
     let list: List = new List();

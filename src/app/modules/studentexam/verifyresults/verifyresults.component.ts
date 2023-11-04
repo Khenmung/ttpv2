@@ -540,7 +540,7 @@ export class VerifyResultsComponent implements OnInit {
         "Rank": d["Rank"],
         "Division": d["Division"],
         "MarkPercent": +d["Percentage"],
-        "TotalMarks": _totalMarks ,
+        "TotalMarks": _totalMarks,
         "Attendance": this.AttendanceDisplay,
         "ClassStrength": this.ClassStrength,
         "OrgId": this.LoginUserDetail[0]["orgId"],
@@ -723,10 +723,33 @@ export class VerifyResultsComponent implements OnInit {
       });
   }
   ExportArray() {
+    debugger
     if (this.ExamStudentSubjectResult.length > 0) {
-      let toExport = [...this.ExamStudentSubjectResult, ...this.ExamStudentSubjectGrading];
+      let gradingmarks: any = [];
+      let templaterow = this.ExamStudentSubjectResult[0];
+      this.ExamStudentSubjectGrading.forEach((gradingitem) => {
+        let newItem = {
+          StudentClassId: gradingitem.StudentClassId,
+          StudentId: gradingitem.StudentId,
+          Student: gradingitem.Student
+        }
+        Object.keys(templaterow).forEach((col, indx) => {
+          if (indx > 2) {
+
+            Object.keys(gradingitem).forEach((eleCol,grIndix) => {
+              if (grIndix == indx) {
+                newItem[col] = gradingitem[eleCol];
+              }
+
+            })
+          }
+
+        })
+        gradingmarks.push(newItem);
+      })
+      let toExport = this.ExamStudentSubjectResult.concat(gradingmarks);
       const datatoExport: Partial<any>[] = toExport;
-      TableUtil.exportArrayToExcel(datatoExport, "ResultMarks-" + this.ExamName + "-" + this.ClassName + this.SemesterName + this.SectionName);
+      TableUtil.exportArrayToExcel(datatoExport, "ResultMarks-" + this.ExamName);
     }
   }
   TotalMarkingSubjectFullMark = 0;
@@ -807,7 +830,7 @@ export class VerifyResultsComponent implements OnInit {
 
 
         let objAllComp = _ClsSectionSemSubjectsMarkCompntDefn.filter(de => de.SubjectCategory == 'Marking')
-        console.log("objAllComp", objAllComp);
+        //console.log("objAllComp", objAllComp);
         if (objAllComp.length > 0) {
           this.TotalMarkingSubjectFullMark = objAllComp.reduce((acc, current) => acc + current.FullMark, 0);
         }
