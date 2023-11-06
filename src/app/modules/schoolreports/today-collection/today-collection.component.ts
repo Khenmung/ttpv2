@@ -176,6 +176,11 @@ export class TodayCollectionComponent implements OnInit {
 
     return newDate;   
 }
+AddMinutes(date, minutes) {
+  date.setMinutes(date.getMinutes() + minutes);
+
+  return date;
+}
   GetStudentFeePaymentDetails() {
     debugger;
     this.ErrorMessage = '';
@@ -234,7 +239,10 @@ export class TodayCollectionComponent implements OnInit {
 
           var studcls = _students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.StudentClassId == db.StudentClassId) > -1);
           if (studcls.length > 0) {
-            db.ReceiptDate = this.convertUTCDateToLocalDate(new Date(db.ReceiptDate)).toLocaleString('hi-IN');
+            let _receiptdate = new Date(db.ReceiptDate);
+            let _offSet =new Date(db.ReceiptDate).getTimezoneOffset();
+            
+            db.ReceiptDate = this.AddMinutes(_receiptdate,_offSet);
             db.StudentClasses = studcls;
             db.PID = studcls[0].PID;
 

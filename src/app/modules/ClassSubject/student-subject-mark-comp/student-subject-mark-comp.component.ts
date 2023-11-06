@@ -144,9 +144,9 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
 
-    //let objClassSubjects= globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
-    //this.SelectedClassSubjects = objClassSubjects.filter(t=>t.SubjectType.toLowerCase()!='optional')
-    this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
+    let objClassSubjects= globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
+    this.SelectedClassSubjects = objClassSubjects.filter(t=>t.SubjectType.toLowerCase()!='optional')
+    //this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
     //this.SelectedClassSubjects = objClassSubjects.filter(t=>t.SubjectType.toLowerCase()!='optional')
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource<any>([]);

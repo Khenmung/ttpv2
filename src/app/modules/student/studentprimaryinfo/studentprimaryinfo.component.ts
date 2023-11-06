@@ -232,8 +232,8 @@ export class studentprimaryinfoComponent implements OnInit {
           Notes: [''],
           IdentificationMark: [''],
           BoardRegistrationNo: [''],
-          Weight: [0],
-          Height: [0],
+          Weight: [''],
+          Height: [''],
           Active: [1]
         });
         this.PID = this.tokenStorage.getPID()!;
@@ -600,7 +600,7 @@ export class studentprimaryinfoComponent implements OnInit {
   }
   ErrorMessage = '';
   UpdateOrSave() {
-
+debugger;
     var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f: any) => f.Active == 1);
     this.ErrorMessage = '';
     _MandatoryColumns.forEach(b => {
@@ -823,7 +823,7 @@ export class studentprimaryinfoComponent implements OnInit {
 
       }, error => {
         this.loading = false;
-        //console.log("student update", error);
+        console.log("student update", error);
       })
   }
   
