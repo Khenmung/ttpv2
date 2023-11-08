@@ -10,12 +10,35 @@
                 <mat-label>PID</mat-label>
                 <input matInput formControlName="searchPID" />
             </mat-form-field>
-            <mat-form-field onfocus="this.select()" appearance="outline" style="width: 300px;margin-right: 15px;">
-                <mat-label>Name</mat-label>
-                <input matInput formControlName="searchName" />
+            <mat-form-field appearance="outline" style="width:300px;margin-right: 15px;">
+                <mat-label>Student</mat-label>
+                <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                    <mat-option *ngFor="let option of filteredStudents|async" [value]="option">
+                        {{option.Name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>   
+            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+                <mat-label>Father</mat-label>
+                <input type="text" matInput formControlName="searchFatherName" [matAutocomplete]="autoF">
+                <mat-autocomplete #autoF="matAutocomplete" [displayWith]="displayFnF">
+                    <mat-option *ngFor="let option of filteredFathers | async" [value]="option">
+                        {{option.FatherName}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+                <mat-label>Mother</mat-label>
+                <input type="text" matInput formControlName="searchMotherName" [matAutocomplete]="autoM">
+                <mat-autocomplete #autoM="matAutocomplete" [displayWith]="displayFnM">
+                    <mat-option *ngFor="let option of filteredMothers | async" [value]="option">
+                        {{option.MotherName}}
+                    </mat-option>
+                </mat-autocomplete>
             </mat-form-field>
             <button [disabled]="loading" style="margin-right: 10px;" mat-raised-button color="accent"
-                (click)="GetStudents()">
+                (click)="GetStudent()">
                 <mat-icon>search</mat-icon>
                 <mat-icon *ngIf="loading">
                     <mat-spinner diameter="20" color="Blue"></mat-spinner>
@@ -31,8 +54,8 @@
                 {{element.PID}}
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="FirstName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> First Name
+        <ng-container matColumnDef="Name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name
                 <!-- <span style="display: flex;flex-direction: column;justify-content: start;">
                     <span style="justify-content: start;display: flex;">Student</span>
                     <mat-form-field>
@@ -42,7 +65,7 @@
                 </span> -->
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                {{element.FirstName}}
+                {{element.Name}}
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="LastName">

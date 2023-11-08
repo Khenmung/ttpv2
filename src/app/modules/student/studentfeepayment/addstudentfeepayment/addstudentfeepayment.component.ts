@@ -48,7 +48,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   //isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
   PaymentTypes: any[] = [];
   FeeCategories: any[] = [];
-  Remarks:any=[];
+  Remarks: any = [];
   OffLineReceiptNo = '';
   CashAmount = 0;
   PaymentTypeId = 0;
@@ -85,7 +85,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     StudentClassId: 0,
     ReceiptNo: 0,
     ReceiptDate: new Date(),
-    Remarks:''
+    Remarks: ''
   }
   FeePayment: {
     StudentFeeReceipt: {},
@@ -167,9 +167,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
   StudentLedgerData: any = {
     LedgerId: 0,
     StudentClassId: 0,
-    ClassId:0,
-    SemesterId:0,
-    SectionId:0,
+    ClassId: 0,
+    SemesterId: 0,
+    SectionId: 0,
     Month: 0,
     //TotalDebit: 0,
     TotalCredit: 0,
@@ -301,8 +301,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
         this.shareddata.CurrentSection.subscribe(fy => (this.Sections = fy));
         var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-          if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
           this.GetMasterData();
         });
         this.GetStudentClass();
@@ -410,7 +410,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     // });
   }
   getAccountingVoucher(pLedgerId) {
-    
+
     //using the records for keeping track of balance which has feereceiptid=0
     let filterstr = this.FilterOrgSubOrg +
       " and FeeReceiptId eq 0 and LedgerId eq " + pLedgerId + " and Balance gt 0 and Active eq 1";
@@ -468,7 +468,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
             if (!data.value[0].FeeType) {
               this.contentservice.openSnackBar("Fee Type not yet defined.", globalconstants.ActionText, globalconstants.RedBackground);
               //this.snackbar.open("Fee type not yet defined.",'Dimiss',{duration:10000});
-              this.loading = false; 
+              this.loading = false;
               this.PageLoading = false;
             }
             else {
@@ -495,7 +495,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
               var _semesterName = '';
               var obj = this.Semesters.filter(cls => cls.MasterDataId == data.value[0].SemesterId)
               if (obj.length > 0)
-              _semesterName = obj[0].MasterDataName;
+                _semesterName = obj[0].MasterDataName;
               this.studentInfoTodisplay.Semester = _semesterName;
 
               var clsObj = this.Classes.filter(cls => cls.MasterDataId == this.studentInfoTodisplay.ClassId)
@@ -524,7 +524,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
   GetStudentFeePayment() {
     debugger;
-    
+
     if (this.studentInfoTodisplay.StudentId == 0) {
       this.nav.navigate(["/edu"]);
     }
@@ -638,7 +638,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
           this.StudentClassFees.forEach((studentClassFee) => {
             //either class fee is active or already paid are shown.
             let existing = this.ExistingStudentLedgerList.filter(fromdb => fromdb.Month == studentClassFee.Month
-              && (studentClassFee.Active ==1 || fromdb.TotalDebit > fromdb.Balance))
+              && (studentClassFee.Active == 1 || fromdb.TotalDebit > fromdb.Balance))
+            existing = existing.filter(level2 => !(level2.BaseAmount>0 && level2.Balance == 0 && level2.TotalCredit == 0 && level2.TotalDebit == 0))
             if (existing.length > 0) {
               var alreadyAdded = this.StudentLedgerList.filter((f: any) => f.Month == studentClassFee.Month)
               if (alreadyAdded.length == 0)
@@ -678,10 +679,10 @@ export class AddstudentfeepaymentComponent implements OnInit {
 
           }
         })
-        this.StudentLedgerList.sort((a, b) => a.Month - b.Month || a.PaymentOrder - b.PaymentOrder);
+        this.StudentLedgerList.sort((a, b) => a.PaymentOrder - b.PaymentOrder);
         ////console.log("this.StudentLedgerList", this.StudentLedgerList)
         this.dataSource = new MatTableDataSource<ILedger>(this.StudentLedgerList);
-        this.loading = false; 
+        this.loading = false;
         this.PageLoading = false;
       })
   }
@@ -779,9 +780,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
         })//this.getAccountingVoucher(
       }
       else {
-        var SelectedMonthFees = this.StudentClassFees.filter((f: any) => (f.Month == row.Month || f.Month == 0) 
-        && f.Active==1);
-          debugger;
+        var SelectedMonthFees = this.StudentClassFees.filter((f: any) => (f.Month == row.Month || f.Month == 0)
+          && f.Active == 1);
+        debugger;
         SelectedMonthFees = SelectedMonthFees.sort((a, b) => b.Month - a.Month);
         var AmountAfterFormulaApplied = 0;
 
@@ -820,7 +821,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
               BaseAmount: f.Amount,
               PaymentOrder: f.PaymentOrder,
               BaseAmountForCalc: +AmountAfterFormulaApplied,
-              Amount: +AmountAfterFormulaApplied<0?0:+AmountAfterFormulaApplied,
+              Amount: +AmountAfterFormulaApplied < 0 ? 0 : +AmountAfterFormulaApplied,
               BalancePayment: false,
               Balance: 0,
               Month: row.Month,

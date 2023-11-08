@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EvaluationstatusComponent } from './evaluationstatus.component';
+import { EvaluationBulkComponent } from './evaluationbulk.component';
 
-describe('EvaluationstatusComponent', () => {
-  let component: EvaluationstatusComponent;
-  let fixture: ComponentFixture<EvaluationstatusComponent>;
+describe('EvaluationBulkComponent', () => {
+  let component: EvaluationBulkComponent;
+  let fixture: ComponentFixture<EvaluationBulkComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EvaluationstatusComponent ]
+      declarations: [ EvaluationBulkComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EvaluationstatusComponent);
+    fixture = TestBed.createComponent(EvaluationBulkComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

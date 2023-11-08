@@ -81,6 +81,7 @@
                 <mat-cell *matCellDef="let element">
                     {{element.RollNo}}
                 </mat-cell>
+                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
             </ng-container>
             <ng-container matColumnDef="Student">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Student
@@ -88,6 +89,7 @@
                 <mat-cell *matCellDef="let element">
                     {{element.Student}}
                 </mat-cell>
+                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
             </ng-container>
             <ng-container matColumnDef="AttendanceStatusId">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -113,6 +115,7 @@
                     [checked]="element.AttendanceStatusId==AttendancePresentId?true:false">
                 </mat-checkbox> -->
                 </mat-cell>
+                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
             </ng-container>
             <ng-container matColumnDef="Remarks">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> Remarks </mat-header-cell>
@@ -123,6 +126,7 @@
                             [(ngModel)]="element.Remarks"></textarea>
                     </mat-form-field>
                 </mat-cell>
+                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
             </ng-container>
             <ng-container matColumnDef="Action">
                 <mat-header-cell *matHeaderCellDef>
@@ -143,9 +147,20 @@
                         </mat-icon>
                     </button>
                 </mat-cell>
+                <mat-footer-cell *matFooterCellDef>
+                    <button [disabled]="loading || !EnableSave || Permission=='read'"
+                        *ngIf="StudentAttendanceList.length>0" matTooltip="save all" mat-mini-fab (click)="saveall()">
+                        <mat-icon>all_out</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-footer-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+            <mat-footer-row style="min-height: 35px;" *matFooterRowDef="displayedColumns">
+            </mat-footer-row>
         </mat-table>
         <mat-paginator style="display:flex;justify-content: center;"
             [pageSizeOptions]="[5,10,20,50,75]"></mat-paginator>

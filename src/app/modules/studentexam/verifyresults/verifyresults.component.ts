@@ -875,7 +875,7 @@ export class VerifyResultsComponent implements OnInit {
         compulsorySubjectCount = AllMarkingSubjectCounts.filter(com => com.SubjectType.toLowerCase() == 'compulsory').length;
         //var OtherthanCompulsory= SubjectCounts.filter(com=>com.SubjectType.toLowerCase() !='compulsory');
         var notCompulsorySubjectType = this.SubjectTypes.filter((s: any) => s.SubjectTypeName.toLowerCase() != 'compulsory');
-        var subjectsWithNotCompulsory = AllMarkingSubjectCounts.filter(com => com.SubjectType.toLowerCase() != 'compulsory');
+        var subjectsWithNotCompulsory = AllMarkingSubjectCounts.filter(com => com.SubjectType.toLowerCase() != 'compulsory' && com.SubjectType.toLowerCase() != 'optional');
         var uniqueTypesOtherthanCompulsoryType = alasql("select distinct SubjectTypeId,SubjectType,SelectHowMany from ?", [subjectsWithNotCompulsory]);
 
         subjectsWithNotCompulsory = uniqueTypesOtherthanCompulsoryType.filter(sub => notCompulsorySubjectType.findIndex(fi => fi.SubjectTypeId == sub.SubjectTypeId) > -1);

@@ -40,9 +40,10 @@
             </mat-form-field>
         </div>
         <div>
+            <!-- [min]="MinFromDate"  -->
             <mat-form-field appearance="outline">
                 <mat-label>from</mat-label>
-                <input formControlName="searchFromDate" [min]="MinFromDate" 
+                <input formControlName="searchFromDate" 
                 matInput [matDatepicker]="FromDate" (dateChange)="ClearData()">
                 <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
                 <mat-datepicker #FromDate></mat-datepicker>

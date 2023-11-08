@@ -169,8 +169,8 @@ export class GetreportComponent implements OnInit {
       this.FilterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.FilterOrgSubOrgBatchId= globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
           this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-        this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+        //if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+        this.Classes = data.value.sort((a,b)=>a.Sequence - b.Sequence);
       })
     }
   }

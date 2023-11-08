@@ -363,23 +363,7 @@ export class searchstudentComponent implements OnInit {
   class(id) {
     this.route.navigate(['/edu/addstudentcls/' + id]);
   }
-  view(element) {
-    debugger;
-    this.generateDetail(element);
-    // var _ClassId = 0;
-    // if (element.StudentClasses.length > 0) {
-    //   this.StudentClassId = element.StudentClasses[0].StudentClassId;
-    //   _ClassId = element.StudentClasses[0].ClassId;
-    // }
-
-    // this.StudentId = element.StudentId;
-
-    // this.token.saveStudentClassId(this.StudentClassId + "");
-    // this.token.saveClassId(_ClassId + "");
-    // this.token.saveStudentId(this.StudentId + "");
-    this.SaveIds(element);
-    this.route.navigate(['/edu/addstudent/' + element.StudentId]);
-  }
+  
   progressreport(element) {
     debugger;
     let StudentName = element.Name;
@@ -470,6 +454,12 @@ export class searchstudentComponent implements OnInit {
     this.tokenStorage.saveStudentId(element.StudentId);
     //this.shareddata.ChangeStudentId(element.StudentId);
 
+  }
+  view(element) {
+    debugger;
+    this.generateDetail(element);
+    this.SaveIds(element);
+    this.route.navigate(['/edu/addstudent/' + element.StudentId]);
   }
   SaveIds(element) {
     debugger;

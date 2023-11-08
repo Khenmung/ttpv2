@@ -293,7 +293,7 @@ export class globalconstants {
                     'CLASSEVALUATIONOPTION': 'answer option',
                     'EVALUATIONANDEXAM': 'evaluation and exam',
                     'EMARK': 'e-mark',
-                    'ESTATUS': 'E-Status'
+                    'EBulk': 'E-Bulk'
                 },
                 'QUESTIONBANK': {
                     'QUESTIONBANK': 'question bank',

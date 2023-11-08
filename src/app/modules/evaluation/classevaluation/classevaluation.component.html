@@ -170,11 +170,11 @@
 
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
-                            <button (click)="viewchild(element)" mat-mini-fab matTooltip="view answer options">
+                            <button (click)="viewchild(element)" color="accent" mat-mini-fab matTooltip="view answer options">
                                 <mat-icon>pageview</mat-icon>
                             </button>
                             <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
-                                mat-mini-fab (click)="SaveRow(element)">
+                                mat-mini-fab color="accent" (click)="SaveRow(element)">
                                 <mat-icon>save</mat-icon>
                                 <mat-icon *ngIf="loading">
                                     <mat-spinner diameter="20" color="Blue"></mat-spinner>
@@ -182,7 +182,7 @@
                             </button>
                             <button [disabled]="loading 
                         || !element.Action 
-                        || Permission !='rwd'" matTooltip="delete" mat-mini-fab (click)="delete(element)">
+                        || Permission !='rwd'" matTooltip="delete" color="accent" mat-mini-fab (click)="delete(element)">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </mat-cell>

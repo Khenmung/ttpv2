@@ -878,6 +878,7 @@ export class HomeDashboardComponent implements OnInit {
   }
   GetStudents() {
     //var filterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+    let filterstr = this.filterOrgSubOrgBatchId + " and Active eq 1"
     this.Students = [];
     let list: List = new List();
     list.fields = [
@@ -904,9 +905,9 @@ export class HomeDashboardComponent implements OnInit {
     ];
     list.PageName = "Students";
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
-      this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
+      filterstr += " and StudentId eq " + localStorage.getItem("studentId");
     }
-    list.filter = [this.filterOrgSubOrgBatchId];
+    list.filter = [filterstr];
     this.Loading();
     this.PageLoading = true;
     return this.dataservice.get(list);

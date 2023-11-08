@@ -481,11 +481,11 @@ export class DashboardclassfeeComponent implements OnInit {
                   SubOrgId: this.SubOrgId
                 })
                 objDiscount[0].Active = 1;
-                this.insert(objDiscount[0], insert[0]);
+                this.insert(row,objDiscount[0], insert[0]);
               }
               ////console.log("dataclassfee", this.classFeeData);
               if (this.classFeeData.ClassFeeId == 0)
-                this.insert(item, this.classFeeData);
+                this.insert(row,item, this.classFeeData);
               else
                 this.update(item);
             })
@@ -494,13 +494,13 @@ export class DashboardclassfeeComponent implements OnInit {
       });
   }
 
-  insert(row, item) {
+  insert(tblrow,row, item) {
 
     //debugger;
     this.dataservice.postPatch('ClassFees', item, 0, 'post')
       .subscribe(
         (data: any) => {
-          row.Action = false;
+          tblrow.Action = false;
           this.loading = false; this.PageLoading = false;
           let insertedItem = this.ELEMENT_DATA.filter(e => e.FeeDefinitionId == row.FeeDefinitionId
             && e.ClassId == row.ClassId
@@ -722,7 +722,7 @@ export class DashboardclassfeeComponent implements OnInit {
             "FeeName": mainFeeName.FeeName,
             "Amount": 0,
             "Month": 0,
-            "PaymentOrder": 0,
+            "PaymentOrder": 100,
             "BatchId": this.SelectedBatchId,// this.Batches[0].MasterDataId,
             "Active": mainFeeName.FeeName.toLowerCase() == 'discount' ? 1 : 0,
             "Action": false
@@ -746,7 +746,7 @@ export class DashboardclassfeeComponent implements OnInit {
           "FeeName": fee.FeeName,
           "Amount": 0,
           "Month": 0,
-          "PaymentOrder": 0,
+          "PaymentOrder": 100,
           "BatchId": this.SelectedBatchId,
           "Active": 0,
           "Action": false

@@ -8,7 +8,7 @@ import { EvaluationboardComponent } from './evaluationboard/evaluationboard.comp
 import { EvaluationMasterComponent } from './evaluationmaster/evaluationmaster.component';
 import { EMarkComponent } from './e-mark/e-mark.component';
 import { QuestionnexamComponent } from './questionnexam/questionnexam.component';
-import { EvaluationstatusComponent } from './evaluationstatus/evaluationstatus.component';
+import { EvaluationBulkComponent } from './evaluationbulk/evaluationbulk.component';
 import { ECheckComponent } from './e-check/e-check.component';
 
 const routes: Routes = [
@@ -35,7 +35,7 @@ export const EvaluationComponents = [
   EvaluationMasterComponent,
   EMarkComponent,
   QuestionnexamComponent,
-  EvaluationstatusComponent,
+  EvaluationBulkComponent,
   ECheckComponent
 ];
 

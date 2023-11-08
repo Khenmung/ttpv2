@@ -210,7 +210,6 @@ export class AttendancepercentComponent implements OnInit {
       return;
     }
     ////console.log('dateDiff',dateDiff);
-    if(_fromDate.getTime())
     if (_fromDate.getTime() > today.getTime()) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("From date cannot be greater than today's date.", globalconstants.ActionText, globalconstants.RedBackground);

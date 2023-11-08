@@ -13,11 +13,11 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 
 @Component({
-  selector: 'app-evaluationstatus',
-  templateUrl: './evaluationstatus.component.html',
-  styleUrls: ['./evaluationstatus.component.scss']
+  selector: 'app-evaluationbulk',
+  templateUrl: './evaluationbulk.component.html',
+  styleUrls: ['./evaluationbulk.component.scss']
 })
-export class EvaluationstatusComponent implements OnInit {
+export class EvaluationBulkComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   StudentProfile = 'student profile';
@@ -147,7 +147,7 @@ export class EvaluationstatusComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.ESTATUS)
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EBulk)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
@@ -550,7 +550,7 @@ export class EvaluationstatusComponent implements OnInit {
     ];
 
     list.PageName = "StudentEvaluationResults";
-    list.lookupFields = ["StudentEvaluationAnswers(" + filterAnswers + ";$select=StudentEvaluationAnswerId,StudentEvaluationResultId,ClassEvaluationAnswerOptionsId,Active)"];
+    list.lookupFields = ["StudentEvaluationAnswers(" + filterAnswers + "$select=StudentEvaluationAnswerId,StudentEvaluationResultId,ClassEvaluationAnswerOptionsId,Active)"];
 
     list.filter = [filterStr];
     this.StudentEvaluationList = [];
