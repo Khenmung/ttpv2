@@ -37,7 +37,7 @@
                             <mat-label>Evaluation type</mat-label>
                             <mat-select formControlName="searchEvaluationMasterId" (selectionChange)="ClearData()">
                                 <mat-option *ngFor="let item of EvaluationMasterForClassGroup"
-                                    [value]="item.EvaluationMasterId">
+                                    [value]="item">
                                     {{item.EvaluationName}}
                                 </mat-option>
                             </mat-select>

@@ -26,7 +26,7 @@ export class ClassEvaluationComponent implements OnInit {
   @ViewChild(ClassEvaluationOptionComponent) option: ClassEvaluationOptionComponent;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  StudentProfile ="student profile";
+  StudentProfile = "student profile";
   LoginUserDetail: any[] = [];
   ClassGroups: any[] = [];
   CurrentRow: any = {};
@@ -134,7 +134,7 @@ export class ClassEvaluationComponent implements OnInit {
         this.GetMasterData();
         if (this.Classes.length == 0) {
           this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-            if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+            if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
             this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
             this.loading = false; this.PageLoading = false;
           });
@@ -186,7 +186,7 @@ export class ClassEvaluationComponent implements OnInit {
   }
   GetExams() {
 
-    this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 1)
+    this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 0)
       .subscribe((data: any) => {
         this.Exams = [];
         data.value.forEach(e => {
@@ -277,8 +277,13 @@ export class ClassEvaluationComponent implements OnInit {
       this.selectedRowIndex = rowId
   }
   AddNew() {
-    var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
-
+    debugger;
+    let masterObj = this.searchForm.get("searchEvaluationMasterId")?.value;
+    var _EvaluationMasterId = masterObj.EvaluationMasterId;
+    if (!_EvaluationMasterId) {
+      this.contentservice.openSnackBar("Please select evaluation.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
     var newItem = {
       ClassEvaluationId: 0,
       QuestionnaireTypeId: 0,
@@ -290,6 +295,7 @@ export class ClassEvaluationComponent implements OnInit {
       ClassEvaluationAnswerOptionParentId: 0,
       DisplayOrder: 0,
       Active: 0,
+      EType: masterObj.EType,
       Action: false
     }
     this.ClassEvaluationList = [];
@@ -446,7 +452,7 @@ export class ClassEvaluationComponent implements OnInit {
     this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
 
-    var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
+    var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value.EvaluationMasterId;
 
     // if (this.EvaluationMasterId > 0)
     //   filterStr += " and EvaluationMasterId eq " + this.EvaluationMasterId;

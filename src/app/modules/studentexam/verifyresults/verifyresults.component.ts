@@ -736,7 +736,7 @@ export class VerifyResultsComponent implements OnInit {
         Object.keys(templaterow).forEach((col, indx) => {
           if (indx > 2) {
 
-            Object.keys(gradingitem).forEach((eleCol,grIndix) => {
+            Object.keys(gradingitem).forEach((eleCol, grIndix) => {
               if (grIndix == indx) {
                 newItem[col] = gradingitem[eleCol];
               }
@@ -829,10 +829,19 @@ export class VerifyResultsComponent implements OnInit {
         }
 
 
-        let objAllComp = _ClsSectionSemSubjectsMarkCompntDefn.filter(de => de.SubjectCategory == 'Marking')
-        //console.log("objAllComp", objAllComp);
-        if (objAllComp.length > 0) {
-          this.TotalMarkingSubjectFullMark = objAllComp.reduce((acc, current) => acc + current.FullMark, 0);
+        let objAllMarking = _ClsSectionSemSubjectsMarkCompntDefn.filter(de => de.SubjectCategory == 'Marking');
+        let objAllCompulsory =objAllMarking.filter(de => de.SubjectType.toLowerCase()==='compulsory');
+
+        this.TotalMarkingSubjectFullMark=0;
+        //console.log("objAllComp", objAllCompulsory);
+        if (objAllCompulsory.length > 0) {
+          let distinctStr = "select distinct SubjectTypeId,SelectHowMany,FullMark,SubjectType from ? where SubjectType != 'Compulsory'";
+          let distinctSubjectTypesWithoutCompulsory = alasql(distinctStr, [objAllMarking]);
+
+          this.TotalMarkingSubjectFullMark = objAllCompulsory.reduce((acc, current) => acc + current.FullMark, 0);
+          distinctSubjectTypesWithoutCompulsory.forEach(item=>{
+            this.TotalMarkingSubjectFullMark += item.SelectHowMany * item.FullMark;
+          })
         }
         var AllComponentsMarkObtained: any[] = [];
 
@@ -875,9 +884,10 @@ export class VerifyResultsComponent implements OnInit {
         compulsorySubjectCount = AllMarkingSubjectCounts.filter(com => com.SubjectType.toLowerCase() == 'compulsory').length;
         //var OtherthanCompulsory= SubjectCounts.filter(com=>com.SubjectType.toLowerCase() !='compulsory');
         var notCompulsorySubjectType = this.SubjectTypes.filter((s: any) => s.SubjectTypeName.toLowerCase() != 'compulsory');
-        var subjectsWithNotCompulsory = AllMarkingSubjectCounts.filter(com => com.SubjectType.toLowerCase() != 'compulsory' && com.SubjectType.toLowerCase() != 'optional');
+        var subjectsWithNotCompulsory = AllMarkingSubjectCounts.filter(com => com.SubjectType.toLowerCase() != 'compulsory'
+          && com.SubjectType.toLowerCase() != 'optional');
         var uniqueTypesOtherthanCompulsoryType = alasql("select distinct SubjectTypeId,SubjectType,SelectHowMany from ?", [subjectsWithNotCompulsory]);
-
+        console.log("subjectsWithNotCompulsory", subjectsWithNotCompulsory)
         subjectsWithNotCompulsory = uniqueTypesOtherthanCompulsoryType.filter(sub => notCompulsorySubjectType.findIndex(fi => fi.SubjectTypeId == sub.SubjectTypeId) > -1);
         this.AllSubjectCounts = compulsorySubjectCount + subjectsWithNotCompulsory.reduce((acc, current) => acc + current.SelectHowMany, 0);
 
@@ -1590,11 +1600,15 @@ export class VerifyResultsComponent implements OnInit {
             e.SubjectTypeId = obj[0].SubjectTypeId;
             e.SubjectName = obj[0].SubjectName;
             var selectHowManyObj = this.SubjectTypes.filter((f: any) => f.SubjectTypeId == obj[0].SubjectTypeId)
-            var selectHowMany = 0;
-            if (selectHowManyObj.length > 0)
+            var selectHowMany = 0, _subjectType = '';
+            if (selectHowManyObj.length > 0) {
               selectHowMany = selectHowManyObj[0].SelectHowMany;
+              _subjectType = selectHowManyObj[0].SubjectTypeName;
+            }
+
             e.SubjectComponentName = this.MarkComponents.filter(c => c.MasterDataId == e.SubjectComponentId)[0].MasterDataName;
             e.SelectHowMany = selectHowMany;
+            e.SubjectType = _subjectType;
             e.SubjectCategoryId = obj[0].SubjectCategoryId;
             e.SubjectCategory = this.SubjectCategory.filter(c => c.MasterDataId == obj[0].SubjectCategoryId)[0].MasterDataName;
             this.ClassSubjectComponents.push(e);

@@ -449,6 +449,21 @@ export class AddstudentclassComponent implements OnInit {
               objClassFee.forEach(clsfee => {
                 var _category = '';
                 var _subCategory = '';
+                var _className = '';
+                var _semesterName = '';
+                var _sectionName = '';
+
+                var objcls = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
+                if (objcls.length > 0)
+                  _className = objcls[0].ClassName;
+
+                var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
+                if (objsemester.length > 0)
+                _semesterName = objsemester[0].MasterDataName;
+
+                var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
+                if (objsection.length > 0)
+                  _sectionName = objsection[0].MasterDataName;
 
                 var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat.length > 0)
@@ -474,6 +489,9 @@ export class AddstudentclassComponent implements OnInit {
                     ClassId: studcls.ClassId,
                     SectionId: studcls.SectionId,
                     SemesterId: studcls.SemesterId,
+                    ClassName:_className,
+                    Section:_sectionName,
+                    Semester:_semesterName,
                     RollNo: studcls.RollNo
                   });
                 }

@@ -1,7 +1,7 @@
 <mat-card>
     <mat-card-title>Student</mat-card-title>
-    <mat-card-subtitle style="margin:20px;align-items: center; font-weight: bold; background-color:lightgray;padding:15px;margin: 0px 20px 0px 20px;display: flex;justify-content: space-between;">
-        <span>{{StudentName}}</span>
+    <mat-card-subtitle style="align-items: center; font-weight: bold; background-color:lightgray;padding:8px;margin: 0px 20px 0px 20px;display: flex;justify-content: space-between;">
+        <span style="margin-left: 10px;">{{StudentName}}</span>
         <div style="display:flex;">
             <span *ngIf="StudentId>0" style="margin-right: 15px;">
                 <button (click)="back()" matTooltip="dashboard" mat-raised-button>

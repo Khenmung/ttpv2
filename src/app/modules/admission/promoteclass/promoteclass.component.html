@@ -1,12 +1,14 @@
-<div style="padding:15px 15px 10px 15px;">
+<div style="padding:25px 15px 10px 15px;">
     <div><strong>Promote Student</strong></div>
 </div>
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+<mat-spinner *ngIf="PageLoading" diameter="25"
+    style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
 <form style="display: flex;flex-direction:column;justify-content: space-around;" [formGroup]="searchForm">
     <div style="display:flex;flex-direction: column;">
         <div style="font-size: medium;padding: 15px 0px 15px 0px;font-weight: bold;color:darkgreen">Search Student From
             Previous Batch.</div>
-        <div style="padding:10px 0px 0px 15px;border:1px solid lightgray">
+        <div>
+            <!-- </div> style="padding:23px 0px 0px 15px;border:1px solid lightgray"> -->
             <mat-form-field appearance="outline" style="width:100px">
                 <mat-label>PID</mat-label>
                 <input matInput autocomplete="Off" onfocus="this.select()" formControlName="searchPID">
@@ -14,7 +16,8 @@
             <mat-form-field appearance="outline" [style.width.px]="300">
                 <mat-label>Student</mat-label>
                 <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
-                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="SetCategory($event)">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+                    (optionSelected)="SetCategory($event)">
                     <mat-option *ngFor="let option of filteredStudents|async" [value]="option">
                         {{option.Name}}
                     </mat-option>
@@ -28,8 +31,8 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <button [disabled]="loading || PreviousBatchId==-1" style="margin-right: 10px;" mat-raised-button color="accent"
-                (click)="GetData()">
+            <button [disabled]="loading || PreviousBatchId==-1" style="margin-right: 10px;" mat-raised-button
+                color="accent" (click)="GetData()">
                 <mat-icon>search</mat-icon>
                 <mat-icon *ngIf="loading">
                     <mat-spinner diameter="20" color="Blue"></mat-spinner>
@@ -95,7 +98,8 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> Semester </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field>
-                <mat-select (selectionChange)="onBlur(element)" [value]="element.SemesterId" [(ngModel)]="element.SemesterId">
+                <mat-select (selectionChange)="onBlur(element)" [value]="element.SemesterId"
+                    [(ngModel)]="element.SemesterId">
                     <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">{{item.ClassName}}
                     </mat-option>
                 </mat-select>
@@ -113,7 +117,7 @@
             </mat-form-field>
         </mat-cell>
     </ng-container> -->
-   
+
     <ng-container matColumnDef="RollNo">
         <mat-header-cell *matHeaderCellDef mat-sort-header>RollNo
         </mat-header-cell>
@@ -177,8 +181,8 @@
             Admitted
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <mat-checkbox [disabled]="element.Active==1" (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
-                [checked]="element.Active==1?true:false">
+            <mat-checkbox [disabled]="element.Active==1" (click)="$event.stopPropagation()"
+                (change)="updateActive(element,$event)" [checked]="element.Active==1?true:false">
             </mat-checkbox>
         </mat-cell>
     </ng-container>
@@ -196,8 +200,7 @@
             <button style="margin-right:15px" [disabled]="loading 
             || !element.Action 
             || Permission=='read'
-            || element.Active==1"
-                matTooltip="save" mat-mini-fab color="accent" (click)="SaveRow(element)">
+            || element.Active==1" matTooltip="save" mat-mini-fab color="accent" (click)="SaveRow(element)">
                 <mat-icon>plus_one</mat-icon>
                 <mat-icon *ngIf="loading">
                     <mat-spinner diameter="20" color="Blue"></mat-spinner>

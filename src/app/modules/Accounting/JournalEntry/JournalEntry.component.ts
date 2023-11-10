@@ -77,7 +77,7 @@ export class JournalEntryComponent implements OnInit {
     //"Reference",
     "DebitAmount",
     "CreditAmount",
-    "ActivityTypeId",
+    //"ActivityTypeId",
     "Active",
     "Action",
   ];
@@ -106,7 +106,8 @@ export class JournalEntryComponent implements OnInit {
       searchGeneralLedgerId: [0],
       searchDescription: [''],
       searchShortText: [''],
-      searchPostingDate:[new Date()]
+      searchPostingDateFrom:[new Date()],
+      searchPostingDateTo:[new Date()],
     });
     this.PageLoad();
     //        this.GetTeachers();
@@ -244,7 +245,8 @@ export class JournalEntryComponent implements OnInit {
     let filterStr = this.FilterOrgSubOrg + ' and LedgerId eq 0 and Active eq 1';
     debugger;
     var _searchDescription = this.searchForm.get("searchDescription")?.value;
-    var _PostingDate = this.searchForm.get("searchPostingDate")?.value;
+    var _PostingDateFrom = this.searchForm.get("searchPostingDateFrom")?.value;
+    var _PostingDateTo = this.searchForm.get("searchPostingDateTo")?.value;
     var _GeneralLedger = this.searchForm.get("searchGeneralLedgerId")?.value;
     // if(_searchDescription.length==0 && )
     if (_GeneralLedger.GeneralLedgerId) {
@@ -257,8 +259,8 @@ export class JournalEntryComponent implements OnInit {
     var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
     filterStr += " and PostingDate ge " + this.datepipe.transform(FinancialStartEnd.StartDate, 'yyyy-MM-dd') + //T00:00:00.000Z
       " and  PostingDate le " + this.datepipe.transform(FinancialStartEnd.EndDate, 'yyyy-MM-dd');//T00:00:00.000Z
-    let toDate = new Date(_PostingDate).setDate(new Date(_PostingDate).getDate()+1);
-      filterStr += " and PostingDate ge " + this.datepipe.transform(_PostingDate, 'yyyy-MM-dd') + //T00:00:00.000Z
+    let toDate = new Date(_PostingDateTo).setDate(new Date(_PostingDateTo).getDate()+1);
+      filterStr += " and PostingDate ge " + this.datepipe.transform(_PostingDateFrom, 'yyyy-MM-dd') + //T00:00:00.000Z
       " and  PostingDate lt " + this.datepipe.transform(toDate, 'yyyy-MM-dd');//T00:00:00.000Z
 
     

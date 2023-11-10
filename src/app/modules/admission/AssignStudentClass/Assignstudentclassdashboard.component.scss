@@ -2,46 +2,73 @@
 //     margin-right: 15px;
 //     width:98%;
 // }
-mat-header-cell{
+mat-header-cell {
     border-right: 1px solid lightgray;
-    padding: 5px;
+    display: flex;
+    justify-content: center;
 }
-mat-cell{
+
+mat-cell {
 
     border-right: 1px solid lightgray;
 }
-.mat-column-AdmissionNo{
-   
-    flex:1 1 100px;
+
+.mat-column-AdmissionNo {
+
+    flex: 1 1 100px;
 }
-.mat-column-GenderName{
-    justify-content: center;
-    flex:1 0 80px;
+
+.mat-column-GenderName {
+    flex: 1 0 80px;
 }
+
 .mat-column-RollNo,
-.mat-column-SectionId{
-    flex:1 0 100px;
-}
-.mat-column-Active,.mat-column-Action
-{
-    justify-content: center;
-    flex:1 0 100px;
-}
-.mat-column-SemesterId,.mat-column-CourseYearId,.mat-column-ExamStatus{
-    flex:1 0 120px;
-}
-.mat-column-ClassId,
-.mat-column-Remark{
-    //justify-content: center;
-    flex:1 0 140px;
+.mat-column-SectionId {
+    flex: 1 0 100px;
 }
 
- .mat-column-StudentName,.mat-column-FeeTypeId,.mat-column-Remarks{
-    flex:1 0 150px;
+.mat-column-Active,
+.mat-column-Action {
+    justify-content: center;
+    flex: 1 0 100px;
 }
-mat-cell:first-of-type{
+
+.mat-column-SemesterId,
+.mat-column-CourseYearId,
+.mat-column-ExamStatus {
+    flex: 1 0 120px;
+}
+
+.mat-column-ClassId,
+.mat-column-Remark {
+    //justify-content: center;
+    flex: 1 0 140px;
+}
+
+.mat-column-StudentName,
+.mat-column-FeeTypeId,
+.mat-column-Remarks {
+    flex: 1 0 150px;
+}
+
+mat-cell:first-of-type {
     padding-left: 0px;
 }
-.mdc-data-table__cell, .mdc-data-table__header-cell{
+
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
     padding: 0px 15px 0px 0px;
-  }
+}
+
+::ng-deep .mat-form-field-flex>.mat-form-field-infix {
+    padding: 0.4em 0px !important;
+}
+
+::ng-deep .mat-form-field-label-wrapper {
+    top: -1.5em;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+    transform: translateY(-1.1em) scale(.75);
+    width: 133.33333%;
+}

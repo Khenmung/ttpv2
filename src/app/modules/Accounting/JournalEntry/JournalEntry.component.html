@@ -5,12 +5,17 @@
 <!-- <alert></alert> -->
 <form [formGroup]="searchForm">
     <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
-        <mat-label>Posting Date</mat-label>
-        <input formControlName="searchPostingDate" matInput [matDatepicker]="searchPostingDate" autocomplete="off">
-        <mat-datepicker-toggle matSuffix [for]="searchPostingDate"></mat-datepicker-toggle>
-        <mat-datepicker #searchPostingDate></mat-datepicker>
+        <mat-label>Posting Date From</mat-label>
+        <input formControlName="searchPostingDateFrom" matInput [matDatepicker]="searchPostingDateFrom" autocomplete="off">
+        <mat-datepicker-toggle matSuffix [for]="searchPostingDateFrom"></mat-datepicker-toggle>
+        <mat-datepicker #searchPostingDateFrom></mat-datepicker>
     </mat-form-field>
-
+    <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+        <mat-label>Posting Date To</mat-label>
+        <input formControlName="searchPostingDateTo" matInput [matDatepicker]="searchPostingDateTo" autocomplete="off">
+        <mat-datepicker-toggle matSuffix [for]="searchPostingDateTo"></mat-datepicker-toggle>
+        <mat-datepicker #searchPostingDateTo></mat-datepicker>
+    </mat-form-field>
     <!-- <mat-form-field appearance="outline" [style.width.px]="200">
         <mat-label>Reference</mat-label>
         <input type="text" matInput formControlName="searchReferenceId" [maxlength]="50" autocomplete="Off">
@@ -138,7 +143,7 @@
             </mat-checkbox>
         </mat-cell>
     </ng-container>
-    <ng-container matColumnDef="ActivityTypeId">
+    <!-- <ng-container matColumnDef="ActivityTypeId">
         <mat-header-cell *matHeaderCellDef> Activity </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field appearance="outline">
@@ -149,7 +154,7 @@
                 </mat-select>
             </mat-form-field>
         </mat-cell>
-    </ng-container>
+    </ng-container> -->
     <ng-container matColumnDef="Action">
         <mat-header-cell *matHeaderCellDef>
             <button [disabled]="loading || Permission=='read'" matTooltip="new item" mat-raised-button

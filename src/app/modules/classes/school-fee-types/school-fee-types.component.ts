@@ -262,6 +262,21 @@ export class SchoolFeeTypesComponent implements OnInit {
               var clsObj = this.Classes.filter((f:any) => f.ClassId == studcls.ClassId);
               if (clsObj.length > 0)
                 _className = clsObj[0].ClassName;
+                var _className = '';
+                var _semesterName = '';
+                var _sectionName = '';
+
+                var objcls = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
+                if (objcls.length > 0)
+                  _className = objcls[0].ClassName;
+
+                var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
+                if (objsemester.length > 0)
+                _semesterName = objsemester[0].MasterDataName;
+
+                var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
+                if (objsection.length > 0)
+                  _sectionName = objsection[0].MasterDataName;
 
               var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
@@ -294,7 +309,9 @@ export class SchoolFeeTypesComponent implements OnInit {
                     SemesterId: studcls.SemesterId,
                     SectionId: studcls.SectionId,
                     RollNo: studcls.RollNo,
-                    ClassName: _className
+                    ClassName: _className,
+                    Semester:_semesterName,
+                    Section:_sectionName
                   });
                 }
 
@@ -315,10 +332,14 @@ export class SchoolFeeTypesComponent implements OnInit {
       });
 
   }
+  Sections:any=[];
+  Semesters:any=[];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY)
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER)
+    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION)
     this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {

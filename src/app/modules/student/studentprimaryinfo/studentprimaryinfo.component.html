@@ -1,5 +1,5 @@
 <div style="width:auto">
-    <div style="padding: 15px 0px 0px 15px;font-weight: bold;">Student Detail</div>
+    <div style="padding: 25px 0px 0px 15px;font-weight: bold;">Student Detail</div>
     <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <!-- <alert></alert> -->
     <form [formGroup]="studentForm">
@@ -191,7 +191,7 @@
                         </mat-grid-tile>
                     </mat-grid-list>
                 </div>
-                <mat-card-actions fxLayout="row" fxLayoutAlign="center center">
+                <mat-card-actions fxLayout="row" fxLayoutAlign="center center" style="margin-bottom: 30px;">
                     <button id="btnPrevious" [disabled]="loading" *ngIf="selectedIndex>0" (click)="previousStep()"
                         matTooltip="previous tab" mat-raised-button color="accent">
                         <mat-icon>navigate_before</mat-icon>
@@ -309,7 +309,7 @@
                         </span>
                     </div>
                 </div>
-                <mat-card-actions fxLayout="row" fxLayoutAlign="center center">
+                <mat-card-actions fxLayout="row" fxLayoutAlign="center center" style="margin-bottom: 30px;">
                     <button id="btnContactPrevious" [disabled]="loading" *ngIf="selectedIndex>0"
                         (click)="previousStep()" matTooltip="previous tab" mat-raised-button>
                         <mat-icon>navigate_before</mat-icon>
@@ -369,7 +369,7 @@
                         </mat-form-field>
                     </div>
                 </div>
-                <mat-card-actions fxLayout="row" fxLayoutAlign="center center">
+                <mat-card-actions fxLayout="row" fxLayoutAlign="center center" style="margin-bottom: 30px;">
                     <button id="btnBankACPrevious" [disabled]="loading" *ngIf="selectedIndex>0" (click)="previousStep()"
                         matTooltip="previous tab" mat-raised-button>
                         <mat-icon>navigate_before</mat-icon>
@@ -503,7 +503,7 @@
                         </mat-form-field>
                     </div>
                 </div>
-                <mat-card-actions fxLayout="row" fxLayoutAlign="center center">
+                <mat-card-actions fxLayout="row" fxLayoutAlign="center center" style="margin-bottom: 30px;">
                     <button id="btnAdditionalPrevious" [disabled]="loading" *ngIf="selectedIndex>0"
                         (click)="previousStep()" alt="previous" mat-raised-button>
                         <mat-icon>navigate_before</mat-icon>

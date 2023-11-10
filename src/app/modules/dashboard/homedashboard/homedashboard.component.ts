@@ -559,6 +559,7 @@ export class HomeDashboardComponent implements OnInit {
     }
     this.tokenStorage.saveNextBatchId(_nextBatchId.toString());
   }
+  Houses: any = [];
   getBatches() {
 
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -617,21 +618,22 @@ export class HomeDashboardComponent implements OnInit {
             this.RedirectionText = _obj[0].Description;
 
           this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+          this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
           this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
           this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
           var selectedItem = this.SubOrganization.filter((s: any) => s.MasterDataId == this.SubOrgId);
           this.searchForm.patchValue({ "searchSubOrgId": selectedItem[0] });
 
           if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
-            
+
             this.Classes = this.tokenStorage.getClasses()!;
 
             let refresh = 0;
             if (this.Classes.length === 0)
               refresh = 1;
 
-            this.contentservice.GetClasses(this.filterOrgSubOrg,refresh).subscribe((data: any) => {
-              if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+            this.contentservice.GetClasses(this.filterOrgSubOrg, refresh).subscribe((data: any) => {
+              if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
               this.tokenStorage.saveClasses(this.Classes);
               this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
               let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
@@ -844,6 +846,9 @@ export class HomeDashboardComponent implements OnInit {
           d.Section = _Section;
           d.StudentClasses = studcls;
           d.Remarks = _remark;
+
+          let obj = this.Houses.filter(h => h.MasterDataId == d.HouseId)
+          obj.length > 0 ? d.House = obj[0].MasterDataName : d.House = '';
           this.Students.push(d);
 
         })
@@ -900,8 +905,8 @@ export class HomeDashboardComponent implements OnInit {
       //"UserId",
       "ReasonForLeavingId",
       "AdmissionStatusId",
-      //"PresentAddress",
-      //"DOB"
+      "PresentAddress",
+      "DOB"
     ];
     list.PageName = "Students";
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {

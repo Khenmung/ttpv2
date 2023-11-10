@@ -1,7 +1,7 @@
 <mat-card>
-    <mat-card-title>Student Info</mat-card-title>
+    <mat-card-title style="margin-left: 10px;">Student Info</mat-card-title>
     <!-- <mat-card-subtitle>&nbsp;</mat-card-subtitle> -->
-    <mat-card-content style="margin:20px">
+    <mat-card-content style="margin:0px 0px 20px 20px">
         <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
         <form [formGroup]="studentSearchForm" style="display:flex;flex-direction: column;">
             <div>
@@ -92,8 +92,6 @@
                 </button>
             </div>
         </form>
-        <br>
-        <!-- <div *ngIf="ELEMENT_DATA.length>0"> -->
         <mat-table #table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="Action">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
