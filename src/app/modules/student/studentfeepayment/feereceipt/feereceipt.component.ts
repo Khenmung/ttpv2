@@ -223,6 +223,7 @@ export class FeereceiptComponent implements OnInit {
         this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, pClassId, pSemesterId, pSectionId, pStudentClassId, pFeeTypeId)
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
+            let _students = this.tokenStorage.getStudents()!;
             data.value.forEach(studcls => {
               var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
@@ -230,7 +231,7 @@ export class FeereceiptComponent implements OnInit {
               var obj = this.Classes.filter(c => c.ClassId == studcls.ClassId);
               if (obj.length > 0)
                 _className = obj[0].ClassName;
-
+              let _currentStudent = _students.filter((s:any)=>s.StudentId === studcls.StudentId);
               objClassFee.forEach(clsfee => {
                 var _category = '';
                 var _subCategory = '';
@@ -260,7 +261,9 @@ export class FeereceiptComponent implements OnInit {
                     SemesterId: studcls.SemesterId,
                     SectionId: studcls.SectionId,
                     RollNo: studcls.RollNo,
-                    ClassName: _className
+                    ClassName: _className,
+                    Remark1: _currentStudent[0]["Remark1"],
+                    Remark2: _currentStudent[0]["Remark2"]
                   });
                 }
 

@@ -4,7 +4,7 @@ import { NaomitsuService } from '../../../shared/databaseService';
 import { List } from '../../../shared/interface';
 //import { DialogService } from '../../../shared/dialog.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { globalconstants } from '../../../shared/globalconstant';
 import { MatTableDataSource } from '@angular/material/table';
 import { ContentService } from '../../../shared/content.service';

@@ -450,7 +450,8 @@ export class HomeDashboardComponent implements OnInit {
   Semesters: any[] = [];
   Sections: any[] = [];
   Classes: any[] = [];
-  Remarks: any[] = [];
+  Remark1: any[] = [];
+  Remark2: any[] = [];
   // GetMasterData(SelectedAppId) {
   //   return this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, SelectedAppId)
 
@@ -485,7 +486,8 @@ export class HomeDashboardComponent implements OnInit {
         if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
           this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
           this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
-          this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+          this.Remark1 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+          this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
           //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
           //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
@@ -711,7 +713,7 @@ export class HomeDashboardComponent implements OnInit {
     //this.filterOrgSubOrgBatchId += " and IsCurrent eq true";
     list.PageName = "StudentClasses";
     list.lookupFields = ["Student($select=StudentId," +
-      "FirstName,LastName,FatherName,MotherName,PID,Active,RemarkId," +
+      "FirstName,LastName,FatherName,MotherName,PID,Active,RemarkId,Remark2Id," +
       "GenderId,HouseId,ReasonForLeavingId,AdmissionStatusId)"];
 
     list.filter = [this.filterOrgSubOrgBatchId];
@@ -743,10 +745,18 @@ export class HomeDashboardComponent implements OnInit {
           if (_classNameobj.length > 0)
             _className = _classNameobj[0].ClassName;
 
-          var _remark = '';
-          var _remarkObj = this.Remarks.filter((f: any) => f.MasterDataId == d.RemarkId);
-          if (_remarkObj.length > 0)
-            _remark = _remarkObj[0].MasterDataName;
+          var _remark1 = '';
+          var _remark2 = '';
+          if (d.RemarkId) {
+            var _remarkObj = this.Remark1.filter((f: any) => f.MasterDataId == d.RemarkId);
+            if (_remarkObj.length > 0)
+              _remark1 = _remarkObj[0].MasterDataName;
+          }
+          if (d.Remark2Id) {
+            var _remark2Obj = this.Remark2.filter((f: any) => f.MasterDataId == d.Remark2Id);
+            if (_remark2Obj.length > 0)
+              _remark2 = _remark2Obj[0].MasterDataName;
+          }
           var _Section = '';
           var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == d.StudentClasses[0].SectionId);
           if (_sectionobj.length > 0)
@@ -756,7 +766,7 @@ export class HomeDashboardComponent implements OnInit {
           if (_semesterobj.length > 0)
             _semester = _semesterobj[0].MasterDataName;
 
-          var _RollNo = d.StudentClasses[0].RollNo;
+          //var _RollNo = d.StudentClasses[0].RollNo;
           _studentClassId = d.StudentClasses[0].StudentClassId;
           //}
           var _lastname = d.LastName == null ? '' : " " + d.LastName;
@@ -769,7 +779,8 @@ export class HomeDashboardComponent implements OnInit {
           d.ClassName = _className;
           d.Section = _Section;
           d.Semester = _semester;
-          d.Remarks = _remark;
+          d.Remark1 = _remark1;
+          d.Remark2 = _remark2;
           this.Students.push(d);
         });
         this.tokenStorage.saveStudents(this.Students);
@@ -806,7 +817,8 @@ export class HomeDashboardComponent implements OnInit {
         var _className = '';
         var _house = '';
         var _Section = '';
-        let _remark = '';
+        let _remark1 = '';
+        let _remark2 = '';
         var _semester = '';
         var _studentClassId = 0;
         _students.forEach(d => {
@@ -827,9 +839,16 @@ export class HomeDashboardComponent implements OnInit {
             var _semesterobj = this.Semesters.filter((f: any) => f.MasterDataId == studcls[0].SemesterId);
             if (_semesterobj.length > 0)
               _semester = _semesterobj[0].MasterDataName;
-            var _remarkobj = this.Remarks.filter((f: any) => f.MasterDataId == studcls[0].SectionId);
-            if (_remarkobj.length > 0)
-              _remark = _remarkobj[0].MasterDataName;
+            if (d.RemarkId) {
+              var _remark1obj = this.Remark1.filter((f: any) => f.MasterDataId == d.RemarkId);
+              if (_remark1obj.length > 0)
+                _remark1 = _remark1obj[0].MasterDataName;
+            }
+            if (d.Remark2Id) {
+              var _remark2obj = this.Remark2.filter((f: any) => f.MasterDataId == d.Remark2Id);
+              if (_remark2obj.length > 0)
+                _remark2 = _remark2obj[0].MasterDataName;
+            }
             var _RollNo = studcls[0].RollNo;
             _studentClassId = studcls[0].StudentClassId;
           }
@@ -844,8 +863,10 @@ export class HomeDashboardComponent implements OnInit {
           d.Name = _name;
           d.ClassName = _className;
           d.Section = _Section;
+          d.Semester = _semester;
           d.StudentClasses = studcls;
-          d.Remarks = _remark;
+          d.Remark1 = _remark1;
+          d.Remark2 = _remark2;
 
           let obj = this.Houses.filter(h => h.MasterDataId == d.HouseId)
           obj.length > 0 ? d.House = obj[0].MasterDataName : d.House = '';

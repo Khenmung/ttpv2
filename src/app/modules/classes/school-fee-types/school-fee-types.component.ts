@@ -137,7 +137,9 @@ export class SchoolFeeTypesComponent implements OnInit {
       var _lastName = student.LastName == '' ? '' : '-' + student.LastName;
       return {
         StudentId: student.StudentId,
-        Name: student.PID + '-' + student.FirstName + _lastName
+        Name: student.PID + '-' + student.FirstName + _lastName,
+        Remark1:student.Remark1,
+        Remark2:student.Remark2,
       }
     })
 
@@ -280,6 +282,7 @@ export class SchoolFeeTypesComponent implements OnInit {
 
               var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
+              let _currentStudent = this.Students.filter(s=>s.StudentId === studcls.StudentId);
               objClassFee.forEach(clsfee => {
                 var _category = '';
                 var _subCategory = '';
@@ -311,7 +314,9 @@ export class SchoolFeeTypesComponent implements OnInit {
                     RollNo: studcls.RollNo,
                     ClassName: _className,
                     Semester:_semesterName,
-                    Section:_sectionName
+                    Section:_sectionName,
+                    Remark1: _currentStudent[0]["Remark1"],
+                    Remark2: _currentStudent[0]["Remark2"]
                   });
                 }
 

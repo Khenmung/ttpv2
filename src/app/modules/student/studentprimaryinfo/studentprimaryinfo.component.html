@@ -454,7 +454,7 @@
                             <mat-select id="ddRemark1" formControlName="RemarkId"
                                 (selectionChange)="OnBlur()">
                                 <mat-option [value]="Defaultvalue">select</mat-option>
-                                <mat-option *ngFor="let p of Remarks" [value]="p.MasterDataId">
+                                <mat-option *ngFor="let p of Remark1" [value]="p.MasterDataId">
                                     {{p.MasterDataName}}
                                 </mat-option>
                             </mat-select>

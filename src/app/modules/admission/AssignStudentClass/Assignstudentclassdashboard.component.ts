@@ -1240,6 +1240,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
             data.value.forEach(studcls => {
               var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
+              let _currentstudent =this.Students.filter(s=>s.StudentId == studcls.StudentId);
               objClassFee.forEach(clsfee => {
                 var _category = '';
                 var _subCategory = '';
@@ -1268,7 +1269,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                   _subCategory = objsubcat[0].MasterDataName;
 
                 var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
-
+                
                 if (_formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
@@ -1286,6 +1287,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                     ClassName:_className,
                     Section:_sectionName,
                     Semester:_semesterName,
+                    Remark1:_currentstudent[0]["Remark1"],
+                    Remark2:_currentstudent[0]["Remark2"],
                     RollNo: studcls.RollNo
                   });
                 }

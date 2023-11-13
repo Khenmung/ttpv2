@@ -9,11 +9,11 @@ const routes: Routes = [
   },
   {
     path: 'employee/doc',
-    loadChildren: () => import('./modules/collection/photogallery.module').then(m => m.PhotogalleryModule)
+    loadChildren: () => import('./modules/document/photogallery.module').then(m => m.PhotogalleryModule)
   },
   {
     path: 'edu/doc',
-    loadChildren: () => import('./modules/collection/photogallery.module').then(m => m.PhotogalleryModule)
+    loadChildren: () => import('./modules/document/photogallery.module').then(m => m.PhotogalleryModule)
   },
   {
     path: 'edu/questionbank',
@@ -21,7 +21,7 @@ const routes: Routes = [
   },
   {
     path: 'web/photo',
-    loadChildren: () => import('./modules/collection/photogallery.module').then(m => m.PhotogalleryModule)
+    loadChildren: () => import('./modules/document/photogallery.module').then(m => m.PhotogalleryModule)
   },
   {
     path: 'web/page',

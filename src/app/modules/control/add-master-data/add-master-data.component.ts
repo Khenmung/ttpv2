@@ -599,16 +599,21 @@ export class AddMasterDataComponent implements OnInit {
           row.Action = false;
           this.MasterList = this.tokenStorage.getMasterData()!;
 
-          let currentrow: any = this.MasterList.filter(f => f.MasterDataId == mastertoUpdate.MasterDataId);
-          if (currentrow.length > 0) {
-            currentrow[0].MasterDataName = mastertoUpdate.MasterDataName;
-            currentrow[0].Description = mastertoUpdate.Description;
-            currentrow[0].ParentId = mastertoUpdate.ParentId;
-            currentrow[0].Sequence = mastertoUpdate.Sequence;
-            currentrow[0].Confidential = mastertoUpdate.Confidential;
-            currentrow[0].Active = mastertoUpdate.Active;
-            this.tokenStorage.saveMasterData(this.MasterList);
-          }
+          let indx = this.MasterList.findIndex(f => f.MasterDataId == mastertoUpdate.MasterDataId);
+          this.MasterList[indx] = mastertoUpdate;
+          this.MasterData = Object.assign([],this.MasterData);
+          this.tokenStorage.saveMasterData(this.MasterList);
+          // if (currentrow.length > 0) {
+          //   // currentrow[0].MasterDataName = mastertoUpdate.MasterDataName;
+          //   // currentrow[0].Description = mastertoUpdate.Description;
+          //   // currentrow[0].ParentId = mastertoUpdate.ParentId;
+          //   // currentrow[0].Sequence = mastertoUpdate.Sequence;
+          //   // currentrow[0].Confidential = mastertoUpdate.Confidential;
+          //   // currentrow[0].Active = mastertoUpdate.Active;
+          //   currentrow[0] =JSON.parse(JSON.stringify(mastertoUpdate))
+
+          //   this.tokenStorage.saveMasterData(this.MasterList);
+          // }
           
           if (this.DataToSaveCount == 0) {
             this.loading = false;

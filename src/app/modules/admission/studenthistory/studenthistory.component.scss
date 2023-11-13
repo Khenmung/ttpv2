@@ -2,11 +2,14 @@
 mat-header-cell{
     border-right: 1px solid lightgray;
     padding: 5px;
+    justify-content: center;
 }
 mat-cell{
     border-right: 1px solid lightgray;
 }
-
+.element-row{
+    min-height: 29px;   
+   }
 // .mat-column-GenderName{
 //     justify-content: center;
 //     padding-left: 5px;
@@ -44,6 +47,6 @@ mat-cell{
 mat-cell:first-of-type{
     padding-left: 0px;
 }
-.mdc-data-table__cell, .mdc-data-table__header-cell{
-    padding: 15px 0px 0px 8px !important;
-  }
+// .mdc-data-table__cell, .mdc-data-table__header-cell{
+//     padding: 15px 0px 0px 8px !important;
+//   }

@@ -203,12 +203,12 @@ export class AttendancepercentComponent implements OnInit {
     _fromDate.setHours(0, 0, 0, 0);
     _toDate.setHours(0, 0, 0, 0);
     var dateDiff = (_toDate.getTime() -_fromDate.getTime())/(1000*60*60*24) 
-    if(dateDiff>210)
-    {
-      this.loading=false;
-      this.contentservice.openSnackBar("Date period should be less than 180 days",globalconstants.ActionText,globalconstants.RedBackground);
-      return;
-    }
+    // if(dateDiff>210)
+    // {
+    //   this.loading=false;
+    //   this.contentservice.openSnackBar("Date period should be less than 180 days",globalconstants.ActionText,globalconstants.RedBackground);
+    //   return;
+    // }
     ////console.log('dateDiff',dateDiff);
     if (_fromDate.getTime() > today.getTime()) {
       this.loading = false; this.PageLoading = false;

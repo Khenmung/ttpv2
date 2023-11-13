@@ -1,13 +1,18 @@
-.mat-field-LastName,
-.mat-field-Active,
-.mat-field-Action,.mat-field-PID {
-    flex: 1 0 60px;
+.mat-column-LastName,
+.mat-column-Active,
+.mat-column-Action,.mat-column-PID {
+    flex: 1 0 80px;
 }
 
-.mat-field-Name,
-.mat-field-FatherName,.mat-field-MotherName,.mat-field-ReasonForLeaving,.mat-field-Notes {
+.mat-column-Name{
     flex: 1 0 200px;
 }
-.mat-field-UpdatedDate{
+.mat-column-FatherName,.mat-column-MotherName,.mat-column-ReasonForLeaving,.mat-column-Notes {
+    flex: 1 0 180px;
+}
+.mat-column-UpdatedDate{
     flex:1 0 140px;
+}
+mat-header-cell,mat-cell{
+    border-right: 1px solid lightgray;
 }

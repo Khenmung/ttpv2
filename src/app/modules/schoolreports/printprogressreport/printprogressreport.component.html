@@ -169,50 +169,11 @@
                         <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
-                <!-- <div style="margin-top:15px;margin-bottom:15px;">
-                    <mat-table #table [dataSource]="dataSourceEvaluation" matSort
-                        *ngIf="EvaluationDisplayedColumns.length>1">
-                        <ng-container *ngFor="let disCol of EvaluationDisplayedColumns; let colIndex = index"
-                            matColumnDef="{{disCol}}">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header>
-                                <span style="padding-left: 15px;"
-                                    *ngIf="disCol!='FirstCol' && disCol!='Description'">{{disCol}}</span>
-                            </mat-header-cell>
-                            <mat-cell *matCellDef="let element" style="border-right:1px solid lightgray">
-                                <span
-                                    style="width:100%;display:flex; flex-direction:column;justify-content: flex-start;">
-                                    <span *ngIf="disCol =='Description' && 
-                            element.QuestionnaireType =='Evaluation Master'"
-                                        style="font-weight: bold; width: 100%;padding: 15px 15px 10px 0px;color:#A4de02">
-                                        {{element[disCol]}}</span>
-                                    <span *ngIf="disCol =='Description'
-                                && element.QuestionnaireType=='Heading'"
-                                        style="font-weight: bold; width: 100%;padding: 15px 15px 10px 0px;color:#1E5631">
-                                        {{element[disCol]}}</span>
-                                    <span *ngIf="disCol =='Description' && element.QuestionnaireType=='Sub Heading'"
-                                        style="font-weight: bold; width: 100%;padding: 15px 15px 10px 0px;color:#76ba1b">
-                                        {{element[disCol]}}</span>
-                                    <span *ngIf="element.QuestionnaireType=='Questionnaire' && disCol =='Description'"
-                                        style="width: 100%;padding: 15px 15px 10px 0px;">
-                                        <mat-icon class="icon">star_outline</mat-icon> {{element[disCol]}}
-                                    </span>
-                                    <span [innerHTML]="element[disCol]|encodeHTML"
-                                        style="align-self:stretch; width: 100%;padding: 15px;" *ngIf="element['QuestionnaireType']!='Evaluation Master' 
-                                   && disCol!='Description' 
-                                   && disCol!='QuestionnaireType' 
-                                   && disCol!='EvaluationMasterId'
-                                   && disCol!='EvaluationName'
-                                   && element[disCol]!=undefined 
-                                   && element[disCol].length>0">
-                                    </span>
-                                </span>
-                            </mat-cell>
-                        </ng-container>
-                        <mat-header-row *matHeaderRowDef="EvaluationDisplayedColumns"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: EvaluationDisplayedColumns;" class="element-row">
-                        </mat-row>
-                    </mat-table>
-                </div> -->
+                <div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
             </div>
         </div>
 

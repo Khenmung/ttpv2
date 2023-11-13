@@ -141,7 +141,7 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
     </mat-table>
-    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,100]"></mat-paginator>
+    <mat-paginator style="display: flex;justify-content: center;margin-top: 15px;" [pageSizeOptions]="[5,10,25,100]"></mat-paginator>
     <div *ngIf="StudentClassList.length>0">
         <button (click)="exportArray()" mat-raised-button color="accent">
             <mat-icon>download</mat-icon>

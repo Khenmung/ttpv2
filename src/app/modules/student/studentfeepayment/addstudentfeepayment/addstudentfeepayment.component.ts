@@ -601,14 +601,30 @@ export class AddstudentfeepaymentComponent implements OnInit {
             result = [...data.value];
           }
           result = result.sort((a, b) => a.Month - b.Month);
+          let _sectionName = '', _semesterName = '', remark1 = '', remark2 = '';
+          let _sectionObj = this.Sections.filter(cat => cat.MasterDataId == this.studentInfoTodisplay.SectionId);
+          if (_sectionObj.length > 0)
+            _sectionName = _sectionObj[0].MasterDataName;
+
+          var _semesterObj = this.Semesters.filter(cat => cat.MasterDataId == this.studentInfoTodisplay.SemesterId);
+          if (_semesterObj.length > 0) {
+            _semesterName = _semesterObj[0].MasterDataName;
+          }
+          var _className = ''
+          var clsobj = this.Classes.filter(c => c.ClassId == this.studentInfoTodisplay.ClassId);
+          if (clsobj.length > 0)
+            _className = clsobj[0].ClassName;
+          let _student= this.Students.filter(s=>s.StudentId === this.studentInfoTodisplay.StudentId);
+            if(_student.length>0)
+            {
+              remark1 =_student[0].Remark1;
+              remark2 =_student[0].Remark2;
+            }
           this.StudentClassFees = result.map(studclsfee => {
             //f.FeeName = this.FeeDefinitions.filter(n => n.FeeDefinitionId == f.FeeDefinitionId)[0].FeeName;
             var catObj = this.FeeCategories.filter(cat => cat.MasterDataId == studclsfee.FeeDefinition.FeeCategoryId);
             var subcatObj = this.allMasterData.filter(cat => cat.MasterDataId == studclsfee.FeeDefinition.FeeSubCategoryId);
-            var _className = ''
-            var clsobj = this.Classes.filter(c => c.ClassId == studclsfee.ClassId);
-            if (clsobj.length > 0)
-              _className = clsobj[0].ClassName;
+           
             var catName = '';
             if (catObj.length > 0)
               catName = catObj[0].MasterDataName
@@ -620,6 +636,10 @@ export class AddstudentfeepaymentComponent implements OnInit {
             studclsfee.FeeCategory = catName;
             studclsfee.FeeSubCategory = subcatName;
             studclsfee.FeeName = studclsfee.FeeDefinition.FeeName;
+            studclsfee.Section= _sectionName;
+            studclsfee.Semester = _semesterName;
+            studclsfee.Remark1= remark1;
+            studclsfee.Remark2= remark2;
             studclsfee.AmountEditable = studclsfee.FeeDefinition.AmountEditable;
             if (studclsfee.Month == 0)
               studclsfee.MonthName = studclsfee.FeeName;
@@ -639,7 +659,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
             //either class fee is active or already paid are shown.
             let existing = this.ExistingStudentLedgerList.filter(fromdb => fromdb.Month == studentClassFee.Month
               && (studentClassFee.Active == 1 || fromdb.TotalDebit > fromdb.Balance))
-            existing = existing.filter(level2 => !(level2.BaseAmount>0 && level2.Balance == 0 && level2.TotalCredit == 0 && level2.TotalDebit == 0))
+            existing = existing.filter(level2 => !(level2.BaseAmount > 0 && level2.Balance == 0 && level2.TotalCredit == 0 && level2.TotalDebit == 0))
             if (existing.length > 0) {
               var alreadyAdded = this.StudentLedgerList.filter((f: any) => f.Month == studentClassFee.Month)
               if (alreadyAdded.length == 0)
@@ -688,6 +708,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
   ApplyVariables(formula) {
     var filledVar = formula;
+    console.log("formula",formula)
+    console.log("this.VariableObjList",this.VariableObjList);
     this.VariableObjList.forEach(m => {
       Object.keys(m).forEach(f => {
         if (filledVar.includes(f)) {
@@ -785,8 +807,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
         debugger;
         SelectedMonthFees = SelectedMonthFees.sort((a, b) => b.Month - a.Month);
         var AmountAfterFormulaApplied = 0;
-
+        //console.log("SelectedMonthFees",SelectedMonthFees);
         SelectedMonthFees.forEach((f, indx) => {
+
           this.VariableObjList.push(f);
           // var withoutTaxOrDiscount = this.MonthlyDueDetail.filter(x => x.FeeName != 'Discount' && x.FeeCategory != 'Tax')
           // this.CurrentTotalAmount = withoutTaxOrDiscount.reduce((acc, current) => acc + current.Amount, 0);

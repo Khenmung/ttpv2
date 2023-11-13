@@ -250,6 +250,7 @@ export class DashboardclassfeeComponent implements OnInit {
           this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, _classId, _semesterId, _sectionId, 0, 0)
             .subscribe((data: any) => {
               var studentfeedetail: any[] = [];
+              let _students: any = this.tokenStorage.getStudents()!;
               data.value.forEach(studcls => {
                 var _feeName = '';
                 var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
@@ -257,7 +258,7 @@ export class DashboardclassfeeComponent implements OnInit {
                 var obj = this.Classes.filter(c => c.ClassId == studcls.ClassId);
                 if (obj.length > 0)
                   _className = obj[0].ClassName;
-
+                let _currentStudent =  _students.filter(s=>s.StudentId === studcls.StudentId);
                 objClassFee.forEach(clsfee => {
                   var _category = '';
                   var _subCategory = '';
@@ -287,7 +288,9 @@ export class DashboardclassfeeComponent implements OnInit {
                       SemesterId: studcls.SemesterId,
                       SectionId: studcls.SectionId,
                       RollNo: studcls.RollNo,
-                      ClassName: _className
+                      ClassName: _className,
+                      Remark1: _currentStudent[0]["Remark1"],
+                      Remark2: _currentStudent[0]["Remark2"],
                     });
                   }
 
@@ -481,11 +484,11 @@ export class DashboardclassfeeComponent implements OnInit {
                   SubOrgId: this.SubOrgId
                 })
                 objDiscount[0].Active = 1;
-                this.insert(row,objDiscount[0], insert[0]);
+                this.insert(row, objDiscount[0], insert[0]);
               }
               ////console.log("dataclassfee", this.classFeeData);
               if (this.classFeeData.ClassFeeId == 0)
-                this.insert(row,item, this.classFeeData);
+                this.insert(row, item, this.classFeeData);
               else
                 this.update(item);
             })
@@ -494,7 +497,7 @@ export class DashboardclassfeeComponent implements OnInit {
       });
   }
 
-  insert(tblrow,row, item) {
+  insert(tblrow, row, item) {
 
     //debugger;
     this.dataservice.postPatch('ClassFees', item, 0, 'post')
@@ -756,7 +759,7 @@ export class DashboardclassfeeComponent implements OnInit {
     }
     //this.ELEMENT_DATA =
     ////console.log("this.CurrentMonthYear", this.CurrentMonthYear);
-    this.ELEMENT_DATA.sort((a:any, b:any) => a.PaymentOrder - b.PaymentOrder);
+    this.ELEMENT_DATA.sort((a: any, b: any) => a.PaymentOrder - b.PaymentOrder);
     //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA);
     this.dataSource = new MatTableDataSource<Element>(this.ELEMENT_DATA);
     this.dataSource.paginator = this.paginator;

@@ -1092,9 +1092,11 @@ export class PromoteclassComponent implements OnInit {
         this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, this.StudentClassData.ClassId, this.StudentClassData.SemesterId, this.StudentClassData.SectionId, row.StudentClassId, 0)
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
+            //let _Students:any = this.tokenStorage.getStudents()!;
             data.value.forEach(studcls => {
               var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
+              let _currentstudent =this.PreviousBatchStudents.filter(s=>s.StudentId == studcls.StudentId);
               objClassFee.forEach(clsfee => {
                 var _category = '';
                 var _subCategory = '';
@@ -1108,7 +1110,7 @@ export class PromoteclassComponent implements OnInit {
                   _subCategory = objsubcat[0].MasterDataName;
 
                 var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
-
+               
                 if (_formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
@@ -1123,7 +1125,9 @@ export class PromoteclassComponent implements OnInit {
                     ClassId: studcls.ClassId,
                     SectionId: studcls.SectionId,
                     SemesterId: studcls.SemesterId,
-                    RollNo: studcls.RollNo
+                    RollNo: studcls.RollNo,
+                    Remark1:_currentstudent[0]["Remark1"],
+                    Remark2:_currentstudent[0]["Remark2"]
                   });
                 }
 
@@ -1194,6 +1198,7 @@ export class PromoteclassComponent implements OnInit {
       "PID",
       "Active",
       "RemarkId",
+      "Remark2Id",
       "GenderId",
       "HouseId",
       "EmailAddress",

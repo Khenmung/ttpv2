@@ -402,7 +402,7 @@ export class AddstudentclassComponent implements OnInit {
         if (temp.length > 0) {
           let studcls = temp[0].StudentClasses.filter(c => c.StudentClassId == this.studentclassData.StudentClassId)
           if (studcls.length > 0) {
-            if (this.studentclassData.Active == 0 && studcls[0].IsCurrent==true) {
+            if (this.studentclassData.Active == 0 && studcls[0].IsCurrent == true) {
               let indx = _Students.indexOf(temp);
               _Students.splice(indx, 1);
             }
@@ -414,7 +414,7 @@ export class AddstudentclassComponent implements OnInit {
               studcls[0].FeeTypeId = this.studentclassData.FeeTypeId;
               studcls[0].Remarks = this.studentclassData.Remarks;
               studcls[0].AdmissionDate = this.studentclassData.AdmissionDate;
-              studcls[0].IsCurrent = this.studentclassData.IsCurrent;              
+              studcls[0].IsCurrent = this.studentclassData.IsCurrent;
             }
 
             this.tokenStorage.saveStudents(_Students);
@@ -443,9 +443,10 @@ export class AddstudentclassComponent implements OnInit {
         this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, row.ClassId, row.SemesterId, row.SectionId, this.StudentClassId, 0)
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
+            let _Students: any = this.tokenStorage.getStudents()!;
             data.value.forEach(studcls => {
               var _feeName = '';
-
+              let _currentStudent = _Students.filter(s => s.StudentId === studcls.StudentId);
               objClassFee.forEach(clsfee => {
                 var _category = '';
                 var _subCategory = '';
@@ -459,7 +460,7 @@ export class AddstudentclassComponent implements OnInit {
 
                 var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
                 if (objsemester.length > 0)
-                _semesterName = objsemester[0].MasterDataName;
+                  _semesterName = objsemester[0].MasterDataName;
 
                 var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
                 if (objsection.length > 0)
@@ -489,10 +490,12 @@ export class AddstudentclassComponent implements OnInit {
                     ClassId: studcls.ClassId,
                     SectionId: studcls.SectionId,
                     SemesterId: studcls.SemesterId,
-                    ClassName:_className,
-                    Section:_sectionName,
-                    Semester:_semesterName,
-                    RollNo: studcls.RollNo
+                    ClassName: _className,
+                    Section: _sectionName,
+                    Semester: _semesterName,
+                    RollNo: studcls.RollNo,
+                    Remark1: _currentStudent[0]["Remark1"],
+                    Remark2: _currentStudent[0]["Remark2"]
                   });
                 }
 

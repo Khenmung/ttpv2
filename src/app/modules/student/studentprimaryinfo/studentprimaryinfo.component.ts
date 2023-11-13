@@ -69,7 +69,7 @@ export class studentprimaryinfoComponent implements OnInit {
   PrimaryContactOtherId = 0;
   displayContactPerson = false;
   Houses: any[] = [];
-  Remarks: any[] = [];
+  //Remarks: any[] = [];
   studentForm: UntypedFormGroup;
   Edited = false;
   StudentActivatePermission = '';
@@ -394,7 +394,8 @@ export class studentprimaryinfoComponent implements OnInit {
   }
   Sections: any[] = [];
   Semesters: any[] = [];
-  Remark2:any[]=[];
+  Remark2: any[] = [];
+  Remark1: any[] = [];
   GetMasterData() {
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
@@ -407,7 +408,7 @@ export class studentprimaryinfoComponent implements OnInit {
     this.PrimaryContact = this.getDropDownData(globalconstants.MasterDefinitions.school.PRIMARYCONTACT);
     this.Clubs = this.getDropDownData(globalconstants.MasterDefinitions.school.CLUBS);
     this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
-    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+    this.Remark1 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
     this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
@@ -441,7 +442,7 @@ export class studentprimaryinfoComponent implements OnInit {
       this.studentForm.patchValue({ ReasonForLeavingId: this.ReasonForLeaving.filter(r => r.MasterDataName.toLowerCase() == 'active')[0].MasterDataId });
       var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+        if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
         if (this.Classes.length == 0) {
           this.contentservice.openSnackBar("Please define classes first.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -600,7 +601,7 @@ export class studentprimaryinfoComponent implements OnInit {
   }
   ErrorMessage = '';
   UpdateOrSave() {
-debugger;
+    debugger;
     var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f: any) => f.Active == 1);
     this.ErrorMessage = '';
     _MandatoryColumns.forEach(b => {
@@ -718,8 +719,8 @@ debugger;
       IdentificationMark: this.studentForm.get("IdentificationMark")?.value,
       BoardRegistrationNo: this.studentForm.get("BoardRegistrationNo")?.value,
       Height: this.studentForm.get("Height")?.value,
-      Weight: this.studentForm.get("Weight")?.value
-
+      Weight: this.studentForm.get("Weight")?.value,
+      PID:this.PID
     });
     //debugger;
     //console.log("studentData", this.studentData)
@@ -807,14 +808,31 @@ debugger;
         this.loading = false; this.PageLoading = false;
         this.Edited = false;
         this.GetStudentClassPhoto();
-
+        debugger;
         let _student: any[] = this.tokenStorage.getStudents()!;
-        let _stud = _student.filter(c => c.StudentId == this.StudentId);
+        
+        //let indx = _student.findIndex(f => f.StudentId === this.StudentId);
+        let _stud = _student.filter(f => f.StudentId === this.StudentId);        
         let studcls = JSON.parse(JSON.stringify(_stud[0].StudentClasses));
-        _stud[0] = JSON.parse(JSON.stringify(this.studentData[0]));
-        _stud[0].StudentClasses = studcls;
-        this.tokenStorage.saveStudents(_student);
 
+        //_student.splice(indx, 1);
+        
+        if (this.studentData[0].RemarkId) {
+          var _remark1obj = this.Remark1.filter((f: any) => f.MasterDataId == this.studentData[0].RemarkId);
+          if (_remark1obj.length > 0)
+            this.studentData[0].Remark1 = _remark1obj[0].MasterDataName;
+        }
+        if (this.studentData[0].Remark2Id) {
+          var _remark2obj = this.Remark2.filter((f: any) => f.MasterDataId == this.studentData[0].Remark2Id);
+          if (_remark2obj.length > 0)
+            this.studentData[0].Remark2 = _remark2obj[0].MasterDataName;
+        }
+        this.studentData[0].StudentClasses = studcls;
+         _stud[0] = JSON.parse(JSON.stringify(this.studentData[0]));
+        // _stud[0].StudentClasses = studcls;
+        //_student.push(this.studentData[0]);
+        this.tokenStorage.saveStudents(_student);
+        console.log("after", _student.filter(f => f.StudentId == this.StudentId))
         if (result != null && result.UserId != "") {
           this.contentservice.openSnackBar(globalconstants.UserLoginCreated, globalconstants.ActionText, globalconstants.BlueBackground);
         }
@@ -826,7 +844,7 @@ debugger;
         console.log("student update", error);
       })
   }
-  
+
   getErrorMessage(pickerInput: string): string {
     if (!pickerInput || pickerInput === '') {
       return 'Please choose a date.';
