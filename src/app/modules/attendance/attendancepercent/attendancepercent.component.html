@@ -63,6 +63,8 @@
         </div>
     </form>
     <div id="printSection">
+        <div style="width:100%;display: flex;justify-content: flex-end;color:blue">Total Working Days: {{TotalWorkingDays}}</div>
+        <mat-divider></mat-divider>
         <mat-table #table [dataSource]="dataSource" matSort style="max-width: 650px;">
             <ng-container matColumnDef="ClassName">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Class

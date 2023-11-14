@@ -184,10 +184,10 @@ export class AttendanceCountComponent implements OnInit {
         var _attendanceTotal = attendance.value.filter(att => this.Students.filter((s:any) => s.StudentClasses.length > 0
           && s.StudentClasses[0].Active == 1
           && s.StudentClasses[0].StudentClassId == att.StudentClassId).length > 0)
-
+          var _className = '', _sectionName = '';
         _attendanceTotal.forEach(sc => {
 
-          var _className = '', _sectionName = '';
+          _className = '', _sectionName = '';
           var clsObj = this.Classes.filter(c => c.ClassId == sc.ClassId);
           if (clsObj.length > 0) {
             _className = clsObj[0].ClassName;
@@ -218,7 +218,7 @@ export class AttendanceCountComponent implements OnInit {
           else {
             if (att.AttendanceStatusId == this.AttendancePresentId)
               _data.push({ ClassName: att.ClassName, Present: att.PresentAbsent, Sequence: att.Sequence })
-            else
+            else if(att.AttendanceStatusId)
               _data.push({ ClassName: att.ClassName, Absent: att.PresentAbsent, Sequence: att.Sequence })
 
           }
@@ -226,8 +226,8 @@ export class AttendanceCountComponent implements OnInit {
         })
         ////console.log("_data",_data);
         _data = _data.sort((a, b) => a.Sequence - b.Sequence || a.ClassName.localeCompare(b.ClassName));
-        this.TotalPresent = _data.reduce((acc, current) => acc + (current.Present == null ? 0 : current.Present), 0);
-        this.TotalAbsent = _data.reduce((acc, current) => acc + (current.Absent == null ? 0 : current.Absent), 0);
+        this.TotalPresent = _data.reduce((acc, current) => acc + (!current.Present? 0 : current.Present), 0);
+        this.TotalAbsent = _data.reduce((acc, current) => acc + (!current.Absent? 0 : current.Absent), 0);
         this.dataSource = new MatTableDataSource<any>(_data);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

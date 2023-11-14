@@ -2,7 +2,8 @@
     <div style="padding:15px 15px 10px 15px;">
         <div style="padding: 15px;"><strong>Class Subject Detail</strong></div>
 
-        <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+        <mat-spinner *ngIf="PageLoading" diameter="25"
+            style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
         <!-- <alert></alert> -->
         <form [formGroup]="searchForm">
             <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
@@ -13,7 +14,8 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()" style="width:200px;margin-right: 15px;">
+            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()"
+                style="width:200px;margin-right: 15px;">
                 <mat-label>semester</mat-label>
                 <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
@@ -22,7 +24,8 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()" style="width:200px;margin-right: 15px;">
+            <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()"
+                style="width:200px;margin-right: 15px;">
                 <mat-label>section</mat-label>
                 <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
@@ -30,7 +33,7 @@
                         {{item.MasterDataName}}
                     </mat-option>
                 </mat-select>
-            </mat-form-field>            
+            </mat-form-field>
             <button [disabled]="loading" mat-raised-button color="accent" (click)="GetClassSubject()">
                 <mat-icon>search</mat-icon>
                 <mat-icon *ngIf="loading">
@@ -91,6 +94,18 @@
                         </mat-form-field>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="RemarkId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Remark </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.RemarkId"
+                                [(ngModel)]="element.RemarkId">
+                                <mat-option *ngFor="let item of Remarks" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="Credits">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Credits </mat-header-cell>
                     <mat-cell *matCellDef="let element">
@@ -146,12 +161,12 @@
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;" style="min-height:90px;display:flex;align-items: baseline;">
+                <mat-row *matRowDef="let row; columns: displayedColumns;"
+                    style="min-height:90px;display:flex;align-items: baseline;">
                 </mat-row>
-            </mat-table>           
+            </mat-table>
         </div>
-        <mat-paginator style="display: flex;justify-content: center;"
-        [pageSizeOptions]="[5,10,25,100]"></mat-paginator>
+        <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,100]"></mat-paginator>
     </div>
     <div style="margin-top:30px;" data-expand="false" #expandWrap>
         <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">

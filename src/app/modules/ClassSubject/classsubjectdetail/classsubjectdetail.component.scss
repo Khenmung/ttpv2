@@ -10,23 +10,24 @@ button{
     margin-right:15px;
 }
 .mat-column-SubjectName{
-    flex:1 1 120px;
+    flex:1 0 120px;
 }
 .mat-column-SubjectTypeId,
+.mat-column-RemarkId,
 .mat-column-SubjectCategoryId,
 .mat-column-TeacherId{
-    flex:1 1 110px;
+    flex:1 0 110px;
 }
 .mat-column-Credits,
 .mat-column-Action
 {
-    flex:1 1 60px;
+    flex:1 0 60px;
 }
 .mat-column-Confidential,
 .mat-column-Active
 {
     justify-content: center;
-    flex:1 1 60px;
+    flex:1 0 60px;
 }
 
 .mdc-data-table__cell, .mdc-data-table__header-cell{

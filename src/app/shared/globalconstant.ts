@@ -429,7 +429,8 @@ export class globalconstants {
                 "SEMESTER": "semester",
                 "CLASSCATEGORY": "Class Category",
                 "FILECATEGORY":"File Category",
-                "FEEPAYMENTSTATUS":"Fee Payment Status"
+                "FEEPAYMENTSTATUS":"Fee Payment Status",
+                "CLASSSUBJECTREMARK":"Class Subject Remark"
             },
             "leave": {
                 "REPORTNAMES": "leave report name",

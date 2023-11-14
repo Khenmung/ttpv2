@@ -77,7 +77,7 @@ export class AttendancepercentComponent implements OnInit {
   Defaultvalue = 0;
   Semesters: any[] = [];
   ClassCategory: any[] = [];
-  MinFromDate:Date;
+  MinFromDate: Date;
   constructor(private servicework: SwUpdate,
 
     private fb: UntypedFormBuilder,
@@ -123,13 +123,13 @@ export class AttendancepercentComponent implements OnInit {
         // })
         var _sessionStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
         var startDate = new Date(_sessionStartEnd["StartDate"]);
-        this.MinFromDate = new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate());
+        this.MinFromDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
       }
     }
 
   }
   PageLoad() {
-   
+
   }
   bindClassSubject() {
     debugger;
@@ -175,6 +175,7 @@ export class AttendancepercentComponent implements OnInit {
   getHighSchoolCategory() {
     return globalconstants.CategoryHighSchool;
   }
+  TotalWorkingDays = 0;
   GetStudentAttendance() {
     debugger;
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"]+ " and SubOrgId eq " + this.SubOrgId;
@@ -202,7 +203,7 @@ export class AttendancepercentComponent implements OnInit {
     var _toDate = new Date(this.searchForm.get("searchToDate")?.value)
     _fromDate.setHours(0, 0, 0, 0);
     _toDate.setHours(0, 0, 0, 0);
-    var dateDiff = (_toDate.getTime() -_fromDate.getTime())/(1000*60*60*24) 
+    var dateDiff = (_toDate.getTime() - _fromDate.getTime()) / (1000 * 60 * 60 * 24)
     // if(dateDiff>210)
     // {
     //   this.loading=false;
@@ -265,7 +266,16 @@ export class AttendancepercentComponent implements OnInit {
         // else if (_classId > 0 && _sectionId > 0)
         //   _AllStudents = _AllStudents.filter(all => all.StudentClasses[0].ClassId == _classId
         //     && all.StudentClasses[0].SectionId == _sectionId);
-
+        let dt: any = [];
+        attendance.value.forEach(item => {
+          if (item.AttendanceStatusId == this.AttendancePresentId) {
+            item.AttendanceDate = moment(item.AttendanceDate).format('DD/MM/YYYY');
+            dt.push(item);
+          }
+        })
+        let distinctDate = alasql("select distinct AttendanceDate from ?", [dt]);
+        //console.log("strdistinct",strdistinct)
+        this.TotalWorkingDays = distinctDate.length;
         attendance.value.forEach(sc => {
           ////console.log("sc.StudentClassId",sc.StudentClassId)
           var _student = _AllStudents.filter(all => all.StudentClasses[0].StudentClassId == sc.StudentClassId);
@@ -312,23 +322,25 @@ export class AttendancepercentComponent implements OnInit {
         })
         //console.log('this.StudentAttendanceList', this.StudentAttendanceList)
         var PresentAttendance = alasql('select count(AttendanceStatusId) as PresentAbsentCount,StudentClassId from ? where AttendanceStatusId=' + this.AttendancePresentId + ' group by StudentClassId', [this.StudentAttendanceList])
-        var AbsentAttendance = alasql('select count(AttendanceStatusId) as PresentAbsentCount,StudentClassId from ? where AttendanceStatusId=' + this.AttendanceAbsentId + ' group by StudentClassId', [this.StudentAttendanceList])
+        //var AbsentAttendance = alasql('select count(AttendanceStatusId) as PresentAbsentCount,StudentClassId from ? where AttendanceStatusId=' + this.AttendanceAbsentId + ' group by StudentClassId', [this.StudentAttendanceList])
         this.distinctStudent = alasql('select distinct Student,ClassName,Semester,Section,RollNo,StudentClassId from ? ', [this.StudentAttendanceList])
-
         this.distinctStudent.forEach(p => {
-          var absent = AbsentAttendance.filter(a => a.StudentClassId == p.StudentClassId)
+          //var absent = AbsentAttendance.filter(a => a.StudentClassId == p.StudentClassId)
           var present = PresentAttendance.filter(a => a.StudentClassId == p.StudentClassId)
-          if (absent.length > 0)
-            p.AbsentCount = absent[0].PresentAbsentCount;
-          else
-            p.AbsentCount = 0;
-          if (present.length > 0)
-            p.PresentCount = present[0].PresentAbsentCount;
-          else
-            p.PresentCount = 0;
+          // if (absent.length > 0)
+          //   p.AbsentCount = absent[0].PresentAbsentCount;
+          // else
 
+          if (present.length > 0) {
+            p.PresentCount = present[0].PresentAbsentCount;
+            p.AbsentCount = this.TotalWorkingDays - present[0].PresentAbsentCount;
+          }
+          else {
+            p.PresentCount = 0;
+            p.AbsentCount = this.TotalWorkingDays
+          }
           //p.PresentCount = p.PresentAbsentCount;
-          p.Percent = ((p.PresentCount / (p.PresentCount + p.AbsentCount)) * 100).toFixed(2);
+          p.Percent = ((p.PresentCount / this.TotalWorkingDays) * 100).toFixed(2);
         })
 
         this.distinctStudent = this.distinctStudent.sort((a, b) => a.ClassName - b.ClassName);
@@ -529,7 +541,7 @@ export class AttendancepercentComponent implements OnInit {
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       if (this.LoginUserDetail[0]['RoleUsers'][0]['role'].toLowerCase() == 'student') {
         let _classId = this.tokenStorage.getClassId();
-        let _classes = data.value.filter(d=>d.ClassId == _classId)
+        let _classes = data.value.filter(d => d.ClassId == _classId)
         this.Classes = _classes.map(m => {
           let obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
           if (obj.length > 0) {

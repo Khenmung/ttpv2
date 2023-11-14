@@ -67,6 +67,7 @@ export class ClassSubjectDetailComponent implements OnInit {
     ClassId: 0,
     SectionId: 0,
     SemesterId: 0,
+    RemarkId:0,
     Credits: 0,
     OrgId: 0,
     SubOrgId: 0,
@@ -81,6 +82,7 @@ export class ClassSubjectDetailComponent implements OnInit {
     'SubjectName',
     'SubjectTypeId',
     'SubjectCategoryId',
+    'RemarkId',
     'Credits',
     'Confidential',
     'Active',
@@ -286,6 +288,7 @@ export class ClassSubjectDetailComponent implements OnInit {
       'SubjectTypeId',
       'SubjectCategoryId',
       'TeacherId',
+      'RemarkId',
       'Active',
     ];
 
@@ -310,6 +313,7 @@ export class ClassSubjectDetailComponent implements OnInit {
             SemesterId: item.SemesterId,
             Credits: item.Credits,
             TeacherId: item.TeacherId,
+            RemarkId: item.RemarkId,
             SelectHowMany: item.SubjectType.SelectHowMany,
             Active: item.Active
           }
@@ -337,6 +341,7 @@ export class ClassSubjectDetailComponent implements OnInit {
               ClassId: existing[0].ClassId,
               SectionId: existing[0].SectionId,
               SemesterId: existing[0].SemesterId,
+              RemarkId:existing[0].RemarkId,
               Active: existing[0].Active,
               Action: false
             });
@@ -356,6 +361,7 @@ export class ClassSubjectDetailComponent implements OnInit {
               SemesterId: this.searchForm.get("searchSemesterId")?.value,
               SubjectName: s.MasterDataName,
               TeacherId: 0,
+              RemarkId:0,
               Active: 0,
               Action: false
             });
@@ -557,6 +563,7 @@ export class ClassSubjectDetailComponent implements OnInit {
               this.ClassSubjectData.ClassId = item.ClassId;
               this.ClassSubjectData.SectionId = item.SectionId;
               this.ClassSubjectData.SemesterId = item.SemesterId;
+              this.ClassSubjectData.RemarkId = item.RemarkId;
               this.ClassSubjectData.Credits = item.Credits;
               this.ClassSubjectData.Confidential = item.Confidential == null ? false : item.Confidential;
               this.ClassSubjectData.SubjectId = item.SubjectId;
@@ -677,6 +684,7 @@ export class ClassSubjectDetailComponent implements OnInit {
       })
   }
   ClassCategory: any[] = [];
+  Remarks :any=[];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -686,6 +694,7 @@ export class ClassSubjectDetailComponent implements OnInit {
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSSUBJECTREMARK);
     //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
     this.Batches = this.tokenStorage.getBatches()!;
     //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -741,6 +750,7 @@ export interface IClassSubject {
   SelectHowMany: number;
   Confidential: boolean;
   TeacherId: number;
+  RemarkId:number;
   Active: number;
   Action: boolean;
 }

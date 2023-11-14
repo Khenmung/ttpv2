@@ -316,6 +316,7 @@ export class VerifyResultsComponent implements OnInit {
       "ClassId",
       "SemesterId",
       "SectionId",
+      "RemarkId",
       "SubjectCategoryId",
       "SubjectTypeId",
       "Confidential"
@@ -336,6 +337,12 @@ export class VerifyResultsComponent implements OnInit {
           var objsubject = this.Subjects.filter(c => c.MasterDataId == cs.SubjectId)
           if (objsubject.length > 0)
             _subject = objsubject[0].MasterDataName;
+          var _remark = ''
+          if (cs.RemarkId) {
+            var objRemark = this.ClassSubjectRemarks.filter(c => c.MasterDataId == cs.RemarkId)
+            if (objRemark.length > 0)
+              _remark = objRemark[0].MasterDataName;
+          }
           var _section = ''
           var objsection = this.Sections.filter(c => c.MasterDataId == cs.SectionId)
           if (objsection.length > 0)
@@ -359,6 +366,7 @@ export class VerifyResultsComponent implements OnInit {
             ClassId: cs.ClassId,
             SectionId: cs.SectionId,
             SemesterId: cs.SemesterId,
+            Remark: _remark,
             Confidential: cs.Confidential,
             ClassSubject: _class + '-' + _subject,
             Semester: _semester,
@@ -704,6 +712,7 @@ export class VerifyResultsComponent implements OnInit {
                     SectionId: _activeStudents[0].StudentClasses[0].SectionId,
                     SubjectTypeId: _subjectIdObj[0].SubjectTypeId,
                     SubjectType: _subjectIdObj[0].SubjectType,
+                    Remark: _subjectIdObj[0].Remark,
                     SelectHowMany: _subjectIdObj[0].SelectHowMany,
                     SubjectCategoryId: _subjectIdObj[0].SubjectCategoryId,
                     Active: s.Active
@@ -830,16 +839,16 @@ export class VerifyResultsComponent implements OnInit {
 
 
         let objAllMarking = _ClsSectionSemSubjectsMarkCompntDefn.filter(de => de.SubjectCategory == 'Marking');
-        let objAllCompulsory =objAllMarking.filter(de => de.SubjectType.toLowerCase()==='compulsory');
+        let objAllCompulsory = objAllMarking.filter(de => de.SubjectType.toLowerCase() === 'compulsory');
 
-        this.TotalMarkingSubjectFullMark=0;
+        this.TotalMarkingSubjectFullMark = 0;
         //console.log("objAllComp", objAllCompulsory);
         if (objAllCompulsory.length > 0) {
           let distinctStr = "select distinct SubjectTypeId,SelectHowMany,FullMark,SubjectType from ? where SubjectType != 'Compulsory'";
           let distinctSubjectTypesWithoutCompulsory = alasql(distinctStr, [objAllMarking]);
 
           this.TotalMarkingSubjectFullMark = objAllCompulsory.reduce((acc, current) => acc + current.FullMark, 0);
-          distinctSubjectTypesWithoutCompulsory.forEach(item=>{
+          distinctSubjectTypesWithoutCompulsory.forEach(item => {
             this.TotalMarkingSubjectFullMark += item.SelectHowMany * item.FullMark;
           })
         }
@@ -934,6 +943,7 @@ export class VerifyResultsComponent implements OnInit {
 
           forEachSubjectOfStud.forEach(eachsubj => {
             var markPercent = 0;
+            ForNonGrading["Remark"]=eachsubj.Remark;
             // if (ss.Student == '21-Niangliankim -A') {
             //   debugger;
             //   //console.log("eachsubj.Subject", eachsubj.Subject);
@@ -1179,6 +1189,7 @@ export class VerifyResultsComponent implements OnInit {
                   .replaceAll("[TMO]", result["Total Marks"])
                   .replaceAll("[Percentage]", result["Percentage"])
                   .replaceAll("[TFM]", result.FullMark)
+                  .replaceAll("[Remark]", result.Remark)
                   .replaceAll("[PassCount]", result.PassCount)
                   .replaceAll("[FailCount]", result.FailCount);
 
@@ -1330,7 +1341,7 @@ export class VerifyResultsComponent implements OnInit {
     }
     return _StudentGrade;
   }
-
+  ClassSubjectRemarks: any = [];
   ClassCategory: any[] = [];
   GetMasterData() {
     this.Loading(true);
@@ -1339,6 +1350,7 @@ export class VerifyResultsComponent implements OnInit {
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.Subjects = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECT);
+    this.ClassSubjectRemarks = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSSUBJECTREMARK);
     this.ExamStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSTATUS);
     this.MarkComponents = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTMARKCOMPONENT);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);

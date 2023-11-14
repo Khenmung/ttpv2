@@ -597,7 +597,7 @@ export class PrintprogressreportComponent implements OnInit {
                     if (currentSubjectrow.length == 0)
                       this.NonGradedMarkResults.push({ "Subject": eachexam["Subject"], [examName]: eachexam["Marks"] });
                     else
-                      currentSubjectrow[0][examName] = eachexam["Marks"]
+                      currentSubjectrow[0][examName] = eachexam["Marks"];
                   }
                 }
               }
