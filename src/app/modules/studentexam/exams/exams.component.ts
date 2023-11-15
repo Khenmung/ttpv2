@@ -11,8 +11,6 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
-import { AnyObject } from 'chart.js/dist/types/basic';
-import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-exams',
@@ -51,9 +49,11 @@ export class ExamsComponent implements OnInit {
     EndDate: any,
     ClassGroupId: number,
     ReleaseResult: number,
+    WithHeldResultStatusId:number;
     ReleaseDate: any,
     AttendanceStartDate: any,
-    OrgId: number, SubOrgId: number,
+    OrgId: number, 
+    SubOrgId: number,
     BatchId: number,
     Active: number
   } = {
@@ -65,7 +65,9 @@ export class ExamsComponent implements OnInit {
       ReleaseResult: 0,
       ReleaseDate: null,
       AttendanceStartDate: null,
-      OrgId: 0, SubOrgId: 0,
+      WithHeldResultStatusId:0,
+      OrgId: 0, 
+      SubOrgId: 0,
       BatchId: 0,
       Active: 1
     };
@@ -77,9 +79,11 @@ export class ExamsComponent implements OnInit {
     'AttendanceStartDate',
     'ReleaseDate',
     'ReleaseResult',
+    'WithHeldResultStatusId',
     'Active',
     'Action'
   ];
+  Defaultvalue=0;
   StudentSubjects: any[] = [];
   StudentGrades: any[] = [];
   constructor(private servicework: SwUpdate,
@@ -136,6 +140,7 @@ export class ExamsComponent implements OnInit {
     let toadd: any = {
       ExamId: 0,
       ExamNameId: 0,
+      WithHeldResultStatusId:0,
       ExamName: '',
       StartDate: new Date(),
       EndDate: new Date(),
@@ -204,8 +209,8 @@ export class ExamsComponent implements OnInit {
           this.ExamsData.ExamNameId = row.ExamNameId;
           this.ExamsData.StartDate = row.StartDate;
           this.ExamsData.EndDate = row.EndDate;
-          this.ExamsData.ClassGroupId = 0//row.ClassGroupId;
-          //this.ExamsData.MarkFormula = row.MarkFormula;
+          this.ExamsData.ClassGroupId = 0;
+          this.ExamsData.WithHeldResultStatusId = row.WithHeldResultStatusId;
           this.ExamsData.AttendanceStartDate = row.AttendanceStartDate;
           this.ExamsData.ReleaseResult = row.ReleaseResult;
           this.ExamsData.BatchId = this.SelectedBatchId;
@@ -268,7 +273,7 @@ export class ExamsComponent implements OnInit {
 
     list.fields = [
       "ExamId", "ExamNameId", "StartDate",
-      "EndDate", "ClassGroupId", "AttendanceStartDate",
+      "EndDate", "ClassGroupId", "AttendanceStartDate","WithHeldResultStatusId",
       "ReleaseResult", "ReleaseDate", "OrgId", "BatchId", "Active"];
     list.PageName = "Exams";
     list.filter = [this.FilterOrgSubOrgBatchId];
@@ -294,7 +299,7 @@ export class ExamsComponent implements OnInit {
               ExamName: e.MasterDataName,
               AttendanceStartDate: new Date(),
               Sequence: e.Sequence,
-              //MarkFormula:'',
+              WithHeldResultStatusId:0,
               StartDate: new Date(),
               EndDate: new Date(),
               ReleaseResult: 0,
@@ -322,6 +327,7 @@ export class ExamsComponent implements OnInit {
     var std = new Date(date!);
     return std != null ? std.getTime() : 0;
   }
+  StudentStatuses:any=[];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -329,6 +335,7 @@ export class ExamsComponent implements OnInit {
     this.StudentGradeFormula = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTGRADE);
     this.StudentGrades = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTGRADE);
     this.AttendanceModes = this.getDropDownData(globalconstants.MasterDefinitions.school.ATTENDANCEMODE);
+    this.StudentStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTSTATUS);
     this.GetClassGroup();
     this.GetExams();
 

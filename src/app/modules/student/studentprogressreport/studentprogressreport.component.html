@@ -114,6 +114,23 @@
                         <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
+                <div style="margin-top:15px;margin-bottom:0px">
+                    <mat-table #table [dataSource]="dataSourceSignature" matSort
+                        *ngIf="SignatureColumns.length>1">
+                        <ng-container *ngFor="let disCol of SignatureColumns; let colIndex = index"
+                            matColumnDef="{{disCol}}">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:none"><span
+                                    *ngIf="disCol!='FirstCol'">{{disCol}}</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <span *ngIf="disCol=='FirstCol'"><b>{{element[disCol]}}</b></span>
+                                <span *ngIf="disCol!='FirstCol'">{{element[disCol]}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <!-- <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row> -->
+                        <mat-row *matRowDef="let row; columns: SignatureColumns;" style="min-height: 35px;"></mat-row>
+                    </mat-table>
+                </div>
                 <div style="margin-top:15px;margin-bottom:15px;">
                     <mat-table #table [dataSource]="dataSourceEvaluation" matSort
                         *ngIf="EvaluationDisplayedColumns.length>1">

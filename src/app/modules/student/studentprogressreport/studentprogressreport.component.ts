@@ -60,6 +60,7 @@ export class StudentprogressreportComponent implements OnInit {
   ClassGroupMappings: any[] = [];
   CurrentStudentClassGroups: any[] = [];
   dataSource: MatTableDataSource<IExamStudentSubjectResult>;
+  dataSourceSignature: MatTableDataSource<any>;
   dataSourceEvaluation: MatTableDataSource<IStudentEvaluation>;
   GradedSubjectsDataSource: MatTableDataSource<any[]>;
   NonGradedSubjectsDataSource: MatTableDataSource<any[]>;
@@ -78,6 +79,9 @@ export class StudentprogressreportComponent implements OnInit {
     BatchId: 0,
     Active: 0
   };
+  SignatureColumns = [
+    "FirstCol"
+  ]
   DisplayColumns = [
     "FirstCol"
   ];
@@ -157,8 +161,8 @@ export class StudentprogressreportComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
         });
         this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, 0)
           .subscribe((data: any) => {
@@ -166,10 +170,9 @@ export class StudentprogressreportComponent implements OnInit {
             //var objExamClassGroups = this.ExamClassGroups.filter(g => g.ExamId == _examId);
             //this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
           });
-        
+
         this.GetMasterData();
         this.GetStudentGradeDefn();
-        //this.GetStudentAttendance();
       }
       else {
         this.loading = false;
@@ -359,12 +362,17 @@ export class StudentprogressreportComponent implements OnInit {
         this.GetStudentSubjectResults();
       })
   }
-
+  ReportCardSignatures: any = [];
+  ReportSignatureList: any = [];
   GetExamGrandTotal() {
     debugger;
     let filterStr = this.FilterOrgSubOrg + ' and Active eq 1';
 
     filterStr += ' and StudentClassId eq ' + this.StudentClassId;
+
+    this.ExamIdToWithHeld.forEach(Id => {
+      filterStr += " and ExamId ne " + Id;
+    })
 
     let list: List = new List();
     list.fields = [
@@ -399,7 +407,9 @@ export class StudentprogressreportComponent implements OnInit {
           { "ColumnName": "Attendance", "Display": "Attendance" },
           { "ColumnName": "ClassStrength", "Display": "Class Strength" }
         ]
-
+        this.ReportCardSignatures.forEach(item => {
+          this.ReportSignatureList.push({ 'FirstCol': item.MasterDataName })
+        })
         data.value.forEach(eachexam => {
           var _ExamName = '';
           var obj = this.Exams.filter(exam => exam.ExamId == eachexam.ExamId);
@@ -415,6 +425,12 @@ export class StudentprogressreportComponent implements OnInit {
                 resultrow[0][_ExamName] = eachexam[objcolumn[0].ColumnName]
               }
             })
+            this.ReportSignatureList.forEach(item => {
+              if (this.SignatureColumns.indexOf(_ExamName) == -1)
+                this.SignatureColumns.push(_ExamName);
+              item[_ExamName] = ''
+
+            })
           }
         })
         //this.loading = false;
@@ -422,12 +438,44 @@ export class StudentprogressreportComponent implements OnInit {
         this.GetGradedNonGradedSubjectMark();
       });
   }
+  StudentStatuses: any = [];
+  ExamIdToWithHeld: any = [];
+  getFeePaymentRelateds() {
+
+    let filterStr = this.FilterOrgSubOrgBatchId + ' and Active eq 1 and StudentClassId eq ' + this.StudentClassId;
+    this.ExamIdToWithHeld = [];
+    let list: List = new List();
+    list.fields = [
+      'StudentClassId',
+      'ClassId',
+      'FeePaymentRelatedId',
+      'FeepaymentStatusId',
+      'SectionId',
+      'SemesterId',
+      'Active'
+    ];
+    list.PageName = "FeePaymentRelateds";
+    list.filter = [filterStr];
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        this.StudentStatuses = [...data.value];
+        this.Exams.forEach(x => {
+          if (x.WithHeldResultStatusId) {
+            if (this.StudentStatuses.findIndex(i => i.FeepaymentStatusId === x.WithHeldResultStatusId) >= -1)
+              this.ExamIdToWithHeld.push(x.ExamId);
+          }
+        });
+        this.GetStudentSubject();
+      })
+  }
   GetGradedNonGradedSubjectMark() {
 
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";
 
     filterStr += ' and StudentClassId eq ' + this.StudentClassId;
-
+    this.ExamIdToWithHeld.forEach(Id => {
+      filterStr += " and ExamId ne " + Id;
+    })
     let list: List = new List();
     list.fields = [
       "ExamResultSubjectMarkId",
@@ -528,6 +576,8 @@ export class StudentprogressreportComponent implements OnInit {
         this.GradedSubjectsDataSource = new MatTableDataSource<any>(this.GradedMarksResults);
         this.NonGradedSubjectsDataSource = new MatTableDataSource<any>(this.NonGradedMarkResults);
         this.dataSource = new MatTableDataSource<any>(this.ExamStudentResults);
+        this.dataSourceSignature = new MatTableDataSource<any>(this.ReportSignatureList);
+
       });
   }
   GetStudentGradeDefn() {
@@ -665,7 +715,7 @@ export class StudentprogressreportComponent implements OnInit {
     this.MarkComponents = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTMARKCOMPONENT);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
-    //this.StudentGrades = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTGRADE);
+    this.ReportCardSignatures = this.getDropDownData(globalconstants.MasterDefinitions.school.REPORTCARDSIGNATURE);
     this.SubjectCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTCATEGORY);
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
     this.Batches = this.tokenStorage.getBatches()!;
@@ -685,10 +735,10 @@ export class StudentprogressreportComponent implements OnInit {
 
   }
   GetExams() {
-
+    this.Exams = [];
     let list: List = new List();
 
-    list.fields = ["ExamId", "ExamNameId", "ClassGroupId"];
+    list.fields = ["ExamId", "ExamNameId", "ClassGroupId", "WithHeldResultStatusId"];
     list.PageName = "Exams";
     list.filter = [this.FilterOrgSubOrgBatchId + " and Active eq 1 and ReleaseResult eq 1"];
     list.orderBy = "EndDate desc";
@@ -701,10 +751,12 @@ export class StudentprogressreportComponent implements OnInit {
             this.Exams.push({
               ExamId: e.ExamId,
               ExamName: obj[0].MasterDataName,
-              ClassGroupId: e.ClassGroupId
+              ClassGroupId: e.ClassGroupId,
+              WithHeldResultStatusId: e.WithHeldResultStatusId
             })
         })
-        this.GetStudentSubject();
+        this.getFeePaymentRelateds();
+        
         this.GetEvaluationOption();
       })
   }
@@ -744,7 +796,7 @@ export class StudentprogressreportComponent implements OnInit {
   }
   EvaluationExamMap: any[] = [];
   GetEvaluationExamMap() {
-
+    this.EvaluationExamMap = [];
     let list: List = new List();
     list.fields = [
       'EvaluationExamMapId',
@@ -847,9 +899,9 @@ export class StudentprogressreportComponent implements OnInit {
         debugger
         this.Result = [...data.value]
         var _distinctEvaluationType = alasql('select distinct EvaluationMasterId,EvaluationName from ?', [this.EvaluationExamMap])
-        let _evaluationCount=0;
+        let _evaluationCount = 0;
         _distinctEvaluationType.forEach(distinctevaluation => {
-          _evaluationCount +=100;
+          _evaluationCount += 100;
           this.StudentEvaluationList.push({
             Description: distinctevaluation.EvaluationName,
             EvaluationName: distinctevaluation.EvaluationName,
@@ -858,7 +910,7 @@ export class StudentprogressreportComponent implements OnInit {
           });
 
           var _oneEvaluationMultipExam = this.EvaluationExamMap.filter((f: any) => f.EvaluationMasterId == distinctevaluation.EvaluationMasterId);
-          
+
           _oneEvaluationMultipExam.forEach(evalExam => {
 
             if (this.EvaluationDisplayedColumns.indexOf(evalExam.ExamName) == -1) {
@@ -889,8 +941,8 @@ export class StudentprogressreportComponent implements OnInit {
                 && f.EvaluationMasterId == clseval.EvaluationMasterId);
               if (row.length > 0) {
                 row[0][evalExam.ExamName] = ans;
-                row[0].SlNo = row[0].DisplayOrder +_evaluationCount;
-              
+                row[0].SlNo = row[0].DisplayOrder + _evaluationCount;
+
               }
               else {
                 // if (existing.length > 0)
@@ -903,8 +955,8 @@ export class StudentprogressreportComponent implements OnInit {
                   EvaluationMasterId: evalExam.EvaluationMasterId,
                   QuestionnaireType: clseval.QuestionnaireType,
                   DisplayOrder: clseval.DisplayOrder,
-                  SlNo: clseval.DisplayOrder +_evaluationCount
-                  
+                  SlNo: clseval.DisplayOrder + _evaluationCount
+
                 });
               }
             })
@@ -916,8 +968,8 @@ export class StudentprogressreportComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.NoEvaluationRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         }
         else {
-          
-           this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.SlNo - b.SlNo)
+
+          this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.SlNo - b.SlNo)
         }
 
         //  this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.DisplayOrder - b.DisplayOrder)

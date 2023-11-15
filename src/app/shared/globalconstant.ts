@@ -393,7 +393,7 @@ export class globalconstants {
                 "CLASSGROUPTYPE": "class group type",
                 "ATTENDANCEMODE": "attendance mode",
                 "SUBJECTMARKCOMPONENT": "subject mark component",
-                //"SUBJECTMARKCOMPONENT": "exam subject component",
+                "STUDENTSTATUS": "Student Status",
                 "LANGUAGESUBJECTLOWERCLS": "language subject lower",
                 "LANGUAGESUBJECTUPPERCLS": "language subject upper",
                 "FEENAME": "fee name",
@@ -430,7 +430,8 @@ export class globalconstants {
                 "CLASSCATEGORY": "Class Category",
                 "FILECATEGORY":"File Category",
                 "FEEPAYMENTSTATUS":"Fee Payment Status",
-                "CLASSSUBJECTREMARK":"Class Subject Remark"
+                "CLASSSUBJECTREMARK":"Class Subject Remark",
+                "REPORTCARDSIGNATURE":"Report Card Signature"
             },
             "leave": {
                 "REPORTNAMES": "leave report name",

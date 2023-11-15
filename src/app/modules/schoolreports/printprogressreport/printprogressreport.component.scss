@@ -4,3 +4,6 @@ mat-form-field,button{
 .element-row{
     min-height: 29px;   
 }
+mat-cell,mat-header-cell{
+    border-right:1px solid lightgray;
+}

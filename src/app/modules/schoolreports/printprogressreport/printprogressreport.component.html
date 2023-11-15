@@ -99,6 +99,10 @@
                         <div>:&nbsp;{{CurrentStudent[indx].Name}}</div>
                     </div>
                     <div style="display:flex;">
+                        <div style="width:300px"><b>Class</b></div>
+                        <div>:&nbsp;{{CurrentStudent[indx].ClassDetail}}</div>
+                    </div>
+                    <div style="display:flex;">
                         <div style="width:300px"><b>Father/Guardian</b></div>
                         <div>:&nbsp;{{CurrentStudent[indx].FatherName}}</div>
                     </div>
@@ -169,10 +173,22 @@
                         <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
-                <div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+                <div style="margin-top:15px;margin-bottom:0px">
+                    <mat-table #table [dataSource]="getDataSource(ReportCardSignatureArray[indx])" matSort
+                        *ngIf="SignatureColumns.length>1">
+                        <ng-container *ngFor="let disCol of SignatureColumns; let colIndex = index"
+                            matColumnDef="{{disCol}}">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:none"><span
+                                    *ngIf="disCol!='FirstCol'">{{disCol}}</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <span *ngIf="disCol=='FirstCol'"><b>{{element[disCol]}}</b></span>
+                                <span *ngIf="disCol!='FirstCol'">{{element[disCol]}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <!-- <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row> -->
+                        <mat-row *matRowDef="let row; columns: SignatureColumns;" class="element-row"></mat-row>
+                    </mat-table>
                 </div>
             </div>
         </div>

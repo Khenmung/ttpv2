@@ -59,20 +59,19 @@
                 </mat-form-field>
             </mat-cell>
         </ng-container>
-        <!-- <ng-container matColumnDef="ClassGroupId">
-            <mat-header-cell *matHeaderCellDef>Class Group</mat-header-cell>
+        <ng-container matColumnDef="WithHeldResultStatusId">
+            <mat-header-cell *matHeaderCellDef>Result Withheld Status</mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <mat-label>Class group</mat-label>
-                    <mat-select [(ngModel)]="element.ClassGroupId" (selectionChange)="onBlur(element)"
-                        [value]="element.ClassGroupId">
+                    <mat-select [(ngModel)]="element.WithHeldResultStatusId" (selectionChange)="onBlur(element)"
+                        [value]="element.WithHeldResultStatusId">
                         <mat-option [value]="Defaultvalue">select</mat-option>
-                        <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassGroupId">{{item.GroupName}}
+                        <mat-option *ngFor="let item of StudentStatuses" [value]="item.MasterDataId">{{item.MasterDataName}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </mat-cell>
-        </ng-container> -->
+        </ng-container>
         <ng-container matColumnDef="ReleaseResult">
             <mat-header-cell *matHeaderCellDef> Release Result </mat-header-cell>
             <mat-cell *matCellDef="let element">

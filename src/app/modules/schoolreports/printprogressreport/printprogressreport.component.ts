@@ -83,6 +83,9 @@ export class PrintprogressreportComponent implements OnInit {
     BatchId: 0,
     Active: 0
   };
+  SignatureColumns = [
+    "FirstCol"
+  ];
   DisplayColumns = [
     "FirstCol"
   ];
@@ -379,9 +382,8 @@ export class PrintprogressreportComponent implements OnInit {
     //let filterStr = 'Active eq 1 and StudentClassId eq ' + this.StudentClassId;
     let filterStr = this.filterOrgSubOrg
     filterStr += " and ClassId eq " + _classId;
-    if(!_semesterId && !_sectionId)
-    {
-      this.contentservice.openSnackBar("Please select section/semester.",globalconstants.ActionText,globalconstants.RedBackground);
+    if (!_semesterId && !_sectionId) {
+      this.contentservice.openSnackBar("Please select section/semester.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
@@ -402,7 +404,7 @@ export class PrintprogressreportComponent implements OnInit {
     //list.lookupFields = ["ClassSubject($select=SubjectCategoryId,ClassId)"];
     list.filter = [filterStr];
 
-    this.loading=true;
+    this.loading = true;
     let sources = [this.dataservice.get(list), this.GetClassSubject()];
     forkJoin(sources)
       .subscribe((data: any) => {
@@ -428,14 +430,15 @@ export class PrintprogressreportComponent implements OnInit {
         this.GetStudentSubjectResults();
       })
   }
-
+  ReportCardSignatures: any = [];
+  ReportSignatureList: any = [];
   GetExamGrandTotal() {
     debugger;
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     let filterStr = this.filterOrgSubOrg;
-
+    this.ReportSignatureList = [];
     //filterStr += ' and StudentClassId eq ' + this.StudentClassId;
     filterStr += " and ClassId eq " + _classId;
     if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
@@ -475,7 +478,9 @@ export class PrintprogressreportComponent implements OnInit {
           { "ColumnName": "Attendance", "Display": "Attendance" },
           { "ColumnName": "ClassStrength", "Display": "Class Strength" }
         ]
-
+        this.ReportCardSignatures.forEach(item => {
+          this.ReportSignatureList.push({ 'FirstCol': item.MasterDataName })
+        })
         data.value.forEach(eachexam => {
           var _ExamName = '';
           var obj = this.Exams.filter(exam => exam.ExamId == eachexam.ExamId);
@@ -490,6 +495,12 @@ export class PrintprogressreportComponent implements OnInit {
                 var resultrow = this.ExamStudentResults.filter((f: any) => f.FirstCol == objcolumn[0].Display)
                 resultrow[0][_ExamName] = eachexam[objcolumn[0].ColumnName]
               }
+            })
+            this.ReportSignatureList.forEach(item => {
+              if (this.SignatureColumns.indexOf(_ExamName) == -1)
+                this.SignatureColumns.push(_ExamName);
+              item[_ExamName] = ''
+
             })
           }
         })
@@ -522,6 +533,7 @@ export class PrintprogressreportComponent implements OnInit {
   GradedDataSourceArray: any[] = [];
   NonGradedDataSourceArray: any[] = [];
   ExamResultArray: any[] = [];
+  ReportCardSignatureArray: any[] = [];
   CurrentStudent: any[] = [];
   GetGradedNonGradedSubjectMark() {
     var _classId = this.searchForm.get("searchClassId")?.value;
@@ -562,6 +574,8 @@ export class PrintprogressreportComponent implements OnInit {
             var objhouse = this.Houses.filter(h => h.MasterDataId == _studcurrent[0].HouseId);
             if (objhouse.length > 0)
               _studcurrent[0].House = objhouse[0].MasterDataName;
+            _studcurrent[0].ClassDetail = _studcurrent[0].ClassName + "-" + _studcurrent[0].Section +
+              _studcurrent[0].Semester + ", Roll No. : " + _studcurrent[0].StudentClasses[0].RollNo
             this.CurrentStudent.push(_studcurrent[0]);
           }
           ////console.log("this.currentstudent", this.CurrentStudent);
@@ -647,17 +661,16 @@ export class PrintprogressreportComponent implements OnInit {
             }
           }
           //console.log("this.NonGradedMarkResults", this.NonGradedMarkResults);
-          if(this.NonGradedMarkResults.length==0)
-          {
-            this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage,globalconstants.ActionText,globalconstants.RedBackground);
+          if (this.NonGradedMarkResults.length == 0) {
+            this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
           }
-          else
-          {
+          else {
             this.NonGradedDataSourceArray.push(this.NonGradedMarkResults);
             this.ExamResultArray.push(this.ExamStudentResults);
+            this.ReportCardSignatureArray.push(this.ReportSignatureList);
           }
           this.GradedDataSourceArray.push(JSON.parse(JSON.stringify(this.GradedMarksResults)));
-          
+
         });
         this.loading = false;
         this.PageLoading = false;
@@ -702,19 +715,20 @@ export class PrintprogressreportComponent implements OnInit {
     this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
     this.SubjectCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTCATEGORY);
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
+    this.ReportCardSignatures = this.getDropDownData(globalconstants.MasterDefinitions.school.REPORTCARDSIGNATURE);
     this.Batches = this.tokenStorage.getBatches()!;
     this.CommonHeader = this.getDropDownData(globalconstants.MasterDefinitions.common.COMMONPRINTHEADING);
     this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [];
-      let result = data.value?data.value:data;
+      let result = data.value ? data.value : data;
       result.forEach(m => {
         let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
     });
     //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClassGroupMapping(this.filterOrgSubOrg, 1)

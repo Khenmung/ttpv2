@@ -203,7 +203,7 @@ export class AttendancepercentComponent implements OnInit {
     var _toDate = new Date(this.searchForm.get("searchToDate")?.value)
     _fromDate.setHours(0, 0, 0, 0);
     _toDate.setHours(0, 0, 0, 0);
-    var dateDiff = (_toDate.getTime() - _fromDate.getTime()) / (1000 * 60 * 60 * 24)
+    // var dateDiff = (_toDate.getTime() - _fromDate.getTime()) / (1000 * 60 * 60 * 24)
     // if(dateDiff>210)
     // {
     //   this.loading=false;

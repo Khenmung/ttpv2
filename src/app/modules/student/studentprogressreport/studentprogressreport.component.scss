@@ -9,7 +9,9 @@
 .mat-header-row {
     min-height: 0px;
 }
-
+mat-cell,mat-header-cell{
+    border-right: 1px solid lightgray;
+}
 // mat-card{
 //     width:98%;
 // }

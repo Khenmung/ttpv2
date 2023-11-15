@@ -43,7 +43,7 @@
             <!-- [min]="MinFromDate"  -->
             <mat-form-field appearance="outline">
                 <mat-label>from</mat-label>
-                <input formControlName="searchFromDate" 
+                <input formControlName="searchFromDate" [min]="MinFromDate"
                 matInput [matDatepicker]="FromDate" (dateChange)="ClearData()">
                 <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
                 <mat-datepicker #FromDate></mat-datepicker>
