@@ -20,7 +20,7 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 export class ECheckComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  EvaluationEType = false;
+  EvaluationEType = '';
   RowsToUpdate = -1;
   EvaluationStarted = false;
   EvaluationSubmitted = false;
@@ -140,8 +140,9 @@ export class ECheckComponent implements OnInit {
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+        this.GetMasterData();
         this.GetEvaluationNames();
-
+        this.onebyOne();
         this.GetEvaluationOption();
         // if (this.Classes.length == 0) {
         //   var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -218,7 +219,7 @@ export class ECheckComponent implements OnInit {
       .subscribe((data: any) => {
         debugger
         this.Result = [...data.value]
-        ////console.log("data.value", data.value);
+        console.log("data.value", data.value);
         ////console.log("_classEvaluations", _classEvaluations);
         var item;
         _classEvaluations.forEach(clseval => {
@@ -244,7 +245,10 @@ export class ECheckComponent implements OnInit {
             let _markobtained = 0;
             if (existing[0].StudentEvaluationAnswers.length > 0) {
               answerId = existing[0].StudentEvaluationAnswers[0].ClassEvaluationAnswerOptionsId;
-              _markobtained = clseval.ClassEvaluationOptions.filter(g => g.ClassEvaluationAnswerOptionsId == answerId)[0].Point;
+
+              let obj = clseval.ClassEvaluationOptions.filter(g => g.ClassEvaluationAnswerOptionsId == answerId)
+              if (obj.length > 0)
+                _markobtained = obj[0].Point;
             }
             item = {
               ClassEvaluationOptions: clseval.ClassEvaluationOptions,
@@ -335,7 +339,7 @@ export class ECheckComponent implements OnInit {
 
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     let _evaluationExamMapIdObj = this.EvaluationExamMap.filter((f: any) => f.EvaluationMasterId == _searchEvaluationMasterId
-      && (f.ExamId==0 || f.ExamId == _examId));
+      && (f.ExamId == 0 || f.ExamId == _examId));
     if (_evaluationExamMapIdObj.length > 0)
       filterStr += ' and EvaluationExamMapId eq ' + _evaluationExamMapIdObj[0].EvaluationExamMapId;
 
@@ -366,7 +370,7 @@ export class ECheckComponent implements OnInit {
           _classEvaluations.forEach(clseval => {
 
             var existing = this.Result.filter((f: any) => f.StudentClassId == st.StudentClassId
-               && f.ClassEvaluationId == clseval.ClassEvaluationId);
+              && f.ClassEvaluationId == clseval.ClassEvaluationId);
 
             if (existing.length > 0) {
               _mark += existing[0].Points;
@@ -537,19 +541,7 @@ export class ECheckComponent implements OnInit {
 
       });
   }
-  GetMasterData() {
-
-    this.allMasterData = this.tokenStorage.getMasterData()!;
-    this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
-    //this.ClassGroups = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUP);
-    this.RatingOptions = this.getDropDownData(globalconstants.MasterDefinitions.school.RATINGOPTION);
-    this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
-    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
-    this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
-    //this.EvaluationStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONSTATUS);
-    this.AssessmentPrintHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.ASSESSMENTPRINTHEADING);
-    ////console.log("this.AssessmentPrintHeading",this.AssessmentPrintHeading)
+  onebyOne() {
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
         this.ClassGroups = [...data.value];
@@ -579,6 +571,22 @@ export class ECheckComponent implements OnInit {
           return m;
         });
       })
+  }
+  ETypes: any = [];
+  GetMasterData() {
+
+    this.allMasterData = this.tokenStorage.getMasterData()!;
+    this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
+    //this.ClassGroups = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUP);
+    this.RatingOptions = this.getDropDownData(globalconstants.MasterDefinitions.school.RATINGOPTION);
+    this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
+    this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
+    this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
+    this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
+    this.ETypes = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONTYPE);
+    this.AssessmentPrintHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.ASSESSMENTPRINTHEADING);
+    ////console.log("this.AssessmentPrintHeading",this.AssessmentPrintHeading)
+
 
   }
   onBlur(row) {
@@ -728,12 +736,17 @@ export class ECheckComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.value.length > 0) {
           var result = data.value.map(d => {
+            let obj = this.ETypes.filter(e => e.MasterDataId == d.ETypeId);
+            if (obj.length > 0)
+              d.EType = obj[0].MasterDataName;
+
             d.EvaluationName = globalconstants.decodeSpecialChars(d.EvaluationName);
             return d;
           })
+
           this.EvaluationMaster = this.contentservice.getConfidentialData(this.tokenStorage, result, "EvaluationName")
         }
-        this.GetMasterData();
+
       });
 
   }
@@ -745,7 +758,10 @@ export class ECheckComponent implements OnInit {
     let ObjEvaluationMaster: any = [];
     if (_evaluationMasterId > 0)
       ObjEvaluationMaster = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId);
-    this.EvaluationEType = ObjEvaluationMaster[0].ETypeId;
+    if (ObjEvaluationMaster[0].ETypeId)
+      this.EvaluationEType = this.ETypes.filter(e => e.MasterDataId == ObjEvaluationMaster[0].ETypeId)[0].MasterDataName;
+    else
+      this.EvaluationEType = '';
     //var _classgroupObj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId)
     var _classGroupId = 0;
     var _evaluationexammapforselectedEvaluation = this.EvaluationExamMap.filter(ee => ee.EvaluationMasterId == _evaluationMasterId);
@@ -955,7 +971,7 @@ export class ECheckComponent implements OnInit {
     //   .subscribe((data: any) => {
     //     this.StudentClasses = [...data.value];
     this.GetStudents(_searchClassId, _searchSectionId, _searchSemesterId);
-    if (this.EvaluationEType)
+    if (this.EvaluationEType === 'student profile')
       this.ForETypeEvaluation(_searchClassId, _searchSectionId, _searchSemesterId, _evaluationMasterId, _examId);
     else
       this.GetEvaluationMapping(_searchClassId, _searchSectionId, _searchSemesterId, _evaluationdetail[0].EvaluationExamMapId, _evaluationMasterId, _examId);

@@ -122,6 +122,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
           m.ClassId = m.Class.ClassId;
           m.SemesterId = m.Class.SemesterId;
           m.SectionId = m.Class.SectionId;
+          m.Sequence = m.Class.Sequence;
           return m;
         })
       })
@@ -662,6 +663,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       .subscribe((data: any) => {
         this.ExamClassGroups = [...data.value];
         this.FilteredClasses = this.ClassGroupMappings.filter((f: any) => this.ExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        this.FilteredClasses =  this.FilteredClasses.sort((a,b)=>a.Sequence - b.Sequence);
         this.loading = false;
       });
     var obj = this.Exams.filter((f: any) => f.ExamId == _examId);

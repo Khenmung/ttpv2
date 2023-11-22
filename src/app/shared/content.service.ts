@@ -303,7 +303,7 @@ export class ContentService implements OnInit {
     ];
 
     list.PageName = "ClassGroupMappings";
-    list.lookupFields = ["Class($select=ClassName,ClassId),ClassGroup($select=GroupName)"];
+    list.lookupFields = ["Class($select=ClassName,ClassId,Sequence),ClassGroup($select=GroupName)"];
     list.filter = [filterStr];
     return this.dataservice.get(list);
   }

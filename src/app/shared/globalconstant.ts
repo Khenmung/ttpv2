@@ -96,7 +96,7 @@ export class globalconstants {
                 "notice": 'notice',
                 "album": 'file',
                 "carousel": 'carousel',
-                "UploadImage": 'upload image',
+                "UploadImage": 'upload file',
                 "photo": 'photo',
                 "photobrowser": 'photo browser'
             },
@@ -196,6 +196,7 @@ export class globalconstants {
                     'STUDENTCLASSHISTORY': 'Student Class History',
                     'DOWNLOAD': 'download data',
                     'UPLOAD': 'upload data',
+                    'STUDENTSTATUS': 'student status'
                 },
                 'STUDENT': {
                     'STUDENT': 'student',

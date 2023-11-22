@@ -53,11 +53,15 @@
             [checked]="false"> Update per latest formula
         </mat-checkbox>
         <!-- </mat-form-field> -->
-        <button [disabled]="loading" mat-raised-button color="accent" (click)="GetStudentSubjects()">
+        <button [disabled]="loading" style="margin-right: 15px;" mat-raised-button color="accent" (click)="GetStudentSubjects()">
             <mat-icon>search</mat-icon>
             <mat-icon *ngIf="loading">
                 <mat-spinner diameter="20" color="Blue"></mat-spinner>
             </mat-icon>
+        </button>
+        <button [disabled]="loading || Permission=='read'" *ngIf="ExamStudentSubjectResult.length>0" matTooltip="export to excel"
+            (click)="exportArray()" mat-raised-button color="accent">
+            <mat-icon>download</mat-icon>
         </button>
     </form>
     <div style="display:flex;flex-direction:column;">
@@ -98,9 +102,13 @@
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
         </mat-table>
-        <div>
+        <div style="display: flex;justify-content: center;flex-direction: column;">
             <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50,100]">
             </mat-paginator>
+            <button style="width:120px" [disabled]="loading || Permission=='read'" *ngIf="ExamStudentSubjectResult.length>0" matTooltip="export to excel"
+                (click)="exportArray()" mat-raised-button color="accent">
+                <mat-icon>download</mat-icon>
+            </button>
         </div>
     </div>
     <div style="margin-top:30px;" data-expand="false" #expandWrap>

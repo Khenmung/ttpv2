@@ -1,6 +1,9 @@
 button{
     margin-right:15px;
 }
+mat-cell,mat-header-cell{
+    border-right: 1px solid lightgray;
+}
 mat-cell:first-of-type {
     padding-left: 0px;
     width: 70px;
@@ -14,7 +17,7 @@ mat-cell:first-of-type {
 {
     flex:1 0 200px;
 }
-.mat-column-Name{
+.mat-column-Student{
     flex: 0 0 150px;
     max-width: 150px;
     word-break: break-all;
@@ -37,5 +40,5 @@ mat-cell:first-of-type {
     flex:1 0 100px;
 }
 .mat-column-Detail,.mat-column-Description,.mat-column-AnswerOptionsId{
-    flex:1 0 300px;
+    flex:1 0 500px;
 }

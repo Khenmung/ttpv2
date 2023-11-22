@@ -39,7 +39,9 @@
             "vendorChunk": true,
             "extractLicenses": false,
             "sourceMap": false,
-            "optimization": true,
+            "optimization": {
+              "fonts": false 
+            },
             "namedChunks": true,
            
             "baseHref": "/"

@@ -217,7 +217,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         this.loading = false; 
         this.PageLoading = false;
       }
-      //this.GetStudents();
+      this.GetStudents();
     }
   }
   AddNew() {

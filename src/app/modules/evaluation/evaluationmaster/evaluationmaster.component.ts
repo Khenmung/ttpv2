@@ -14,8 +14,6 @@ import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 
-import moment from 'moment';
-
 @Component({
   selector: 'app-EvaluationMaster',
   templateUrl: './evaluationmaster.component.html',

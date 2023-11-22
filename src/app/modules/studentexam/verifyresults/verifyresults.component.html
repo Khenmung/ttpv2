@@ -88,8 +88,9 @@
                 </div>
             </div>
         </div>
+        <mat-divider></mat-divider>
         <div>&nbsp;</div>
-        <div style="font-size: 25px;color: blue; font-weight: bold;display: flex;width: 100%;justify-content: center;">
+        <div style="font-size: 20px;font-weight: bold;display: flex;width: 100%;justify-content: center;">
             {{ExamName + ' - ' + BatchName}}</div>
         <div style="display: flex;width: 100%;justify-content: center;"><b> {{ClassName}}, {{ SemesterName +
                 SectionName}}</b></div>
@@ -98,30 +99,31 @@
             <div>Total Full Mark : {{TotalMarkingSubjectFullMark}}</div>
         </div>
         <div>&nbsp;</div>
-        <mat-table #table [dataSource]="dataSource" matSort>
-            <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-                <mat-header-cell *matHeaderCellDef mat-sort-header="{{disCol}}"
-                    style="writing-mode: tb-rl;transform: rotate(-180deg);width:100%;display:flex; justify-content: flex-start;">
-                    {{disCol!='Action'?disCol:''}}
-                </mat-header-cell>
-                <mat-cell *matCellDef="let element" style="width:100%;align-self: stretch;">
-                    <span style="padding:5px;align-self: stretch;color:red"
-                        *ngIf="disCol!='Student' && (element[disCol]+'').includes('(')">{{element[disCol]}}</span>
-                    <span style="padding:5px;display: flex;align-self: stretch;"
-                        *ngIf="disCol=='Student' || !(element[disCol]+'').includes('(')">{{element[disCol]}}</span>
-                </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;" style="align-items: baseline;"></mat-row>
-
-        </mat-table>
+        <div style="overflow: auto;">
+            <mat-table #table [dataSource]="dataSource" matSort style="min-width: 2200px;">
+                <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="{{disCol}}"
+                        style="writing-mode: tb-rl;transform: rotate(-180deg);width:100%;display:flex; justify-content: flex-start;">
+                        {{disCol!='Action'?disCol:''}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="width:100%;align-self: stretch;">
+                        <span style="padding:5px;align-self: stretch;color:red"
+                            *ngIf="disCol!='Student' && (element[disCol]+'').includes('(')">{{element[disCol]}}</span>
+                        <span style="padding:5px;display: flex;align-self: stretch;"
+                            *ngIf="disCol=='Student' || !(element[disCol]+'').includes('(')">{{element[disCol]}}</span>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" style="align-items: baseline;"></mat-row>
+            </mat-table>
+        </div>
     </div>
-    <mat-paginator [hidden]="ExamStudentSubjectResult.length==0" #nonGradingPaginator="matPaginator"
-        style="display: flex;justify-content: center;" [pageSizeOptions]="[10,200]"></mat-paginator>
+    <mat-paginator [hidden]="ExamStudentSubjectResult.length==0" style="display: flex;justify-content: center;"
+        [pageSizeOptions]="[10,200]"></mat-paginator>
 
     <div *ngIf="ExamStudentSubjectGrading.length>0" style="flex-direction: column;">
         <div style="font-weight: bold;">Grading Subject</div>
-        <mat-table #table [dataSource]="GradingDataSource" matSort>
+        <mat-table #table [dataSource]="GradingDataSource" matSort style="min-width:700px;">
 
             <ng-container *ngFor="let disCol of GradingDisplayedColumns; let colIndex = index"
                 matColumnDef="{{disCol}}">
@@ -135,8 +137,10 @@
             <mat-header-row *matHeaderRowDef="GradingDisplayedColumns;sticky:true"></mat-header-row>
             <mat-row *matRowDef="let row; columns: GradingDisplayedColumns;" class="elementrow"></mat-row>
         </mat-table>
-        <!-- <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,25,100]"></mat-paginRator> -->
+
     </div>
+    <mat-paginator [hidden]="ExamStudentSubjectGrading.length==0" style="display: flex;justify-content: center;"
+        [pageSizeOptions]="[10,25,100]" #GradingPaginator="matPaginator"></mat-paginator>
 </div>
 
 <div style="margin-top:30px;" data-expand="false" #expandWrap>
@@ -148,6 +152,7 @@
         <ul>
             <li><b>Verify</b> button is disabled if the selected exam has been released.</li>
             <li><b>Verify</b> button is disabled if section is selected.</li>
+            <li><b>Grading subjects</b> can not have components.</li>
         </ul>
     </span>
 </div>

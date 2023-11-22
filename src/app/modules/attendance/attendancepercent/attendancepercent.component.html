@@ -135,9 +135,13 @@
     </div>
     <mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50,75]"></mat-paginator>
     <div style="display:flex;justify-content: center;">
-        <button [disabled]="loading || Permission=='read'" *ngIf="distinctStudent.length>0" matTooltip="print"
+        <button [disabled]="loading || Permission=='read'" style="margin-right: 15px;" *ngIf="distinctStudent.length>0" matTooltip="print"
             printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button color="accent">
             <mat-icon>print</mat-icon>
+        </button>
+        <button [disabled]="loading || Permission=='read'" *ngIf="distinctStudent.length>0" matTooltip="export to excel"
+            (click)="exportArray()" mat-raised-button color="accent">
+            <mat-icon>download</mat-icon>
         </button>
     </div>
 </div>

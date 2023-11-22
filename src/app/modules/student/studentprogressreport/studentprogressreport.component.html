@@ -12,7 +12,8 @@
         </div>
     </mat-card-subtitle>
     <mat-card-content>
-        <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+        <mat-spinner *ngIf="PageLoading" diameter="25"
+            style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
         <div id="printSection">
             <div
                 style="margin-right:0px;margin-left:0px;width: 100%;box-sizing: border-box;padding: 15px; border: 1px solid lightgray; display: flex; justify-content: center;flex-direction: column;">
@@ -61,6 +62,12 @@
                         <div style="width:300px"><b>Address:</b>
                         </div>
                         <div>{{CurrentStudent.PresentAddress}}</div>
+                    </div>
+                </div>
+                <div *ngIf="ExamIdToWithHeld.length>0" style="display:flex;flex-direction: column;">
+                    <div style="font-weight: bold;">Result withheld for Exam</div>
+                    <div *ngFor="let item of ExamIdToWithHeld">
+                        {{item.ExamName}}
                     </div>
                 </div>
                 <div style="margin-top:15px;">
@@ -115,8 +122,7 @@
                     </mat-table>
                 </div>
                 <div style="margin-top:15px;margin-bottom:0px">
-                    <mat-table #table [dataSource]="dataSourceSignature" matSort
-                        *ngIf="SignatureColumns.length>1">
+                    <mat-table #table [dataSource]="dataSourceSignature" matSort *ngIf="SignatureColumns.length>1">
                         <ng-container *ngFor="let disCol of SignatureColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
                             <mat-header-cell *matHeaderCellDef mat-sort-header style="display:none"><span

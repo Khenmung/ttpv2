@@ -581,15 +581,14 @@ export class EvaluationBulkComponent implements OnInit {
             var existing: any[] = [];
             if (_statusId) {
               existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
-                && f.StudentEvaluationAnswers
-                && f.StudentEvaluationAnswers.length > 0
+               // && f.StudentEvaluationAnswers && f.StudentEvaluationAnswers.length > 0
                 && f.ClassEvaluationId == clseval.ClassEvaluationId
                 && f.StudentEvaluationAnswers[0].ClassEvaluationAnswerOptionsId == _statusId
                 && f.StudentEvaluationAnswers[0].Active == 1);
             }
             else {
               existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
-                && (!f.StudentEvaluationAnswers || f.StudentEvaluationAnswers.length > 0)
+                //&& (!f.StudentEvaluationAnswers || f.StudentEvaluationAnswers.length > 0)
                 && f.ClassEvaluationId == clseval.ClassEvaluationId);
             }
             if (existing.length > 0) {
@@ -667,7 +666,7 @@ export class EvaluationBulkComponent implements OnInit {
 
           })
         })
-        ////console.log("this.StudentEvaluationList", this.StudentEvaluationList);
+        //console.log("this.StudentEvaluationList", this.StudentEvaluationList);
         //this.StudentEvaluationList = this.StudentEvaluationList.sort((a,b)=>a.PID -b.PID);
         row[0].EvaluationStarted = true;
         this.dataSource = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);

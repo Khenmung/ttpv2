@@ -23,12 +23,14 @@ import { TableUtil } from '../../../shared/TableUtil';
 })
 export class VerifyResultsComponent implements OnInit {
 
-  @ViewChild(MatPaginator) nonGradingPaginator: MatPaginator;
-  @ViewChild(MatSort) nonGradingSort: MatSort;
+  //   @ViewChild(MatPaginator) nonGradingPaginator: MatPaginator;
+  //   @ViewChild(MatSort) nonGradingSort: MatSort;
+  //   @ViewChild(MatPaginator) GradingPaginator: MatPaginator;
+  //  // @ViewChild(MatSort) GradingSort: MatSort;
 
-
-  //@ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
+  @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
   @ViewChildren(MatSort) sort = new QueryList<MatSort>();
+
   PageLoading = true;
   AttendanceModes: any[] = [];
   //SelectedClassAttendances :any[]= [];
@@ -125,8 +127,8 @@ export class VerifyResultsComponent implements OnInit {
     //     }
     //   })
     // })
-    this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(this.ExamStudentSubjectResult);
-    this.dataSource.paginator = this.nonGradingPaginator;//.toArray()[0];
+    //this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(this.ExamStudentSubjectResult);
+    //this.dataSource.paginator = this.nonGradingPaginator;//.toArray()[0];
     ////debugger;
     this.searchForm = this.fb.group({
       searchExamId: [0],
@@ -168,6 +170,7 @@ export class VerifyResultsComponent implements OnInit {
     }
   }
   FilterClass() {
+    debugger;
     var _examId = this.searchForm.get("searchExamId")?.value
     //var _classGroupId = 0;
     this.ExamReleased = 0;
@@ -176,7 +179,9 @@ export class VerifyResultsComponent implements OnInit {
         this.ExamClassGroups = [...data.value];
         var objExamClassGroups = this.ExamClassGroups.filter(g => g.ExamId == _examId);
         this.FilteredClasses = this.ClassGroupMapping.filter((f: any) => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        this.FilteredClasses = this.FilteredClasses.sort((a, b) => a.Sequence - b.Sequence);
       });
+
 
     var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
     if (obj.length > 0) {
@@ -896,7 +901,7 @@ export class VerifyResultsComponent implements OnInit {
         var subjectsWithNotCompulsory = AllMarkingSubjectCounts.filter(com => com.SubjectType.toLowerCase() != 'compulsory'
           && com.SubjectType.toLowerCase() != 'optional');
         var uniqueTypesOtherthanCompulsoryType = alasql("select distinct SubjectTypeId,SubjectType,SelectHowMany from ?", [subjectsWithNotCompulsory]);
-        console.log("subjectsWithNotCompulsory", subjectsWithNotCompulsory)
+        //console.log("subjectsWithNotCompulsory", subjectsWithNotCompulsory)
         subjectsWithNotCompulsory = uniqueTypesOtherthanCompulsoryType.filter(sub => notCompulsorySubjectType.findIndex(fi => fi.SubjectTypeId == sub.SubjectTypeId) > -1);
         this.AllSubjectCounts = compulsorySubjectCount + subjectsWithNotCompulsory.reduce((acc, current) => acc + current.SelectHowMany, 0);
 
@@ -939,11 +944,11 @@ export class VerifyResultsComponent implements OnInit {
           }
 
           var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student)
-          forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.SubjectType.localeCompare(b.SubjectType));
+          forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.ClassSubjectId - b.ClassSubjectId);//  a.SubjectType.localeCompare(b.SubjectType));
 
           forEachSubjectOfStud.forEach(eachsubj => {
             var markPercent = 0;
-            ForNonGrading["Remark"]=eachsubj.Remark;
+            ForNonGrading["Remark"] = eachsubj.Remark;
             // if (ss.Student == '21-Niangliankim -A') {
             //   debugger;
             //   //console.log("eachsubj.Subject", eachsubj.Subject);
@@ -988,7 +993,7 @@ export class VerifyResultsComponent implements OnInit {
               var allComponentsOfCurrentSubjectFromDefn = _ClsSectionSemSubjectsMarkCompntDefn.filter(comp => comp.ClassSubjectId == eachsubj.ClassSubjectId)
               //let totalFullMarkOfAllComp = alasql("select sum(FullMark) TotalFullMark from ?", [allComponentsOfCurrentSubjectFromDefn]);
               let totalFullMarkOfAllComp = allComponentsOfCurrentSubjectFromDefn.reduce((acc, current) => acc + (current.FullMark ? current.FullMark : 0), 0);
-              if (totalFullMarkOfAllComp > 0) {
+              if (totalFullMarkOfAllComp > 0 && _subjectCategoryName == 'marking') {
 
                 allComponentsOfCurrentSubjectFromDefn.forEach(thisCompmarkFromDefn => {
 
@@ -999,24 +1004,22 @@ export class VerifyResultsComponent implements OnInit {
 
                   if (componentObtainedmark.length > 0 && componentObtainedmark[0].Marks > 0) {
                     markPercent += +((componentObtainedmark[0].Marks / thisCompmarkFromDefn.FullMark) * thisCompWeightage).toFixed(5);
-
-                    // let componentfullmarkpercentFromDefn = thisCompmarkFromDefn.FullMark * 100;
-                    // let componentPercentOutOfFullMarkFromDefn = parseFloat((componentfullmarkpercentFromDefn / _subjectPassMarkFullMarkFromDefn[0].FullMark).toFixed(5));
-                    // let dividend = (componentObtainedmark[0].Marks * componentPercentOutOfFullMarkFromDefn).toFixed(5);
-                    // markPercent = +Math.round(parseFloat((markPercent + (parseFloat(dividend) / thisCompmarkFromDefn.FullMark)) + "")).toFixed(1);
+                  }
+                  else {
+                    markPercent = 0;
                   }
                   if (isNaN(markPercent))
                     markPercent = 0;
 
                   ////////////////////added for component mark display
                   if (allComponentsOfCurrentSubjectFromDefn.length > 1) {
-                    if (this.displayedColumns.indexOf(thisCompmarkFromDefn.SubjectComponentName) == -1 && thisCompmarkFromDefn.SubjectComponentName) {
-                      this.displayedColumns.push(thisCompmarkFromDefn.SubjectComponentName);
+                    if (thisCompmarkFromDefn.SubjectComponentName && this.displayedColumns.indexOf(thisCompmarkFromDefn.SubjectComponentName + "-" + eachsubj.Subject) == -1) {
+                      this.displayedColumns.push(thisCompmarkFromDefn.SubjectComponentName + "-" + eachsubj.Subject);
                     }
                     if (componentObtainedmark.length > 0)
-                      ForNonGrading[thisCompmarkFromDefn.SubjectComponentName] = componentObtainedmark[0].Marks;
+                      ForNonGrading[thisCompmarkFromDefn.SubjectComponentName + "-" + eachsubj.Subject] = componentObtainedmark[0].Marks;
                     else
-                      ForNonGrading[thisCompmarkFromDefn.SubjectComponentName] = 0;
+                      ForNonGrading[thisCompmarkFromDefn.SubjectComponentName + "-" + eachsubj.Subject] = 0;
                   }
                   /////////////////////
                 })
@@ -1059,11 +1062,11 @@ export class VerifyResultsComponent implements OnInit {
 
                 if (_subjectCategoryName == 'grading') {
 
-                  if (markObtained[0].Marks != undefined) {
+                  if (markObtained[0].Marks) {
                     //var rows :any[]= [];
                     //rows.push(markObtained[0]);
 
-                    var _grade = this.SetGrade(markObtained, eachsubj.SubjectCategoryId);
+                    var _grade = this.SetGrade(markObtained, eachsubj.SubjectCategoryId, MarkConvertTo, totalFullMarkOfAllComp);
                     markObtained[0].Grade = globalconstants.decodeSpecialChars(_grade);
                     ForGrading[eachsubj.Subject] = markObtained[0].Grade;
                     ExamResultSubjectMarkData.Grade = markObtained[0].Grade;
@@ -1276,13 +1279,19 @@ export class VerifyResultsComponent implements OnInit {
         })
         //this.ExamStudentSubjectResult =sortedresult;
         this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(sortedresult);
-        this.dataSource.paginator = this.nonGradingPaginator;//.toArray()[0];
-        this.dataSource.sort = this.nonGradingSort;
+        this.dataSource.paginator = this.paginator.toArray()[0];
+        this.dataSource.sort = this.sort.toArray()[0];
+
+
+        // this.dataSource.paginator = this.nonGradingPaginator;//.toArray()[0];
+        // this.dataSource.sort = this.nonGradingSort;
         //this.dataSource.sort = this.sort.toArray()[0];
         ////console.log("this.ExamStudentSubjectResult",this.ExamStudentSubjectResult);
         ////console.log("columns",this.displayedColumns);
 
         this.GradingDataSource = new MatTableDataSource<any[]>(this.ExamStudentSubjectGrading);
+        this.GradingDataSource.paginator = this.paginator.toArray()[1];
+        this.GradingDataSource.sort = this.sort.toArray()[1];
         //this.GradingDataSource.paginator = this.paginator.toArray()[1];
         //this.GradingDataSource.sort = this.sort.toArray()[1];
 
@@ -1322,16 +1331,17 @@ export class VerifyResultsComponent implements OnInit {
       item.Rank = _rank;
     })
   }
-  SetGrade(pMarks: any[], gradingTypeId) {
+  SetGrade(pMarks: any[], gradingTypeId, _markConvertTo, _totalFullMark) {
     var _StudentGrade = '';
     var _gradeDefinitionsForSpecificSubjectCategory = this.SelectedClassStudentGrades.filter((f: any) => f.SubjectCategoryId == gradingTypeId)
     if (_gradeDefinitionsForSpecificSubjectCategory.length > 0) {
       _gradeDefinitionsForSpecificSubjectCategory.sort((a, b) => a.Sequence - b.Sequence);
       pMarks.forEach((result: any) => {
         for (var i = 0; i < _gradeDefinitionsForSpecificSubjectCategory.length; i++) {
+          if (_markConvertTo > 0)
+            result.Marks = +((result.Marks / _totalFullMark) * _markConvertTo).toFixed(2)
           var formula = _gradeDefinitionsForSpecificSubjectCategory[i].Formula
             .replaceAll("[Mark]", result.Marks)
-          //console.log("formula", formula)
           if (evaluate(formula)) {
             _StudentGrade = _gradeDefinitionsForSpecificSubjectCategory[i].GradeName;
             break;
@@ -1369,7 +1379,7 @@ export class VerifyResultsComponent implements OnInit {
           m.Category = '';
         return m;
       })
-      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);;
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.GetSubjectTypes();
     });
     let funcCallArray = [this.GetClassGroup(), this.GetClassGroupMapping(), this.GetExams(), this.GetOrganization(), this.GetStudentGradeDefn()];
@@ -1392,8 +1402,9 @@ export class VerifyResultsComponent implements OnInit {
     this.contentservice.GetClassGroupMapping(this.FilterOrgSubOrg, 1)
       .subscribe((data: any) => {
         //debugger;
-        data.value.map(f => {
+        data.value.forEach(f => {
           f.ClassName = f.Class.ClassName;
+          f.Sequence = f.Class.Sequence;
           if (f.ClassGroup) {
             f.GroupName = f.ClassGroup.GroupName;
             this.ClassGroupMapping.push(f);

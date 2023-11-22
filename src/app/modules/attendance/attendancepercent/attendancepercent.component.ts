@@ -13,6 +13,7 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
+import { TableUtil } from '../../../shared/TableUtil';
 
 @Component({
   selector: 'app-attendancepercent',
@@ -168,7 +169,12 @@ export class AttendancepercentComponent implements OnInit {
     }
     this.ClearData();
   }
-
+  exportArray() {
+    if (this.distinctStudent.length > 0) {
+      const datatoExport: Partial<any>[] = this.distinctStudent;
+      TableUtil.exportArrayToExcel(datatoExport, "attendancePercent");
+    }
+  }
   getCollegeCategory() {
     return globalconstants.CategoryCollege;
   }
@@ -194,7 +200,11 @@ export class AttendancepercentComponent implements OnInit {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-
+    if(!_sectionId && !_semesterId)
+    {
+      this.contentservice.openSnackBar("Please select section/semester.",globalconstants.ActionText,globalconstants.RedBackground);
+      return;
+    }
     this.loading = true;
     var today = new Date();
     today.setHours(0, 0, 0, 0);

@@ -16,7 +16,8 @@
     <div style="padding:15px 15px 10px 15px;">
         <div><strong>E-Status</strong></div>
     </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25"
+        style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <div style="width: 100%;">
         <form [formGroup]="searchForm">
 
@@ -177,10 +178,10 @@
                                 {{element.Description}}</div>
                         </div>
                         <div style="display: flex;flex-direction: column;padding: 15px; margin:15px 15px 15px 15px;width: 100%;"
-                            *ngIf="element.EType && element.ClassEvaluationAnswerOptionParentId==0 && element.QuestionnaireType=='Questionnaire'">
+                            *ngIf="element.EType=== StudentProfile && element.ClassEvaluationAnswerOptionParentId==0 && element.QuestionnaireType=='Questionnaire'">
                             <pre *ngIf="element.History.length>0">
-                        <span [innerHTML]="element.History| encodeHTML">
-                        </span>
+                                <span [innerHTML]="element.History| encodeHTML">
+                                </span>
                             </pre>
                             <mat-form-field appearance="outline" style="width:100%">
                                 <textarea #input matInput [disabled]="element.AnswerOptionsId>0" [maxlength]="600"

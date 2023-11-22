@@ -34,7 +34,7 @@
 </mat-table>
 <div style="padding-top: 15px;">
 <div *ngFor="let item of AttendanceStatusSum">
-    Total  {{ item.AttendanceStatus}} {{item.Total}}
+    Total  {{ item.Status}} - {{item.Total}}
 </div>
 </div>
 <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50]"></mat-paginator>

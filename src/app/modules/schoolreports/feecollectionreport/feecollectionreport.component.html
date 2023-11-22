@@ -54,7 +54,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
             <mat-label>Status</mat-label>
-            <mat-select formControlName="searchFeePaymentStatusId">
+            <mat-select formControlName="searchStatusId">
                 <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let item of FeePaymentStatuses" [value]="item.MasterDataId">
                     {{item.MasterDataName}}
@@ -72,9 +72,9 @@
 <div>
     <div id="printSection">
         <mat-table #table [dataSource]="dataSource" matSort>
-            <ng-container matColumnDef="FeePaymentRelatedId">
+            <ng-container matColumnDef="StudentStatusId">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.FeePaymentRelatedId}} </mat-cell>
+                <mat-cell *matCellDef="let element"> {{element.StudentStatusId}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="PID">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> PID </mat-header-cell>
@@ -96,11 +96,11 @@
                     {{element.ClassRollNoSection}}
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="FeepaymentStatusId">
+            <ng-container matColumnDef="StatusId">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
-                        <mat-select [(ngModel)]="element.FeepaymentStatusId" [value]="element.FeepaymentStatusId" (selectionChange)="UpdateStatus(element)">
+                        <mat-select [(ngModel)]="element.StatusId" [value]="element.StatusId" (selectionChange)="UpdateStatus(element)">
                             <mat-option [value]="Defaultvalue">select</mat-option>
                             <mat-option *ngFor="let item of FeePaymentStatuses"
                                 [value]="item.MasterDataId">{{item.MasterDataName}}

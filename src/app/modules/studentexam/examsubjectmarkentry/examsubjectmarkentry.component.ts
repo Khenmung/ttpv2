@@ -8,11 +8,9 @@ import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
-//import alasql from 'alasql';
+import { TableUtil } from '../../../shared/TableUtil';
 import { MatPaginator } from '@angular/material/paginator';
 import { evaluate } from 'mathjs';
-import { JsonPipe } from '@angular/common';
-//import * as loda from 'cypress/types/lodash';
 
 @Component({
   selector: 'app-examsubjectmarkentry',
@@ -138,6 +136,15 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     this.ResultReleased = this.Exams.filter(e => e.ExamId == source.value)[0].ReleaseResult;
     this.FilterClass();
     this.ClearData();
+  }
+  ClearData() {
+    debugger;
+    this.ExamStudentSubjectResult = [];
+    this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(this.ExamStudentSubjectResult);
+    var _classId = this.searchForm.get("searchClassId")?.value
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
   }
   updateActive(row, value) {
     //if(!row.Action)
@@ -332,6 +339,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       .subscribe((data: any) => {
         this.ClassGroupMapping = data.value.map(f => {
           f.ClassName = f.Class.ClassName;
+          f.Sequence = f.Class.Sequence;
           return f;
         });
         this.loading = false;
@@ -358,6 +366,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.ExamClassGroups = [...data.value];
         var objExamClassGroups = this.ExamClassGroups.filter(g => g.ExamId == _examId);
         this.FilteredClasses = this.ClassGroupMapping.filter((f: any) => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        this.FilteredClasses = this.FilteredClasses.sort((a,b)=>a.Sequence - b.Sequence);
       });
 
     var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
@@ -723,6 +732,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     // else
     //   this.GetmultiExamsResult(_examMarkFormulaObj[0].Formula);
   }
+  exportArray(){
+    
+      const datatoExport: Partial<any>[] = this.ExamStudentSubjectResult;
+      TableUtil.exportArrayToExcel(datatoExport, "markentry");
+  }
   GetmultiExamsResult(pExamMarkFormula) {
     this.ExamMarkFormula = '';
     this.ExamMarkFormula = pExamMarkFormula;
@@ -912,14 +926,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
-  ClearData() {
-    this.ExamStudentSubjectResult = [];
-    this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(this.ExamStudentSubjectResult);
-    var _classId = this.searchForm.get("searchClassId")?.value
-    var _sectionId = this.searchForm.get("searchSectionId")?.value;
-    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
-    this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
-  }
+  
   MultiExamsStudentSubjectResult: any[] = [];
   GetMultiExamsStudentSubjectResults(pExamSubjectFormula) {
     debugger;

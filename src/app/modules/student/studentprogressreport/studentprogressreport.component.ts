@@ -370,8 +370,8 @@ export class StudentprogressreportComponent implements OnInit {
 
     filterStr += ' and StudentClassId eq ' + this.StudentClassId;
 
-    this.ExamIdToWithHeld.forEach(Id => {
-      filterStr += " and ExamId ne " + Id;
+    this.ExamIdToWithHeld.forEach(exam => {
+      filterStr += " and ExamId ne " + exam.ExamId;
     })
 
     let list: List = new List();
@@ -440,29 +440,29 @@ export class StudentprogressreportComponent implements OnInit {
   }
   StudentStatuses: any = [];
   ExamIdToWithHeld: any = [];
-  getFeePaymentRelateds() {
+  getStudentStatuss() {
 
-    let filterStr = this.FilterOrgSubOrgBatchId + ' and Active eq 1 and StudentClassId eq ' + this.StudentClassId;
+    let filterStr = this.FilterOrgSubOrgBatchId + ' and Active eq true and StudentClassId eq ' + this.StudentClassId;
     this.ExamIdToWithHeld = [];
     let list: List = new List();
     list.fields = [
       'StudentClassId',
       'ClassId',
-      'FeePaymentRelatedId',
-      'FeepaymentStatusId',
+      'StudentStatusId',
+      'StatusId',
       'SectionId',
       'SemesterId',
       'Active'
     ];
-    list.PageName = "FeePaymentRelateds";
+    list.PageName = "StudentStatuses";
     list.filter = [filterStr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.StudentStatuses = [...data.value];
         this.Exams.forEach(x => {
           if (x.WithHeldResultStatusId) {
-            if (this.StudentStatuses.findIndex(i => i.FeepaymentStatusId === x.WithHeldResultStatusId) >= -1)
-              this.ExamIdToWithHeld.push(x.ExamId);
+            if (this.StudentStatuses.findIndex(i => i.StatusId === x.WithHeldResultStatusId) >= -1)
+              this.ExamIdToWithHeld.push(x);
           }
         });
         this.GetStudentSubject();
@@ -473,8 +473,8 @@ export class StudentprogressreportComponent implements OnInit {
     let filterStr = this.FilterOrgSubOrg + " and Active eq true";
 
     filterStr += ' and StudentClassId eq ' + this.StudentClassId;
-    this.ExamIdToWithHeld.forEach(Id => {
-      filterStr += " and ExamId ne " + Id;
+    this.ExamIdToWithHeld.forEach(exam => {
+      filterStr += " and ExamId ne " + exam.ExamId;
     })
     let list: List = new List();
     list.fields = [
@@ -755,7 +755,7 @@ export class StudentprogressreportComponent implements OnInit {
               WithHeldResultStatusId: e.WithHeldResultStatusId
             })
         })
-        this.getFeePaymentRelateds();
+        this.getStudentStatuss();
         
         this.GetEvaluationOption();
       })

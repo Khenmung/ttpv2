@@ -203,7 +203,7 @@ export class ExammarkconfigComponent implements OnInit {
         //        clssubject.ClassId == _classId
         //     && clssubject.SectionId == (_sectionId ? _sectionId : clssubject.SectionId)
         //     && clssubject.SemesterId == (_semesterId ? _semesterId : clssubject.SemesterId));
-        clsssubjects.forEach((s,indx) => {
+        clsssubjects.forEach((s, indx) => {
           var existing = data.value.filter((f: any) => f.ClassSubjectId == s.ClassSubjectId)
           if (existing.length > 0) {
             existing[0].SubjectName = s.SubjectName;
@@ -219,7 +219,7 @@ export class ExammarkconfigComponent implements OnInit {
               SemesterId: _semesterId,
               ClassSubjectId: s.ClassSubjectId,
               SubjectName: s.SubjectName,
-              Sequence:indx,
+              Sequence: indx,
               Formula: '',
               Active: false,
               Action: false
@@ -232,7 +232,7 @@ export class ExammarkconfigComponent implements OnInit {
           && f.SemesterId == _semesterId)
         if (noSubject.length > 0) {
           noSubject[0].Sequence = -1;
-          noSubject[0].SubjectName ='All';
+          noSubject[0].SubjectName = 'All';
           this.ExamMarkConfigList.push(noSubject[0])
         }
         else {
@@ -244,7 +244,7 @@ export class ExammarkconfigComponent implements OnInit {
             SemesterId: _semesterId,
             ClassSubjectId: 0,
             SubjectName: 'All',
-            Sequence:-1,
+            Sequence: -1,
             Formula: '',
             Active: false,
             Action: false
@@ -253,7 +253,7 @@ export class ExammarkconfigComponent implements OnInit {
         if (this.ExamMarkConfigList.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
-        this.ExamMarkConfigList=this.ExamMarkConfigList.sort((a,b)=>a.Sequence - b.Sequence);
+        this.ExamMarkConfigList = this.ExamMarkConfigList.sort((a, b) => a.Sequence - b.Sequence);
         this.dataSource = new MatTableDataSource(this.ExamMarkConfigList);
         this.dataSource.paginator = this.paginator;
 
@@ -402,7 +402,8 @@ export class ExammarkconfigComponent implements OnInit {
   //     })
   // }
   GetclassgroupMappings() {
-    this.contentservice.GetClassGroupMappings(this.FilterOrgSubOrg)
+    this.contentservice.GetClassGroupMapping(this.FilterOrgSubOrg, 1)
+    //this.contentservice.GetClassGroupMappings(this.FilterOrgSubOrg)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
           this.ClassGroupMappings = []
@@ -420,6 +421,7 @@ export class ExammarkconfigComponent implements OnInit {
                 if (sem.length > 0)
                   m.ClassName += "-" + sem[0].MasterDataName;
                 //m.ClassName = m.Class.ClassName;
+                m.Sequence = m.Class.Sequence;
                 this.ClassGroupMappings.push(m);
               }
             }
@@ -460,7 +462,7 @@ export class ExammarkconfigComponent implements OnInit {
         this.ExamClassGroupMaps = [...data.value];
         var objExamClassGroupMaps = this.ExamClassGroupMaps.filter(g => g.ExamId == _examId);
         this.FilteredClasses = this.ClassGroupMappings.filter((f: any) => objExamClassGroupMaps.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
-        //console.log('this.FilteredClasse', this.FilteredClasses)
+        this.FilteredClasses = this.FilteredClasses.sort((a, b) => a.Sequence - b.Sequence);
       });
 
     var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
@@ -636,10 +638,10 @@ export class ExammarkconfigComponent implements OnInit {
         let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.GetClassGroups();
       this.GetClassSubject();
     });
@@ -743,7 +745,7 @@ export interface IExamMarkConfig {
   SemesterId: number;
   ClassSubjectId: number;
   SubjectName: string;
-  Sequence:number;
+  Sequence: number;
   Formula: string;
   Active: boolean;
   Action: boolean;

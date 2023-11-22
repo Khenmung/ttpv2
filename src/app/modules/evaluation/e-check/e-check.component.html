@@ -16,7 +16,8 @@
     <div style="padding:15px 15px 10px 15px;">
         <div><strong>E-Check</strong></div>
     </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25"
+        style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <!-- <alert></alert> -->
     <div style="padding: 15px 15px 15px 0px;">
         <div style="width: 100%;">
@@ -125,8 +126,9 @@
 
                     </div>
 
-                    <mat-table style="width:100% !important;border-top:1px solid lightgray;border-left:1px solid lightgray;border-bottom:1px solid lightgray;padding: 15px;" #table
-                        [dataSource]="dataSource" *ngIf="StudentEvaluationList.length>0">
+                    <mat-table
+                        style="width:100% !important;border-top:1px solid lightgray;border-left:1px solid lightgray;border-bottom:1px solid lightgray;padding: 15px;"
+                        #table [dataSource]="dataSource" *ngIf="StudentEvaluationList.length>0">
                         <ng-container matColumnDef="StudentEvaluationResultId">
                             <mat-header-cell *matHeaderCellDef>Id
                             </mat-header-cell>
@@ -155,13 +157,13 @@
                                     </span>
                                     <span [innerHTML]="element.AnswerText|encodeHTML"
                                         style="border:1px solid lightgray; width: 100%;min-height: 50px;padding: 15px;margin: 15px;"
-                                        *ngIf="!EvaluationEType && element.ClassEvaluationAnswerOptionParentId==0
+                                        *ngIf="EvaluationEType !=='student profile' && element.ClassEvaluationAnswerOptionParentId==0
                                 && element.QuestionnaireType=='Questionnaire'">
                                     </span>
                                     <pre *ngIf="element.History.length>0">
                             <span [innerHTML]="element.History|encodeHTML"
                                 class="history"
-                                *ngIf="EvaluationEType && element.ClassEvaluationAnswerOptionParentId==0 
+                                *ngIf="EvaluationEType ==='student profile' && element.ClassEvaluationAnswerOptionParentId==0 
                                 && element.History.length>0">
                             </span>
                             </pre>
@@ -176,7 +178,7 @@
                                             {{item.Title}}
                                         </mat-checkbox>
                                     </span>
-                                    <span style="padding: 15px 15px 15px 40px;" *ngIf="element.ClassEvaluationAnswerOptionParentId>0 
+                                    <div style="padding: 15px 15px 15px 40px;" *ngIf="element.ClassEvaluationAnswerOptionParentId>0 
                                     && !element.MultipleAnswer">
                                         <mat-radio-group [name]="'options_'+element.ClassEvaluationId">
                                             <mat-radio-button style="margin: 10px 10px 0px 0px;"
@@ -186,7 +188,7 @@
                                                 {{item.Title}}
                                             </mat-radio-button>
                                         </mat-radio-group>
-                                    </span>
+                                    </div>
                                 </span>
                             </mat-cell>
                         </ng-container>
@@ -195,7 +197,7 @@
 
                             </mat-header-cell>
                             <mat-cell *matCellDef="let element">
-                                <div
+                                <div style="margin-top: 33px;"
                                     *ngIf="element.QuestionnaireType!='Heading' && element.QuestionnaireType!='Sub Heading'">
                                     <mat-form-field>
                                         <input matInput [(ngModel)]="element.Points" (blur)="onBlur(element)"

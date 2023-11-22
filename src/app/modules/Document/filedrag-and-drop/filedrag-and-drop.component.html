@@ -4,7 +4,7 @@
     <div style="margin-bottom: 15px;justify-content: center;">
         <span style="color:red;" *ngIf="message">{{message}}</span>
         <input #inputfile [hidden]="true" type="file" accept='image/*' (change)="preview(inputfile.files)" />
-        <div style="border:1px solid lightgray; padding:5px;margin-top: 5px;margin-bottom: 5px;">
+        <div style="border:1px solid lightgray; padding:5px;margin-top: 5px;margin-bottom: 5px;min-height: 65px;">
             <img [src]="imgURL" height="350px" *ngIf="imgURL.length>0">
         </div>        
     </div>
@@ -31,14 +31,14 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+            <mat-form-field appearance="outline" style="width:300px;margin-right: 15px;">
                 <mat-label>description</mat-label>
                 <textarea matInput [maxlength]="250" formControlName="searchDescription" rows="1">                    
                 </textarea>
             </mat-form-field>
         </div>
         <div style="margin: 15px;justify-content: center;display: flex">
-            <button [disabled]="loading || Permission=='read'" mat-flat-button color="accent" matTooltip="select file"
+            <button style="margin-right: 15px;" [disabled]="loading || Permission=='read'" mat-flat-button color="accent" matTooltip="select file"
                 (click)="inputfile.click()">
                 <mat-icon aria-label="photo">photo</mat-icon>
             </button>&nbsp;&nbsp;           
