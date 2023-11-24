@@ -246,7 +246,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
             var _semesterId = this.searchForm.get("searchSemesterId")?.value;
 
             this.DataCollection.forEach(item => {
-             
+
               let _examstatus = 0;
               if (item.Marks >= item.PassMark)
                 _examstatus = this.ExamStatuses.filter((f: any) => f.MasterDataName.toLowerCase() == "pass")[0].MasterDataId;
@@ -304,10 +304,10 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           this.rowCount += 1;
           this.loading = false; this.PageLoading = false;
           // this.rowSave += 1;
-          if (this.rowCount == this.DataCollection.length){
+          if (this.rowCount == this.DataCollection.length) {
             this.loading = false; this.PageLoading = false;
-            this.DataToSave.forEach(item=>{
-              item.Action =false;
+            this.DataToSave.forEach(item => {
+              item.Action = false;
             })
             this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
@@ -323,10 +323,10 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           //this.loading = false; this.PageLoading=false;
           valuerow.Action = false;
           this.rowCount += 1;
-          if (this.rowCount == this.DataCollection.length){// this.displayedColumns.length - 2) {
+          if (this.rowCount == this.DataCollection.length) {// this.displayedColumns.length - 2) {
             this.loading = false; this.PageLoading = false;
-            this.DataToSave.forEach(item=>{
-              item.Action =false;
+            this.DataToSave.forEach(item => {
+              item.Action = false;
             })
             this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
@@ -366,7 +366,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.ExamClassGroups = [...data.value];
         var objExamClassGroups = this.ExamClassGroups.filter(g => g.ExamId == _examId);
         this.FilteredClasses = this.ClassGroupMapping.filter((f: any) => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
-        this.FilteredClasses = this.FilteredClasses.sort((a,b)=>a.Sequence - b.Sequence);
+        this.FilteredClasses = this.FilteredClasses.sort((a, b) => a.Sequence - b.Sequence);
       });
 
     var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
@@ -408,7 +408,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       this.contentservice.openSnackBar("Please select subject.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    this.loading=true;
+    this.loading = true;
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
     let filterStr = this.FilterOrgSubOrgBatchId;
     filterStr += " and ClassSubjectId eq " + _classSubjectId;
@@ -677,6 +677,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
 
     var _examMarkFormulaObj: any[];
+    //for section or semester and subject
     _examMarkFormulaObj = this.ExamMarkConfigs.filter(e => e.ExamId == _examId
       && e.ClassId == _classId
       && e.SemesterId == _semesterId
@@ -684,13 +685,15 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       && e.ClassSubjectId == _classSubjectId
       && e.Formula.length > 0);
     if (_examMarkFormulaObj.length == 0) {
+      //for section or semester
       _examMarkFormulaObj = this.ExamMarkConfigs.filter(e => e.ExamId == _examId
         && e.ClassId == _classId
-        && e.SemesterId == _semesterId
-        && e.SectionId == _sectionId
-        && e.ClassSubjectId == 0
+       // && e.SemesterId == _semesterId
+       // && e.SectionId == _sectionId
+        && e.ClassSubjectId == _classSubjectId
         && e.Formula.length > 0)
       if (_examMarkFormulaObj.length == 0) {
+        //for class
         _examMarkFormulaObj = this.ExamMarkConfigs.filter(e => e.ExamId == _examId
           && e.ClassId == _classId
           && e.SemesterId == 0
@@ -707,7 +710,12 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           this.GetOneExamResult([]);
       }
       else
-        this.GetOneExamResult([]);
+      // this.GetOneExamResult([]);
+      {
+        this.ExamMarkFormula = '';
+        this.ExamMarkFormula = _examMarkFormulaObj[0].Formula;
+        this.GetMultiExamsStudentSubjectResults(this.ExamMarkFormula);
+      }
     }
     else {
       this.ExamMarkFormula = '';
@@ -732,10 +740,10 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     // else
     //   this.GetmultiExamsResult(_examMarkFormulaObj[0].Formula);
   }
-  exportArray(){
-    
-      const datatoExport: Partial<any>[] = this.ExamStudentSubjectResult;
-      TableUtil.exportArrayToExcel(datatoExport, "markentry");
+  exportArray() {
+
+    const datatoExport: Partial<any>[] = this.ExamStudentSubjectResult;
+    TableUtil.exportArrayToExcel(datatoExport, "markentry");
   }
   GetmultiExamsResult(pExamMarkFormula) {
     this.ExamMarkFormula = '';
@@ -828,7 +836,9 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
               if (this.displayedColumns.indexOf(_ComponentName) == -1)
                 this.displayedColumns.push(_ComponentName)
               var _mark = 0;
+              let _action=false;
               if (toUpdate) {
+                _action=true;
                 var replacedFormula: any = this.ExamMarkFormula;
                 var _subjectmarkconfig = pExamsSubjectMarks.filter(m => m.StudentClassSubjectId == ss.StudentClassSubjectId)
                 //if exammarkconfig is defined. other wise mark is 0
@@ -863,11 +873,11 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
                 Grade: existing[0].Grade,
                 ExamStatus: existing[0].ExamStatus,
                 Active: existing[0].Active,
-                Action: false
+                Action: _action
               }
-              _toPush[_ComponentName] = existing[0].Marks;
-              forDisplay[_ComponentName] = existing[0].Marks;
-
+              _toPush[_ComponentName] = _mark;
+              forDisplay[_ComponentName] = _mark;
+              forDisplay["Action"] = _action;
               this.StoredForUpdate.push(_toPush);
             }
             else {
@@ -926,7 +936,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
-  
+
   MultiExamsStudentSubjectResult: any[] = [];
   GetMultiExamsStudentSubjectResults(pExamSubjectFormula) {
     debugger;
@@ -1076,7 +1086,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       record.Action = !record.Action;
     })
   }
-  DataToSave :any=[];
+  DataToSave: any = [];
   SaveAll() {
     this.DataCollection = [];
 

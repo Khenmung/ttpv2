@@ -289,11 +289,11 @@ export class ExammarkconfigComponent implements OnInit {
   UpdateOrSave(row) {
 
     debugger;
-    if (row.Formula.length == 0) {
-      this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar("Please enter formula", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
+    // if (row.Formula.length == 0) {
+    //   this.loading = false; this.PageLoading = false;
+    //   this.contentservice.openSnackBar("Please enter formula", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
 
     this.loading = true;
     var _examId = this.searchForm.get("searchExamId")?.value;

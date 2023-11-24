@@ -565,7 +565,7 @@ export class ClassSubjectDetailComponent implements OnInit {
               this.ClassSubjectData.SemesterId = item.SemesterId;
               this.ClassSubjectData.RemarkId = item.RemarkId;
               this.ClassSubjectData.Credits = item.Credits;
-              this.ClassSubjectData.Confidential = item.Confidential == null ? false : item.Confidential;
+              this.ClassSubjectData.Confidential = !item.Confidential? false : item.Confidential;
               this.ClassSubjectData.SubjectId = item.SubjectId;
               this.ClassSubjectData.SubjectTypeId = item.SubjectTypeId;
               this.ClassSubjectData.SubjectCategoryId = item.SubjectCategoryId;

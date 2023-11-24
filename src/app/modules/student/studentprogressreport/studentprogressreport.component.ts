@@ -59,7 +59,7 @@ export class StudentprogressreportComponent implements OnInit {
   ClassEvaluationOptionList: any[] = [];
   ClassGroupMappings: any[] = [];
   CurrentStudentClassGroups: any[] = [];
-  dataSource: MatTableDataSource<IExamStudentSubjectResult>;
+  dataSourceResult: MatTableDataSource<any>;
   dataSourceSignature: MatTableDataSource<any>;
   dataSourceEvaluation: MatTableDataSource<IStudentEvaluation>;
   GradedSubjectsDataSource: MatTableDataSource<any[]>;
@@ -114,6 +114,7 @@ export class StudentprogressreportComponent implements OnInit {
     // })
     this.PageLoad();
   }
+  CurrentBatchName='';
   CurrentStudent: any = {};
   StudentName: any[] = [];
   FeePaymentPermission = '';
@@ -133,12 +134,14 @@ export class StudentprogressreportComponent implements OnInit {
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
+      
       //////console.log('this.Permission', this.Permission)
       if (this.Permission != 'deny') {
         ////console.log("localStorage.getItem(StudentDetail)",localStorage.getItem("StudentDetail"))
         var studentdetail = [JSON.parse("{" + localStorage.getItem("StudentDetail") + "}")];
         var _studentId = this.tokenStorage.getStudentId()!;
         var _student = this.tokenStorage.getStudents()!;
+        this.CurrentBatchName = this.tokenStorage.getSelectedBatchName()!;
         this.CurrentStudent = _student.filter((f: any) => f.StudentId == _studentId)[0];
         var obj = this.Houses.filter(h => h.MasterDataId == this.CurrentStudent.HouseId);
         if (obj.length > 0)
@@ -448,13 +451,13 @@ export class StudentprogressreportComponent implements OnInit {
     list.fields = [
       'StudentClassId',
       'ClassId',
-      'StudentStatusId',
+      'StudentStatureId',
       'StatusId',
       'SectionId',
       'SemesterId',
       'Active'
     ];
-    list.PageName = "StudentStatuses";
+    list.PageName = "StudentStatures";
     list.filter = [filterStr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -570,12 +573,13 @@ export class StudentprogressreportComponent implements OnInit {
           this.GradedMarksResults.push(OverAllGradeRow);
 
         }
-        ////console.log("this.GradedMarksResults",this.GradedMarksResults)
+        console.log("this.ExamStudentResults",this.ExamStudentResults)
+        console.log("this.DisplayColumns",this.DisplayColumns)
         this.loading = false;
         this.PageLoading = false;
         this.GradedSubjectsDataSource = new MatTableDataSource<any>(this.GradedMarksResults);
         this.NonGradedSubjectsDataSource = new MatTableDataSource<any>(this.NonGradedMarkResults);
-        this.dataSource = new MatTableDataSource<any>(this.ExamStudentResults);
+        this.dataSourceResult = new MatTableDataSource<any>(this.ExamStudentResults);
         this.dataSourceSignature = new MatTableDataSource<any>(this.ReportSignatureList);
 
       });
@@ -595,117 +599,8 @@ export class StudentprogressreportComponent implements OnInit {
     this.GetExamGrandTotal();
 
   }
-  // GetStudentSubjectResults_old() {
-  //   debugger;
-
-  //   //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-  //   let filterStr = 'Active eq true and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-
-  //   filterStr += ' and StudentClassId eq ' + this.StudentClassId;
-
-  //   let list: List = new List();
-  //   list.fields = [
-  //     "ExamStudentSubjectResultId",
-  //     "ExamId",
-  //     "StudentClassSubjectId",
-  //     "StudentClassId",
-  //     "ClassSubjectMarkComponentId",
-  //     "Marks",
-  //     "ExamStatus",
-  //     "Active"
-  //   ];
-
-  //   list.PageName = "ExamStudentSubjectResults";
-  //   list.lookupFields = [
-  //     "StudentClassSubject($select=SubjectId,ClassSubjectId,StudentClassId;$expand=StudentClass($select=ClassId,StudentId,RollNo,SectionId))"];
-  //   list.filter = [filterStr];
-  //   this.dataservice.get(list)
-  //     .subscribe((data: any) => {
-  //       ////console.log("data", data)
-  //       var _class = '';
-  //       var _subject = '';
-  //       var _section = '';
-  //       var _Mark = '';
-  //       this.ExamStudentSubjectResult = data.value.map(s => {
-  //         _class = '';
-  //         _subject = '';
-  //         _Mark = '';
-  //         let _stdClass = this.Classes.filter(c => c.ClassId == s.StudentClassSubject.StudentClass.ClassId);
-  //         if (_stdClass.length > 0)
-  //           _class = _stdClass[0].ClassName;
-
-  //         let _stdSubject = this.Subjects.filter(c => c.MasterDataId == s.StudentClassSubject.SubjectId);
-  //         if (_stdSubject.length > 0)
-  //           _subject = _stdSubject[0].MasterDataName;
-
-  //         let _stdSection = this.Sections.filter(c => c.MasterDataId == s.StudentClassSubject.StudentClass.SectionId);
-  //         if (_stdSection.length > 0)
-  //           _section = _stdSection[0].MasterDataName;
-  //         var _ExamName = '';
-  //         var examobj = this.Exams.filter((f:any) => f.ExamId == s.ExamId)
-  //         if (examobj.length > 0)
-  //           _ExamName = examobj[0].ExamName;
-
-  //         return {
-  //           StudentClassSubjectId: s.StudentClassSubjectId,
-  //           ClassSubjectId: s.StudentClassSubject.ClassSubjectId,
-  //           StudentClassId: s.StudentClassId,
-  //           Student: s.StudentClassSubject.StudentClass.RollNo,
-  //           SubjectId: s.StudentClassSubject.SubjectId,
-  //           Subject: _subject,
-  //           ClassId: s.StudentClassSubject.StudentClass.ClassId,
-  //           StudentId: s.StudentClassSubject.StudentClass.StudentId,
-  //           SectionId: s.StudentClassSubject.StudentClass.SectionId,
-  //           Mark: s.Marks,
-  //           ExamStatus: s.ExamStatus,
-  //           ExamName: _ExamName
-  //         }
-  //       })
-  //       var marksum = alasql("select SubjectId,Subject,ExamName,sum(Mark) Mark from ? group by SubjectId,Subject,ExamName", [this.ExamStudentSubjectResult])
-
-  //       var progressreport :any[]= [];
-  //       var examEolumns :any[]= [];
-  //       this.Exams.forEach(e => {
-  //         examEolumns.push(e.ExamName)
-  //       })
-
-  //       //progressreport.push(JSON.parse(columns));
-
-  //       this.StudentSubjects.forEach((ss) => {
-  //         progressreport.push({
-  //           "Subject": ss.Subject,
-  //           "SubjectId": ss.SubjectId
-  //         });
-  //       })
-  //       progressreport.forEach((subject) => {
-  //         examEolumns.forEach(exam => {
-  //           //subject["'"+exam + "'"] = ''
-  //           subject[exam] = ''
-  //           // if (this.DisplayColumns.indexOf(exam) == -1)
-  //           //   this.DisplayColumns.push(exam)
-  //         })
-  //       })
-
-  //       progressreport.forEach(report => {
-
-  //         var current = marksum.filter(c => c.SubjectId == report.SubjectId);
-  //         current.forEach(exam => {
-  //           if (exam.ExamName.length > 0 && this.DisplayColumns.indexOf(exam.ExamName) == -1)
-  //             this.DisplayColumns.push(exam.ExamName)
-  //           report[exam.ExamName] = exam.Mark
-  //         })
-  //       })
-
-  //       ////console.log("this.DisplayColumns", this.DisplayColumns);
-  //       ////console.log("shd", progressreport);
-
-  //       this.dataSource = new MatTableDataSource<any>(progressreport);
-  //       this.dataSource.sort = this.sort;
-  //       this.dataSource.paginator = this.paginator;
-  //       this.loading = false; this.PageLoading = false;
-  //     });
-  // }
-
+  
+  ETypes:any=[];
   GetMasterData() {
     debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -718,6 +613,7 @@ export class StudentprogressreportComponent implements OnInit {
     this.ReportCardSignatures = this.getDropDownData(globalconstants.MasterDefinitions.school.REPORTCARDSIGNATURE);
     this.SubjectCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTCATEGORY);
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
+    this.ETypes = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONTYPE);
     this.Batches = this.tokenStorage.getBatches()!;
     this.CommonHeader = this.getDropDownData(globalconstants.MasterDefinitions.common.COMMONPRINTHEADING);
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -757,7 +653,7 @@ export class StudentprogressreportComponent implements OnInit {
         })
         this.getStudentStatuss();
         
-        this.GetEvaluationOption();
+        //this.GetEvaluationOption();
       })
   }
   GetEvaluationOption() {
@@ -776,7 +672,7 @@ export class StudentprogressreportComponent implements OnInit {
     list.PageName = "ClassEvaluationOptions";
     list.filter = ["Active eq 1 and OrgId eq " + this.LoginUserDetail[0]["orgId"]];
     this.ClassEvaluationOptionList = [];
-    this.dataSource = new MatTableDataSource<any>([]);
+    //this.dataSourceResult = new MatTableDataSource<any>([]);
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
@@ -815,7 +711,7 @@ export class StudentprogressreportComponent implements OnInit {
           var _ExamName = '';
           var obj = this.CurrentStudentClassGroups.filter(g => g.ClassGroupId == f.EvaluationMaster.ClassGroupId);
 
-          if (obj.length > 0 && f.EvaluationMaster.Active == 1 && f.EvaluationMaster.ETypeId == 0) {
+          if (obj.length > 0 && f.EvaluationMaster.Active){//} && f.EvaluationMaster.ETypeId == 0) {
             var objexam = this.Exams.filter(e => e.ExamId == f.ExamId)
             if (objexam.length > 0) {
               _ExamName = objexam[0].ExamName;
@@ -826,6 +722,7 @@ export class StudentprogressreportComponent implements OnInit {
             }
           }
         });
+        this.GetEvaluationOption();
         ////console.log("this.EvaluationExamMap",this.EvaluationExamMap)
       })
   }
@@ -849,7 +746,8 @@ export class StudentprogressreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.ClassEvaluations = [];
-        var _data = data.value.filter((f: any) => f.EvaluationMaster.ETypeId == false);
+        let _etypeId=this.ETypes.filter(e=>e.MasterDataName.toLowerCase()=='student profile')[0].MasterDataId;
+        var _data = data.value.filter((f: any) => f.EvaluationMaster.ETypeId !== _etypeId);
         if (_data.length > 0) {
           _data.forEach(clseval => {
             var obj = this.QuestionnaireTypes.filter((f: any) => f.MasterDataId == clseval.QuestionnaireTypeId);
@@ -871,7 +769,7 @@ export class StudentprogressreportComponent implements OnInit {
     debugger;
     this.loading = true;
     this.StudentEvaluationList = [];
-    this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);
+    //this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
     this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
 
@@ -916,9 +814,9 @@ export class StudentprogressreportComponent implements OnInit {
             if (this.EvaluationDisplayedColumns.indexOf(evalExam.ExamName) == -1) {
               this.EvaluationDisplayedColumns.push(evalExam.ExamName);
             }
-            var _classEvaluationExamMap = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == evalExam.EvaluationMasterId
-              && f.ExamId == null || f.ExamId == 0 || f.ExamId == evalExam.ExamId);
-
+            var _classEvaluationExamMap = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == evalExam.EvaluationMasterId);
+              //&& f.ExamId == null || f.ExamId == 0 || f.ExamId == evalExam.ExamId);
+             //&& f.ExamId == evalExam.ExamId);
             _classEvaluationExamMap.forEach(clseval => {
               var existing = this.Result.filter((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId
                 && f.EvaluationExamMapId == evalExam.EvaluationExamMapId);
@@ -975,7 +873,7 @@ export class StudentprogressreportComponent implements OnInit {
         //  this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.DisplayOrder - b.DisplayOrder)
         //console.log("this.StudentEvaluationList", this.StudentEvaluationList)
         this.dataSourceEvaluation = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);
-        this.dataSource.paginator = this.paginator;
+        //this.dataSourceEvaluation.paginator = this.paginator;
         this.loading = false;
         this.PageLoading = false;
       })

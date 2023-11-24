@@ -763,7 +763,7 @@ export class VerifyResultsComponent implements OnInit {
       })
       let toExport = this.ExamStudentSubjectResult.concat(gradingmarks);
       const datatoExport: Partial<any>[] = toExport;
-      TableUtil.exportArrayToExcel(datatoExport, "ResultMarks-" + this.ExamName);
+      TableUtil.exportArrayToExcel(datatoExport, this.ExamName);
     }
   }
   TotalMarkingSubjectFullMark = 0;

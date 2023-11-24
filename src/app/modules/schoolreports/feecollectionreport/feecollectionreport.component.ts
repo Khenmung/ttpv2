@@ -44,9 +44,10 @@ export class FeecollectionreportComponent implements OnInit {
   StudentDetail: any[] = [];
   TotalAmount = 0;
   CurrentBatch: string = '';
+  //StudentStatuses:any=[];
   Students: any[] = [];
   DisplayColumns = [
-    "StudentStatusId",
+    "StudentStatureId",
     "PID",
     "Name",
     "ClassRollNoSection",
@@ -74,10 +75,10 @@ export class FeecollectionreportComponent implements OnInit {
   UnpaidDataSource: MatTableDataSource<INotPaidStudent>;
   searchForm: UntypedFormGroup;
   ErrorMessage: string = '';
-  FeePaymentStatuses: any = [];
+  StudentStatuses: any = [];
   StudentStatusList: any = [];
   StudentStatusData = {
-    StudentStatusId: 0,
+    StudentStatureId: 0,
     StudentClassId: 0,
     ClassId: 0,
     SectionId: 0,
@@ -86,7 +87,8 @@ export class FeecollectionreportComponent implements OnInit {
     Active: 0,
     Deleted: false,
     OrgId: 0,
-    SubOrgId: 0
+    SubOrgId: 0,
+    BatchId:0
   };
   //alert: any;
   constructor(private servicework: SwUpdate,
@@ -264,7 +266,7 @@ export class FeecollectionreportComponent implements OnInit {
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource<ITodayReceipt>(this.ELEMENT_DATA);
 
-    forkJoin(this.dataservice.get(list), this.getStudentStatuss())
+    forkJoin(this.dataservice.get(list), this.getStudentStatures())
       .subscribe((data: any) => {
         //debugger;
         var result: any[] = [];
@@ -332,12 +334,12 @@ export class FeecollectionreportComponent implements OnInit {
               && d.StatusId == (_StatusId ? _StatusId : d.StatusId));
             if (studentstatus.length > 0) {
               item.Active = studentstatus[0].Active;
-              item.StudentStatusId = studentstatus[0].StudentStatusId;
+              item.StudentStatureId = studentstatus[0].StudentStatureId;
               item.StatusId = studentstatus[0].StatusId;
             }
             else if (!_StatusId) {
               item.Active = false;
-              item.StudentStatusId = 0;
+              item.StudentStatureId = 0;
               item.StatusId = 0;
             }
           })
@@ -364,8 +366,8 @@ export class FeecollectionreportComponent implements OnInit {
   UpdateStatus(row) {
     row.Action = true;
   }
-  getStudentStatuss() {
-
+  getStudentStatures() {
+debugger;
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
@@ -383,13 +385,13 @@ export class FeecollectionreportComponent implements OnInit {
     list.fields = [
       'StudentClassId',
       'ClassId',
-      'StudentStatusId',
+      'StudentStatureId',
       'StatusId',
       'SectionId',
       'SemesterId',
       'Active'
     ];
-    list.PageName = "StudentStatuss";
+    list.PageName = "StudentStatures";
     list.filter = [filterstr];
     return this.dataservice.get(list);
     // .subscribe((data: any) => {
@@ -457,12 +459,12 @@ export class FeecollectionreportComponent implements OnInit {
     }
     //checkFilterString += " and Active eq true";
 
-    if (row.StudentStatusId > 0)
-      checkFilterString += " and StudentStatusId ne " + row.StudentStatusId;
+    if (row.StudentStatureId > 0)
+      checkFilterString += " and StudentStatureId ne " + row.StudentStatureId;
 
     let list: List = new List();
-    list.fields = ["StudentStatusId"];
-    list.PageName = "StudentStatuss";
+    list.fields = ["StudentStatureId"];
+    list.PageName = "StudentStatures";
     list.filter = [checkFilterString];
 
     this.dataservice.get(list)
@@ -480,7 +482,7 @@ export class FeecollectionreportComponent implements OnInit {
 
           this.StudentStatusData =
           {
-            StudentStatusId: row.StudentStatusId,
+            StudentStatureId: row.StudentStatureId,
             StudentClassId: row.StudentClassId,
             ClassId: row.ClassId,
             SectionId: row.SectionId,
@@ -489,30 +491,33 @@ export class FeecollectionreportComponent implements OnInit {
             Active: row.Active,
             Deleted: false,
             OrgId: this.LoginUserDetail[0]["orgId"],
-            SubOrgId: this.SubOrgId
+            SubOrgId: this.SubOrgId,
+            BatchId:this.SelectedBatchId
           };
 
-          if (this.StudentStatusData.StudentStatusId == 0) {
+          if (this.StudentStatusData.StudentStatureId == 0) {
             this.StudentStatusData["CreatedDate"] = new Date();
             this.StudentStatusData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             delete this.StudentStatusData["UpdatedDate"];
             delete this.StudentStatusData["UpdatedBy"];
+            this.StudentStatusList.push(this.StudentStatusData)
             ////console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate[0])
-            //this.insert(row);
+            this.insert(row);
           }
           else {
             ////console.log("this.StudentEvaluationForUpdate[0] update", this.StudentEvaluationForUpdate[0])
+            this.StudentStatusList.push(this.StudentStatusData)
             this.StudentStatusData["UpdatedDate"] = new Date();
             this.StudentStatusData["UpdatedBy"];
             delete this.StudentStatusData["CreatedDate"];
             delete this.StudentStatusData["CreatedBy"];
-            //this.insert(row);
+            this.update(row);
           }
-          this.StudentStatusList.push(this.StudentStatusData)
-          if (this.DataToUpdate == this.StudentStatusList.length) {
-            //console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate)
-            this.insert(row);
-          }
+          
+          // if (this.DataToUpdate == this.StudentStatusList.length) {
+          //   //console.log("this.StudentEvaluationForUpdate[0] insert", this.StudentEvaluationForUpdate)
+          //   this.insert(row);
+          // }
 
         }
       });
@@ -531,11 +536,12 @@ export class FeecollectionreportComponent implements OnInit {
     this.PageLoading = false;
   }
   insert(row) {
-    this.dataservice.postPatch('StudentStatuss', this.StudentStatusList, 0, 'post')
+    console.log("this.StudentStatusList",this.StudentStatusList);
+    this.dataservice.postPatch('StudentStatures', this.StudentStatusList[0], 0, 'post')
       .subscribe(
         (data: any) => {
 
-          row.StudentStatusId = data.StudentStatusId;
+          row.StudentStatureId = data.StudentStatureId;
           row.Action = false;
           this.loadingFalse();
           this.contentservice.openSnackBar("Data Saved successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
@@ -548,7 +554,7 @@ export class FeecollectionreportComponent implements OnInit {
   }
   update(row) {
     ////console.log("updating",this.StudentEvaluationForUpdate);
-    this.dataservice.postPatch('StudentStatuss', this.StudentStatusList, 0, 'post')
+    this.dataservice.postPatch('StudentStatures', this.StudentStatusList[0], this.StudentStatusList[0].StudentStatureId, 'patch')
       .subscribe(
         (data: any) => {
           row.Action = false;
@@ -559,7 +565,7 @@ export class FeecollectionreportComponent implements OnInit {
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-    this.FeePaymentStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.FEEPAYMENTSTATUS);
+    this.StudentStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTSTATUS);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
 

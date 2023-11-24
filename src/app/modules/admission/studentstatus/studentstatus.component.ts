@@ -53,7 +53,7 @@ export class StudentstatusComponent {
   SelectedApplicationId = 0;
   StudentStatusData = {
     StudentClassId: 0,
-    StudentStatusId: 0,
+    StudentStatureId: 0,
     StatusId: 0,
     OrgId: 0,
     SubOrgId: 0,
@@ -192,13 +192,13 @@ export class StudentstatusComponent {
     //filterStr += " and IsCurrent eq true";
     let list: List = new List();
     list.fields = [
-      'StudentStatusId',
+      'StudentStatureId',
       'StatusId',
       'StudentClassId',
       'Active'
     ];
 
-    list.PageName = "StudentStatuses";
+    list.PageName = "StudentStatures";
     //list.lookupFields = ["StudentClasses($select=StudentClassId,AdmissionDate,StudentId,FeeTypeId,ClassId,SemesterId,RollNo,SectionId,Remarks,Active,BatchId)"];
     list.filter = [filterStr + _paramstr];
     this.StudentStatusList = [];
@@ -240,7 +240,7 @@ export class StudentstatusComponent {
             // var _lastname = s.LastName == null ? '' : " " + s.LastName;
             this.StudentStatusList.push({
               PID: st.PID,
-              StudentStatusId: st.StudentStatusId,
+              StudentStatureId: st.StudentStatureId,
               StudentClassId: st.StudentClassId,
               StudentName: _student[0].Name,
               ClassName: _student[0].ClassName,
@@ -447,11 +447,11 @@ export class StudentstatusComponent {
       UpdatedDate: new Date()
     }
 
-    this.dataservice.postPatch('StudentStatuses', toUpdate, row.StudentStatusId, 'patch')
+    this.dataservice.postPatch('StudentStatuses', toUpdate, row.StudentStatureId, 'patch')
       .subscribe(res => {
         row.Action = false;
         this.loading = false; this.PageLoading = false;
-        var idx = this.StudentStatusList.findIndex(x => x.StudentStatusId == row.StudentStatusId)
+        var idx = this.StudentStatusList.findIndex((x:any) => x.StudentStatureId == row.StudentStatureId)
         this.StudentStatusList.splice(idx, 1);
         this.dataSource = new MatTableDataSource<any>(this.StudentStatusList);
         this.dataSource.filterPredicate = this.createFilter();
@@ -530,10 +530,10 @@ export class StudentstatusComponent {
               this.StudentStatusData.Active = item.Active;
               this.StudentStatusData.StudentClassId = item.StudentClassId;
               this.StudentStatusData.StatusId = item.StatusId;
-              this.StudentStatusData.StudentStatusId = item.SectionId;
+              this.StudentStatusData.StudentStatureId = item.StudentStatureId;
               this.StudentStatusData.OrgId = this.LoginUserDetail[0]["orgId"];
               this.StudentStatusData.SubOrgId = this.SubOrgId;
-              if (this.StudentStatusData.StudentStatusId == 0) {
+              if (this.StudentStatusData.StudentStatureId == 0) {
                 this.StudentStatusData["CreatedDate"] = new Date();
                 this.StudentStatusData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
                 delete this.StudentStatusData["UpdatedDate"];
@@ -556,11 +556,11 @@ export class StudentstatusComponent {
   insert(row) {
 
     //debugger;
-    this.dataservice.postPatch('StudentStatuses', this.StudentStatusData, 0, 'post')
+    this.dataservice.postPatch('StudentStatures', this.StudentStatusData, 0, 'post')
       .subscribe(
         (data: any) => {
           this.loading = false; this.PageLoading = false;
-          row.StudentStatusId = data.StudentStatusId;
+          row.StudentStatureId = data.StudentStatureId;
           row.Action = false;
           this.RowsToUpdate--;
           if (this.RowsToUpdate == 0) {
@@ -572,7 +572,7 @@ export class StudentstatusComponent {
   }
   update(row) {
 
-    this.dataservice.postPatch('StudentStatuses', this.StudentStatusData, this.StudentStatusData.StudentClassId, 'patch')
+    this.dataservice.postPatch('StudentStatures', this.StudentStatusData, this.StudentStatusData.StudentClassId, 'patch')
       .subscribe(
         (data: any) => {
           let itemupdated: any = this.StudentStatusList.filter(s => s.StudentClassId == row.StudentClassId)
@@ -637,7 +637,7 @@ export class StudentstatusComponent {
 export interface IStudentStatus {
   PID: number;
   StudentName: string;
-  StudentStatusId: number;
+  StudentStatureId: number;
   StudentClassId: number;
   ClassName: string;
   Semester: string;

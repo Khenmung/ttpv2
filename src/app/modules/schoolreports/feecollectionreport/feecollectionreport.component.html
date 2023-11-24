@@ -56,7 +56,7 @@
             <mat-label>Status</mat-label>
             <mat-select formControlName="searchStatusId">
                 <mat-option [value]="Defaultvalue">select</mat-option>
-                <mat-option *ngFor="let item of FeePaymentStatuses" [value]="item.MasterDataId">
+                <mat-option *ngFor="let item of StudentStatuses" [value]="item.MasterDataId">
                     {{item.MasterDataName}}
                 </mat-option>
             </mat-select>
@@ -72,9 +72,9 @@
 <div>
     <div id="printSection">
         <mat-table #table [dataSource]="dataSource" matSort>
-            <ng-container matColumnDef="StudentStatusId">
+            <ng-container matColumnDef="StudentStatureId">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.StudentStatusId}} </mat-cell>
+                <mat-cell *matCellDef="let element"> {{element.StudentStatureId}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="PID">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> PID </mat-header-cell>
@@ -102,7 +102,7 @@
                     <mat-form-field appearance="outline" style="margin-right: 15px;width:200px">
                         <mat-select [(ngModel)]="element.StatusId" [value]="element.StatusId" (selectionChange)="UpdateStatus(element)">
                             <mat-option [value]="Defaultvalue">select</mat-option>
-                            <mat-option *ngFor="let item of FeePaymentStatuses"
+                            <mat-option *ngFor="let item of StudentStatuses"
                                 [value]="item.MasterDataId">{{item.MasterDataName}}
                             </mat-option>
                         </mat-select>

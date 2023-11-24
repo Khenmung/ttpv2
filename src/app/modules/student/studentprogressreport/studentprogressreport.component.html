@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div style="display:flex;font-size:xx-large;justify-content: center;width:100%;margin:30px"><span>REPORT
-                        CARD</span></div>
+                        CARD {{CurrentBatchName}}</span></div>
                 <div
                     style="margin:20px 0px 10px 20px;width:500px;border-bottom: 1px solid lightgray; font-weight: bold;font-style: italic;">
                     Student's Profile</div>
@@ -82,7 +82,7 @@
                                 {{element[disCol]}}
                             </mat-cell>
                         </ng-container>
-                        <mat-header-row *matHeaderRowDef="NonGradedDisplayColumns"></mat-header-row>
+                        <mat-header-row *matHeaderRowDef="NonGradedDisplayColumns" class="element-row"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: NonGradedDisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
@@ -100,16 +100,15 @@
                                 <span *ngIf="element[disCol]!=OverAllGrade">{{element[disCol]}}</span>
                             </mat-cell>
                         </ng-container>
-                        <mat-header-row *matHeaderRowDef="GradedDisplayColumns"></mat-header-row>
+                        <mat-header-row *matHeaderRowDef="GradedDisplayColumns" class="element-row"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: GradedDisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
                 <mat-divider style="border-top-color: grey;"></mat-divider>
                 <div style="margin-bottom:15px">
-                    <mat-table #table [dataSource]="dataSource" matSort *ngIf="DisplayColumns.length>1">
-                        <ng-container *ngFor="let disCol of DisplayColumns; let colIndex = index"
-                            matColumnDef="{{disCol}}">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:none"><span
+                    <mat-table [dataSource]="dataSourceResult" matSort>
+                        <ng-container *ngFor="let disCol of DisplayColumns;" matColumnDef="{{disCol}}">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header><span
                                     *ngIf="disCol!='FirstCol'">{{disCol}}</span>
                             </mat-header-cell>
                             <mat-cell *matCellDef="let element">
@@ -117,26 +116,13 @@
                                 <span *ngIf="disCol!='FirstCol'">{{element[disCol]}}</span>
                             </mat-cell>
                         </ng-container>
-                        <mat-header-row *matHeaderRowDef="DisplayColumns" style="display: none;"></mat-header-row>
+                        <mat-header-row *matHeaderRowDef="DisplayColumns" style="display: none;min-height: 29px;"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
-                <div style="margin-top:15px;margin-bottom:0px">
-                    <mat-table #table [dataSource]="dataSourceSignature" matSort *ngIf="SignatureColumns.length>1">
-                        <ng-container *ngFor="let disCol of SignatureColumns; let colIndex = index"
-                            matColumnDef="{{disCol}}">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:none"><span
-                                    *ngIf="disCol!='FirstCol'">{{disCol}}</span>
-                            </mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <span *ngIf="disCol=='FirstCol'"><b>{{element[disCol]}}</b></span>
-                                <span *ngIf="disCol!='FirstCol'">{{element[disCol]}}</span>
-                            </mat-cell>
-                        </ng-container>
-                        <!-- <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row> -->
-                        <mat-row *matRowDef="let row; columns: SignatureColumns;" style="min-height: 35px;"></mat-row>
-                    </mat-table>
-                </div>
+
+
+
                 <div style="margin-top:15px;margin-bottom:15px;">
                     <mat-table #table [dataSource]="dataSourceEvaluation" matSort
                         *ngIf="EvaluationDisplayedColumns.length>1">
@@ -176,9 +162,25 @@
                                 </span>
                             </mat-cell>
                         </ng-container>
-                        <mat-header-row *matHeaderRowDef="EvaluationDisplayedColumns"></mat-header-row>
+                        <mat-header-row *matHeaderRowDef="EvaluationDisplayedColumns" style="min-height: 29px;"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: EvaluationDisplayedColumns;" class="element-row">
                         </mat-row>
+                    </mat-table>
+                </div>
+                <div style="margin-top:15px;margin-bottom:0px">
+                    <mat-table #table [dataSource]="dataSourceSignature" matSort *ngIf="SignatureColumns.length>1">
+                        <ng-container *ngFor="let disCol of SignatureColumns; let colIndex = index"
+                            matColumnDef="{{disCol}}">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:none"><span
+                                    *ngIf="disCol!='FirstCol'">{{disCol}}</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <span *ngIf="disCol=='FirstCol'"><b>{{element[disCol]}}</b></span>
+                                <span *ngIf="disCol!='FirstCol'">{{element[disCol]}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <!-- <mat-header-row *matHeaderRowDef="DisplayColumns"></mat-header-row> -->
+                        <mat-row *matRowDef="let row; columns: SignatureColumns;" style="min-height: 35px;"></mat-row>
                     </mat-table>
                 </div>
             </div>

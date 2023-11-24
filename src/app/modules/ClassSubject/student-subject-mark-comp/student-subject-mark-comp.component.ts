@@ -52,6 +52,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   classSubjectComponentData = {
     ClassSubjectMarkComponentId: 0,
     ClassSubjectId: 0,
+    ClassId: 0,
     SectionId: 0,
     SemesterId: 0,
     SubjectComponentId: 0,
@@ -101,6 +102,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
           searchCopyExamId: [0],
           searchSemesterId: [0],
           searchSectionId: [0],
+          searchCopyClassId: [0]
         });
         //debugger;
         //this.GetClassFee();
@@ -131,7 +133,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   //displayedColumns = ['position', 'name', 'weight', 'symbol'];
   ClassGroupMappings: any[] = [];
   displayedColumns = ['ClassSubjectMarkComponentId',
-    'ClassSubject', 
+    'ClassSubject',
     'SubjectComponent',
     'FullMark',
     'PassMark',
@@ -145,8 +147,8 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
 
-    let objClassSubjects= globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
-    this.SelectedClassSubjects = objClassSubjects.filter(t=>t.SubjectType.toLowerCase()!='optional')
+    let objClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
+    this.SelectedClassSubjects = objClassSubjects.filter(t => t.SubjectType.toLowerCase() != 'optional')
     //this.SelectedClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
     //this.SelectedClassSubjects = objClassSubjects.filter(t=>t.SubjectType.toLowerCase()!='optional')
     this.ELEMENT_DATA = [];
@@ -214,6 +216,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     var _examId = this.searchForm.get("searchExamId")?.value;
     let checkFilterString = this.FilterOrgSubOrgBatchId + //"OrgId eq " + this.LoginUserDetail[0]["orgId"] +
       " and ClassSubjectId eq " + row.ClassSubjectId +
+      " and ClassId eq " + row.ClassId +
       " and SemesterId eq " + row.SemesterId +
       " and SectionId eq " + row.SectionId +
       " and SubjectComponentId eq " + row.SubjectComponentId +
@@ -241,6 +244,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
               this.classSubjectComponentData.Active = item.Active;// == true ? 1 : 0;
               this.classSubjectComponentData.ClassSubjectMarkComponentId = item.ClassSubjectMarkComponentId;
               this.classSubjectComponentData.ClassSubjectId = item.ClassSubjectId;
+              this.classSubjectComponentData.ClassId = item.ClassId;
               this.classSubjectComponentData.SemesterId = item.SemesterId;
               this.classSubjectComponentData.SectionId = item.SectionId;
               this.classSubjectComponentData.SubjectComponentId = item.SubjectComponentId;
@@ -453,6 +457,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   CopyFromOtherExam() {
     ////console.log("here ", this.PreviousBatchId)
     var _otherExamId = this.searchForm.get("searchCopyExamId")?.value;
+    var _otherClassId = this.searchForm.get("searchCopyClassId")?.value;
     var _examId = this.searchForm.get("searchExamId")?.value;
     this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
     if (_examId == 0)
@@ -460,7 +465,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     else if (_otherExamId == 0)
       this.contentservice.openSnackBar("Please select exam from where formula to copy from.", globalconstants.ActionText, globalconstants.RedBackground);
     else
-      this.GetClassSubjectComponent(_otherExamId)
+      this.GetClassSubjectComponent(_otherExamId, _otherClassId)
   }
   DisableSaveButton = false;
   SelectedClasses: any[] = [];
@@ -478,16 +483,32 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.dataSource = new MatTableDataSource<any>([]);
     this.FilterClass();
   }
+  // DisableSaveFromCopyButton() {
+  //   var examobj = this.Exams.filter((f: any) => f.ExamId == this.searchForm.get("searchCopyExamId")?.value);
+  //   if (examobj.length > 0) {
+  //     if (examobj[0].ReleaseResult == 1)
+  //       this.DisableSaveButton = true;
+  //     else
+  //       this.DisableSaveButton = false;
+  //   }
+  //   else
+  //     this.DisableSaveButton = false;
+  //   this.ELEMENT_DATA = [];
+  //   this.dataSource = new MatTableDataSource<any>([]);
+  //   this.FilterClassFromCopyButton();
+  // }
   ClearData() {
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource<any>([]);
   }
   datafromotherexam = '';
-  GetClassSubjectComponent(otherExamId) {
+  GetClassSubjectComponent(otherExamId, otherClassId) {
     debugger;
     //var _copyExamId = this.searchForm.get("searchCopyExamId")?.value;
     var _examId = this.searchForm.get("searchExamId")?.value;
     var _classId = this.searchForm.get("searchClassId")?.value;
+    if (otherClassId)
+      _classId = otherClassId;
     var _classSubjectId = this.searchForm.get("searchSubjectId")?.value;//.SubjectId;
     var _subjectId = 0;
     var obj = this.SelectedClassSubjects.filter((f: any) => f.ClassSubjectId == _classSubjectId);
@@ -576,22 +597,22 @@ export class StudentSubjectMarkCompComponent implements OnInit {
         this.ELEMENT_DATA = [];
         ////////////////////
         var _CopyFromExam: any[] = [];
-        var _SelectedExam = clsSubjMarkComponentsDefinitionFiltered.filter(d => d.ExamId == _examId);
+        //var _SelectedExam = clsSubjMarkComponentsDefinitionFiltered.filter(d => d.ExamId == _examId);
         if (otherExamId > 0) {
-          _CopyFromExam = clsSubjMarkComponentsDefinitionFiltered.filter(d => d.ExamId == otherExamId);
+          _CopyFromExam = clsSubjMarkComponentsDefinitionFiltered.filter(d => d.ExamId == otherExamId && d.ClassId === _classId);
 
           this.ELEMENT_DATA = _CopyFromExam.map(f => {
             f.ExamId = _examId;
 
-            let existing = _SelectedExam.filter(fromdb => fromdb.ClassSubjectId == f.ClassSubjectId
-              && fromdb.SubjectComponentId == f.SubjectComponentId)
+            // let existing = _SelectedExam.filter(fromdb => fromdb.ClassSubjectId == f.ClassSubjectId
+            //   && fromdb.SubjectComponentId == f.SubjectComponentId)
 
-            if (existing.length > 0) {
-              f.ClassSubjectMarkComponentId = existing[0].ClassSubjectMarkComponentId;
-            }
-            else {
+            // if (existing.length > 0) {
+            //   f.ClassSubjectMarkComponentId = existing[0].ClassSubjectMarkComponentId;
+            // }
+            // else {
               f.ClassSubjectMarkComponentId = 0;
-            }
+            //}
             f.ClassSubject = this.ClassSubjects.filter((s: any) => s.ClassSubjectId == f.ClassSubjectId)[0].ClassSubject;
             f.SubjectComponent = this.MarkComponents.filter(m => m.MasterDataId == f.SubjectComponentId)[0].MasterDataName;
             f.Action = false;
@@ -653,6 +674,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   }
   ExamReleased = 0;
   FilteredClasses: any[] = [];
+  FilteredClassesForCopy: any[] = [];
   ExamClassGroups: any[] = [];
   FilterClass() {
     this.loading = true;
@@ -663,13 +685,29 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       .subscribe((data: any) => {
         this.ExamClassGroups = [...data.value];
         this.FilteredClasses = this.ClassGroupMappings.filter((f: any) => this.ExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
-        this.FilteredClasses =  this.FilteredClasses.sort((a,b)=>a.Sequence - b.Sequence);
+        this.FilteredClasses = this.FilteredClasses.sort((a, b) => a.Sequence - b.Sequence);
         this.loading = false;
       });
     var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
     if (obj.length > 0) {
       this.ExamReleased = obj[0].ReleaseResult;
     }
+
+  }
+  FilterClassFromCopyButton() {
+    debugger;
+    this.loading = true;
+    var _copyExamId = this.searchForm.get("searchCopyExamId")?.value
+    //var _classGroupId = 0;
+    this.ExamReleased = 0;
+    this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _copyExamId)
+      .subscribe((data: any) => {
+        let _ExamClassGroups = [...data.value];
+        this.FilteredClassesForCopy = this.ClassGroupMappings.filter((f: any) => _ExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        this.FilteredClassesForCopy = this.FilteredClassesForCopy.sort((a, b) => a.Sequence - b.Sequence);
+        this.loading = false;
+      });
+    
 
   }
   updateActive(row, value) {

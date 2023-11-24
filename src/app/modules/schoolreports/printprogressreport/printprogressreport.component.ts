@@ -148,14 +148,7 @@ export class PrintprogressreportComponent implements OnInit {
       }
       //////console.log('this.Permission', this.Permission)
       if (this.Permission != 'deny') {
-        ////console.log("localStorage.getItem(StudentDetail)",localStorage.getItem("StudentDetail"))
-        // var studentdetail = [JSON.parse("{" + localStorage.getItem("StudentDetail") + "}")];
-        // studentdetail.forEach(s => {
-        //   this.StudentName.push({ "Name": s.StudentName, "Class": s.ClassName, "Section": s.Section, "RollNo": s.RollNo })
-        // })
 
-        ////console.log("StudentName",this.StudentName);
-        //this.LoginUserDetail = this.tokenStorage.getUserDetail();
         this.AllStudents = this.tokenStorage.getStudents()!;
         this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
         var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.FEEPAYMENT);
@@ -426,7 +419,7 @@ export class PrintprogressreportComponent implements OnInit {
         })
         if (this.StudentSubjects.length > 0)
           this.CurrentStudentClassGroups = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
-        this.GetEvaluationExamMap();
+        
         this.GetStudentSubjectResults();
       })
   }
@@ -702,6 +695,7 @@ export class PrintprogressreportComponent implements OnInit {
     this.GetStudentSubject();
   }
   Houses: any[] = [];
+  ETypes:any=[];
   GetMasterData() {
     debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -715,6 +709,7 @@ export class PrintprogressreportComponent implements OnInit {
     this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
     this.SubjectCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTCATEGORY);
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
+    this.ETypes = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONTYPE);
     this.ReportCardSignatures = this.getDropDownData(globalconstants.MasterDefinitions.school.REPORTCARDSIGNATURE);
     this.Batches = this.tokenStorage.getBatches()!;
     this.CommonHeader = this.getDropDownData(globalconstants.MasterDefinitions.common.COMMONPRINTHEADING);
@@ -797,7 +792,8 @@ export class PrintprogressreportComponent implements OnInit {
             item.Active = 0;
             return item;
           })
-          this.GetClassEvaluations();
+          this.GetEvaluationExamMap();
+         
         }
         else {
           this.contentservice.openSnackBar("No answer option found.", globalconstants.ActionText, globalconstants.BlueBackground);
@@ -827,8 +823,8 @@ export class PrintprogressreportComponent implements OnInit {
         data.value.forEach(f => {
           var _ExamName = '';
           var obj = this.CurrentStudentClassGroups.filter(g => g.ClassGroupId == f.EvaluationMaster.ClassGroupId);
-
-          if (obj.length > 0 && f.EvaluationMaster.Active == 1 && f.EvaluationMaster.ETypeId == 0) {
+          let _etypeId=this.ETypes.filter(e=>e.MasterDataName.toLowerCase()=='student profile')[0].MasterDataId;
+          if (obj.length > 0 && f.EvaluationMaster.Active && f.EvaluationMaster.ETypeId !== _etypeId) {
             var objexam = this.Exams.filter(e => e.ExamId == f.ExamId)
             if (objexam.length > 0) {
               _ExamName = objexam[0].ExamName;
@@ -839,6 +835,7 @@ export class PrintprogressreportComponent implements OnInit {
             }
           }
         });
+        this.GetClassEvaluations();
         ////console.log("this.EvaluationExamMap",this.EvaluationExamMap)
       })
   }
@@ -862,7 +859,8 @@ export class PrintprogressreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.ClassEvaluations = [];
-        var _data = data.value.filter((f: any) => f.EvaluationMaster.ETypeId == false);
+        let _profileTypeId=this.ETypes.filter(e=>e.MasterDataName.toLowerCase()=='student profile')[0].MasterDataId;
+        var _data = data.value.filter((f: any) => f.EvaluationMaster.ETypeId !== _profileTypeId);
         if (_data.length > 0) {
           _data.forEach(clseval => {
             var obj = this.QuestionnaireTypes.filter((f: any) => f.MasterDataId == clseval.QuestionnaireTypeId);

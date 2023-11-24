@@ -48,7 +48,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetClassSubjectComponent(0)">
+            <button [disabled]="loading" mat-raised-button color="accent" (click)="GetClassSubjectComponent(0,0)">
                 <mat-icon>search</mat-icon>
                 <mat-icon *ngIf="loading">
                     <mat-spinner diameter="20" color="Blue"></mat-spinner>
@@ -59,9 +59,17 @@
         <div style="margin-top:15px">
             <mat-form-field appearance="outline" [style.width.px]="250">
                 <mat-label>Copy from other exam</mat-label>
-                <mat-select formControlName="searchCopyExamId">
+                <mat-select formControlName="searchCopyExamId" (selectionChange)="FilterClassFromCopyButton()">
                     <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
                         {{item.ExamName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-label>Class/Course</mat-label>
+                <mat-select formControlName="searchCopyClassId">
+                    <mat-option *ngFor="let p of FilteredClassesForCopy" [value]="p.ClassId">
+                        {{p.ClassName}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
