@@ -98,9 +98,22 @@
                     </button>
                     {{disCol=='StudentClassSubject'?element[disCol]:''}}
                 </mat-cell>
+                <mat-footer-cell *matFooterCellDef>
+                    <div *ngIf="ExamStudentSubjectResult.length>0" fxLayoutAlign="center center">
+                        <button *ngIf="disCol=='Action'" [disabled]="loading || Permission=='read' || ResultReleased==1"
+                            matTooltip="save all" mat-mini-fab (click)="SaveAll()">
+                            <mat-icon>all_out</mat-icon>
+                            <mat-icon *ngIf="loading">
+                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                            </mat-icon>
+                        </button>
+                    </div>
+                </mat-footer-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+            <mat-footer-row style="min-height: 35px;" class="sticky-footer"
+            *matFooterRowDef="displayedColumns"></mat-footer-row>
         </mat-table>
         <div style="display: flex;justify-content: center;flex-direction: column;">
             <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[10,20,50,100]">

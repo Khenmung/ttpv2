@@ -99,10 +99,10 @@ export class StudentSubjectMarkCompComponent implements OnInit {
           searchExamId: [0],
           searchSubjectId: [0],
           searchClassId: [0],
-          searchCopyExamId: [0],
+          //searchCopyExamId: [0],
           searchSemesterId: [0],
           searchSectionId: [0],
-          searchCopyClassId: [0]
+          //searchCopyClassId: [0]
         });
         //debugger;
         //this.GetClassFee();
@@ -189,21 +189,29 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   DataCollection: any = [];
   SaveAll() {
     debugger;
-    //var _toUpdate = this.StudentClassList.filter((f: any) => f.Action);
-    //this.DataCountToSave = this.ClassSubjectList.length;
+    var _ClassId = this.searchForm.get("searchClassId")?.value;
+    //var _copyClassId = this.searchForm.get("searchCopyClassId")?.value;
+
     this.RowCount = 0;
     this.DataCollection = [];
     this.loading = true;
     var toUpdate = this.ELEMENT_DATA.filter((f: any) => f.Action);
     this.ToUpdateCount = toUpdate.length;
-    toUpdate.forEach((record) => {
+    toUpdate.forEach((record: any) => {
+      // if (_copyClassId)
+      //   record.ClassId = _ClassId;
       this.DataCollection.push(JSON.parse(JSON.stringify(record)));
       this.UpdateOrSave(record);
     })
   }
   SaveRow(row) {
     debugger;
-    //this.NoOfRecordToUpdate = 0;
+
+    //var _ClassId = this.searchForm.get("searchClassId")?.value;
+    // var _copyClassId = this.searchForm.get("searchCopyClassId")?.value;
+    // if (_copyClassId)
+    //   row.ClassId = _ClassId;
+
     this.DataCollection = [];
     this.DataCollection.push(JSON.parse(JSON.stringify(row)));
     this.RowCount = 0;
@@ -214,6 +222,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     //debugger;
     this.loading = true;
     var _examId = this.searchForm.get("searchExamId")?.value;
+
     let checkFilterString = this.FilterOrgSubOrgBatchId + //"OrgId eq " + this.LoginUserDetail[0]["orgId"] +
       " and ClassSubjectId eq " + row.ClassSubjectId +
       " and ClassId eq " + row.ClassId +
@@ -454,19 +463,19 @@ export class StudentSubjectMarkCompComponent implements OnInit {
         this.SubjectTypes = [...data.value];
       })
   }
-  CopyFromOtherExam() {
-    ////console.log("here ", this.PreviousBatchId)
-    var _otherExamId = this.searchForm.get("searchCopyExamId")?.value;
-    var _otherClassId = this.searchForm.get("searchCopyClassId")?.value;
-    var _examId = this.searchForm.get("searchExamId")?.value;
-    this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
-    if (_examId == 0)
-      this.contentservice.openSnackBar("Please select exam for which formula to define.", globalconstants.ActionText, globalconstants.RedBackground);
-    else if (_otherExamId == 0)
-      this.contentservice.openSnackBar("Please select exam from where formula to copy from.", globalconstants.ActionText, globalconstants.RedBackground);
-    else
-      this.GetClassSubjectComponent(_otherExamId, _otherClassId)
-  }
+  // CopyFromOtherExam() {
+  //   ////console.log("here ", this.PreviousBatchId)
+  //   var _otherExamId = this.searchForm.get("searchCopyExamId")?.value;
+  //   var _otherClassId = this.searchForm.get("searchCopyClassId")?.value;
+  //   var _examId = this.searchForm.get("searchExamId")?.value;
+  //   this.PreviousBatchId = +this.tokenStorage.getPreviousBatchId()!;
+  //   if (_examId == 0)
+  //     this.contentservice.openSnackBar("Please select exam for which formula to define.", globalconstants.ActionText, globalconstants.RedBackground);
+  //   else if (_otherExamId == 0)
+  //     this.contentservice.openSnackBar("Please select exam from where formula to copy from.", globalconstants.ActionText, globalconstants.RedBackground);
+  //   else
+  //     this.GetClassSubjectComponent(_otherExamId, _otherClassId)
+  // }
   DisableSaveButton = false;
   SelectedClasses: any[] = [];
   DisableSave() {
@@ -517,6 +526,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var filterstr = this.FilterOrgSubOrgBatchId;
+    filterstr += " and ClassId eq " + _classId;
     filterstr += " and SemesterId eq " + _semesterId;
     filterstr += " and SectionId eq " + _sectionId;
 
@@ -549,6 +559,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
       "ClassSubjectMarkComponentId",
       "ClassSubjectId",
       "SubjectComponentId",
+      "ClassId",
       "SemesterId",
       "SectionId",
       "ExamId",
@@ -567,39 +578,39 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        var clsSubjMarkComponentsDefinitionFiltered: any[] = [];
+        var ExistingClsSubjMarkComponentsDefinitionFiltered: any[] = [];
         //if all subject is selected.
         var fitlersectionsemesterClass = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
         // clsSubjFiltered = data.value.filter(item => item.ClassSubject.ClassId == _classId);
-        clsSubjMarkComponentsDefinitionFiltered = data.value.map(item => {
+        data.value.forEach(item => {
           var _clssubject = fitlersectionsemesterClass.filter((f: any) => f.ClassSubjectId == item.ClassSubjectId);
           if (_clssubject.length > 0) {
             item.SubjectId = _clssubject[0].SubjectId;
             item.SectionId = _clssubject[0].SectionId;
             item.SemesterId = _clssubject[0].SemesterId;
             item.ClassId = _clssubject[0].ClassId;
+            ExistingClsSubjMarkComponentsDefinitionFiltered.push(item);
           }
-          return item;
         });
         var filteredClassSubjectnComponents = this.ClassSubjectWithComponents.filter(clssubjcomponent =>
           clssubjcomponent.ClassId == _classId);
         if (_subjectId > 0) {
-          clsSubjMarkComponentsDefinitionFiltered = clsSubjMarkComponentsDefinitionFiltered.filter(item => item.SubjectId == _subjectId);
+          ExistingClsSubjMarkComponentsDefinitionFiltered = ExistingClsSubjMarkComponentsDefinitionFiltered.filter(item => item.SubjectId == _subjectId);
           filteredClassSubjectnComponents = filteredClassSubjectnComponents.filter(clssubjcomponent => clssubjcomponent.SubjectId == _subjectId);
         }
-        let semesterwise = clsSubjMarkComponentsDefinitionFiltered.filter(item => item.SemesterId > 0);
+        let semesterwise = ExistingClsSubjMarkComponentsDefinitionFiltered.filter(item => item.SemesterId > 0);
         if (semesterwise.length > 0)
-          clsSubjMarkComponentsDefinitionFiltered = clsSubjMarkComponentsDefinitionFiltered.filter(item => item.SemesterId == _semesterId);
-        let sectionwise = clsSubjMarkComponentsDefinitionFiltered.filter(item => item.SectionId > 0);
+          ExistingClsSubjMarkComponentsDefinitionFiltered = ExistingClsSubjMarkComponentsDefinitionFiltered.filter(item => item.SemesterId == _semesterId);
+        let sectionwise = ExistingClsSubjMarkComponentsDefinitionFiltered.filter(item => item.SectionId > 0);
         if (sectionwise.length > 0)
-          clsSubjMarkComponentsDefinitionFiltered = clsSubjMarkComponentsDefinitionFiltered.filter(item => item.SectionId == _sectionId);
+          ExistingClsSubjMarkComponentsDefinitionFiltered = ExistingClsSubjMarkComponentsDefinitionFiltered.filter(item => item.SectionId == _sectionId);
 
         this.ELEMENT_DATA = [];
         ////////////////////
         var _CopyFromExam: any[] = [];
         //var _SelectedExam = clsSubjMarkComponentsDefinitionFiltered.filter(d => d.ExamId == _examId);
         if (otherExamId > 0) {
-          _CopyFromExam = clsSubjMarkComponentsDefinitionFiltered.filter(d => d.ExamId == otherExamId && d.ClassId === _classId);
+          _CopyFromExam = ExistingClsSubjMarkComponentsDefinitionFiltered.filter(d => d.ExamId == otherExamId && d.ClassId === _classId);
 
           this.ELEMENT_DATA = _CopyFromExam.map(f => {
             f.ExamId = _examId;
@@ -611,7 +622,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
             //   f.ClassSubjectMarkComponentId = existing[0].ClassSubjectMarkComponentId;
             // }
             // else {
-              f.ClassSubjectMarkComponentId = 0;
+            f.ClassSubjectMarkComponentId = 0;
             //}
             f.ClassSubject = this.ClassSubjects.filter((s: any) => s.ClassSubjectId == f.ClassSubjectId)[0].ClassSubject;
             f.SubjectComponent = this.MarkComponents.filter(m => m.MasterDataId == f.SubjectComponentId)[0].MasterDataName;
@@ -621,10 +632,12 @@ export class StudentSubjectMarkCompComponent implements OnInit {
           });
         }
         else {
+          console.log("filteredClassSubjectnComponents",filteredClassSubjectnComponents)
           filteredClassSubjectnComponents.forEach((subj, indx) => {
+            console.log("subj.Components",subj.Components);
             subj.Components.forEach(component => {
 
-              let existing = clsSubjMarkComponentsDefinitionFiltered.filter(fromdb => fromdb.SubjectId == subj.SubjectId
+              let existing = ExistingClsSubjMarkComponentsDefinitionFiltered.filter(fromdb => fromdb.SubjectId == subj.SubjectId
                 && fromdb.SubjectComponentId == component.MasterDataId)
               if (existing.length > 0) {
                 existing.forEach(e => {
@@ -640,6 +653,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
                   ClassSubjectMarkComponentId: 0,
                   ClassSubjectId: subj.ClassSubjectId,
                   ClassSubject: subj.ClassSubject,
+                  ClassId:_classId,
                   SemesterId: _semesterId,
                   SectionId: _sectionId,
                   ExamId: _examId,
@@ -707,7 +721,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
         this.FilteredClassesForCopy = this.FilteredClassesForCopy.sort((a, b) => a.Sequence - b.Sequence);
         this.loading = false;
       });
-    
+
 
   }
   updateActive(row, value) {

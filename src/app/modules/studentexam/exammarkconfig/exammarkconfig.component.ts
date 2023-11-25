@@ -253,7 +253,7 @@ export class ExammarkconfigComponent implements OnInit {
         if (this.ExamMarkConfigList.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
-        this.ExamMarkConfigList = this.ExamMarkConfigList.sort((a, b) => a.Sequence - b.Sequence);
+        this.ExamMarkConfigList = this.ExamMarkConfigList.sort((a:any, b:any) => b.Active - a.Active);
         this.dataSource = new MatTableDataSource(this.ExamMarkConfigList);
         this.dataSource.paginator = this.paginator;
 

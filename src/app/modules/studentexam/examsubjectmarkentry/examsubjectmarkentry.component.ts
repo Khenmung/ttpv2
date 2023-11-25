@@ -292,7 +292,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
   insert(row, valuerow) {
 
-    //debugger;
+    debugger;
     this.ExamStudentSubjectResultData = JSON.parse(JSON.stringify(this.ExamStudentSubjectResultData));
     ////console.log("this.ExamStudentSubjectResultData", this.ExamStudentSubjectResultData);
 

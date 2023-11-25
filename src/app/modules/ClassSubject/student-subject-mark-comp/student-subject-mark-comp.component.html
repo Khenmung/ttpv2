@@ -56,7 +56,7 @@
             </button>
         </div>
         <mat-divider></mat-divider>
-        <div style="margin-top:15px">
+        <!-- <div style="margin-top:15px">
             <mat-form-field appearance="outline" [style.width.px]="250">
                 <mat-label>Copy from other exam</mat-label>
                 <mat-select formControlName="searchCopyExamId" (selectionChange)="FilterClassFromCopyButton()">
@@ -77,7 +77,7 @@
                 (click)="CopyFromOtherExam()">
                 <mat-icon>copy_all</mat-icon>
             </button>
-        </div>
+        </div> -->
     </form>
     <div style="font-weight: bold;font-style: italic;">{{datafromotherexam}}</div>
     <mat-table #table [dataSource]="dataSource" matSort>
@@ -86,18 +86,24 @@
             <mat-cell *matCellDef="let element">
                 {{element.ClassSubjectMarkComponentId}}
             </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
         </ng-container>
         <ng-container matColumnDef="ClassSubject">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Class Subject </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Class Subject </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 {{element.ClassSubject}}
             </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
         </ng-container>
         <ng-container matColumnDef="SubjectComponent">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Subject Component </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 {{element.SubjectComponent}}
             </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
         </ng-container>
         <ng-container matColumnDef="FullMark">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Full Mark </mat-header-cell>
@@ -109,8 +115,9 @@
                         <div *ngIf="fullMark.errors.max">Max is 1000</div>
                     </mat-error>
                 </mat-form-field>
-
             </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
         </ng-container>
         <ng-container matColumnDef="PassMark">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Component Pass Mark </mat-header-cell>
@@ -123,6 +130,8 @@
                     </mat-error>
                 </mat-form-field>
             </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
         </ng-container>
         <ng-container matColumnDef="OverallPassMark">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Subject Pass Mark </mat-header-cell>
@@ -136,6 +145,8 @@
                     </mat-error>
                 </mat-form-field>
             </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
         </ng-container>
         <ng-container matColumnDef="Active">
             <mat-header-cell *matHeaderCellDef>
@@ -147,6 +158,8 @@
                     [checked]="element.Active==1?true:false">
                 </mat-checkbox>
             </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+            </mat-footer-cell>
         </ng-container>
         <ng-container matColumnDef="Action">
             <mat-header-cell *matHeaderCellDef>
@@ -167,9 +180,20 @@
                     </mat-icon>
                 </button>
             </mat-cell>
+            <mat-footer-cell *matFooterCellDef>
+                <button [disabled]="loading || Permission=='read' || DisableSaveButton" *ngIf="ELEMENT_DATA.length>0"
+                    matTooltip="save all" mat-mini-fab (click)="SaveAll()">
+                    <mat-icon>all_out</mat-icon>
+                    <mat-icon *ngIf="loading">
+                        <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                    </mat-icon>
+                </button>
+            </mat-footer-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-footer-row style="min-height: 35px;" class="sticky-footer"
+            *matFooterRowDef="displayedColumns"></mat-footer-row>
     </mat-table>
     <mat-paginator style="display:flex;justify-content:center" [pageSizeOptions]="[10,20,25,50]"></mat-paginator>
 </div>
