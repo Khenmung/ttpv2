@@ -425,7 +425,12 @@ export class EMarkComponent implements OnInit {
           this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+      if (this.LoginUserDetail[0]['RoleUsers'][0]['role'].toLowerCase() == 'student') {
+        let _classId = this.tokenStorage.getClassId();
+        this.Classes = this.Classes.filter(c => c.ClassId == _classId);
+      }
+      else
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
     });
     this.GetExams();
     this.GetClassSubjects();
@@ -511,6 +516,7 @@ export class EMarkComponent implements OnInit {
       });
 
   }
+  SelectedEvaluation:any=[];
   BindSectionSemester() {
     debugger;
     let _classId = this.searchForm.get("searchClassId")?.value;
@@ -520,6 +526,8 @@ export class EMarkComponent implements OnInit {
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
     this.ClearData();
+    let _allClassGroupsOfSelectedClass =this.ClassGroupMappings.filter(c=>c.ClassId == _classId);
+    this.SelectedEvaluation = this.EvaluationMaster.filter(e=>_allClassGroupsOfSelectedClass.findIndex(a=>a.ClassGroupId == e.ClassGroupId)>-1);
   }
   ClearData() {
     this.EvaluatedStudent = [];

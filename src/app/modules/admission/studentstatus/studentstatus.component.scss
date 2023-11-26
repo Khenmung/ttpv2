@@ -1,12 +1,21 @@
-
-mat-header-cell{
+mat-header-cell {
     border-right: 1px solid lightgray;
-    padding: 5px;
+    //padding: 5px;
     justify-content: center;
 }
-mat-cell{
+
+mat-cell {
     border-right: 1px solid lightgray;
 }
-.element-row{
-    min-height: 29px;   
-   }
+
+
+.mat-column-Active,
+.mat-column-Action,
+.mat-column-PID,
+.mat-column-RollNo {
+    flex: 1 0 80px;
+    justify-content: center;
+}
+.mat-column-StatusId,.mat-column-StudentName{
+    flex: 1 0 250px;
+}

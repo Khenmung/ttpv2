@@ -709,7 +709,7 @@ export class EActComponent implements OnInit {
                   this.Classes.push(m);
                 }
               });
-
+              
               if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
                 let currentLoginStudent = this.StudentList.filter(s => s.StudentId == this.StudentId);
                 if (currentLoginStudent.length > 0) {

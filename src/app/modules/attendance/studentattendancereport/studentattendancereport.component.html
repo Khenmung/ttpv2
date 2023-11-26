@@ -59,7 +59,7 @@
         <mat-table #table [dataSource]="dataSource">
             <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
                 <mat-header-cell *matHeaderCellDef 
-                    [ngStyle]="{'background-color':disCol.includes('Sun') || disCol.includes('Sat')?'#ffffe8':''}"
+                    [ngStyle]="{'background-color':disCol.includes('Sun') || disCol.includes('Sat')?'#F7F4F3':''}"
                     style="display:flex;justify-content:center;padding:3px">
                     <!-- <div style="justify-content: flex-start;margin-bottom: 10px;display:flex;flex-direction: column;"> -->
                     <!-- <div style="display: flex;flex-direction: column;"> -->
@@ -68,7 +68,7 @@
                     <!-- </div> -->
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element" style="padding:3px"
-                    [ngStyle]="{'background-color':disCol.includes('Sun') || disCol.includes('Sat')?'#ffffe8':''}">
+                    [ngStyle]="{'background-color':disCol.includes('Sun') || disCol.includes('Sat')?'#F7F4F3':''}">
                     <!-- <mat-checkbox style="margin-left:10px;margin-right:15px" matTooltip="{{disCol}}"
                         *ngIf="disCol !='Student' && disCol !='Ab' && disCol !='Pre'" [disabled]="true" (click)="$event.stopPropagation()"
                         [checked]="element[disCol]=='1'?true:false">

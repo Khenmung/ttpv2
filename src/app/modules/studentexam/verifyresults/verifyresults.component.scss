@@ -33,9 +33,11 @@ mat-cell{
     min-width: 180px;
     
 }
-// .mat-cell {
-//     padding: 0px;
-// }
+mat-header-cell.gray, mat-cell.gray {
+    background-color: #F7F4F3;
+    align-self: stretch; // so the cell take all the height
+    
+}
 .mat-column-Division{
     justify-content:center;
     min-width: 110px;

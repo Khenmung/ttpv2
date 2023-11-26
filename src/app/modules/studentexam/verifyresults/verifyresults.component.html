@@ -102,11 +102,11 @@
         <div style="overflow: auto;">
             <mat-table #table [dataSource]="dataSource" matSort style="min-width: 2200px;">
                 <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header="{{disCol}}"
+                    <mat-header-cell [class.gray]="!disCol.includes('-')" *matHeaderCellDef mat-sort-header="{{disCol}}"
                         style="writing-mode: tb-rl;transform: rotate(-180deg);width:100%;display:flex; justify-content: flex-start;">
                         {{disCol!='Action'?disCol:''}}
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" style="width:100%;align-self: stretch;">
+                    <mat-cell *matCellDef="let element" [class.gray]="!disCol.includes('-')" style="width:100%;align-self: stretch;">
                         <span style="padding:5px;align-self: stretch;color:red"
                             *ngIf="disCol!='Student' && (element[disCol]+'').includes('(')">{{element[disCol]}}</span>
                         <span style="padding:5px;display: flex;align-self: stretch;"

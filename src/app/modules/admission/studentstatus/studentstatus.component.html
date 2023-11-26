@@ -37,6 +37,15 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+                <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;" *ngIf="SelectedClassCategory==getHighSchoolCategory()">
+                    <mat-label>Status</mat-label>
+                    <mat-select formControlName="searchStatusId">
+                        <mat-option [value]="Defaultvalue">select</mat-option>
+                        <mat-option *ngFor="let item of StudentStatuses" [value]="item.MasterDataId">
+                            {{item.MasterDataName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <button [disabled]="loading" style="margin-right: 10px;" mat-raised-button color="accent"
                     (click)="GetStudentStatus()">
                     <mat-icon>search</mat-icon>
@@ -52,7 +61,7 @@
     </div>
     <mat-table #table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="PID">
-            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:flex ;">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
                 PID
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
@@ -60,7 +69,7 @@
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="StudentName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header style="display:flex ;">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
                 Student
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
@@ -88,7 +97,7 @@
         <ng-container matColumnDef="StatusId">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Status </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <mat-form-field>
+                <mat-form-field style="width: 100%;">
                     <mat-select (selectionChange)="onBlur(element)" [value]="element.StatusId"
                         [(ngModel)]="element.StatusId">
                         <mat-option *ngFor="let item of StudentStatuses" [value]="item.MasterDataId">{{item.MasterDataName}}
@@ -104,8 +113,8 @@
                 Active
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <mat-checkbox [disabled]="true" (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
-                    [checked]="element.Active==1?true:false">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                    [checked]="element.Active">
                 </mat-checkbox>
             </mat-cell>
         </ng-container>

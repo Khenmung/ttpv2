@@ -944,7 +944,13 @@ export class VerifyResultsComponent implements OnInit {
           }
 
           var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student && s.SubjectType.toLowerCase() != 'optional')
-          forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.ClassSubjectId - b.ClassSubjectId);//  a.SubjectType.localeCompare(b.SubjectType));
+          // forEachSubjectOfStud.forEach(t=>{
+          //   if(t.SubjectType.toLowerCase()=='elective')
+          //   {
+          //     t.SubjectType = "zelective";
+          //   }
+          // })
+          forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.SubjectType.localeCompare(b.SubjectType)); //a.ClassSubjectId - b.ClassSubjectId);// 
 
           forEachSubjectOfStud.forEach(eachsubj => {
             var markPercent = 0;

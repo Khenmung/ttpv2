@@ -55,6 +55,10 @@ export class StudentstatusComponent {
     StudentClassId: 0,
     StudentStatureId: 0,
     StatusId: 0,
+    ClassId: 0,
+    SectionId: 0,
+    SemesterId: 0,
+    BatchId: 0,
     OrgId: 0,
     SubOrgId: 0,
     Active: 1
@@ -62,10 +66,10 @@ export class StudentstatusComponent {
   displayedColumns = [
     'PID',
     'StudentName',
-    'ClassName',
-    'Semester',
     'RollNo',
-    'StatusId'
+    'StatusId',
+    'Active',
+    'Action'
   ];
   nameFilter = new UntypedFormControl('');
   IdFilter = new UntypedFormControl('');
@@ -75,7 +79,7 @@ export class StudentstatusComponent {
     StudentName: ''
   };
   Semesters: any[] = [];
-  Students: IStudent[] = [];
+  Students: any = [];
   filteredOptions: Observable<IStudentStatus[]>;
   constructor(private servicework: SwUpdate,
     private dialog: MatDialog,
@@ -99,7 +103,8 @@ export class StudentstatusComponent {
       searchPID: [0],
       searchClassId: [0],
       searchSemesterId: [0],
-      searchSectionId: [0]
+      searchSectionId: [0],
+      searchStatusId: [0]
     });
 
     this.PageLoad();
@@ -121,6 +126,7 @@ export class StudentstatusComponent {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
+      this.Students = this.tokenStorage.getStudents()!;
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       this.Batches = this.tokenStorage.getBatches()!;
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -173,21 +179,54 @@ export class StudentstatusComponent {
     let filterStr = this.FilterOrgSubOrgBatchId;//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     this.loading = true;
     let _paramstr = '';
+    var _PID = this.searchForm.get("searchPID")?.value;
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
-    if (_classId)
-      _paramstr += " and ClassId eq " + _classId;
-    if (_semesterId)
-      _paramstr += " and SemesterId eq " + _semesterId;
-    if (_sectionId)
-      _paramstr += " and SectionId eq " + _sectionId;
-    
+    var _statusId = this.searchForm.get("searchStatusId")?.value;
+    let _studentClassId = 0;
+    if (_PID) {
 
-    if (_paramstr.length == 0) {
-      this.loading = false;
-      this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
+      let obj = this.Students.filter(s => s.PID === +_PID)
+      if (obj.length > 0) {
+        _studentClassId = obj[0].StudentClassId;
+        _paramstr += " and StudentClassId eq " + _studentClassId;
+      }
+    }
+    else {
+      if (_classId)
+        _paramstr += " and ClassId eq " + _classId;
+      else {
+        this.loading = false;
+        this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
+        return;
+      }
+
+      if (!_semesterId && !_sectionId) {
+        this.loading = false;
+        this.contentservice.openSnackBar("Please select section/semester.", globalconstants.ActionText, globalconstants.RedBackground);
+        return;
+      }
+      if (_semesterId)
+        _paramstr += " and SemesterId eq " + _semesterId;
+      if (_sectionId)
+        _paramstr += " and SectionId eq " + _sectionId;
+
+
+      if (_statusId)
+        _paramstr += " and StatusId eq " + _statusId;
+      else {
+        this.loading = false;
+        this.contentservice.openSnackBar("Please select status.", globalconstants.ActionText, globalconstants.RedBackground);
+        return;
+      }
+
+
+      if (_paramstr.length == 0) {
+        this.loading = false;
+        this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText, globalconstants.RedBackground);
+        return;
+      }
     }
     //filterStr += " and IsCurrent eq true";
     let list: List = new List();
@@ -195,6 +234,9 @@ export class StudentstatusComponent {
       'StudentStatureId',
       'StatusId',
       'StudentClassId',
+      'ClassId',
+      'SectionId',
+      'SemesterId',
       'Active'
     ];
 
@@ -204,59 +246,59 @@ export class StudentstatusComponent {
     this.StudentStatusList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-
-        data.value.forEach(st => {
-          let _student: any = this.Students.filter((s: any) => s.StudentClasses[0].StudentClassId === st.StudentClassId)
-          if (_student.length > 0) {
-            //s.StudentClasses.forEach(c => {
-
-            // var _genderName = '';
-            // var genderObj = this.Genders.filter((f: any) => f.MasterDataId == s.GenderId);
-            // if (genderObj.length > 0)
-            //   _genderName = genderObj[0].MasterDataName;
-            // var _batchName = '';
-            // var batchObj = this.Batches.filter((f: any) => f.BatchId == c.BatchId);
-            // if (batchObj.length > 0)
-            //   _batchName = batchObj[0].BatchName;
-
-            // var _className = '';
-            // var _classObj = this.Classes.filter((f: any) => f.ClassId == c.ClassId);
-            // if (_classObj.length > 0)
-            //   _className = _classObj[0].ClassName;
-
-            // var _semesterName = '';
-            // var semesterObj = this.Semesters.filter((f: any) => f.MasterDataId == c.SemesterId);
-            // if (semesterObj.length > 0)
-            //   _semesterName = semesterObj[0].MasterDataName;
-            // var _section = '';
-            // var _sectionObj = this.Sections.filter((f: any) => f.MasterDataId == c.SectionId);
-            // if (_sectionObj.length > 0)
-            //   _section = _sectionObj[0].MasterDataName;
-
-            // var feetype = this.FeeTypes.filter(t => t.FeeTypeId == c.FeeTypeId);
-            // var _feetype = ''
-            // if (feetype.length > 0)
-            //   _feetype = feetype[0].FeeTypeName;
-            // var _lastname = s.LastName == null ? '' : " " + s.LastName;
+        let _student: any;
+        if (_PID) {
+          _student =this.Students.filter((s: any)=>s.PID === +_PID);
+        }
+        else {
+          _student = this.Students.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].ClassId == _classId
+            && s.StudentClasses[0].SectionId == _sectionId
+            && s.StudentClasses[0].SemesterId == _semesterId)
+        }
+        _student.forEach(st => {
+          let existing = data.value.filter(d => d.StudentClassId === st.StudentClasses[0].StudentClassId)
+          if (existing.length > 0) {
+            existing.forEach(ex => {
+              this.StudentStatusList.push({
+                PID: st.PID,
+                StudentStatureId: ex.StudentStatureId,
+                StudentClassId: ex.StudentClassId,
+                StudentName: st.Name,
+                ClassName: st.ClassName,
+                Semester: st.Semester + st.Section,
+                RollNo: st.StudentClasses[0].RollNo,
+                StatusId: ex.StatusId,
+                ClassId: ex.ClassId,
+                SemesterId: ex.SemesterId,
+                SectionId: ex.SectionId,
+                Active: ex.Active,
+                Action: false
+              });
+            })
+          }
+          else {
             this.StudentStatusList.push({
               PID: st.PID,
-              StudentStatureId: st.StudentStatureId,
-              StudentClassId: st.StudentClassId,
-              StudentName: _student[0].Name,
-              ClassName: _student[0].ClassName,
-              Semester: _student[0].StudentClasses[0].Semester + _student[0].StudentClasses[0].Section,
-              RollNo: _student[0].StudentClasses[0].RollNo,
-              StatusId: st.StatusId,
-              Active: st.Active,
-              Action: st.Action
+              StudentStatureId: 0,
+              StudentClassId: st.StudentClasses[0].StudentClassId,
+              StudentName: st.Name,
+              ClassName: st.ClassName,
+              Semester: st.Semester + st.Section,
+              RollNo: st.StudentClasses[0].RollNo,
+              ClassId: st.StudentClasses[0].ClassId,
+              SemesterId: st.StudentClasses[0].SemesterId,
+              SectionId: st.StudentClasses[0].SectionId,
+              StatusId: 0,
+              Active: false,
+              Action: false
             });
           }
         })
-
+        console.log("StudentStatusList", this.StudentStatusList);
         if (this.StudentStatusList.length == 0) {
           this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        this.dataSource = new MatTableDataSource<IStudentStatus>(this.StudentStatusList.sort((a, b) => +a.PID - +b.PID));
+        this.dataSource = new MatTableDataSource<IStudentStatus>(this.StudentStatusList.sort((a:any, b:any) => b.Active - a.Active));
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.dataSource.filterPredicate = this.createFilter();
@@ -274,23 +316,23 @@ export class StudentstatusComponent {
   SelectALL(event) {
     if (event.checked)
       this.StudentStatusList.forEach(f => {
-        f.Active = 1;
+        f.Active = true;
         f.Action = true;
       })
     else
       this.StudentStatusList.forEach(f => {
-        f.Active = 0;
+        f.Active = false;
         f.Action = true;
       })
   }
   updateActive(row, value) {
 
-    row.Active = value.checked ? 1 : 0;
+    row.Active = value.checked;
     row.Action = true;
   }
   delete(element) {
     let toupdate = {
-      Active: element.Active == 1 ? 0 : 1
+      Active: element.Active
     }
     this.dataservice.postPatch('ClassSubjects', toupdate, element.ClassSubjectId, 'delete')
       .subscribe(
@@ -451,7 +493,7 @@ export class StudentstatusComponent {
       .subscribe(res => {
         row.Action = false;
         this.loading = false; this.PageLoading = false;
-        var idx = this.StudentStatusList.findIndex((x:any) => x.StudentStatureId == row.StudentStatureId)
+        var idx = this.StudentStatusList.findIndex((x: any) => x.StudentStatureId == row.StudentStatureId)
         this.StudentStatusList.splice(idx, 1);
         this.dataSource = new MatTableDataSource<any>(this.StudentStatusList);
         this.dataSource.filterPredicate = this.createFilter();
@@ -484,6 +526,8 @@ export class StudentstatusComponent {
   }
   SaveRow(element) {
     this.RowsToUpdate = 1;
+    this.DataCollection = [];
+    this.DataCollection.push(element);
     this.UpdateOrSave(element);
   }
   RowsToUpdate = 0;
@@ -492,20 +536,22 @@ export class StudentstatusComponent {
 
   UpdateOrSave(row) {
 
-    //debugger;
+    debugger;
     this.loading = true;
 
-    let checkFilterString = "StudentId eq " + row.StudentId +
+    let checkFilterString = "StudentClassId eq " + row.StudentClassId +
+      ' and StatusId eq ' + row.StatusId +
       ' and BatchId eq ' + this.SelectedBatchId +
-      " and SemesterId eq " + row.SemesterId;
+      " and SemesterId eq " + row.SemesterId +
+      " and SectionId eq " + row.SectionId;
 
 
-    if (row.StudentClassId > 0)
-      checkFilterString += " and StudentClassId ne " + row.StudentClassId;
-    checkFilterString += " and IsCurrent eq true";
+    if (row.StudentStatureId > 0)
+      checkFilterString += " and StudentStatureId ne " + row.StudentStatureId;
+    checkFilterString += " and Active eq true";
     let list: List = new List();
-    list.fields = ["StudentClassId"];
-    list.PageName = "StudentClasses";
+    list.fields = ["StudentStatureId"];
+    list.PageName = "StudentStatures";
     list.filter = [checkFilterString];
 
     this.dataservice.get(list)
@@ -513,7 +559,7 @@ export class StudentstatusComponent {
         //debugger;
         if (data.value.length > 0) {
           this.loading = false; this.PageLoading = false;
-          this.contentservice.openSnackBar("Student already exist in this batch.", globalconstants.ActionText, globalconstants.RedBackground);
+          this.contentservice.openSnackBar("Student with this status already exist in this batch.", globalconstants.ActionText, globalconstants.RedBackground);
           row.Ative = 0;
           return;
         }
@@ -530,6 +576,10 @@ export class StudentstatusComponent {
               this.StudentStatusData.Active = item.Active;
               this.StudentStatusData.StudentClassId = item.StudentClassId;
               this.StudentStatusData.StatusId = item.StatusId;
+              this.StudentStatusData.BatchId = this.SelectedBatchId;
+              this.StudentStatusData.ClassId = item.ClassId;
+              this.StudentStatusData.SectionId = item.SectionId;
+              this.StudentStatusData.SemesterId = item.SemesterId;
               this.StudentStatusData.StudentStatureId = item.StudentStatureId;
               this.StudentStatusData.OrgId = this.LoginUserDetail[0]["orgId"];
               this.StudentStatusData.SubOrgId = this.SubOrgId;
@@ -571,11 +621,11 @@ export class StudentstatusComponent {
         });
   }
   update(row) {
-
-    this.dataservice.postPatch('StudentStatures', this.StudentStatusData, this.StudentStatusData.StudentClassId, 'patch')
+    console.log("this.StudentStatusData", this.StudentStatusData)
+    this.dataservice.postPatch('StudentStatures', this.StudentStatusData, this.StudentStatusData.StudentStatureId, 'patch')
       .subscribe(
         (data: any) => {
-          let itemupdated: any = this.StudentStatusList.filter(s => s.StudentClassId == row.StudentClassId)
+          let itemupdated: any = this.StudentStatusList.filter(s => s.StudentStatureId == row.StudentStatureId)
           itemupdated[0].Action = false;
           this.RowsToUpdate--;
 
@@ -595,13 +645,13 @@ export class StudentstatusComponent {
 
     var _students: any = this.tokenStorage.getStudents()!;
     _students = _students.filter(a => a.Active == 1);
-    this.Students = _students.map(student => {
-      var _lastname = student.LastName == null ? '' : " " + student.LastName;
-      return {
-        StudentId: student.StudentId,
-        Name: student.PID + '-' + student.FirstName + _lastname
-      }
-    })
+    // this.Students = _students.map(student => {
+    //   var _lastname = student.LastName == null ? '' : " " + student.LastName;
+    //   return {
+    //     StudentId: student.StudentId,
+    //     Name: student.PID + '-' + student.FirstName + _lastname
+    //   }
+    // })
     this.loading = false;
     this.PageLoading = false;
     //  })
@@ -639,11 +689,14 @@ export interface IStudentStatus {
   StudentName: string;
   StudentStatureId: number;
   StudentClassId: number;
+  ClassId: number;
+  SectionId: number;
+  SemesterId: number;
   ClassName: string;
   Semester: string;
   RollNo: string;
   StatusId: number;
-  Active: number;
+  Active: boolean;
   Action: boolean
 }
 export interface IStudent {

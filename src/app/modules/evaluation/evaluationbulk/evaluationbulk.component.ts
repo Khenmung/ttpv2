@@ -581,7 +581,7 @@ export class EvaluationBulkComponent implements OnInit {
             var existing: any[] = [];
             if (_statusId) {
               existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
-               // && f.StudentEvaluationAnswers && f.StudentEvaluationAnswers.length > 0
+                // && f.StudentEvaluationAnswers && f.StudentEvaluationAnswers.length > 0
                 && f.ClassEvaluationId == clseval.ClassEvaluationId
                 && f.StudentEvaluationAnswers[0].ClassEvaluationAnswerOptionsId == _statusId
                 && f.StudentEvaluationAnswers[0].Active == 1);
@@ -794,7 +794,12 @@ export class EvaluationBulkComponent implements OnInit {
           this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+      if (this.LoginUserDetail[0]['RoleUsers'][0]['role'].toLowerCase() == 'student') {
+        let _classId = this.tokenStorage.getClassId();
+        this.Classes = this.Classes.filter(c => c.ClassId == _classId);
+      }
+      else
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.loading = false;
     });
 
