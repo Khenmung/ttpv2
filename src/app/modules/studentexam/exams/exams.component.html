@@ -2,7 +2,8 @@
 <div style="padding:15px 15px 10px 15px;">
     <div><strong>Exam</strong></div>
 </div>
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+<mat-spinner *ngIf="PageLoading" diameter="25"
+    style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
 <!-- <alert></alert> -->
 
 <!-- <div style="padding: 15px;" fxLayout="row wrap"> -->
@@ -51,9 +52,8 @@
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
                     <!-- <mat-label>Attendance Start Date</mat-label> -->
-                    <input [value]="element.AttendanceStartDate"
-                        [(ngModel)]="element.AttendanceStartDate" matInput [matDatepicker]="AttendanceStartDate"
-                        (dateChange)="onBlur(element)" autocomplete="off">
+                    <input [value]="element.AttendanceStartDate" [(ngModel)]="element.AttendanceStartDate" matInput
+                        [matDatepicker]="AttendanceStartDate" (dateChange)="onBlur(element)" autocomplete="off">
                     <mat-datepicker-toggle matSuffix [for]="AttendanceStartDate"></mat-datepicker-toggle>
                     <mat-datepicker #AttendanceStartDate></mat-datepicker>
                 </mat-form-field>
@@ -66,7 +66,8 @@
                     <mat-select [(ngModel)]="element.WithHeldResultStatusId" (selectionChange)="onBlur(element)"
                         [value]="element.WithHeldResultStatusId">
                         <mat-option [value]="Defaultvalue">select</mat-option>
-                        <mat-option *ngFor="let item of StudentStatuses" [value]="item.MasterDataId">{{item.MasterDataName}}
+                        <mat-option *ngFor="let item of StudentStatuses"
+                            [value]="item.MasterDataId">{{item.MasterDataName}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -87,13 +88,13 @@
                 {{element.ReleaseDate}}
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="MarkFormula">
-            <mat-header-cell *matHeaderCellDef>Average Of
+        <ng-container matColumnDef="Sequence">
+            <mat-header-cell *matHeaderCellDef>Sequence
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <textarea rows="1" matInput [maxlength]="100" autocomplete="Off" (blur)="onBlur(element)"
-                        [(ngModel)]="element.MarkFormula" [value]="element.MarkFormula"></textarea>
+                    <input matInput type="number" (blur)="onBlur(element)" [(ngModel)]="element.Sequence"
+                        [value]="element.Sequence">
                 </mat-form-field>
             </mat-cell>
         </ng-container>
@@ -132,8 +133,10 @@
         <ul>
             <li><b>Attendance Start Date</b> is used for attendance display in exam result.
                 Total Attendance will be calculated from this date till exam <b>End Date</b>.</li>
-            <li>Unless <b>Release Result</b> is ticked, result will not be available for public view. After result released, 
-                student exam status will be generated and marks can no longer be entered/edited for that examination.</li>
+            <li>Unless <b>Release Result</b> is ticked, result will not be available for public view. After result
+                released,
+                student exam status will be generated and marks can no longer be entered/edited for that examination.
+            </li>
         </ul>
     </span>
 </div>

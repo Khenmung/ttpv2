@@ -714,16 +714,16 @@ export class HomeDashboardComponent implements OnInit {
     list.PageName = "StudentClasses";
     list.lookupFields = ["Student($select=StudentId," +
       "FirstName,LastName,FatherName,MotherName,PID,Active,RemarkId,Remark2Id," +
-      "GenderId,HouseId,ReasonForLeavingId,AdmissionStatusId)"];
+      "GenderId,HouseId,ReasonForLeavingId,AdmissionStatusId,Deleted)"];
 
     list.filter = [this.filterOrgSubOrgBatchId];
     this.Loading();
     //this.PageLoading = true;
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        //this.StudentClasses = [...data.value];
+        let result = data.value.filter(s=>s.Student.Deleted==false);
         this.Students = [];
-        data.value.forEach(d => {
+        result.forEach(d => {
           var studcls = '{';
           Object.keys(d).forEach(c => {
             studcls += '"' + c + '":"' + d[c] + '",';

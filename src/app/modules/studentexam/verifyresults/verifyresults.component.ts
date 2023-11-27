@@ -943,7 +943,7 @@ export class VerifyResultsComponent implements OnInit {
             "FullMark": 0
           }
 
-          var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student && s.SubjectType.toLowerCase() != 'optional')
+          var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student)
           // forEachSubjectOfStud.forEach(t=>{
           //   if(t.SubjectType.toLowerCase()=='elective')
           //   {
@@ -1113,7 +1113,7 @@ export class VerifyResultsComponent implements OnInit {
                       _processedmark = markPercent + "";
                     }
                     else
-                      _processedmark = markObtained[0].Marks+ "";
+                      _processedmark = markObtained[0].Marks + "";
 
                     ForNonGrading[eachsubj.Subject] = (failedInComponent || _statusFail) ? "(" + _processedmark + ")" : _processedmark;
                     ForNonGrading["Total Marks"] = (parseFloat(ForNonGrading["Total Marks"]) + parseFloat(markObtained[0].Marks));//.toFixed(2);
@@ -1140,8 +1140,14 @@ export class VerifyResultsComponent implements OnInit {
                 ExamResultSubjectMarkData.StudentClassSubjectId = eachsubj.StudentClassSubjectId;
                 ExamResultSubjectMarkData.Grade = '';
                 ForNonGrading[eachsubj.Subject] = "(0)";
-                if (this.displayedColumns.indexOf(eachsubj.Subject) == -1) {
+                ForNonGrading["Total Marks"] = ForNonGrading["Total Marks"] ? ForNonGrading["Total Marks"] : 0;
+                ForNonGrading["Total Percent"] = ForNonGrading["Total Percent"] ? ForNonGrading["Total Percent"] : 0;
+
+                if (this.displayedColumns.indexOf(eachsubj.Subject) == -1 && _subjectCategoryName == 'marking') {
                   this.displayedColumns.push(eachsubj.Subject);
+                }
+                if (this.GradingDisplayedColumns.indexOf(eachsubj.Subject) == -1 && _subjectCategoryName == 'grading') {
+                  this.GradingDisplayedColumns.push(eachsubj.Subject)
                 }
               }
               //preparing each subject for insert.
@@ -1220,9 +1226,15 @@ export class VerifyResultsComponent implements OnInit {
             this.ExamStudentSubjectResult.forEach((result: any, index) => {
               if (!_notToCalculateRankAndPercentage.includes(result.Division.toLowerCase())) {
                 //result["Percentage"] = ((result.Total / this.ClassFullMark[0].FullMark) * 100).toFixed(2);
-                if (previousTotal != result["Percentage"])
+                if (previousTotal != result["Percentage"] && result["Percentage"]>0) {
                   rankCount += 1;
-                result.Rank = rankCount;
+                  result.Rank = rankCount;
+                }
+                else if (previousTotal == result["Percentage"] && result["Percentage"]>0) {
+                  result.Rank = rankCount;
+                }
+                else if (result["Percentage"]==0)
+                  result.Rank = 0;
                 previousTotal = result["Percentage"]
               }
             });

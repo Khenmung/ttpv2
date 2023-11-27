@@ -21,10 +21,11 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ClassSubjectDetailComponent implements OnInit {
   PageLoading = true;
-
-  // @ViewChild("table") mattable;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  // @ViewChild("table") mattable;
+  // @ViewChild(MatPaginator) paginator: MatPaginator;
+  // @ViewChild(MatSort) sort: MatSort;
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
   LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
@@ -130,13 +131,13 @@ export class ClassSubjectDetailComponent implements OnInit {
       this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.OrgSubOrgBatchFilter = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.OrgSubOrgFilter = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-      this.nameFilter.valueChanges
-        .subscribe(
-          name => {
-            this.filterValues.SubjectName = name;
-            this.dataSource.filter = JSON.stringify(this.filterValues);
-          }
-        )
+      // this.nameFilter.valueChanges
+      //   .subscribe(
+      //     name => {
+      //       this.filterValues.SubjectName = name;
+      //       this.dataSource.filter = JSON.stringify(this.filterValues);
+      //     }
+      //   )
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.SUBJECT.CLASSSUBJECTDETAIL);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;

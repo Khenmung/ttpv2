@@ -86,6 +86,22 @@
                         <mat-row *matRowDef="let row; columns: NonGradedDisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
+                <mat-divider style="border-top-color: grey;"></mat-divider>
+                <div style="margin-bottom:15px">
+                    <mat-table [dataSource]="dataSourceResult" matSort>
+                        <ng-container *ngFor="let disCol of DisplayColumns;" matColumnDef="{{disCol}}">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header><span
+                                    *ngIf="disCol!='FirstCol'">{{disCol}}</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element">
+                                <span *ngIf="disCol=='FirstCol'"><b>{{element[disCol]}}</b></span>
+                                <span *ngIf="disCol!='FirstCol'">{{element[disCol]}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="DisplayColumns" style="display: none;min-height: 29px;"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
+                    </mat-table>
+                </div>
                 <div style="margin-top:15px;" *ngIf="GradedDisplayColumns.length>1">
                     <div style="margin-left:20px;font-weight:bold">Graded Subjects</div>
                     <mat-table #table [dataSource]="GradedSubjectsDataSource" matSort>
@@ -105,21 +121,7 @@
                     </mat-table>
                 </div>
                 <mat-divider style="border-top-color: grey;"></mat-divider>
-                <div style="margin-bottom:15px">
-                    <mat-table [dataSource]="dataSourceResult" matSort>
-                        <ng-container *ngFor="let disCol of DisplayColumns;" matColumnDef="{{disCol}}">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header><span
-                                    *ngIf="disCol!='FirstCol'">{{disCol}}</span>
-                            </mat-header-cell>
-                            <mat-cell *matCellDef="let element">
-                                <span *ngIf="disCol=='FirstCol'"><b>{{element[disCol]}}</b></span>
-                                <span *ngIf="disCol!='FirstCol'">{{element[disCol]}}</span>
-                            </mat-cell>
-                        </ng-container>
-                        <mat-header-row *matHeaderRowDef="DisplayColumns" style="display: none;min-height: 29px;"></mat-header-row>
-                        <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
-                    </mat-table>
-                </div>
+                
 
 
 

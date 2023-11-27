@@ -45,28 +45,30 @@ export class ExamsComponent implements OnInit {
   ExamsData: {
     ExamId: number,
     ExamNameId: number,
+    Sequence: number,
     StartDate: any,
     EndDate: any,
     ClassGroupId: number,
     ReleaseResult: number,
-    WithHeldResultStatusId:number;
+    WithHeldResultStatusId: number;
     ReleaseDate: any,
     AttendanceStartDate: any,
-    OrgId: number, 
+    OrgId: number,
     SubOrgId: number,
     BatchId: number,
     Active: number
   } = {
       ExamId: 0,
       ExamNameId: 0,
+      Sequence: 0,
       StartDate: null,
       EndDate: Date,
       ClassGroupId: 0,
       ReleaseResult: 0,
       ReleaseDate: null,
       AttendanceStartDate: null,
-      WithHeldResultStatusId:0,
-      OrgId: 0, 
+      WithHeldResultStatusId: 0,
+      OrgId: 0,
       SubOrgId: 0,
       BatchId: 0,
       Active: 1
@@ -74,6 +76,7 @@ export class ExamsComponent implements OnInit {
   displayedColumns = [
     'ExamId',
     'ExamName',
+    'Sequence',
     'StartDate',
     'EndDate',
     'AttendanceStartDate',
@@ -83,7 +86,7 @@ export class ExamsComponent implements OnInit {
     'Active',
     'Action'
   ];
-  Defaultvalue=0;
+  Defaultvalue = 0;
   StudentSubjects: any[] = [];
   StudentGrades: any[] = [];
   constructor(private servicework: SwUpdate,
@@ -140,7 +143,7 @@ export class ExamsComponent implements OnInit {
     let toadd: any = {
       ExamId: 0,
       ExamNameId: 0,
-      WithHeldResultStatusId:0,
+      WithHeldResultStatusId: 0,
       ExamName: '',
       StartDate: new Date(),
       EndDate: new Date(),
@@ -207,6 +210,7 @@ export class ExamsComponent implements OnInit {
           this.ExamsData.ExamId = row.ExamId;
           this.ExamsData.Active = row.Active;
           this.ExamsData.ExamNameId = row.ExamNameId;
+          this.ExamsData.Sequence = row.Sequence;
           this.ExamsData.StartDate = row.StartDate;
           this.ExamsData.EndDate = row.EndDate;
           this.ExamsData.ClassGroupId = 0;
@@ -272,8 +276,8 @@ export class ExamsComponent implements OnInit {
     let list: List = new List();
 
     list.fields = [
-      "ExamId", "ExamNameId", "StartDate",
-      "EndDate", "ClassGroupId", "AttendanceStartDate","WithHeldResultStatusId",
+      "ExamId", "ExamNameId", "StartDate", "Sequence",
+      "EndDate", "ClassGroupId", "AttendanceStartDate", "WithHeldResultStatusId",
       "ReleaseResult", "ReleaseDate", "OrgId", "BatchId", "Active"];
     list.PageName = "Exams";
     list.filter = [this.FilterOrgSubOrgBatchId];
@@ -288,7 +292,7 @@ export class ExamsComponent implements OnInit {
             if (existing[0].ReleaseDate != null)
               existing[0].ReleaseDate = moment(existing[0].ReleaseDate).format("DD/MM/yyyy");
             existing[0].ExamName = this.ExamNames.filter((f: any) => f.MasterDataId == existing[0].ExamNameId)[0].MasterDataName;
-            existing[0].Sequence = e.Sequence;
+            existing[0].Sequence = existing[0].Sequence;
             existing[0].Action = false;
             return existing[0];
           }
@@ -298,8 +302,8 @@ export class ExamsComponent implements OnInit {
               ExamNameId: e.MasterDataId,
               ExamName: e.MasterDataName,
               AttendanceStartDate: new Date(),
-              Sequence: e.Sequence,
-              WithHeldResultStatusId:0,
+              Sequence: 0,
+              WithHeldResultStatusId: 0,
               StartDate: new Date(),
               EndDate: new Date(),
               ReleaseResult: 0,
@@ -327,7 +331,7 @@ export class ExamsComponent implements OnInit {
     var std = new Date(date!);
     return std != null ? std.getTime() : 0;
   }
-  StudentStatuses:any=[];
+  StudentStatuses: any = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;

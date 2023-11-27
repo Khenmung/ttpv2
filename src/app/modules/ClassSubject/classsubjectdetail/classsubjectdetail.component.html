@@ -45,127 +45,126 @@
                 <mat-icon>copy_all</mat-icon>
             </button><br> -->
         </form>
-        <div *ngIf="ClassSubjectList.length>0">
-            <mat-table [dataSource]="dataSource" matSort>
-                <!-- <ng-container matColumnDef="ClassName">
+        <!-- <div *ngIf="ClassSubjectList.length>0"> -->
+        <mat-table [hidden]="ClassSubjectList.length==0" [dataSource]="dataSource" matSort>
+            <!-- <ng-container matColumnDef="ClassName">
                 <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef>Class/stream
                 </mat-header-cell>
                 <mat-cell style="display: flex;justify-content: center;" *matCellDef="let element">
                     {{element.ClassName}}
                 </mat-cell>
             </ng-container> -->
-                <ng-container matColumnDef="SubjectName">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        <div style="align-items: flex-start;">Subject<br>
+            <ng-container matColumnDef="SubjectName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Subject
+                    <!-- <div style="align-items: flex-start;">Subject<br>
                             <mat-form-field style="width: 150px;">
                                 <mat-label>Search</mat-label>
                                 <input matInput [formControl]="nameFilter" autocomplete="Off">
                             </mat-form-field>
-                        </div>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        {{element.SubjectName}}
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="SubjectTypeId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Subject Type </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <mat-form-field appearance="outline">
-                            <!-- <mat-label>subject type</mat-label> -->
-                            <mat-select (selectionChange)="updateSelectHowMany(element)" [value]="element.SubjectTypeId"
-                                [(ngModel)]="element.SubjectTypeId">
-                                <mat-option [value]="Defaultvalue">select</mat-option>
-                                <mat-option *ngFor="let item of SubjectTypes" [value]="item.SubjectTypeId">
-                                    {{item.SubjectTypeName}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="SubjectCategoryId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Subject Category </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <mat-form-field appearance="outline">
-                            <!-- <mat-label>subject category</mat-label> -->
-                            <mat-select (selectionChange)="onBlur(element)" [value]="element.SubjectCategoryId"
-                                [(ngModel)]="element.SubjectCategoryId">
-                                <mat-option *ngFor="let item of SubjectCategory" [value]="item.MasterDataId">
-                                    {{item.MasterDataName}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="RemarkId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Remark </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <mat-form-field appearance="outline">
-                            <mat-select (selectionChange)="onBlur(element)" [value]="element.RemarkId"
-                                [(ngModel)]="element.RemarkId">
-                                <mat-option *ngFor="let item of Remarks" [value]="item.MasterDataId">
-                                    {{item.MasterDataName}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="Credits">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Credits </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <mat-form-field appearance="outline">
-                            <!-- <mat-label>credits</mat-label> -->
-                            <input matInput type="number" max="100" [value]="element.Credits" (blur)="onBlur(element)"
-                                [(ngModel)]="element.Credits" autocomplete="Off">
-                        </mat-form-field>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="Confidential">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Confidential </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateConfidential(element,$event)"
-                            [checked]="element.Confidential">
-                        </mat-checkbox>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="Active">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Active </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
-                            [checked]="element.Active==1?true:false">
-                        </mat-checkbox>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="Action">
-                    <mat-header-cell *matHeaderCellDef>
-                        <button [disabled]="loading || Permission=='read'" matTooltip="save all" mat-mini-fab
-                            (click)="SaveAll()">
-                            <mat-icon>all_out</mat-icon>
-                            <mat-icon *ngIf="loading">
-                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                            </mat-icon>
-                        </button>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
-                        <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
-                            mat-raised-button color="accent" (click)="SaveRow(element)">
-                            <mat-icon>save</mat-icon>
-                            <mat-icon *ngIf="loading">
-                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                            </mat-icon>
-                        </button>
-                        <button
-                            [disabled]="loading || !element.Action || Permission!='rwd' || element.ClassSubjectId==0"
-                            matTooltip="delete" mat-raised-button color="accent" (click)="Delete(element)">
-                            <mat-icon>delete</mat-icon>
-                            <mat-icon *ngIf="loading">
-                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                            </mat-icon>
-                        </button>
-                    </mat-cell>
-                </ng-container>
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;"
-                    style="min-height:90px;display:flex;align-items: baseline;">
-                </mat-row>
-            </mat-table>
-        </div>
+                        </div> -->
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    {{element.SubjectName}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="SubjectTypeId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Subject Type </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <!-- <mat-label>subject type</mat-label> -->
+                        <mat-select (selectionChange)="updateSelectHowMany(element)" [value]="element.SubjectTypeId"
+                            [(ngModel)]="element.SubjectTypeId">
+                            <mat-option [value]="Defaultvalue">select</mat-option>
+                            <mat-option *ngFor="let item of SubjectTypes" [value]="item.SubjectTypeId">
+                                {{item.SubjectTypeName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="SubjectCategoryId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Subject Category </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <!-- <mat-label>subject category</mat-label> -->
+                        <mat-select (selectionChange)="onBlur(element)" [value]="element.SubjectCategoryId"
+                            [(ngModel)]="element.SubjectCategoryId">
+                            <mat-option *ngFor="let item of SubjectCategory" [value]="item.MasterDataId">
+                                {{item.MasterDataName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="RemarkId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Remark </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <mat-select (selectionChange)="onBlur(element)" [value]="element.RemarkId"
+                            [(ngModel)]="element.RemarkId">
+                            <mat-option *ngFor="let item of Remarks" [value]="item.MasterDataId">
+                                {{item.MasterDataName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Credits">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Credits </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <!-- <mat-label>credits</mat-label> -->
+                        <input matInput type="number" max="100" [value]="element.Credits" (blur)="onBlur(element)"
+                            [(ngModel)]="element.Credits" autocomplete="Off">
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Confidential">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Confidential </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="updateConfidential(element,$event)"
+                        [checked]="element.Confidential">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Active">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Active </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+                        [checked]="element.Active==1?true:false">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Action">
+                <mat-header-cell *matHeaderCellDef>
+                    <button [disabled]="loading || Permission=='read'" matTooltip="save all" mat-mini-fab
+                        (click)="SaveAll()">
+                        <mat-icon>all_out</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
+                    <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                        mat-raised-button color="accent" (click)="SaveRow(element)">
+                        <mat-icon>save</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                    <button [disabled]="loading || !element.Action || Permission!='rwd' || element.ClassSubjectId==0"
+                        matTooltip="delete" mat-raised-button color="accent" (click)="Delete(element)">
+                        <mat-icon>delete</mat-icon>
+                        <mat-icon *ngIf="loading">
+                            <mat-spinner diameter="20" color="Blue"></mat-spinner>
+                        </mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"
+                style="min-height:90px;display:flex;align-items: baseline;">
+            </mat-row>
+        </mat-table>
+        <!-- </div> -->
         <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,100]"></mat-paginator>
     </div>
     <div style="margin-top:30px;" data-expand="false" #expandWrap>

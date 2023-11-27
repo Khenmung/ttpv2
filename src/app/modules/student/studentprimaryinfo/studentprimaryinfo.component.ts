@@ -237,7 +237,7 @@ export class studentprimaryinfoComponent implements OnInit {
           Active: [1]
         });
         this.PID = this.tokenStorage.getPID()!;
-        this.StudentId = this.tokenStorage.getStudentId()!;;
+        this.StudentId = this.tokenStorage.getStudentId()!;
         this.StudentClassId = this.tokenStorage.getStudentClassId()!;
         var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.FEEPAYMENT);
         if (perObj.length > 0) {

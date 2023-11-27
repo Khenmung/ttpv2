@@ -79,7 +79,7 @@
     </div>
 </form>
 <div style="width: 100%;" id="printSection">
-    <div *ngIf="ExamStudentSubjectResult.length>0">
+    <div [hidden]="ExamStudentSubjectResult.length==0">
         <div style="display:flex;justify-content: center;">
             <div style="margin-right: 15px;" *ngIf="logourl.length>0" [innerHTML]="logourl"></div>
             <div style="display: flex;justify-content: center;flex-direction: column;">
@@ -102,11 +102,12 @@
         <div style="overflow: auto;">
             <mat-table #table [dataSource]="dataSource" matSort style="min-width: 2200px;">
                 <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-                    <mat-header-cell [class.gray]="!disCol.includes('-')" *matHeaderCellDef mat-sort-header="{{disCol}}"
+                    <mat-header-cell [class.gray]="disCol.includes('-')" *matHeaderCellDef mat-sort-header="{{disCol}}"
                         style="writing-mode: tb-rl;transform: rotate(-180deg);width:100%;display:flex; justify-content: flex-start;">
                         {{disCol!='Action'?disCol:''}}
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" [class.gray]="!disCol.includes('-')" style="width:100%;align-self: stretch;">
+                    <mat-cell *matCellDef="let element" [class.gray]="disCol.includes('-')"
+                        style="width:100%;align-self: stretch;">
                         <span style="padding:5px;align-self: stretch;color:red"
                             *ngIf="disCol!='Student' && (element[disCol]+'').includes('(')">{{element[disCol]}}</span>
                         <span style="padding:5px;display: flex;align-self: stretch;"
@@ -121,24 +122,24 @@
     <mat-paginator [hidden]="ExamStudentSubjectResult.length==0" style="display: flex;justify-content: center;"
         [pageSizeOptions]="[10,200]"></mat-paginator>
 
-    <div *ngIf="ExamStudentSubjectGrading.length>0" style="flex-direction: column;">
-        <div style="font-weight: bold;">Grading Subject</div>
-        <mat-table #table [dataSource]="GradingDataSource" matSort style="min-width:700px;">
+    <!-- <div *ngIf="ExamStudentSubjectGrading.length>0" style="flex-direction: column;"> -->
+    <div [hidden]="ExamStudentSubjectGrading.length==0" style="font-weight: bold;">Grading Subject</div>
+    <mat-table [hidden]="ExamStudentSubjectGrading.length==0" #table [dataSource]="GradingDataSource" matSort
+        style="min-width:700px;">
 
-            <ng-container *ngFor="let disCol of GradingDisplayedColumns; let colIndex = index"
-                matColumnDef="{{disCol}}">
-                <mat-header-cell *matHeaderCellDef mat-sort-header style="padding:15px;justify-content: center;">
-                    {{disCol!='Action'?disCol:''}}
-                </mat-header-cell>
-                <mat-cell *matCellDef="let element" style="padding-left:15px">
-                    {{element[disCol]}}
-                </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="GradingDisplayedColumns;sticky:true"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: GradingDisplayedColumns;" class="elementrow"></mat-row>
-        </mat-table>
+        <ng-container *ngFor="let disCol of GradingDisplayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="padding:15px;justify-content: center;">
+                {{disCol!='Action'?disCol:''}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" style="padding-left:15px">
+                {{element[disCol]}}
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="GradingDisplayedColumns;sticky:true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: GradingDisplayedColumns;" class="elementrow"></mat-row>
+    </mat-table>
 
-    </div>
+    <!-- </div> -->
     <mat-paginator [hidden]="ExamStudentSubjectGrading.length==0" style="display: flex;justify-content: center;"
         [pageSizeOptions]="[10,25,100]" #GradingPaginator="matPaginator"></mat-paginator>
 </div>

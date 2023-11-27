@@ -149,7 +149,7 @@
             </mat-footer-cell>
         </ng-container>
         <ng-container matColumnDef="Active">
-            <mat-header-cell *matHeaderCellDef>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
                 <mat-checkbox matTooltip="select all" (click)="$event.stopPropagation()" (change)="SelectAll($event)">
                 </mat-checkbox>&nbsp; Active
             </mat-header-cell>
