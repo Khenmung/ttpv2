@@ -502,8 +502,14 @@ export class StudentprogressreportComponent implements OnInit {
       .subscribe((data: any) => {
         this.GradedMarksResults = [];
         this.NonGradedMarkResults = [];
-
-        data.value.map(eachexam => {
+        let result: any = [];
+        data.value.forEach(item => {
+          let _exam = this.Exams.filter(e => e.ExamId == item.ExamId);
+          item.Sequence = _exam[0].Sequence;
+          result.push(item);
+        });
+        result = result.sort((a, b) => a.Sequence - b.Sequence);
+        result.map(eachexam => {
           var examName = '';
           var objSubject = this.StudentSubjects.filter(subject => subject.StudentClassSubjectId == eachexam.StudentClassSubjectId);
           if (objSubject.length > 0) {

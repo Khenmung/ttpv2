@@ -396,6 +396,7 @@ export class studentprimaryinfoComponent implements OnInit {
   Semesters: any[] = [];
   Remark2: any[] = [];
   Remark1: any[] = [];
+  FeeCategories: any = [];
   GetMasterData() {
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
@@ -413,6 +414,7 @@ export class studentprimaryinfoComponent implements OnInit {
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.AdmissionStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.ADMISSIONSTATUS);
+    this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);
 
     this.Location = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
     this.PrimaryContactDefaultId = this.PrimaryContact.filter(contact => contact.MasterDataName.toLowerCase() == "father")[0].MasterDataId;
@@ -720,7 +722,7 @@ export class studentprimaryinfoComponent implements OnInit {
       BoardRegistrationNo: this.studentForm.get("BoardRegistrationNo")?.value,
       Height: this.studentForm.get("Height")?.value,
       Weight: this.studentForm.get("Weight")?.value,
-      PID:this.PID
+      PID: this.PID
     });
     //debugger;
     //console.log("studentData", this.studentData)
@@ -786,7 +788,7 @@ export class studentprimaryinfoComponent implements OnInit {
             _student?.push(this.studentData[0]);
             this.tokenStorage.saveStudents(_student);
 
-            this.CreateInvoice();
+            this.CreateInvoice(_studCls);
             //this.GetStudentClassPhoto();
             this.Edited = false;
 
@@ -810,13 +812,13 @@ export class studentprimaryinfoComponent implements OnInit {
         this.GetStudentClassPhoto();
         debugger;
         let _student: any[] = this.tokenStorage.getStudents()!;
-        
+
         //let indx = _student.findIndex(f => f.StudentId === this.StudentId);
-        let _stud = _student.filter(f => f.StudentId === this.StudentId);        
+        let _stud = _student.filter(f => f.StudentId === this.StudentId);
         let studcls = JSON.parse(JSON.stringify(_stud[0].StudentClasses));
 
         //_student.splice(indx, 1);
-        
+
         if (this.studentData[0].RemarkId) {
           var _remark1obj = this.Remark1.filter((f: any) => f.MasterDataId == this.studentData[0].RemarkId);
           if (_remark1obj.length > 0)
@@ -828,7 +830,7 @@ export class studentprimaryinfoComponent implements OnInit {
             this.studentData[0].Remark2 = _remark2obj[0].MasterDataName;
         }
         this.studentData[0].StudentClasses = studcls;
-         _stud[0] = JSON.parse(JSON.stringify(this.studentData[0]));
+        _stud[0] = JSON.parse(JSON.stringify(this.studentData[0]));
         // _stud[0].StudentClasses = studcls;
         //_student.push(this.studentData[0]);
         this.tokenStorage.saveStudents(_student);
@@ -851,25 +853,125 @@ export class studentprimaryinfoComponent implements OnInit {
     }
     return globalconstants.isMyDateFormat(pickerInput);
   }
-  CreateInvoice() {
-    this.contentservice.getInvoice(+this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedBatchId, this.StudentClassId, 0, 0, 0)
-      .subscribe((data: any) => {
+  CreateInvoice(row) {
+    debugger;
+    this.loading = true;
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, row.ClassId)//, row.SemesterId, row.SectionId)
+      .subscribe((datacls: any) => {
 
-        this.contentservice.createInvoice(data, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
+        // var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
+        var objClassFee = datacls.value.filter(def => def.FeeDefinition.Active == 1
+          && def.ClassId == row.ClassId
+          && def.SemesterId == row.SemesterId
+          && def.SectionId == row.SectionId);
+        if (objClassFee.length == 0) {
+          objClassFee = datacls.value.filter(def => def.FeeDefinition.Active == 1 && def.ClassId == row.ClassId);
+        }
+        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, row.ClassId, row.SemesterId, row.SectionId, row.StudentClassId, 0)
           .subscribe((data: any) => {
-            //this.loading = false; this.PageLoading=false;
-            //this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-          },
-            error => {
-              this.loading = false;
-              //console.log("error in createInvoice", error);
+            var studentfeedetail: any[] = [];
+            let _Students: any = this.tokenStorage.getStudents()!;
+            var _feeName = '', _remark1 = '', _remark2 = '';
+            data.value.forEach(studcls => {
+              _feeName = ''; _remark1 = ''; _remark2 = '';
+              let _currentStudent = _Students.filter(s => s.StudentId === studcls.StudentId);
+              if (_currentStudent.length > 0) {
+                _remark1 = _currentStudent[0].Remark1;
+                _remark2 = _currentStudent[0].Remark2;
+              }
+              var _category = '';
+              var _subCategory = '';
+              var _className = '';
+              var _semesterName = '';
+              var _sectionName = '';
+              objClassFee.forEach(clsfee => {
+                _category = '';
+                _subCategory = '';
+                _className = '';
+                _semesterName = '';
+                _sectionName = '';
+
+                var objcls = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
+                if (objcls.length > 0)
+                  _className = objcls[0].ClassName;
+
+                var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
+                if (objsemester.length > 0)
+                  _semesterName = objsemester[0].MasterDataName;
+
+                var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
+                if (objsection.length > 0)
+                  _sectionName = objsection[0].MasterDataName;
+
+                var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                if (objcat.length > 0)
+                  _category = objcat[0].MasterDataName;
+
+                var objsubcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                if (objsubcat.length > 0)
+                  _subCategory = objsubcat[0].MasterDataName;
+
+                var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
+
+                if (_formula.length > 0) {
+                  _feeName = clsfee.FeeDefinition.FeeName;
+                  studentfeedetail.push({
+                    Month: clsfee.Month,
+                    Amount: clsfee.Amount,
+                    Formula: _formula,
+                    FeeName: _feeName,
+                    StudentClassId: studcls.StudentClassId,
+                    FeeCategory: _category,
+                    FeeSubCategory: _subCategory,
+                    FeeTypeId: studcls.FeeTypeId,
+                    ClassId: studcls.ClassId,
+                    SectionId: studcls.SectionId,
+                    SemesterId: studcls.SemesterId,
+                    ClassName: _className,
+                    Section: _sectionName,
+                    Semester: _semesterName,
+                    RollNo: studcls.RollNo,
+                    Remark1: _remark1,
+                    Remark2: _remark2
+                  });
+                }
+
+              })
             })
-      },
-        error => {
-          this.loading = false;
-          //console.log("error in getinvoice", error);
-        })
+            // //console.log("studentfeedetailxxxx",studentfeedetail)
+            this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
+              .subscribe((data: any) => {
+                this.loading = false;
+                this.contentservice.openSnackBar("Invoice created successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
+              },
+                error => {
+                  this.loading = false;
+                  //console.log("create invoice error", error);
+                  this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
+                })
+          })
+      });
+
   }
+  // CreateInvoice() {
+  //   this.contentservice.getInvoice(+this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedBatchId, this.StudentClassId, 0, 0, 0)
+  //     .subscribe((data: any) => {
+
+  //       this.contentservice.createInvoice(data, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
+  //         .subscribe((data: any) => {
+  //           //this.loading = false; this.PageLoading=false;
+  //           //this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
+  //         },
+  //           error => {
+  //             this.loading = false;
+  //             //console.log("error in createInvoice", error);
+  //           })
+  //     },
+  //       error => {
+  //         this.loading = false;
+  //         //console.log("error in getinvoice", error);
+  //       })
+  // }
   adjustDateForTimeOffset(dateToAdjust: Date) {
     //////console.log(dateToAdjust)
     if (dateToAdjust) {

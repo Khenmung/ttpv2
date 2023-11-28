@@ -19,20 +19,20 @@ import { MatPaginator } from '@angular/material/paginator';
 export class SchoolFeeTypesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   PageLoading = true;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   FeeTypeListName = 'SchoolFeeTypes';
-  Applications :any[]= [];
+  Applications: any[] = [];
   loading = false;
-  FeeTypeList: IFeeType[]= [];
+  FeeTypeList: IFeeType[] = [];
   filteredOptions: Observable<IFeeType[]>;
   dataSource: MatTableDataSource<IFeeType>;
   Permission = 'deny';
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  allMasterData:any[]= [];
-  FeeCategories :any[]= [];
+  allMasterData: any[] = [];
+  FeeCategories: any[] = [];
   FeeTypeData = {
     FeeTypeId: 0,
     FeeTypeName: '',
@@ -54,8 +54,8 @@ export class SchoolFeeTypesComponent implements OnInit {
     'Active',
     'Action'
   ];
-  Classes:any[]= [];
-  Students:any[]= [];
+  Classes: any[] = [];
+  Students: any[] = [];
   SelectedApplicationId = 0;
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
@@ -103,8 +103,8 @@ export class SchoolFeeTypesComponent implements OnInit {
 
         this.contentservice.GetClasses(this.FilterOrgSubOrg)
           .subscribe((data: any) => {
-            if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-            this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+            if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+            this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
           })
         this.GetMasterData();
         this.GetStudents();
@@ -138,8 +138,8 @@ export class SchoolFeeTypesComponent implements OnInit {
       return {
         StudentId: student.StudentId,
         Name: student.PID + '-' + student.FirstName + _lastName,
-        Remark1:student.Remark1,
-        Remark2:student.Remark2,
+        Remark1: student.Remark1,
+        Remark2: student.Remark2,
       }
     })
 
@@ -165,7 +165,7 @@ export class SchoolFeeTypesComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    let checkFilterString = this.FilterOrgSubOrg + " and FeeTypeName eq '" + row.FeeTypeName + "'";
+    let checkFilterString = this.FilterOrgSubOrgBatchId + " and FeeTypeName eq '" + row.FeeTypeName + "'";
 
     if (row.FeeTypeId > 0)
       checkFilterString += " and FeeTypeId ne " + row.FeeTypeId;
@@ -251,47 +251,56 @@ export class SchoolFeeTypesComponent implements OnInit {
     debugger;
     this.loading = true;
 
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0,0)//,0,0)
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, 0)//,0,0)
       .subscribe((datacls: any) => {
 
-       var _clsfeeWithDefinitions: any = datacls.value.filter(m => m.FeeDefinition.Active == 1);
+        var _clsfeeWithDefinitions: any = datacls.value.filter(m => m.FeeDefinition.Active == 1);
 
-        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId,0,0,0,0, this.FeeTypeData.FeeTypeId)
+        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, 0, 0, 0, this.FeeTypeData.FeeTypeId)
           .subscribe((data: any) => {
-            var studentfeedetail:any[]= [];
+            var studentfeedetail: any[] = [];
+            var _className = '';
+            var _semesterName = '';
+            var _sectionName = '';
             data.value.forEach(studcls => {
-              var _className = ''
-              var clsObj = this.Classes.filter((f:any) => f.ClassId == studcls.ClassId);
+              _className = '';
+              _semesterName = '';
+              _sectionName = '';
+              var clsObj = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
               if (clsObj.length > 0)
                 _className = clsObj[0].ClassName;
-                var _className = '';
-                var _semesterName = '';
-                var _sectionName = '';
 
-                var objcls = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
-                if (objcls.length > 0)
-                  _className = objcls[0].ClassName;
 
-                var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
-                if (objsemester.length > 0)
+              var objcls = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
+              if (objcls.length > 0)
+                _className = objcls[0].ClassName;
+
+              var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
+              if (objsemester.length > 0)
                 _semesterName = objsemester[0].MasterDataName;
 
-                var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
-                if (objsection.length > 0)
-                  _sectionName = objsection[0].MasterDataName;
+              var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
+              if (objsection.length > 0)
+                _sectionName = objsection[0].MasterDataName;
 
-              var _feeName = '';
+              var _feeName = '', _remark1 = '', _remark2 = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
-              let _currentStudent = this.Students.filter(s=>s.StudentId === studcls.StudentId);
+              let _currentStudent = this.Students.filter(s => s.StudentId === studcls.StudentId);
+              if (_currentStudent.length > 0) {
+                _remark1 = _currentStudent[0].Remark1;
+                _remark2 = _currentStudent[0].Remark2;
+              }
+              var _category = '';
+              var _subCategory = '';
               objClassFee.forEach(clsfee => {
-                var _category = '';
-                var _subCategory = '';
+                _category = '';
+                _subCategory = '';
 
-                var objcat:any[] = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                var objcat: any[] = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat.length > 0)
                   _category = objcat[0].MasterDataName;
 
-                var objsubcat:any[] = this.FeeCategories.filter((f:any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                var objsubcat: any[] = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
@@ -313,10 +322,10 @@ export class SchoolFeeTypesComponent implements OnInit {
                     SectionId: studcls.SectionId,
                     RollNo: studcls.RollNo,
                     ClassName: _className,
-                    Semester:_semesterName,
-                    Section:_sectionName,
-                    Remark1: _currentStudent[0]["Remark1"],
-                    Remark2: _currentStudent[0]["Remark2"]
+                    Semester: _semesterName,
+                    Section: _sectionName,
+                    Remark1: _remark1,
+                    Remark2: _remark2
                   });
                 }
 
@@ -337,8 +346,8 @@ export class SchoolFeeTypesComponent implements OnInit {
       });
 
   }
-  Sections:any=[];
-  Semesters:any=[];
+  Sections: any = [];
+  Semesters: any = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -358,7 +367,7 @@ export class SchoolFeeTypesComponent implements OnInit {
     //   return;
     // }  
     this.loading = true;
-    let filterStr = this.FilterOrgSubOrg;// 'BatchId eq '+ this.SelectedBatchId;
+    let filterStr = this.FilterOrgSubOrgBatchId;// 'BatchId eq '+ this.SelectedBatchId;
     if (this.searchForm.get("searchFeeTypeName")!.value.length != 0)
       filterStr += " and contains(FeeTypeName,'" + this.searchForm.get("searchFeeTypeName")!.value + "')";
 
@@ -387,7 +396,7 @@ export class SchoolFeeTypesComponent implements OnInit {
         else {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
-        this.FeeTypeList = this.FeeTypeList.sort((a,b)=>b.Active -a.Active);
+        this.FeeTypeList = this.FeeTypeList.sort((a, b) => b.Active - a.Active);
         this.dataSource = new MatTableDataSource<IFeeType>(this.FeeTypeList);
         this.dataSource.paginator = this.paginator;
         this.loadingFalse();

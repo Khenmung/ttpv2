@@ -551,7 +551,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FeeTypeId", "FeeTypeName", "Formula", "Confidential"];
     list.PageName = "SchoolFeeTypes";
-    list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrgBatchId + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -1238,9 +1238,15 @@ export class AssignStudentclassdashboardComponent implements OnInit {
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
             data.value.forEach(studcls => {
-              var _feeName = '';
+              
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
-              let _currentstudent =this.Students.filter(s=>s.StudentId == studcls.StudentId);
+              let _currentstudent:any =this.Students.filter(s=>s.StudentId == studcls.StudentId);
+              var _feeName = '',_remark1='',_remark2='';
+              if(_currentstudent.length>0)
+              {
+                _remark1 =_currentstudent[0].Remark1;
+                _remark2 =_currentstudent[0].Remark2;
+              }
               objClassFee.forEach(clsfee => {
                 var _category = '';
                 var _subCategory = '';
@@ -1287,8 +1293,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                     ClassName:_className,
                     Section:_sectionName,
                     Semester:_semesterName,
-                    Remark1:_currentstudent[0]["Remark1"],
-                    Remark2:_currentstudent[0]["Remark2"],
+                    Remark1:_remark1,
+                    Remark2:_remark2,
                     RollNo: studcls.RollNo
                   });
                 }

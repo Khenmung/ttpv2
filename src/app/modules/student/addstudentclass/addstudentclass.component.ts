@@ -191,7 +191,7 @@ export class AddstudentclassComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FeeTypeId", "FeeTypeName", "Formula", "Confidential"];
     list.PageName = "SchoolFeeTypes";
-    list.filter = [this.filterOrgSubOrg + " and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrgBatchId + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -444,9 +444,15 @@ export class AddstudentclassComponent implements OnInit {
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
             let _Students: any = this.tokenStorage.getStudents()!;
+            var _feeName = '',_remark1='',_remark2='';
             data.value.forEach(studcls => {
-              var _feeName = '';
               let _currentStudent = _Students.filter(s => s.StudentId === studcls.StudentId);
+               _feeName = '';_remark1='';_remark2='';
+              if(_currentStudent.length>0)
+              {
+                _remark1 =_currentStudent[0].Remark1;
+                _remark2 =_currentStudent[0].Remark2;
+              }
               objClassFee.forEach(clsfee => {
                 var _category = '';
                 var _subCategory = '';
@@ -494,8 +500,8 @@ export class AddstudentclassComponent implements OnInit {
                     Section: _sectionName,
                     Semester: _semesterName,
                     RollNo: studcls.RollNo,
-                    Remark1: _currentStudent[0]["Remark1"],
-                    Remark2: _currentStudent[0]["Remark2"]
+                    Remark1: _remark1,
+                    Remark2: _remark2
                   });
                 }
 

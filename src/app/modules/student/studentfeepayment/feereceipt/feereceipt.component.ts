@@ -129,8 +129,8 @@ export class FeereceiptComponent implements OnInit {
       this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-        this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+        if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
         var obj = this.Classes.filter((f: any) => f.ClassId == this.studentInfoTodisplay.ClassId)
         if (obj.length > 0)
           this.studentInfoTodisplay.StudentClassName = obj[0].ClassName;
@@ -224,14 +224,19 @@ export class FeereceiptComponent implements OnInit {
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
             let _students = this.tokenStorage.getStudents()!;
+            var _feeName = '', _remark1 = '', _remark2 = '';
             data.value.forEach(studcls => {
-              var _feeName = '';
+              _feeName = ''; _remark1 = ''; _remark2 = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
               var _className = '';
               var obj = this.Classes.filter(c => c.ClassId == studcls.ClassId);
               if (obj.length > 0)
                 _className = obj[0].ClassName;
-              let _currentStudent = _students.filter((s:any)=>s.StudentId === studcls.StudentId);
+              let _currentStudent: any = _students.filter((s: any) => s.StudentId === studcls.StudentId);
+              if (_currentStudent.length > 0) {
+                _remark1 = _currentStudent[0].Remark1;
+                _remark2 = _currentStudent[0].Remark2;
+              }
               objClassFee.forEach(clsfee => {
                 var _category = '';
                 var _subCategory = '';
@@ -262,8 +267,8 @@ export class FeereceiptComponent implements OnInit {
                     SectionId: studcls.SectionId,
                     RollNo: studcls.RollNo,
                     ClassName: _className,
-                    Remark1: _currentStudent[0]["Remark1"],
-                    Remark2: _currentStudent[0]["Remark2"]
+                    Remark1: _remark1,
+                    Remark2: _remark2
                   });
                 }
 

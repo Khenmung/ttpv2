@@ -365,7 +365,7 @@ export class StudentDatadumpComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FeeTypeId", "FeeTypeName", "Formula"];
     list.PageName = "SchoolFeeTypes";
-    list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrgNBatchId + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {

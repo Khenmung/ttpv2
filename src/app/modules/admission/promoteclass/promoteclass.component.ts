@@ -516,9 +516,9 @@ export class PromoteclassComponent implements OnInit {
     this.loading = true;
     //var filter = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
     let list: List = new List();
-    list.fields = ["FeeTypeId", "FeeTypeName", "Formula","DefaultType"];
+    list.fields = ["FeeTypeId", "FeeTypeName", "Formula", "DefaultType"];
     list.PageName = "SchoolFeeTypes";
-    list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrgBatchId + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -1021,7 +1021,7 @@ export class PromoteclassComponent implements OnInit {
       .subscribe(
         (data: any) => {
           this.loading = false; this.PageLoading = false;
-          let iteminserted:any = this.StudentClassList.filter(s=>s.StudentId == row.StudentId && s["BatchId"] == row.BatchId)
+          let iteminserted: any = this.StudentClassList.filter(s => s.StudentId == row.StudentId && s["BatchId"] == row.BatchId)
           iteminserted.ClassName = this.Classes.filter(c => c.ClassId == data.ClassId)[0].ClassName;
           iteminserted.StudentClassId = data.StudentClassId;
           var NewStudentFromPrevious: any = this.PreviousBatchStudents.filter(st => st.StudentId == this.StudentClassData.StudentId);
@@ -1039,7 +1039,7 @@ export class PromoteclassComponent implements OnInit {
           row.Action = false;
 
           var stud = this.CurrentBatchStudents.filter((f: any) => f.StudentId == this.StudentClassData.StudentId
-          && f.BatchId == this.StudentClassData.BatchId);
+            && f.BatchId == this.StudentClassData.BatchId);
           if (stud.length > 0) {
             stud["StudentClasses"] = [...cls];
           }
@@ -1092,14 +1092,22 @@ export class PromoteclassComponent implements OnInit {
         this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, this.StudentClassData.ClassId, this.StudentClassData.SemesterId, this.StudentClassData.SectionId, row.StudentClassId, 0)
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
-            //let _Students:any = this.tokenStorage.getStudents()!;
+            var _feeName = '', _remark1 = '', _remark2 = '';
+            var _category = '';
+            var _subCategory = '';
             data.value.forEach(studcls => {
-              var _feeName = '';
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
-              let _currentstudent =this.PreviousBatchStudents.filter(s=>s.StudentId == studcls.StudentId);
+              let _currentstudent: any = this.PreviousBatchStudents.filter(s => s.StudentId == studcls.StudentId);
+              _feeName = '';
+              _remark1 = '';
+              _remark2 = '';
+              if (_currentstudent.length > 0) {
+                _remark1 = _currentstudent[0].Remark1;
+                _remark2 = _currentstudent[0].Remark2;
+              }
               objClassFee.forEach(clsfee => {
-                var _category = '';
-                var _subCategory = '';
+                _category = '';
+                _subCategory = '';
 
                 var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat.length > 0)
@@ -1110,7 +1118,7 @@ export class PromoteclassComponent implements OnInit {
                   _subCategory = objsubcat[0].MasterDataName;
 
                 var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
-               
+
                 if (_formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
@@ -1126,8 +1134,8 @@ export class PromoteclassComponent implements OnInit {
                     SectionId: studcls.SectionId,
                     SemesterId: studcls.SemesterId,
                     RollNo: studcls.RollNo,
-                    Remark1:_currentstudent[0]["Remark1"],
-                    Remark2:_currentstudent[0]["Remark2"]
+                    Remark1: _remark1,
+                    Remark2: _remark2
                   });
                 }
 
