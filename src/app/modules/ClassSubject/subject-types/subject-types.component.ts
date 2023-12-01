@@ -35,6 +35,7 @@ export class SubjectTypesComponent implements OnInit {
   StandardFilterWithPreviousBatchId = '';
   PreviousBatchId = -1;
   SubjectTypeId = 0;
+  PredefinedSubjectTypes=['Compulsory','Elective','Optional','M.I.L'];
   SubjectTypeData = {
     SubjectTypeId: 0,
     SubjectTypeName: '',

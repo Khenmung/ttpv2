@@ -240,7 +240,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           this.rowCount += 1;
           if (this.DataCollection.length == this.rowCount) {
             this.rowCount = 0;
-            //console.log("this.DataCollection", this.DataCollection);
+            console.log("this.DataCollection", this.DataCollection);
             var _classId = this.searchForm.get("searchClassId")?.value;
             var _sectionId = this.searchForm.get("searchSectionId")?.value;
             var _semesterId = this.searchForm.get("searchSemesterId")?.value;
@@ -688,8 +688,8 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       //for section or semester
       _examMarkFormulaObj = this.ExamMarkConfigs.filter(e => e.ExamId == _examId
         && e.ClassId == _classId
-       // && e.SemesterId == _semesterId
-       // && e.SectionId == _sectionId
+        // && e.SemesterId == _semesterId
+        // && e.SectionId == _sectionId
         && e.ClassSubjectId == _classSubjectId
         && e.Formula.length > 0)
       if (_examMarkFormulaObj.length == 0) {
@@ -836,9 +836,9 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
               if (this.displayedColumns.indexOf(_ComponentName) == -1)
                 this.displayedColumns.push(_ComponentName)
               var _mark = 0;
-              let _action=false;
+              let _action = false;
               if (toUpdate) {
-                _action=true;
+                _action = true;
                 var replacedFormula: any = this.ExamMarkFormula;
                 var _subjectmarkconfig = pExamsSubjectMarks.filter(m => m.StudentClassSubjectId == ss.StudentClassSubjectId)
                 //if exammarkconfig is defined. other wise mark is 0
@@ -1096,14 +1096,14 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
       for (var prop in record) {
 
-        var row: any = this.StoredForUpdate.filter((s: any) => s.SubjectMarkComponent == prop
-          && s.StudentClassSubjectId == record.StudentClassSubjectId);
+        var row: any = this.StoredForUpdate.find((s: any) => s.SubjectMarkComponent === prop
+          && s.StudentClassSubjectId === record.StudentClassSubjectId);
 
-        if (row.length > 0 && prop != 'StudentClassSubject' && prop != 'Action') {
-          row[0].Active = 1;
-          row[0].Marks = row[0][prop];
+        if (row && prop !== 'StudentClassSubject' && prop !== 'Action') {
+          row.Active = 1;
+          row.Marks = row[prop];
           //tosave = JSON.parse(JSON.stringify(row[0]));
-          this.UpdateOrSave(row[0], record);
+          this.UpdateOrSave(row, record);
         }
       }
 
@@ -1116,16 +1116,14 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     debugger;
     //var _colName = event.srcElement.name;
     //////console.log("event", event);
-    var row = this.StoredForUpdate.filter((s: any) => s.SubjectMarkComponent == colName && s.StudentClassSubjectId == element.StudentClassSubjectId);
-    row[0][colName] = element[colName];
+    var indx = this.StoredForUpdate.findIndex((s: any) => s.SubjectMarkComponent == colName
+      && s.StudentClassSubjectId == element.StudentClassSubjectId);
+    if (indx > -1)
+      this.StoredForUpdate[indx][colName] = element[colName];
+    //row[0][colName] = element[colName];
     element.Action = true;
   }
 
-  UpdateAll() {
-    this.ExamStudentSubjectResult.forEach(element => {
-      this.SaveRow(element);
-    })
-  }
   DataCollection: any = [];
   //rowSave =0;
   SaveRow(element) {
@@ -1135,16 +1133,16 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     //this.rowSave = 0;
     //var columnexist;
     this.DataCollection = [];
-    for (var prop in element) {
+    for (let prop in element) {
 
-      var row: any = this.StoredForUpdate.filter((s: any) => s.SubjectMarkComponent == prop
-        && s.StudentClassSubjectId == element.StudentClassSubjectId);
+      let row: any = this.StoredForUpdate.find((s: any) => s.SubjectMarkComponent === prop
+        && s.StudentClassSubjectId === element.StudentClassSubjectId);
 
-      if (row.length > 0 && prop != 'StudentClassSubject' && prop != 'Action') {
-        row[0].Active = 1;
-        row[0].Marks = row[0][prop];
+      if (row && prop !== 'StudentClassSubject' && prop !== 'Action') {
+        row.Active = 1;
+        row.Marks = row[prop];
         //tosave = JSON.parse(JSON.stringify(row[0]));
-        this.UpdateOrSave(row[0], element);
+        this.UpdateOrSave(row, element);
       }
     }
   }

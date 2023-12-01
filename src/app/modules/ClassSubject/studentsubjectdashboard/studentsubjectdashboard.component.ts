@@ -156,9 +156,9 @@ export class studentsubjectdashboardComponent implements OnInit {
     let filterStr = this.FilterOrgSubOrgBatchId + " and Active eq 1" +
       ' and ClassId eq ' + _classId;
     //if (_semesterId)
-      filterStr += ' and SemesterId eq ' + _semesterId;
+    filterStr += ' and SemesterId eq ' + _semesterId;
     //if (_sectionId)
-      filterStr += ' and SectionId eq ' + _sectionId;
+    filterStr += ' and SectionId eq ' + _sectionId;
 
     if (filterStr.length == 0) {
       this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -214,9 +214,9 @@ export class studentsubjectdashboardComponent implements OnInit {
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     orgIdSearchstr += ' and ClassId eq ' + _classId;
     //if (_semesterId)
-      orgIdSearchstr += ' and SemesterId eq ' + _semesterId;
+    orgIdSearchstr += ' and SemesterId eq ' + _semesterId;
     //if (_sectionId)
-      orgIdSearchstr += ' and SectionId eq ' + _sectionId;
+    orgIdSearchstr += ' and SectionId eq ' + _sectionId;
 
     let list: List = new List();
 
@@ -486,11 +486,7 @@ export class studentsubjectdashboardComponent implements OnInit {
 
     })
   }
-  UpdateAll() {
-    this.StudentSubjectList.forEach(element => {
-      this.SaveRow(element);
-    })
-  }
+
   clear() {
     this.searchForm.patchValue({
       searchClassId: 0,
@@ -547,11 +543,27 @@ export class studentsubjectdashboardComponent implements OnInit {
       element.Action = true;
     }
   }
-  SaveRow(element) {
+  UpdateAll() {
+    this.rowCount = 0;
+    this.subjectCounterr = '';
+    let toUpdate = this.StudentSubjectList.filter(f => f.Action);
+    if (toUpdate.length == 0) {
+      this.contentservice.openSnackBar("No record to save.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+    toUpdate.forEach(element => {
+      this.SaveRow(element, 1);
+    })
+  }
+  subjectCounterr = '';
+  SaveRow(element, fromUpdateAll) {
     debugger;
     this.loading = true;
-    this.rowCount = 0;
+    if (fromUpdateAll == 0) {
+      this.subjectCounterr = '';
+    }
     this.SelectedStudentSubjectCount = [];
+    this.DataRowCollection.push(element);
     ////////
     ////console.log("this.StudentSubjectList", this.StudentSubjectList);
     let StudentSubjects = this.StoreForUpdate.filter((s: any) => s.StudentClassId == element.StudentClassId);
@@ -576,17 +588,17 @@ export class studentsubjectdashboardComponent implements OnInit {
     }
     var _compulsory = groupbySubjectType.filter((f: any) => f.SubjectType.toLowerCase() == 'compulsory')
     var _otherThanCompulsory = groupbySubjectType.filter((f: any) => f.SubjectType.toLowerCase() != 'compulsory')
-    var subjectCounterr = '';
+    //this.subjectCounterr = '';
     _otherThanCompulsory.forEach(noncompulsory => {
       //element.SelectHowMany =0 meeans optional
       if (noncompulsory.SubjectCount != noncompulsory.SelectHowMany) {
-        subjectCounterr += " Subject type " + noncompulsory.SubjectType + " must have " + noncompulsory.SelectHowMany + " subject(s) selected.";
+        this.subjectCounterr += " " + element.Student + "'s subject type '" + noncompulsory.SubjectType + "' must have " + noncompulsory.SelectHowMany + " subject(s) selected.";
       }
     });
     var compulsorysubjectCount = StudentSubjects.filter(c => c.SubjectType.toLowerCase() == 'compulsory')
 
     if (compulsorysubjectCount.length > _compulsory[0].SubjectCount) {
-      subjectCounterr += " Subject type " + _compulsory[0].SubjectType + " must have " + _compulsory[0].SelectHowMany + " subject(s) selected";
+      this.subjectCounterr += " " + element.Student + "'s subject type '" + _compulsory[0].SubjectType + "' must have " + _compulsory[0].SelectHowMany + " subject(s) selected";
     }
     // _compulsory.forEach(s => {
     //   if (s.SelectHowMany > 30 && s.SubjectCount != s.SelectHowMany) {
@@ -595,50 +607,42 @@ export class studentsubjectdashboardComponent implements OnInit {
     //   }
     // })
     /////////
-    if (subjectCounterr.length > 0) {
+    if (this.subjectCounterr.length > 0) {
       this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar(subjectCounterr, globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar(this.subjectCounterr, globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     else {
-      this.rowCount = Object.keys(element).length - 4;
+      //this.rowCount = Object.keys(element).length - 4;
       for (var prop in element) {
 
-        var row: any = StudentSubjects.filter((s: any) => s.Subject == prop);
+        var row: any = StudentSubjects.find((s: any) => s.Subject === prop);
 
-        if (row.length > 0 && prop != 'Student' && prop != 'Action') {
+        if (row && prop != 'Student' && prop != 'Action') {
           var data = {
             Active: element[prop],
-            StudentClassSubjectId: row[0].StudentClassSubjectId,
-            StudentClassId: row[0].StudentClassId,
-            ClassSubjectId: row[0].ClassSubjectId,
-            SubjectId: row[0].SubjectId,
-            ClassId: row[0].ClassId,
-            SectionId: row[0].SectionId,
-            SemesterId: row[0].SemesterId
+            StudentClassSubjectId: row.StudentClassSubjectId,
+            StudentClassId: row.StudentClassId,
+            ClassSubjectId: row.ClassSubjectId,
+            SubjectId: row.SubjectId,
+            ClassId: row.ClassId,
+            SectionId: row.SectionId,
+            SemesterId: row.SemesterId
           }
           //////console.log('data to update',data)
-          if (row.length > 0) {
-            this.UpdateOrSave(data, element);
-          }
+          //if (row) {
+          this.UpdateOrSave(data, element);
+          //}
         }
       }
     }
   }
-  delete(element) {
-    let toupdate = {
-      Active: element.Active == 1 ? 0 : 1
-    }
-    this.dataservice.postPatch('ClassSubjects', toupdate, element.ClassSubjectId, 'delete')
-      .subscribe(
-        (data: any) => {
-          // this.GetApplicationRoles();
-          this.contentservice.openSnackBar(globalconstants.DeletedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
 
-        });
-  }
+  DataCollectionToUpdateOrSave: any = [];
+  DataRowCollection: any = [];
   UpdateOrSave(row, element) {
     //debugger; 
+    this.DataCollectionToUpdateOrSave.push(row);
     let checkFilterString = this.FilterOrgSubOrgBatchId + " and ClassSubjectId eq " + row.ClassSubjectId +
       " and StudentClassId eq " + row.StudentClassId;
     // " and BatchId eq " + this.SelectedBatchId
@@ -656,43 +660,46 @@ export class studentsubjectdashboardComponent implements OnInit {
       .subscribe((data: any) => {
         //debugger;
 
-        if (data.value.length > 0) {
+        if (data.value.length > 0 && row.Active === 1) {
           //console.log("row.ClassSubjectId", row.ClassSubjectId)
           //console.log("data to insert", row);
           this.contentservice.openSnackBar("Record already exists!", globalconstants.ActionText, globalconstants.RedBackground);
           return;
         }
         else {
+          this.rowCount += 1;
+          if (this.rowCount === this.DataCollectionToUpdateOrSave.length)
+            this.DataCollectionToUpdateOrSave.forEach(item => {
 
-          this.StudentSubjectData.Active = row.Active;
-          this.StudentSubjectData.StudentClassSubjectId = row.StudentClassSubjectId;
-          this.StudentSubjectData.OrgId = this.LoginUserDetail[0]["orgId"];
-          this.StudentSubjectData.SubOrgId = this.SubOrgId;
-          this.StudentSubjectData.BatchId = this.SelectedBatchId;
-          this.StudentSubjectData.StudentClassId = row.StudentClassId;
-          this.StudentSubjectData.SubjectId = row.SubjectId;
-          this.StudentSubjectData.ClassSubjectId = row.ClassSubjectId;
-          this.StudentSubjectData.ClassId = row.ClassId;
-          this.StudentSubjectData.SectionId = row.SectionId;
-          this.StudentSubjectData.SemesterId = row.SemesterId;
-          //////console.log('data', this.StudentSubjectData);
-          if (this.StudentSubjectData.StudentClassSubjectId == 0) {
-            this.StudentSubjectData["CreatedDate"] = new Date();
-            this.StudentSubjectData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
-            delete this.StudentSubjectData["UpdatedDate"];
-            delete this.StudentSubjectData["UpdatedBy"];
-            //////console.log('insert', this.StudentSubjectData);
-            this.insert(row, element);
-          }
-          else {
-            delete this.StudentSubjectData["CreatedDate"];
-            delete this.StudentSubjectData["CreatedBy"];
-            this.StudentSubjectData["UpdatedDate"] = new Date();
-            this.StudentSubjectData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-            this.update(row, element);
-          }
-          row.Action = false;
-
+              this.StudentSubjectData.Active = item.Active;
+              this.StudentSubjectData.StudentClassSubjectId = item.StudentClassSubjectId;
+              this.StudentSubjectData.OrgId = this.LoginUserDetail[0]["orgId"];
+              this.StudentSubjectData.SubOrgId = this.SubOrgId;
+              this.StudentSubjectData.BatchId = this.SelectedBatchId;
+              this.StudentSubjectData.StudentClassId = item.StudentClassId;
+              this.StudentSubjectData.SubjectId = item.SubjectId;
+              this.StudentSubjectData.ClassSubjectId = item.ClassSubjectId;
+              this.StudentSubjectData.ClassId = item.ClassId;
+              this.StudentSubjectData.SectionId = item.SectionId;
+              this.StudentSubjectData.SemesterId = item.SemesterId;
+              //////console.log('data', this.StudentSubjectData);
+              if (this.StudentSubjectData.StudentClassSubjectId == 0) {
+                this.StudentSubjectData["CreatedDate"] = new Date();
+                this.StudentSubjectData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
+                delete this.StudentSubjectData["UpdatedDate"];
+                delete this.StudentSubjectData["UpdatedBy"];
+                //////console.log('insert', this.StudentSubjectData);
+                this.insert(row, element);
+              }
+              else {
+                delete this.StudentSubjectData["CreatedDate"];
+                delete this.StudentSubjectData["CreatedBy"];
+                this.StudentSubjectData["UpdatedDate"] = new Date();
+                this.StudentSubjectData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
+                this.update(row, element);
+              }
+              row.Action = false;
+            })
         }
       });
   }
@@ -704,31 +711,54 @@ export class studentsubjectdashboardComponent implements OnInit {
       .subscribe(
         (data: any) => {
           this.edited = false;
-          //this.rowCount += 1;
+
           row.StudentClassSubjectId = data.StudentClassSubjectId;
           this.rowCount--;
           if (this.rowCount == 0) {
+            this.DataCollectionToUpdateOrSave = [];
+            this.DataRowCollection.forEach(ele => {
+              ele.Action = false;
+            })
+            //this.subjectCounterr='';
+            this.DataRowCollection = [];
             this.loading = false;
             this.PageLoading = false;
-            element.Action = false;
             this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
         });
   }
   update(row, element) {
-
+    debugger;
     this.dataservice.postPatch('StudentClassSubjects', this.StudentSubjectData, this.StudentSubjectData.StudentClassSubjectId, 'patch')
       .subscribe(
         (data: any) => {
           this.edited = false;
+
           this.rowCount--;
           if (this.rowCount == 0) {
-            element.Action = false;
+            this.DataCollectionToUpdateOrSave = [];
+            this.DataRowCollection.forEach(ele => {
+              ele.Action = false;
+            })
+            //this.subjectCounterr='';
+            this.DataRowCollection = [];
             this.loading = false;
             this.PageLoading = false;
             this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
           //this.contentservice.openSnackBar(globalconstants.UpdatedMessage,globalconstants.ActionText,globalconstants.BlueBackground);
+        });
+  }
+  delete(element) {
+    let toupdate = {
+      Active: element.Active == 1 ? 0 : 1
+    }
+    this.dataservice.postPatch('ClassSubjects', toupdate, element.ClassSubjectId, 'delete')
+      .subscribe(
+        (data: any) => {
+          // this.GetApplicationRoles();
+          this.contentservice.openSnackBar(globalconstants.DeletedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
+
         });
   }
   isNumeric(str: number) {
@@ -751,10 +781,10 @@ export class studentsubjectdashboardComponent implements OnInit {
         let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
         if (obj.length > 0) {
           m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
     });
     this.shareddata.ChangeSubjects(this.Subjects);
     this.GetClassSubjects();

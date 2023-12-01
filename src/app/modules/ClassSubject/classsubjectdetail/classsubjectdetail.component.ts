@@ -68,7 +68,7 @@ export class ClassSubjectDetailComponent implements OnInit {
     ClassId: 0,
     SectionId: 0,
     SemesterId: 0,
-    RemarkId:0,
+    RemarkId: 0,
     Credits: 0,
     OrgId: 0,
     SubOrgId: 0,
@@ -80,9 +80,12 @@ export class ClassSubjectDetailComponent implements OnInit {
     Active: 1
   };
   displayedColumns = [
+    'ClassSubjectId',
     'SubjectName',
     'SubjectTypeId',
     'SubjectCategoryId',
+    'SectionId',
+    'SemesterId',
     'RemarkId',
     'Credits',
     'Confidential',
@@ -245,7 +248,7 @@ export class ClassSubjectDetailComponent implements OnInit {
 
   GetClassSubject() {
     let filterStr = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    //debugger;
+    debugger;
     this.loading = true;
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
@@ -328,24 +331,27 @@ export class ClassSubjectDetailComponent implements OnInit {
 
           let existing = classSubjects.filter(e => e.SubjectId == s.MasterDataId);
           if (existing.length > 0) {
-            this.ClassSubjectList.push({
-              //ClassSubjectId: previousbatch==1?0:existing[0].ClassSubjectId,
-              ClassSubjectId: existing[0].ClassSubjectId,
-              SubjectId: existing[0].SubjectId,
-              SubjectName: s.MasterDataName,// this.Subjects.filter(c => c.MasterDataId == existing[0].SubjectId)[0].MasterDataName,
-              SubjectTypeId: existing[0].SubjectTypeId,
-              SubjectCategoryId: existing[0].SubjectCategoryId,
-              SelectHowMany: existing[0].SelectHowMany,
-              Confidential: existing[0].Confidential,
-              TeacherId: existing[0].TeacherId,
-              Credits: existing[0].Credits,
-              ClassId: existing[0].ClassId,
-              SectionId: existing[0].SectionId,
-              SemesterId: existing[0].SemesterId,
-              RemarkId:existing[0].RemarkId,
-              Active: existing[0].Active,
-              Action: false
-            });
+            existing.forEach(item => {
+
+             this.ClassSubjectList.push({
+                //ClassSubjectId: previousbatch==1?0:existing[0].ClassSubjectId,
+                ClassSubjectId: item.ClassSubjectId,
+                SubjectId: item.SubjectId,
+                SubjectName: s.MasterDataName,// this.Subjects.filter(c => c.MasterDataId == existing[0].SubjectId)[0].MasterDataName,
+                SubjectTypeId: item.SubjectTypeId,
+                SubjectCategoryId: item.SubjectCategoryId,
+                SelectHowMany: item.SelectHowMany,
+                Confidential: item.Confidential,
+                TeacherId: item.TeacherId,
+                Credits: item.Credits,
+                ClassId: item.ClassId,
+                SectionId: item.SectionId,
+                SemesterId: item.SemesterId,
+                RemarkId: item.RemarkId,
+                Active: item.Active,
+                Action: false
+              });
+            })
           }
           else {
 
@@ -362,7 +368,7 @@ export class ClassSubjectDetailComponent implements OnInit {
               SemesterId: this.searchForm.get("searchSemesterId")?.value,
               SubjectName: s.MasterDataName,
               TeacherId: 0,
-              RemarkId:0,
+              RemarkId: 0,
               Active: 0,
               Action: false
             });
@@ -547,7 +553,7 @@ export class ClassSubjectDetailComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        if (data.value.length > 0) {
+        if (data.value.length > 0 && row.Active==1) {
           this.loading = false; this.PageLoading = false;
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
           row.Ative = 0;
@@ -566,7 +572,7 @@ export class ClassSubjectDetailComponent implements OnInit {
               this.ClassSubjectData.SemesterId = item.SemesterId;
               this.ClassSubjectData.RemarkId = item.RemarkId;
               this.ClassSubjectData.Credits = item.Credits;
-              this.ClassSubjectData.Confidential = !item.Confidential? false : item.Confidential;
+              this.ClassSubjectData.Confidential = !item.Confidential ? false : item.Confidential;
               this.ClassSubjectData.SubjectId = item.SubjectId;
               this.ClassSubjectData.SubjectTypeId = item.SubjectTypeId;
               this.ClassSubjectData.SubjectCategoryId = item.SubjectCategoryId;
@@ -618,7 +624,7 @@ export class ClassSubjectDetailComponent implements OnInit {
         });
   }
   update(row) {
-    //console.log('this.ClassSubjectData update', this.ClassSubjectData)
+    console.log('this.ClassSubjectData update', this.ClassSubjectData)
     this.dataservice.postPatch('ClassSubjects', this.ClassSubjectData, this.ClassSubjectData.ClassSubjectId, 'patch')
       .subscribe(
         (data: any) => {
@@ -685,7 +691,7 @@ export class ClassSubjectDetailComponent implements OnInit {
       })
   }
   ClassCategory: any[] = [];
-  Remarks :any=[];
+  Remarks: any = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -751,7 +757,7 @@ export interface IClassSubject {
   SelectHowMany: number;
   Confidential: boolean;
   TeacherId: number;
-  RemarkId:number;
+  RemarkId: number;
   Active: number;
   Action: boolean;
 }

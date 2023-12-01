@@ -47,13 +47,13 @@
         </form>
         <!-- <div *ngIf="ClassSubjectList.length>0"> -->
         <mat-table [hidden]="ClassSubjectList.length==0" [dataSource]="dataSource" matSort>
-            <!-- <ng-container matColumnDef="ClassName">
-                <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef>Class/stream
+            <ng-container matColumnDef="ClassSubjectId">
+                <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef>Id
                 </mat-header-cell>
                 <mat-cell style="display: flex;justify-content: center;" *matCellDef="let element">
-                    {{element.ClassName}}
+                    {{element.ClassSubjectId}}
                 </mat-cell>
-            </ng-container> -->
+            </ng-container>
             <ng-container matColumnDef="SubjectName">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Subject
                     <!-- <div style="align-items: flex-start;">Subject<br>
@@ -100,7 +100,34 @@
                     <mat-form-field appearance="outline">
                         <mat-select (selectionChange)="onBlur(element)" [value]="element.RemarkId"
                             [(ngModel)]="element.RemarkId">
+                            <mat-option [value]="Defaultvalue">select</mat-option>
                             <mat-option *ngFor="let item of Remarks" [value]="item.MasterDataId">
+                                {{item.MasterDataName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="SectionId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Section </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <mat-select (selectionChange)="onBlur(element)" [value]="element.SectionId"
+                            [(ngModel)]="element.SectionId">
+                            <mat-option [value]="Defaultvalue">select</mat-option>
+                            <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                                {{item.MasterDataName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="SemesterId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Semester </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <mat-select (selectionChange)="onBlur(element)" [value]="element.SemesterId"
+                            [(ngModel)]="element.SemesterId">
+                            <mat-option [value]="Defaultvalue">select</mat-option>
+                            <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
                                 {{item.MasterDataName}}</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -117,7 +144,7 @@
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="Confidential">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Confidential </mat-header-cell>
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Confi </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-checkbox (click)="$event.stopPropagation()" (change)="updateConfidential(element,$event)"
                         [checked]="element.Confidential">

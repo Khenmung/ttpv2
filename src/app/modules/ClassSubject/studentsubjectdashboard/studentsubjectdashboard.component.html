@@ -67,13 +67,13 @@
                         <mat-checkbox style="margin-right:15px" matTooltip="select all" *ngIf="disCol=='Action'"
                             (click)="$event.stopPropagation()" (change)="SelectAll($event)">
                         </mat-checkbox>
-                        <!-- <button *ngIf="disCol=='Action'" [disabled]="loading || Permission=='read'"
+                        <button *ngIf="disCol=='Action'" [disabled]="loading || Permission=='read'"
                             matTooltip="save all" mat-mini-fab (click)="UpdateAll()">
                             <mat-icon>all_out</mat-icon>
                             <mat-icon *ngIf="loading">
                                 <mat-spinner diameter="20" color="Blue"></mat-spinner>
                             </mat-icon>
-                        </button> -->
+                        </button>
                     </div>
                 </div>
             </mat-header-cell>
@@ -84,7 +84,7 @@
                 </mat-checkbox>
                 <div fxLayout="column" fxLayoutAlign="center end">
                     <button *ngIf="disCol=='Action'" [disabled]="loading || Permission=='read' || !element.Action"
-                        matTooltip="save" mat-raised-button color="accent" (click)="SaveRow(element)">
+                        matTooltip="save" mat-raised-button color="accent" (click)="SaveRow(element,0)">
                         <mat-icon>save</mat-icon>
                         <mat-icon *ngIf="loading">
                             <mat-spinner diameter="20" color="Blue"></mat-spinner>
@@ -99,6 +99,7 @@
     </mat-table>
 </div>
 <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50]"></mat-paginator>
+<div style="color:crimson;width: 100%;display: flex;justify-content: center;margin: 10px;">{{subjectCounterr}}</div>
 <div style="margin-top:30px;" data-expand="false" #expandWrap>
     <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
         <mat-icon>info</mat-icon>

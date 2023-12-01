@@ -416,8 +416,10 @@ export class StudentprogressreportComponent implements OnInit {
         let result: any = [];
         data.value.forEach(item => {
           let _exam = this.Exams.filter(e => e.ExamId == item.ExamId);
-          item.Sequence = _exam[0].Sequence;
-          result.push(item);
+          if (_exam.length > 0) {
+            item.Sequence = _exam[0].Sequence;
+            result.push(item);
+          }
         });
         result = result.sort((a, b) => a.Sequence - b.Sequence);
         result.forEach(eachexam => {
@@ -505,8 +507,10 @@ export class StudentprogressreportComponent implements OnInit {
         let result: any = [];
         data.value.forEach(item => {
           let _exam = this.Exams.filter(e => e.ExamId == item.ExamId);
-          item.Sequence = _exam[0].Sequence;
-          result.push(item);
+          if (_exam.length > 0) {
+            item.Sequence = _exam[0].Sequence;
+            result.push(item);
+          }
         });
         result = result.sort((a, b) => a.Sequence - b.Sequence);
         result.map(eachexam => {

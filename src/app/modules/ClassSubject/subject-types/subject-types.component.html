@@ -17,7 +17,7 @@
             </mat-header-cell>
             <mat-cell style="display: flex;justify-content: center;" *matCellDef="let element">
                 <mat-form-field>
-                    <input matInput (blur)="onBlur(element)" [value]="element.SubjectTypeName"
+                    <input [disabled]="PredefinedSubjectTypes.includes(element.SubjectTypeName)" matInput (blur)="onBlur(element)" [value]="element.SubjectTypeName"
                         [(ngModel)]="element.SubjectTypeName">
                 </mat-form-field>
             </mat-cell>
@@ -47,7 +47,9 @@
                 </button>&nbsp;
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
+                <button [disabled]="loading 
+                        || !element.Action 
+                        || Permission=='read'" matTooltip="save"
                     mat-raised-button color="accent" (click)="UpdateOrSave(element)">
                      <mat-icon>save</mat-icon>
                             <mat-icon *ngIf="loading">

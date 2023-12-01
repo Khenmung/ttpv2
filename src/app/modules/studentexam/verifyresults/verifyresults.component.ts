@@ -808,6 +808,7 @@ export class VerifyResultsComponent implements OnInit {
         //var result = examComponentResult.value.filter(x => x.StudentClassSubjectId == 40592);
         var StudentOwnSubjects: any[] = [];
         this.AllSubjectCounts = 0;
+        let SelectHowManyOfElective = 0;
         //1. Select student's subjects
         //2. Select all components for the selected class semester section subject mark components
         //3. Get all existing or entered component mark from no. 2
@@ -844,6 +845,11 @@ export class VerifyResultsComponent implements OnInit {
 
 
         let objAllMarking = _ClsSectionSemSubjectsMarkCompntDefn.filter(de => de.SubjectCategory == 'Marking');
+
+        let HowManyObj = objAllMarking.filter(o => o.SubjectType.toLowerCase() == 'elective');
+        if (HowManyObj.length > 0)
+          SelectHowManyOfElective = HowManyObj[0].SelectHowMany;
+
         let objAllCompulsory = objAllMarking.filter(de => de.SubjectType.toLowerCase() === 'compulsory');
 
         this.TotalMarkingSubjectFullMark = 0;
@@ -951,8 +957,8 @@ export class VerifyResultsComponent implements OnInit {
           //   }
           // })
           forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.SubjectType.localeCompare(b.SubjectType)); //a.ClassSubjectId - b.ClassSubjectId);// 
-
-          forEachSubjectOfStud.forEach(eachsubj => {
+          let ElectivePassed = 0;
+          forEachSubjectOfStud.forEach((eachsubj, subjIndx) => {
             var markPercent = 0;
             ForNonGrading["Remark"] = eachsubj.Remark;
             // if (ss.Student == '21-Niangliankim -A') {
@@ -974,8 +980,10 @@ export class VerifyResultsComponent implements OnInit {
               return;
             }
             else {
-
-              var failedInComponent = false;
+              // if (eachsubj.Student == '21-Niangliankim -A' && eachsubj.Subject.toLowerCase() == 'commerce') {
+              //   debugger;
+              // }
+              let failedInComponent = false;
 
               ///////////////deciding pass or failed.
               var subjectEachComponentPassmarkGreaterthanZero = _ClsSectionSemSubjectsMarkCompntDefn.filter(comp => comp.PassMark > 0
@@ -987,12 +995,34 @@ export class VerifyResultsComponent implements OnInit {
                 //markPercent += (componentobtainedmark[0].Marks / compmarkobtained.FullMark) * componentPercent;
                 if (currentComponentobtainedmark.length > 0) {
                   if (!failedInComponent && currentComponentobtainedmark[0].Marks < compmarkDefn.PassMark) {
-                    failedInComponent = true;
+
+                    //but if its subject type is eletive and already passed in other elective subject
+                    //then it is not a fail.
+                    if (eachsubj.SubjectType.toLowerCase() == 'elective' && ElectivePassed === SelectHowManyOfElective)
+                      failedInComponent = false;
+                    else
+                      failedInComponent = true;
+
                   }
+                  // else {
+                  //   if (eachsubj.SubjectType.toLowerCase() == 'elective')
+                  //     ElectivePassed += 1;
+                  // }
                 }
-                else
-                  failedInComponent = true;
+                else {
+                  if (eachsubj.SubjectType.toLowerCase() == 'elective' && ElectivePassed === SelectHowManyOfElective)
+                    failedInComponent = true;
+                  else if (eachsubj.SubjectType.toLowerCase() != 'elective')
+                    failedInComponent = true;
+
+                }
+
               })
+              //counting no. of pass subjects of elective
+              if (subjectEachComponentPassmarkGreaterthanZero.length > 0) {
+                if (eachsubj.SubjectType.toLowerCase() === 'elective' && !failedInComponent)
+                  ElectivePassed += 1;
+              }
               //////////////end of deciding pass or faild.
 
               ////////////Converting mark to 100
@@ -1080,14 +1110,30 @@ export class VerifyResultsComponent implements OnInit {
                   else
                     ForGrading[eachsubj.Subject] = '';
 
-                  if (this.GradingDisplayedColumns.indexOf(eachsubj.Subject) == -1 && eachsubj.Subject.length > 0)
+                  if (this.GradingDisplayedColumns.indexOf(eachsubj.Subject) === -1 && eachsubj.Subject.length > 0)
                     this.GradingDisplayedColumns.push(eachsubj.Subject)
                 }
                 else if (_subjectCategoryName == 'marking') {
                   //sumOfAllFullMark += totalFullMarkOfAllComp;
                   if (!failedInComponent)//if passed in all components;
-                    _statusFail = markObtained[0].Marks < _subjectPassMarkFullMarkFromDefn[0].OverallPassMark;
-
+                  {
+                    if (markObtained[0].Marks < _subjectPassMarkFullMarkFromDefn[0].OverallPassMark) {//failed
+                      _statusFail = true;
+                    }
+                    else {//passed
+                      if (eachsubj.SubjectType.toLowerCase() === 'elective')
+                        ElectivePassed += 1;
+                      _statusFail = false;
+                    }
+                    if (_statusFail && eachsubj.SubjectType.toLowerCase() === 'elective') {
+                      if (ElectivePassed === SelectHowManyOfElective)
+                        _statusFail = false;
+                      if (subjIndx < forEachSubjectOfStud.length - 1)//have not gone through all the subjects
+                      {
+                        _statusFail = false;
+                      }
+                    }
+                  }
                   //_statusFail = ((markObtained[0].Marks * 100) / _subjectPassMarkFullMark[0].FullMark) < _subjectPassMarkFullMark[0].OverallPassMark
                   if (this.FullMarkForAllSubjects100Pc)
                     ForNonGrading["FullMark"] = this.FullMarkForAllSubjects100Pc;
@@ -1109,13 +1155,17 @@ export class VerifyResultsComponent implements OnInit {
                     var _processedmark = '';
                     // if (markObtained[0].Marks > 0)
                     //   markConvertedto100Percent = ((markObtained[0].Marks * 100) / _subjectPassMarkFullMark[0].FullMark).toFixed(2);
-                    if (viewMarkPercent) {
-                      _processedmark = markPercent + "";
+                    // if (viewMarkPercent) {
+                    //   _processedmark = markPercent + "";
+                    // }
+                    // else
+                    _processedmark = markObtained[0].Marks ? markObtained[0].Marks : '-';
+                    if ((failedInComponent || _statusFail) && markObtained[0].Marks) {
+                      _processedmark = "(" + _processedmark + ")";
                     }
-                    else
-                      _processedmark = markObtained[0].Marks + "";
 
-                    ForNonGrading[eachsubj.Subject] = (failedInComponent || _statusFail) ? "(" + _processedmark + ")" : _processedmark;
+
+                    ForNonGrading[eachsubj.Subject] = _processedmark;// (failedInComponent || _statusFail) ? "(" + _processedmark + ")" : _processedmark;
                     ForNonGrading["Total Marks"] = (parseFloat(ForNonGrading["Total Marks"]) + parseFloat(markObtained[0].Marks));//.toFixed(2);
                     _totalPercent = (parseFloat(ForNonGrading["Total Percent"]) + markPercent)
                     // if (ss.Student == '22-Pauthianmung Hanghal -A')
@@ -1139,7 +1189,7 @@ export class VerifyResultsComponent implements OnInit {
                 ExamResultSubjectMarkData.SemesterId = pSemesterId;
                 ExamResultSubjectMarkData.StudentClassSubjectId = eachsubj.StudentClassSubjectId;
                 ExamResultSubjectMarkData.Grade = '';
-                ForNonGrading[eachsubj.Subject] = "(0)";
+                ForNonGrading[eachsubj.Subject] = '';
                 ForNonGrading["Total Marks"] = ForNonGrading["Total Marks"] ? ForNonGrading["Total Marks"] : 0;
                 ForNonGrading["Total Percent"] = ForNonGrading["Total Percent"] ? ForNonGrading["Total Percent"] : 0;
 
@@ -1226,14 +1276,14 @@ export class VerifyResultsComponent implements OnInit {
             this.ExamStudentSubjectResult.forEach((result: any, index) => {
               if (!_notToCalculateRankAndPercentage.includes(result.Division.toLowerCase())) {
                 //result["Percentage"] = ((result.Total / this.ClassFullMark[0].FullMark) * 100).toFixed(2);
-                if (previousTotal != result["Percentage"] && result["Percentage"]>0) {
+                if (previousTotal != result["Percentage"] && result["Percentage"] > 0) {
                   rankCount += 1;
                   result.Rank = rankCount;
                 }
-                else if (previousTotal == result["Percentage"] && result["Percentage"]>0) {
+                else if (previousTotal == result["Percentage"] && result["Percentage"] > 0) {
                   result.Rank = rankCount;
                 }
-                else if (result["Percentage"]==0)
+                else if (result["Percentage"] == 0)
                   result.Rank = 0;
                 previousTotal = result["Percentage"]
               }
