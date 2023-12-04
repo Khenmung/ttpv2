@@ -4,11 +4,15 @@
     margin: 0;
     padding: 0;
 }
-.mat-card{
+// .mat-card{
+//     position: relative;
+//     width: 99%;
+// }
+mat-card{
     position: relative;
-    width: 99%;
+    width:100%;
+    border-top-left-radius: 10px;
 }
-
 mat-form-field{
     margin-right: 20px;
     padding: 5px;

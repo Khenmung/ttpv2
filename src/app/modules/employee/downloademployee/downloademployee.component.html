@@ -1,0 +1,59 @@
+<div style="margin:15px;">
+    <div style="padding:25px 15px 10px 15px;">Download Employee Data</div>
+    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+    <form [formGroup]="studentSearchForm">
+        <mat-form-field appearance="outline" style="width: 150px;">
+            <mat-label>Class group</mat-label>
+            <mat-select formControlName="searchGroupId">
+                <mat-option [value]="Defaultvalue">select</mat-option>
+                <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassGroupId">
+                    {{item.GroupName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 250px;">
+            <mat-label>club/house/remarks</mat-label>
+            <mat-select formControlName="searchRemarkId">
+                <mat-option [value]="Defaultvalue">select</mat-option>
+                <mat-optgroup *ngFor="let item of Groups" [label]="item.name" [disabled]="item.disabled">
+                    <mat-option *ngFor="let list of item.group" [value]="list.MasterDataId">
+                        {{list.MasterDataName}}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-select>
+        </mat-form-field>
+        <button [disabled]="loading" matTooltip="search student" mat-raised-button color="accent"
+            (click)="GetStudent()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+        </button>
+    </form>
+    <br>
+    <div id="printsection">
+        <mat-table #table [dataSource]="dataSource" style="overflow: auto;">
+            <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+                <mat-header-cell *matHeaderCellDef style="width:auto; overflow-wrap: break-word;word-wrap: break-word;">
+                    {{disCol}}
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element" style="word-wrap: break-word;">
+                    {{element[disCol]}}
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" style="min-height: 40px;"></mat-row>
+        </mat-table>
+    </div>
+    <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,50]"></mat-paginator>
+    <div *ngIf="ELEMENT_DATA.length>0">
+        <button (click)="exportArray()" mat-raised-button color="accent">
+            <mat-icon>download</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="25"></mat-spinner>
+            </mat-icon>
+        </button>
+    </div>
+    <!-- </mat-card-content>
+</mat-card> -->
+</div>

@@ -8,6 +8,7 @@ import { StudenthistoryComponent } from './studenthistory/studenthistory.compone
 import { StudentDatadumpComponent } from './studentdatadump/studentdatadump.component';
 import { ExcelDataManagementComponent } from './excel-data-management/excel-data-management.component';
 import { AdmissionWithdrawnComponent } from './admissionwithdrawn/admissionwithdrawn.component';
+import { StudentstatusComponent } from './studentstatus/studentstatus.component';
 
 const routes: Routes = [
   {
@@ -32,5 +33,6 @@ export const AdmissionComponents = [
   AdmissionWithdrawnComponent,
   StudenthistoryComponent,
   StudentDatadumpComponent,
-  ExcelDataManagementComponent
+  ExcelDataManagementComponent,
+  StudentstatusComponent
 ]

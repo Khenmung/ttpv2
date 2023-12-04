@@ -989,12 +989,12 @@ export class VerifyResultsComponent implements OnInit {
               var subjectEachComponentPassmarkGreaterthanZero = _ClsSectionSemSubjectsMarkCompntDefn.filter(comp => comp.PassMark > 0
                 && comp.ClassSubjectId == eachsubj.ClassSubjectId)
               subjectEachComponentPassmarkGreaterthanZero.forEach(compmarkDefn => {
-                let currentComponentobtainedmark = AllComponentsMarkObtained.filter(eres => eres.StudentClassSubjectId == eachsubj.StudentClassSubjectId
+                let currentComponentobtainedmark = AllComponentsMarkObtained.find(eres => eres.StudentClassSubjectId == eachsubj.StudentClassSubjectId
                   && eres.ClassSubjectMarkComponentId == compmarkDefn.ClassSubjectMarkComponentId)
                 //var componentPercent = (compmarkobtained.FullMark / _subjectPassMarkFullMark[0].FullMark) * 100;
                 //markPercent += (componentobtainedmark[0].Marks / compmarkobtained.FullMark) * componentPercent;
-                if (currentComponentobtainedmark.length > 0) {
-                  if (!failedInComponent && currentComponentobtainedmark[0].Marks < compmarkDefn.PassMark) {
+                if (currentComponentobtainedmark) {
+                  if (!failedInComponent && currentComponentobtainedmark.Marks < compmarkDefn.PassMark) {
 
                     //but if its subject type is eletive and already passed in other elective subject
                     //then it is not a fail.
@@ -1010,9 +1010,9 @@ export class VerifyResultsComponent implements OnInit {
                   // }
                 }
                 else {
-                  if (eachsubj.SubjectType.toLowerCase() == 'elective' && ElectivePassed === SelectHowManyOfElective)
+                  if (eachsubj.SubjectType.toLowerCase() === 'elective' && ElectivePassed === SelectHowManyOfElective)
                     failedInComponent = true;
-                  else if (eachsubj.SubjectType.toLowerCase() != 'elective')
+                  else if (eachsubj.SubjectType.toLowerCase() !== 'elective')
                     failedInComponent = true;
 
                 }
@@ -1193,15 +1193,15 @@ export class VerifyResultsComponent implements OnInit {
                 ForNonGrading["Total Marks"] = ForNonGrading["Total Marks"] ? ForNonGrading["Total Marks"] : 0;
                 ForNonGrading["Total Percent"] = ForNonGrading["Total Percent"] ? ForNonGrading["Total Percent"] : 0;
 
-                if (this.displayedColumns.indexOf(eachsubj.Subject) == -1 && _subjectCategoryName == 'marking') {
+                if (this.displayedColumns.indexOf(eachsubj.Subject) === -1 && _subjectCategoryName === 'marking') {
                   this.displayedColumns.push(eachsubj.Subject);
                 }
-                if (this.GradingDisplayedColumns.indexOf(eachsubj.Subject) == -1 && _subjectCategoryName == 'grading') {
+                if (this.GradingDisplayedColumns.indexOf(eachsubj.Subject) === -1 && _subjectCategoryName === 'grading') {
                   this.GradingDisplayedColumns.push(eachsubj.Subject)
                 }
               }
               //preparing each subject for insert.
-              if (ExamResultSubjectMarkData != undefined)
+              if (ExamResultSubjectMarkData)
                 this.VerifiedResult.ExamResultSubjectMark.push(JSON.parse(JSON.stringify(ExamResultSubjectMarkData)))
             }
             // if (ss.Student == '22-Pauthianmung Hanghal -A') {

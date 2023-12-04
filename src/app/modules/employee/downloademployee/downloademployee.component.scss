@@ -1,0 +1,22 @@
+mat-form-field {
+    margin-right: 15px;
+    
+}
+
+mat-optgroup {
+    display         : block;
+    background-color: lightgray;
+
+}
+
+mat-option {
+    display         : block;
+    background-color: #ffffff;
+
+}
+mat-cell,mat-header-cell{
+    align-self: stretch;
+    border-right:1px solid lightgray;
+    padding: 10px;
+    flex:1 0 120px;
+}

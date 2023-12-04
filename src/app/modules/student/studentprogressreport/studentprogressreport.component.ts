@@ -506,25 +506,25 @@ export class StudentprogressreportComponent implements OnInit {
         this.NonGradedMarkResults = [];
         let result: any = [];
         data.value.forEach(item => {
-          let _exam = this.Exams.filter(e => e.ExamId == item.ExamId);
-          if (_exam.length > 0) {
-            item.Sequence = _exam[0].Sequence;
+          let _exam = this.Exams.find(e => e.ExamId === item.ExamId);
+          if (_exam) {
+            item.Sequence = _exam.Sequence;
             result.push(item);
           }
         });
         result = result.sort((a, b) => a.Sequence - b.Sequence);
-        result.map(eachexam => {
+        result.forEach(eachexam => {
           var examName = '';
-          var objSubject = this.StudentSubjects.filter(subject => subject.StudentClassSubjectId == eachexam.StudentClassSubjectId);
-          if (objSubject.length > 0) {
-            eachexam.Subject = objSubject[0].Subject;
-            var _subjectCategory = this.SubjectCategory.filter((f: any) => f.MasterDataId == objSubject[0].SubjectCategoryId);
-            var objExam = this.Exams.filter(exam => exam.ExamId == eachexam.ExamId);
-            if (objExam.length > 0) {
-              examName = objExam[0].ExamName;
+          var objSubject = this.StudentSubjects.find(subject => subject.StudentClassSubjectId === eachexam.StudentClassSubjectId);
+          if (objSubject) {
+            eachexam.Subject = objSubject.Subject;
+            const _subjectCategory = this.SubjectCategory.find((f: any) => f.MasterDataId === objSubject.SubjectCategoryId);
+            const objExam = this.Exams.find(exam => exam.ExamId === eachexam.ExamId);
+            if (objExam) {
+              examName = objExam.ExamName;
               eachexam.ExamName = examName;
               var currentSubjectrow: any[] = [];
-              if (_subjectCategory[0].MasterDataName.toLowerCase() == 'grading') {
+              if (_subjectCategory.MasterDataName.toLowerCase() == 'grading') {
                 if (this.GradedDisplayColumns.indexOf(examName) == -1)
                   this.GradedDisplayColumns.push(examName);
 
@@ -560,10 +560,10 @@ export class StudentprogressreportComponent implements OnInit {
           var _studentClassGroupObj = this.ClassGroupMappings.filter(m => m.ClassId == _classId)
           var _classGroupId = 0;
           if (_studentClassGroupObj.length > 0) {
-            var obj = this.ExamClassGroups.filter(ex => _studentClassGroupObj.findIndex(fi => fi.ClassGroupId == ex.ClassGroupId) > -1 &&
+            const obj = this.ExamClassGroups.find(ex => _studentClassGroupObj.findIndex(fi => fi.ClassGroupId == ex.ClassGroupId) > -1 &&
               ex.ExamId == objExam["ExamId"]);
-            if (obj.length > 0)
-              _classGroupId = obj[0].ClassGroupId;
+            if (obj)
+              _classGroupId = obj.ClassGroupId;
 
           }
           Object.keys(objExam).forEach((exam: any) => {
@@ -659,11 +659,11 @@ export class StudentprogressreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         data.value.forEach(e => {
-          var obj = this.ExamNames.filter(n => n.MasterDataId == e.ExamNameId);
-          if (obj.length > 0)
+          var obj = this.ExamNames.find(n => n.MasterDataId == e.ExamNameId);
+          if (obj)
             this.Exams.push({
               ExamId: e.ExamId,
-              ExamName: obj[0].MasterDataName,
+              ExamName: obj.MasterDataName,
               ClassGroupId: e.ClassGroupId,
               WithHeldResultStatusId: e.WithHeldResultStatusId,
               Sequence: e.Sequence

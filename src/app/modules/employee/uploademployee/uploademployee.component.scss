@@ -1,0 +1,15 @@
+.element-row {
+    min-height: 29px;
+}
+
+mat-header-cell,
+mat-cell {
+    border-right: 1px solid lightgray;
+}
+.mat-column-PID{
+    flex: 1 0 100px;
+}
+.mat-column-Name,.mat-column-FatherName,.mat-column-MotherName
+{
+    flex: 1 0 150px;
+}

@@ -1,4 +1,4 @@
-<mat-sidenav-container style="margin-top:20px ;" class="flex-container" autosize="true">
+<mat-sidenav-container class="flex-container" autosize="true">
     <mat-sidenav style="padding: 17px;" mode="side" opened (click)="toggleSidebar()">
         <div mat-menu-item *ngFor="let i of sideMenu" [routerLink]="[i.link]" 
             routerLinkActive="active-list-item" class="with-icon padded"

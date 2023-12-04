@@ -116,10 +116,10 @@ const routes: Routes = [
     path: 'employee/leave',
     loadChildren: () => import('./modules/LeaveManagement/leave-management.module').then(m => m.LeaveManagementModule)
   },
-  // {
-  //   path: 'employee/uploaddownload',
-  //   loadChildren: () => import('./modules/DataUploadDownload/generalreport.module').then(m=>m.GeneralreportModule)
-  // },
+  {
+    path: 'employee/uploaddownload',
+    loadChildren: () => import('./modules/employee/employee.module').then(m=>m.EmployeeModule)
+  },
   {
     path: 'employee/attendance',
     loadChildren: () => import('./modules/EmpAttendance/employeeattendance.module').then(m=>m.EmployeeattendanceModule)

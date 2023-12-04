@@ -60,12 +60,12 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent);
     --onHoverColor: blueviolet;
 }
 
-mat-card {
-    margin-left: 5px;
-    //width:80vw;
-    //min-height : 100vh;
+// mat-card {
+//     margin-left: 5px;
+//     //width:80vw;
+//     //min-height : 100vh;
 
-}
+// }
 
 .mat-ink-bar {
     background-color: lightgreen;
@@ -91,7 +91,7 @@ mat-card {
 
 @media only screen and (min-width: 769px) {
     mat-card {
-        margin-left: .5%;
+        margin-left: 5px;
         margin-right: 0px;
     }
 

@@ -1,6 +1,9 @@
-:host{
-    width:100%;
-}
-mat-tab-group,mat-card{
+:host {
     width: 100%;
+}
+
+mat-tab-group,
+mat-card {
+    width: 100%;
+    border-top-left-radius: 10px;
 }

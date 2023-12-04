@@ -142,7 +142,7 @@ export class ECheckComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetMasterData();
         this.GetEvaluationNames();
-        this.onebyOne();
+       
         this.GetEvaluationOption();
         // if (this.Classes.length == 0) {
         //   var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -219,7 +219,7 @@ export class ECheckComponent implements OnInit {
       .subscribe((data: any) => {
         debugger
         this.Result = [...data.value]
-        console.log("data.value", data.value);
+        //console.log("data.value", data.value);
         ////console.log("_classEvaluations", _classEvaluations);
         var item;
         _classEvaluations.forEach(clseval => {
@@ -879,7 +879,7 @@ export class ECheckComponent implements OnInit {
         else {
           this.contentservice.openSnackBar("No answer option found.", globalconstants.ActionText, globalconstants.BlueBackground);
         }
-        //this.loading = false; this.PageLoading=false;
+        this.onebyOne();
       });
 
   }
@@ -905,9 +905,9 @@ export class ECheckComponent implements OnInit {
         this.ClassEvaluations = [];
         if (data.value.length > 0) {
           data.value.forEach(clseval => {
-            var obj = this.QuestionnaireTypes.filter((f: any) => f.MasterDataId == clseval.QuestionnaireTypeId);
-            if (obj.length > 0) {
-              clseval.QuestionnaireType = obj[0].MasterDataName
+            const obj = this.QuestionnaireTypes.find((f: any) => f.MasterDataId == clseval.QuestionnaireTypeId);
+            if (obj) {
+              clseval.QuestionnaireType = obj.MasterDataName
               clseval.ClassEvaluationOptions = this.ClassEvaluationOptionList.filter((f: any) => f.ParentId == clseval.ClassEvaluationAnswerOptionParentId)
               this.ClassEvaluations.push(clseval);
             }

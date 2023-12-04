@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import moment from 'moment';
-import { Observable, startWith, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
@@ -211,12 +211,20 @@ export class EvaluationBulkComponent implements OnInit {
   ChangeEvaluationType() {
     debugger;
     let _searchEvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
-    let obj = this.ClassEvaluations.filter(f => f.EvaluationMasterId == _searchEvaluationMasterId);
-    if (obj.length > 0) {
-      this.OptionsForSelectedEvalType = this.ClassEvaluationOptionList.filter(o => o.ParentId == obj[0].ClassEvaluationAnswerOptionParentId)
+    let obj = this.ClassEvaluations.find(f => f.EvaluationMasterId == _searchEvaluationMasterId);
+    if (obj) {
+      this.OptionsForSelectedEvalType = this.ClassEvaluationOptionList.filter(o => o.ParentId == obj.ClassEvaluationAnswerOptionParentId)
     }
+    //var _classGroupId = 0;
+    this.FilteredExams = [];
+    var _evaluationexammapforselectedEvaluation = this.EvaluationExamMaps.filter(ee => ee.EvaluationMasterId == _searchEvaluationMasterId);
+    this.Exams.forEach(e => {
+      if (_evaluationexammapforselectedEvaluation.findIndex(ee => ee.ExamId == e.ExamId) > -1)
+        this.FilteredExams.push(e);
+    })
     this.ClearData();
   }
+  FilteredExams: any = [];
   ClearData() {
     this.StudentEvaluationList = [];
     this.RelevantEvaluationListForSelectedStudent = [];
@@ -580,8 +588,9 @@ export class EvaluationBulkComponent implements OnInit {
               SlNo = '';
             var existing: any[] = [];
             if (_statusId) {
+              //this will exclude text answers.
               existing = data.value.filter((f: any) => f.StudentClassId == eachstud.StudentClassId
-                // && f.StudentEvaluationAnswers && f.StudentEvaluationAnswers.length > 0
+                && f.StudentEvaluationAnswers && f.StudentEvaluationAnswers.length > 0
                 && f.ClassEvaluationId == clseval.ClassEvaluationId
                 && f.StudentEvaluationAnswers[0].ClassEvaluationAnswerOptionsId == _statusId
                 && f.StudentEvaluationAnswers[0].Active == 1);
@@ -884,15 +893,7 @@ export class EvaluationBulkComponent implements OnInit {
       });
 
   }
-  // GetAttribute() {
-  //   var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
 
-  //   var _obj = this.EvaluationMaster.filter((f:any) => f.EvaluationMasterId == _EvaluationMasterId)
-  //   if (_obj.length > 0) {
-  //     this.EvaluationEType = _obj[0].ETypeId;
-  //     this.ExamDurationMinutes = _obj[0].Duration;
-  //   }
-  // }
   StudentSubmittedEvaluations: any[] = [];
   CheckIfEvaluationWasSubmitted() {
     var studentobj = this.searchForm.get("searchStudentName")?.value;

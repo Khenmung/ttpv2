@@ -118,7 +118,7 @@ export class FeereceiptComponent implements OnInit {
     //this.calculateTotal();
     //this.dataSource = new MatTableDataSource<any>(this.BillDetail);
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.FEEPAYMENT);
+    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.FEERECEIPT);
     if (perObj.length > 0) {
       this.Permission = perObj[0].permission;
     }

@@ -1,29 +1,28 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, ViewChild } from '@angular/core';
+import { UntypedFormBuilder, Validators, UntypedFormGroup } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { SwUpdate } from '@angular/service-worker';
-import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
-import { List } from '../../../shared/interface';
+import { TokenStorageService } from '../../../_services/token-storage.service';
+import { TableUtil } from '../../../shared/TableUtil';
+import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { List } from '../../../shared/interface';
 import { SharedataService } from '../../../shared/sharedata.service';
-import { TokenStorageService } from '../../../_services/token-storage.service';
-import { ContentService } from '../../../shared/content.service';
-import { DatePipe } from '@angular/common';
+import { StudentActivity } from '../../admission/excel-data-management/StudentActivity';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 import { employee } from '../../employee/employee';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { StudentActivity } from './StudentActivity';
-import { MatTableDataSource } from '@angular/material/table';
-import { TableUtil } from '../../../shared/TableUtil';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-
 @Component({
-  selector: 'app-excel-data-management',
-  templateUrl: './excel-data-management.component.html',
-  styleUrls: ['./excel-data-management.component.scss']
+  selector: 'app-uploademployee',
+  templateUrl: './uploademployee.component.html',
+  styleUrls: ['./uploademployee.component.scss']
 })
-export class ExcelDataManagementComponent implements OnInit {
+export class UploademployeeComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   PageLoading = true;
@@ -110,7 +109,7 @@ export class ExcelDataManagementComponent implements OnInit {
         this.SelectedApplicationName = apps[0].appShortName;
       }
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+        if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
 
       });
@@ -657,24 +656,27 @@ export class ExcelDataManagementComponent implements OnInit {
       else if (element.PresentAddress == undefined)
         element.PresentAddress = '';
 
-      if (element.PermanentAddress.length > 256)
-        this.ErrorMessage += 'PermanentAddress must be less 257 characters at row ' + indx + '.\n';
-      else if (element.PermanentAddress == undefined)
+      if (!element.PermanentAddress)
         element.PermanentAddress = '';
+      else if (element.PermanentAddress.length > 256)
+        this.ErrorMessage += 'PermanentAddress must be less 257 characters at row ' + indx + '.\n';
 
-      if (element.PresentAddressPincode.length > 10)
-        this.ErrorMessage += 'PresentAddressPincode must be less 11 characters at row ' + indx + '.\n';
-      else if (element.PresentAddressPincode == undefined)
+
+      if (!element.PresentAddressPincode)
         element.PresentAddressPincode = '';
+      else if (element.PresentAddressPincode.length > 10)
+        this.ErrorMessage += 'PresentAddressPincode must be less 11 characters at row ' + indx + '.\n';
 
-      if (element.PermanentAddressPincode.length > 10)
-        this.ErrorMessage += 'PermanentAddressPincode must be less 11 characters at row ' + indx + '.\n';
-      else if (element.PermanentAddressPincode == undefined)
+      if (!element.PermanentAddressPincode)
         element.PermanentAddressPincode = '';
-      if (element.IDMark.length > 100)
-        this.ErrorMessage += 'Identification Mark must be less 100 characters at row ' + indx + '.\n';
-      else if (element.IDMark == undefined)
+      else if (element.PermanentAddressPincode.length > 10)
+        this.ErrorMessage += 'PermanentAddressPincode must be less 11 characters at row ' + indx + '.\n';
+
+      if (!element.IDMark)
         element.IDMark = '';
+      else if (element.IDMark.length > 100)
+        this.ErrorMessage += 'Identification Mark must be less 100 characters at row ' + indx + '.\n';
+
 
       element.OrgId = this.loginDetail[0]["orgId"];
       element.SubOrgId = this.SubOrgId;
@@ -1341,29 +1343,13 @@ export class ExcelDataManagementComponent implements OnInit {
     this.cleanDataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
   }
-  UploadStudentClass() {
-    this.SelectedUploadtype = "student class upload";
+  UploadEmployee() {
+
+    const obj = this.UploadTypes.find(f => f.MasterDataId === this.uploadForm.get("UploadTypeId")?.value);
+    if (obj)
+      this.SelectedUploadtype = obj.MasterDataName;
     let studentCls: any = [];
 
-    // this.AlreadyExistStudent.push({
-    //   Name: element.FirstName.trim(),
-    //   LastName: element.LastName.trim(),
-    //   FatherName: element.FatherName,
-    //   MotherName: element.MotherName,
-    //   PID: existingstudent[0].PID,
-    //   StudentId: +existingstudent[0].StudentId,
-    //   ClassId: element.ClassId,
-    //   SectionId: element.SectionId,
-    //   RollNo: element.RollNo ? element.RollNo : '',
-    //   StudentClassId: element.StudentClassId,
-    //   SemesterId: element.SemesterId,
-    //   IsCurrent: true,
-    //   FeeTypeId: _FeeTypeId,
-    //   BatchId: this.SelectedBatchId,
-    //   OrgId: this.loginDetail[0]["orgId"],
-    //   SubOrgId: this.SubOrgId,
-    //   Active: 1
-    // });
 
     this.AlreadyExistStudent.forEach(item => {
       if (item.StudentClassId == 0) {
@@ -1765,7 +1751,7 @@ export class ExcelDataManagementComponent implements OnInit {
     let list: List = new List();
     list.fields = ["FeeTypeId", "FeeTypeName", "Formula"];
     list.PageName = "SchoolFeeTypes";
-    list.filter = [ this.FilterOrgSubOrgNBatchId + " and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrgNBatchId + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {

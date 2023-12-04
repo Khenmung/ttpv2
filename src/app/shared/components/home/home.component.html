@@ -1,7 +1,7 @@
 <app-header *ngIf="displayDiv" #scroller [deviceXs]="deviceXs" (toggleSideBarForme)="sideBarToggler()"></app-header>
 
-<mat-sidenav-container style="margin-top:20px;" class="flex-container" autosize="true">
-    <mat-sidenav style="padding: 17px;" [(opened)]="opened" mode="side" (click)="toggleSidebar()">
+<mat-sidenav-container class="flex-container" autosize="true">
+    <mat-sidenav style="padding: 17px;border-top-right-radius: 10px;" [(opened)]="opened" mode="side" (click)="toggleSidebar()">
         <div mat-menu-item *ngFor="let i of sideMenu" [routerLink]="[i.link]" routerLinkActive="active-list-item"
             [routerLinkActiveOptions]="{exact: true}" (click)="busy($event)">
             <mat-icon [matTooltip]="i.label">{{ i.faIcon}}</mat-icon>&nbsp;
@@ -10,7 +10,7 @@
     </mat-sidenav>
     <mat-sidenav-content class="maincontent">
         <div style="display:flex;flex-direction: row;width:99%">
-            <button style="margin-left:5px; width:7px;border:1px solid white" (click)="toggleSidebar()">
+            <button style="margin-left:3px; width:4px;border:0px;background-color: whitesmoke;" (click)="toggleSidebar()">
             </button>
             <router-outlet></router-outlet>
         </div>

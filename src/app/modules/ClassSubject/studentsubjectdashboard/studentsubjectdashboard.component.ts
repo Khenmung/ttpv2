@@ -664,7 +664,7 @@ export class studentsubjectdashboardComponent implements OnInit {
           //console.log("row.ClassSubjectId", row.ClassSubjectId)
           //console.log("data to insert", row);
           this.contentservice.openSnackBar("Record already exists!", globalconstants.ActionText, globalconstants.RedBackground);
-          return;
+         // return;
         }
         else {
           this.rowCount += 1;

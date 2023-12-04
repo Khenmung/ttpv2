@@ -484,12 +484,13 @@ export class AddMasterDataComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    if (this.contentservice.checkSpecialChar(row.MasterDataName)) {
-      this.loading = false;
-      this.PageLoading = false;
-      this.contentservice.openSnackBar("Special characters should not be used.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
+    row.MasterDataName = row.MasterDataName.replace("'","''");
+    // if (this.contentservice.checkSpecialChar(row.MasterDataName)) {
+    //   this.loading = false;
+    //   this.PageLoading = false;
+    //   this.contentservice.openSnackBar("Special characters should not be used.", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
     if (row.MasterDataName.length == 0 || row.MasterDataName.length > 50) {
       this.loading = false;
       this.PageLoading = false;
