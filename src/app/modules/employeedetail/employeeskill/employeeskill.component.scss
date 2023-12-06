@@ -2,5 +2,14 @@
     justify-content: center;
 }
 .mat-column-EmpEmployeeSkillId{
-    flex: 0 0 70px;
+    flex: 1 0 70px;
 }
+.mat-column-SkillId{
+    flex: 1 0 300px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }
+  mat-form-field{
+    width:100%;
+  }

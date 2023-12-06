@@ -25,6 +25,7 @@ export class EmployeeAttendanceComponent implements OnInit {
   @ViewChild("table") mattable;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  Defaultvalue=0;
   EnableSave = true;
   Permission = 'deny';
   LoginUserDetail:any[]= [];

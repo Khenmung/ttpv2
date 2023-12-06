@@ -191,7 +191,7 @@
                     </mat-table>
                 </div>
                 <div style="margin-top:15px;margin-bottom:15px;">
-                    <mat-table #table [dataSource]="getDataSource(EvaluationArray[indx])" matSort
+                    <mat-table #table [dataSource]="getDataSource(StudentEvaluationArray[indx])" matSort
                         *ngIf="EvaluationDisplayedColumns.length>1">
                         <ng-container *ngFor="let disCol of EvaluationDisplayedColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">

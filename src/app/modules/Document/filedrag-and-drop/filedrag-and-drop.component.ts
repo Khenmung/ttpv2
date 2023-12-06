@@ -28,7 +28,7 @@ export class FiledragAndDropComponent implements OnInit {
     FileId: new UntypedFormControl(0),
     parentId: new UntypedFormControl(0),
     searchFileCategoryId: new UntypedFormControl(0),
-    searchDescription:new UntypedFormControl('')
+    searchDescription: new UntypedFormControl('')
   });
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
@@ -68,7 +68,11 @@ export class FiledragAndDropComponent implements OnInit {
   GetMasterData() {
     debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
-    this.FileCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.FILECATEGORY);
+    const selectedApplicationName = this.tokenStorage.getSelectedAppName();
+    if (selectedApplicationName === 'Education Management')
+      this.FileCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.FILECATEGORY);
+    else if (selectedApplicationName === 'Employee Management')
+      this.FileCategory = this.getDropDownData(globalconstants.MasterDefinitions.employee.COMPANYFILECATEGORY);
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
@@ -180,8 +184,8 @@ export class FiledragAndDropComponent implements OnInit {
     if (files.length === 0)
       return;
     debugger;
-    
-    var extensions = ["image/png","image/gif","image/jpeg", "text/plain","application/vnd.ms-excel", "application/pdf", "csv","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
+
+    var extensions = ["image/png", "image/gif", "image/jpeg", "text/plain", "application/vnd.ms-excel", "application/pdf", "csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
     var mimeType = files[0].type;
     //if (mimeType.match(/image\/*/) == null) {
     if (extensions.indexOf(mimeType) == -1) {
@@ -205,7 +209,7 @@ export class FiledragAndDropComponent implements OnInit {
   }
   uploadFile() {
     debugger;
-    this.loading=true;
+    this.loading = true;
     if (!this.selectedFile) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please select a file.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -226,13 +230,12 @@ export class FiledragAndDropComponent implements OnInit {
       this.contentservice.openSnackBar("Please enter folder name.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    if(_categoryId==0)
-    {
+    if (_categoryId == 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please select category.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    
+
     this.formdata = new FormData();
     this.formdata.append("description", _description);
     this.formdata.append("fileOrPhoto", "1");
@@ -262,7 +265,7 @@ export class FiledragAndDropComponent implements OnInit {
 
     this.loading = true;
     this.fileUploadService.postFiles(this.formdata).subscribe(res => {
-      this.loading = false; 
+      this.loading = false;
       this.PageLoading = false;
       this.contentservice.openSnackBar("Files uploaded successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
     });

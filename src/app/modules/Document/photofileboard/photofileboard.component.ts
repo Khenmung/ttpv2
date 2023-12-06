@@ -21,17 +21,17 @@ export class PhotofileboardComponent implements OnInit {
   components:any = [
     AlbumsComponent,
     FiledragAndDropComponent,
-    PhotobrowserComponent,
-    CarouselComponent,    
-    PhotosComponent    
+    // PhotobrowserComponent,
+    // CarouselComponent,    
+    // PhotosComponent    
   ];
   LoginUserDetail :any[]= [];
   tabNames = [
     { 'label': 'Plan', 'faIcon': '' },
     { 'label': 'Plan Feature', 'faIcon': '' },
-    { 'label': 'Plan n Master', 'faIcon': '' },
-    { 'label': 'Plan n Master', 'faIcon': '' },
-    { 'label': 'Plan n Master', 'faIcon': '' },
+    // { 'label': 'Plan n Master', 'faIcon': '' },
+    // { 'label': 'Plan n Master', 'faIcon': '' },
+    // { 'label': 'Plan n Master', 'faIcon': '' },
   ];
 
   Permissions =
@@ -66,21 +66,21 @@ export class PhotofileboardComponent implements OnInit {
     var comindx = this.components.indexOf(AlbumsComponent);
     this.GetComponents(perObj, comindx)
 
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.website.carousel)
-    var comindx = this.components.indexOf(CarouselComponent);
-    this.GetComponents(perObj, comindx)
+    // perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.website.carousel)
+    // var comindx = this.components.indexOf(CarouselComponent);
+    // this.GetComponents(perObj, comindx)
 
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.website.UploadImage)
     var comindx = this.components.indexOf(FiledragAndDropComponent);
     this.GetComponents(perObj, comindx)
 
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.website.photobrowser)
-    var comindx = this.components.indexOf(PhotobrowserComponent);
-    this.GetComponents(perObj, comindx)
+    // perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.website.photobrowser)
+    // var comindx = this.components.indexOf(PhotobrowserComponent);
+    // this.GetComponents(perObj, comindx)
 
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.website.photo)
-    var comindx = this.components.indexOf(PhotosComponent);
-    this.GetComponents(perObj, comindx)
+    // perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.website.photo)
+    // var comindx = this.components.indexOf(PhotosComponent);
+    // this.GetComponents(perObj, comindx)
     this.shareddata.ChangePermissionAtParent(this.Permissions.ParentPermission);
     //if(1){ //(this.Permissions.ParentPermission != 'deny') {
     setTimeout(() => {

@@ -450,8 +450,7 @@ export class PrintprogressreportComponent implements OnInit {
             }
           }
         })
-        if (this.StudentSubjects.length > 0)
-          this.CurrentClassGroups = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
+
 
         this.GetStudentSubjectResults();
       })
@@ -532,7 +531,8 @@ export class PrintprogressreportComponent implements OnInit {
         })
         //this.loading = false;
         //this.PageLoading = false;
-        this.GetGradedNonGradedSubjectMark();
+        this.GetClassEvaluations();
+
       });
   }
   BindSemesterSection() {
@@ -557,6 +557,7 @@ export class PrintprogressreportComponent implements OnInit {
     this.EvaluationArray = [];
   }
   EvaluationArray: any = [];
+  StudentEvaluationArray: any = [];
   GradedDataSourceArray: any[] = [];
   NonGradedDataSourceArray: any[] = [];
   ExamResultArray: any[] = [];
@@ -571,6 +572,7 @@ export class PrintprogressreportComponent implements OnInit {
     this.NonGradedDataSourceArray = [];
     this.ExamResultArray = [];
     this.EvaluationArray = [];
+    this.ReportCardSignatureArray = [];
     //filterStr += ' and StudentClassId eq ' + this.StudentClassId;
     filterStr += " and ClassId eq " + _classId
     if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
@@ -590,6 +592,8 @@ export class PrintprogressreportComponent implements OnInit {
     list.filter = [filterStr];
     this.dataservice.get(list)
       .subscribe((data: any) => {
+        //forkJoin([this.dataservice.get(list), this.GetClassEvaluations()])
+        // .subscribe((res: any) => {
 
         var studentsForSelectedClassSection = alasql("select distinct StudentClassId from ? ", [data.value]);
         this.CurrentStudent = [];
@@ -613,34 +617,34 @@ export class PrintprogressreportComponent implements OnInit {
 
             detailForEachStudent.forEach(eachexam => {
               var examName = '';
-              var objSubject = this.StudentSubjects.filter(subject => subject.StudentClassSubjectId == eachexam.StudentClassSubjectId);
-              if (objSubject.length > 0) {
-                eachexam.Subject = objSubject[0].Subject;
-                var _subjectCategory = this.SubjectCategory.filter((f: any) => f.MasterDataId == objSubject[0].SubjectCategoryId);
-                var objExam = this.Exams.filter(exam => exam.ExamId == eachexam.ExamId);
-                if (objExam.length > 0) {
-                  examName = objExam[0].ExamName;
+              var objSubject = this.StudentSubjects.find(subject => subject.StudentClassSubjectId === eachexam.StudentClassSubjectId);
+              if (objSubject) {
+                eachexam.Subject = objSubject.Subject;
+                var _subjectCategory = this.SubjectCategory.find((f: any) => f.MasterDataId === objSubject.SubjectCategoryId);
+                var objExam = this.Exams.find(exam => exam.ExamId === eachexam.ExamId);
+                if (objExam) {
+                  examName = objExam.ExamName;
                   eachexam.ExamName = examName;
-                  var currentSubjectrow: any[] = [];
-                  if (_subjectCategory[0].MasterDataName.toLowerCase() == 'grading') {
+                  var currentSubjectrow: any = {};
+                  if (_subjectCategory.MasterDataName.toLowerCase() == 'grading') {
                     if (this.GradedDisplayColumns.indexOf(examName) == -1)
                       this.GradedDisplayColumns.push(examName);
 
-                    currentSubjectrow = this.GradedMarksResults.filter((f: any) => f.Subject.toLowerCase() == eachexam["Subject"].toLowerCase());
-                    if (currentSubjectrow.length == 0)
+                    currentSubjectrow = this.GradedMarksResults.find((f: any) => f.Subject.toLowerCase() == eachexam["Subject"].toLowerCase());
+                    if (!currentSubjectrow)
                       this.GradedMarksResults.push({ "Subject": eachexam["Subject"], [examName]: eachexam["Grade"], "ExamId": eachexam.ExamId });
                     else
-                      currentSubjectrow[0][examName] = eachexam["Grade"]
+                      currentSubjectrow[examName] = eachexam["Grade"]
                   }
                   else {
                     if (this.NonGradedDisplayColumns.indexOf(examName) == -1)
                       this.NonGradedDisplayColumns.push(examName);
 
-                    currentSubjectrow = this.NonGradedMarkResults.filter((f: any) => f.Subject.toLowerCase() == eachexam["Subject"].toLowerCase());
-                    if (currentSubjectrow.length == 0)
+                    currentSubjectrow = this.NonGradedMarkResults.find((f: any) => f.Subject.toLowerCase() == eachexam["Subject"].toLowerCase());
+                    if (!currentSubjectrow)
                       this.NonGradedMarkResults.push({ "Subject": eachexam["Subject"], [examName]: eachexam["Marks"] });
                     else
-                      currentSubjectrow[0][examName] = eachexam["Marks"];
+                      currentSubjectrow[examName] = eachexam["Marks"];
                   }
                 }
               }
@@ -653,16 +657,16 @@ export class PrintprogressreportComponent implements OnInit {
               //if (obj.length > 0) {
               let _classId = this.tokenStorage.getClassId()!;
 
-              var _gradingSubjectCategoryId = this.SubjectCategory.filter((s: any) => s.MasterDataName.toLowerCase() == 'grading')[0].MasterDataId;
+              var _gradingSubjectCategoryId = this.SubjectCategory.find((s: any) => s.MasterDataName.toLowerCase() == 'grading').MasterDataId;
               var OverAllGradeRow = { 'Subject': this.OverAllGrade };
               //var obj = this.ExamClassGroups.filter(ex => ex.ExamId == objExam["ExamId"]);
               var _studentClassGroupObj = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
               var _classGroupId = 0;
               if (_studentClassGroupObj.length > 0) {
-                var obj = this.ExamClassGroups.filter(ex => _studentClassGroupObj.findIndex(fi => fi.ClassGroupId == ex.ClassGroupId) > -1 &&
+                var obj = this.ExamClassGroups.find(ex => _studentClassGroupObj.findIndex(fi => fi.ClassGroupId == ex.ClassGroupId) > -1 &&
                   ex.ExamId == objExam["ExamId"]);
-                if (obj.length > 0)
-                  _classGroupId = obj[0].ClassGroupId;
+                if (obj)
+                  _classGroupId = obj.ClassGroupId;
 
               }
               Object.keys(objExam).forEach((exam: any) => {
@@ -675,14 +679,14 @@ export class PrintprogressreportComponent implements OnInit {
                       && s.ExamId == objExam["ExamId"]);
 
                     this.GradedMarksResults.forEach(subj => {
-                      var objgradepoint = currentExamStudentGrades.filter(c => c.GradeName == subj[exam]);
-                      if (objgradepoint.length > 0)
-                        totalPoints += objgradepoint[0].Points;
+                      var objgradepoint = currentExamStudentGrades.find(c => c.GradeName == subj[exam]);
+                      if (objgradepoint)
+                        totalPoints += objgradepoint.Points;
                     })
                     var average = Math.round(totalPoints / this.GradedMarksResults.length);
-                    var overallgrade = currentExamStudentGrades.filter(overall => overall.Points == average)
-                    if (overallgrade.length > 0)
-                      OverAllGradeRow[exam] = overallgrade[0].GradeName;
+                    var overallgrade = currentExamStudentGrades.find(overall => overall.Points == average)
+                    if (overallgrade)
+                      OverAllGradeRow[exam] = overallgrade.GradeName;
                   }
                 }
               });
@@ -701,12 +705,96 @@ export class PrintprogressreportComponent implements OnInit {
           this.GradedDataSourceArray.push(JSON.parse(JSON.stringify(this.GradedMarksResults)));
 
         });
+        //this.GetClassEvaluations();
         this.loading = false;
         this.PageLoading = false;
 
 
 
       })
+  }
+  processEvaluationResult(data) {
+    debugger;
+    this.StudentEvaluationArray = [];
+    const students = alasql("select distinct StudentClassId from ?", [data]);
+    let _studentEvaluationdata: any = [];
+    //console.log("this.Result", this.Result);
+    var _distinctEvaluationType = alasql('select distinct EvaluationMasterId,EvaluationName from ?', [this.EvaluationExamMap]);
+    students.forEach(stud => {
+      _studentEvaluationdata = data.reduce((filtered, option) => {
+        if (option.StudentClassId === stud.StudentClassId) {
+          // var someNewValue = { name: option.name, newProperty: 'Foo' }
+          filtered.push(option);
+        }
+        return filtered;
+      }, []);
+      this.StudentEvaluationList = [];
+      _distinctEvaluationType.forEach(distinctevaluation => {
+
+        this.StudentEvaluationList.push({
+          Description: distinctevaluation.EvaluationName,
+          EvaluationName: distinctevaluation.EvaluationName,
+          EvaluationMasterId: distinctevaluation.EvaluationMasterId,
+          QuestionnaireType: 'Evaluation Master'
+        });
+
+        var _oneEvaluationMultipExam = this.EvaluationExamMap.filter((f: any) => f.EvaluationMasterId == distinctevaluation.EvaluationMasterId);
+        _oneEvaluationMultipExam = _oneEvaluationMultipExam.sort((a, b) => a.Sequence - b.Sequence)
+        _oneEvaluationMultipExam.forEach(evalExam => {
+
+          if (this.EvaluationDisplayedColumns.indexOf(evalExam.ExamName) == -1) {
+            this.EvaluationDisplayedColumns.push(evalExam.ExamName);
+          }
+          var _classEvaluationExamMap = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == evalExam.EvaluationMasterId
+            && !f.ExamId || f.ExamId == evalExam.ExamId);
+
+          _classEvaluationExamMap.forEach(clseval => {
+            var existing = _studentEvaluationdata.find((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId
+              && f.EvaluationExamMapId == evalExam.EvaluationExamMapId);
+            var ans: any[] = [];
+            if (existing) {
+              clseval.ClassEvaluationOptions.forEach(cls => {
+                var selected = existing.StudentEvaluationAnswers
+                  .findIndex(stud => stud.ClassEvaluationAnswerOptionsId == cls.ClassEvaluationAnswerOptionsId)
+                if (selected > -1)
+                  ans.push(cls.Title);
+              });
+              if (existing.AnswerText.length > 0 && ans.length == 0)
+                ans = existing.AnswerText
+            }
+
+            var _description = globalconstants.decodeSpecialChars(clseval.Description);
+            // var row = this.StudentEvaluationList.filter((f:any) => f["Description"] == _description
+            //   && f.EvaluationMasterId == clseval.EvaluationMasterId);
+            var row = this.StudentEvaluationList.filter((f: any) => f["ClassEvaluationId"] == clseval.ClassEvaluationId
+              && f.EvaluationMasterId == clseval.EvaluationMasterId);
+            if (row.length > 0) {
+              row[0][evalExam.ExamName] = ans;
+            }
+            else {
+              // if (existing.length > 0)
+              //   _textAnswer = existing[0].AnswerText
+              this.StudentEvaluationList.push({
+                ClassEvaluationId: clseval.ClassEvaluationId,
+                Description: _description,
+                [evalExam.ExamName]: ans,
+                ExamId: evalExam.ExamId,
+                EvaluationName: evalExam.EvaluationName,
+                EvaluationMasterId: evalExam.EvaluationMasterId,
+                QuestionnaireType: clseval.QuestionnaireType,
+                DisplayOrder: clseval.DisplayOrder
+              });
+            }
+          })
+        })//class evaluation
+        this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.DisplayOrder - b.DisplayOrder);
+        this.EvaluationArray.push(this.StudentEvaluationList);
+        //console.log("this.EvaluationArray", this.EvaluationArray);
+      })//each evaluation exam map
+
+      this.StudentEvaluationArray.push(this.EvaluationArray);
+    })
+    console.log("this.StudentEvaluationArray",this.StudentEvaluationArray)
   }
   getDataSource(data) {
     return new MatTableDataSource<any>(data);
@@ -857,12 +945,12 @@ export class PrintprogressreportComponent implements OnInit {
       .subscribe((data: any) => {
         this.EvaluationExamMap = [];
         debugger;
+        let _ExamName = '';
+        let _etypeId = this.ETypes.find(e => e.MasterDataName.toLowerCase() == 'student profile').MasterDataId;
         data.value.forEach(f => {
-          var _ExamName = '';
-          const obj = this.CurrentClassGroups.find(g => g.ClassGroupId === f.EvaluationMaster.ClassGroupId);
-          let _etypeId = this.ETypes.filter(e => e.MasterDataName.toLowerCase() == 'student profile')[0].MasterDataId;
-          if (obj && f.EvaluationMaster.Active && f.EvaluationMaster.ETypeId !== _etypeId) {
-            var objexam = this.Exams.find(e => e.ExamId === f.ExamId)
+          _ExamName = '';
+          if (f.EvaluationMaster.Active && f.EvaluationMaster.ETypeId !== _etypeId) {
+            let objexam = this.Exams.find(e => e.ExamId === f.ExamId)
             if (objexam) {
               _ExamName = objexam.ExamName;
               f.ClassGroupId = f.EvaluationMaster.ClassGroupId;
@@ -873,11 +961,14 @@ export class PrintprogressreportComponent implements OnInit {
             }
           }
         });
-        this.GetClassEvaluations();
-        ////console.log("this.EvaluationExamMap",this.EvaluationExamMap)
+        //this.GetClassEvaluations();
+        //console.log("this.EvaluationExamMap", this.EvaluationExamMap)
       })
   }
   GetClassEvaluations() {
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     let filterStr = this.filterOrgSubOrg;
     let list: List = new List();
     list.fields = [
@@ -889,6 +980,9 @@ export class PrintprogressreportComponent implements OnInit {
       'ClassEvaluationAnswerOptionParentId',
       'MultipleAnswer',
     ];
+    //const obj = this.CurrentClassGroups.find(g => g.ClassGroupId === f.EvaluationMaster.ClassGroupId);
+    this.CurrentClassGroups = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
+    this.EvaluationExamMap = this.EvaluationExamMap.filter(e => this.CurrentClassGroups.findIndex(i => i.ClassGroupId === e.EvaluationMaster.ClassGroupId) > -1)
     this.EvaluationExamMap.forEach(mapexam => {
       filterStr += " and EvaluationMasterId eq " + mapexam.EvaluationMasterId;
     })
@@ -899,7 +993,7 @@ export class PrintprogressreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.ClassEvaluations = [];
-        let _profileTypeId = this.ETypes.filter(e => e.MasterDataName.toLowerCase() == 'student profile')[0].MasterDataId;
+        let _profileTypeId = this.ETypes.find(e => e.MasterDataName.toLowerCase() == 'student profile').MasterDataId;
         var _data = data.value.filter((f: any) => f.EvaluationMaster.ETypeId !== _profileTypeId);
         if (_data.length > 0) {
           _data.forEach(clseval => {
@@ -911,14 +1005,14 @@ export class PrintprogressreportComponent implements OnInit {
               this.ClassEvaluations.push(clseval);
             }
           })
-          this.StartEvaluation();
         }
+        this.StartEvaluation(_classId, _semesterId, _sectionId);
         this.loading = false; this.PageLoading = false;
       })
   }
   StudentEvaluationList: any[] = [];
   Result: any[] = [];
-  StartEvaluation() {
+  StartEvaluation(pClassId, pSemesterId, pSectionId) {
     debugger;
     this.loading = true;
     this.StudentEvaluationList = [];
@@ -926,14 +1020,11 @@ export class PrintprogressreportComponent implements OnInit {
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
     this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
 
-    var _classId = this.searchForm.get("searchClassId")?.value;
-    var _sectionId = this.searchForm.get("searchSectionId")?.value;
-    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     let filterStr = this.filterOrgSubOrg;
 
-    filterStr += " and ClassId eq " + _classId;
-    if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
-    if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
+    filterStr += " and ClassId eq " + pClassId;
+    if (pSemesterId) filterStr += " and SemesterId eq " + pSemesterId;
+    if (pSectionId) filterStr += " and SectionId eq " + pSectionId;
     filterStr += " and Active eq 1";
 
     let list: List = new List();
@@ -941,6 +1032,9 @@ export class PrintprogressreportComponent implements OnInit {
       'StudentEvaluationResultId',
       'StudentClassId',
       'StudentId',
+      'ClassId',
+      'SectionId',
+      'SemesterId',
       'ClassEvaluationId',
       'EvaluationExamMapId',
       'AnswerText',
@@ -953,86 +1047,11 @@ export class PrintprogressreportComponent implements OnInit {
 
     list.filter = [filterStr];
     this.StudentEvaluationList = [];
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        debugger
-        this.Result = [...data.value]
-        var _distinctEvaluationType = alasql('select distinct EvaluationMasterId,EvaluationName from ?', [this.EvaluationExamMap])
-        this.StudentEvaluationList = [];
-        _distinctEvaluationType.forEach(distinctevaluation => {
+    this.dataservice.get(list).subscribe((data: any) => {
+      this.processEvaluationResult(data.value);
+      this.GetGradedNonGradedSubjectMark();
+    })
 
-          this.StudentEvaluationList.push({
-            Description: distinctevaluation.EvaluationName,
-            EvaluationName: distinctevaluation.EvaluationName,
-            EvaluationMasterId: distinctevaluation.EvaluationMasterId,
-            QuestionnaireType: 'Evaluation Master'
-          });
-
-          var _oneEvaluationMultipExam = this.EvaluationExamMap.filter((f: any) => f.EvaluationMasterId == distinctevaluation.EvaluationMasterId);
-          _oneEvaluationMultipExam = _oneEvaluationMultipExam.sort((a, b) => a.Sequence - b.Sequence)
-          _oneEvaluationMultipExam.forEach(evalExam => {
-
-            if (this.EvaluationDisplayedColumns.indexOf(evalExam.ExamName) == -1) {
-              this.EvaluationDisplayedColumns.push(evalExam.ExamName);
-            }
-            var _classEvaluationExamMap = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == evalExam.EvaluationMasterId
-              && f.ExamId == null || f.ExamId == 0 || f.ExamId == evalExam.ExamId);
-
-            _classEvaluationExamMap.forEach(clseval => {
-              var existing = this.Result.filter((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId
-                && f.EvaluationExamMapId == evalExam.EvaluationExamMapId);
-              var ans: any[] = [];
-              if (existing.length > 0) {
-                clseval.ClassEvaluationOptions.forEach(cls => {
-                  var selected = existing[0].StudentEvaluationAnswers
-                    .filter(stud => stud.ClassEvaluationAnswerOptionsId == cls.ClassEvaluationAnswerOptionsId)
-                  if (selected.length > 0)
-                    ans.push(cls.Title);
-                });
-                if (existing[0].AnswerText.length > 0 && ans.length == 0)
-                  ans = existing[0].AnswerText
-              }
-
-              var _description = globalconstants.decodeSpecialChars(clseval.Description);
-              // var row = this.StudentEvaluationList.filter((f:any) => f["Description"] == _description
-              //   && f.EvaluationMasterId == clseval.EvaluationMasterId);
-              var row = this.StudentEvaluationList.filter((f: any) => f["ClassEvaluationId"] == clseval.ClassEvaluationId
-                && f.EvaluationMasterId == clseval.EvaluationMasterId);
-              if (row.length > 0) {
-                row[0][evalExam.ExamName] = ans;
-              }
-              else {
-                // if (existing.length > 0)
-                //   _textAnswer = existing[0].AnswerText
-                this.StudentEvaluationList.push({
-                  ClassEvaluationId: clseval.ClassEvaluationId,
-                  Description: _description,
-                  [evalExam.ExamName]: ans,
-                  ExamId: evalExam.ExamId,
-                  EvaluationName: evalExam.EvaluationName,
-                  EvaluationMasterId: evalExam.EvaluationMasterId,
-                  QuestionnaireType: clseval.QuestionnaireType,
-                  DisplayOrder: clseval.DisplayOrder
-                });
-              }
-            })
-          })//class evaluation
-          this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.DisplayOrder - b.DisplayOrder);
-          this.EvaluationArray.push(this.StudentEvaluationList);
-        })//each evaluation exam map
-
-        // if (this.StudentEvaluationList.length == 0) {
-        //   this.StudentEvaluationList = [];
-        //   //this.contentservice.openSnackBar(globalconstants.NoEvaluationRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-        // }
-        // else
-        //   this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.DisplayOrder - b.DisplayOrder)
-        console.log("this.EvaluationArray",this.EvaluationArray)
-        //this.dataSourceEvaluation = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);
-        //this.dataSource.paginator = this.paginator;
-        this.loading = false;
-        this.PageLoading = false;
-      })
   }
   // ApplyVariables(studentInfo) {
   //   this.PrintHeading = [...this.AssessmentPrintHeading];

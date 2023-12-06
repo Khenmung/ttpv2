@@ -49,7 +49,6 @@
                     <mat-header-cell *matHeaderCellDef> From </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <mat-form-field appearance="outline" [style.width.px]="150">
-                            <mat-label>from</mat-label>
                             <input [(ngModel)]="element.FromDate" [value]="element.FromDate" matInput
                                 [matDatepicker]="FromDate" autocomplete="off">
                             <mat-datepicker-toggle matSuffix [for]="FromDate"></mat-datepicker-toggle>
@@ -61,7 +60,6 @@
                     <mat-header-cell *matHeaderCellDef> To </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <mat-form-field appearance="outline" [style.width.px]="150">
-                            <mat-label>To</mat-label>
                             <input [value]="element.ToDate" [(ngModel)]="element.ToDate" matInput
                                 [matDatepicker]="ToDate" autocomplete="off">
                             <mat-datepicker-toggle matSuffix [for]="ToDate"></mat-datepicker-toggle>

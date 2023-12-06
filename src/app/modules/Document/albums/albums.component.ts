@@ -43,7 +43,7 @@ export class AlbumsComponent implements OnInit {
   loading: boolean = false;
   error: string = '';
   searchForm: UntypedFormGroup;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   images: any[];
   Albums: any[] = [];
   AllAlbums: any[] = [];
@@ -114,7 +114,12 @@ export class AlbumsComponent implements OnInit {
   GetMasterData() {
     debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
-    this.FileCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.FILECATEGORY);
+    //console.log("this.tokenStorage.getSelectedAppName()",this.tokenStorage.getSelectedAppName())
+    const selectedApplicationName = this.tokenStorage.getSelectedAppName();
+    if (selectedApplicationName === 'Education Management')
+      this.FileCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.FILECATEGORY);
+    else if (selectedApplicationName === 'Employee Management')
+      this.FileCategory = this.getDropDownData(globalconstants.MasterDefinitions.employee.COMPANYFILECATEGORY);
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
@@ -193,9 +198,8 @@ export class AlbumsComponent implements OnInit {
     if (_categoryId) {
       folderSearch += " and CategoryId eq " + _categoryId;
     }
-    else
-    {
-      this.contentservice.openSnackBar("Please select file category.",globalconstants.ActionText,globalconstants.RedBackground);
+    else {
+      this.contentservice.openSnackBar("Please select file category.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
 
@@ -222,7 +226,7 @@ export class AlbumsComponent implements OnInit {
             let _category = '';
             if (obj.length > 0)
               _category = obj[0].MasterDataName;
-            
+
             return {
               FileId: item.FileId,
               FilePath: browsePath,

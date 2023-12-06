@@ -11,3 +11,6 @@ mat-form-field{
 .mat-column-FullName{
     flex: 1 1 200px;
 }
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }

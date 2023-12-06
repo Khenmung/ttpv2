@@ -170,7 +170,7 @@ export class globalconstants {
                 },
                 "employeeleave": {
                     "MYLEAVE": "my leave",
-                    "LEAVEREQUESTS":"leave requests",
+                    "LEAVEREQUESTS":"leave request",
                     "LEAVEPOLICY": "leave policy",                   
                     "LEAVE":"Leave",
                     "LEAVEBALANCE": "leave balance"
@@ -463,7 +463,8 @@ export class globalconstants {
                 "EMPLOYEEACTIVITYSESSION": "employee activity session",
                 "EMPLOYEEACTIVITYCATEGORY": "employee activity category",
                 "EMPLOYEEACTIVITY": "activity name",
-                "SALARYSLIPHEADER": "salary slip header"
+                "SALARYSLIPHEADER": "salary slip header",
+                "COMPANYFILECATEGORY":"company file category"
             },
             "StudentVariableName": [
                 "Today",

@@ -412,7 +412,7 @@
                                 autocomplete="Off" #Pincode matInput [maxlength]="100">
                         </mat-form-field>
                         <mat-form-field appearance="outline">
-                            <mat-label>Percentage obtained in last examination</mat-label>
+                            <mat-label>Last exam Percentage</mat-label>
                             <input id="txtLastSchoolPercentage" formControlName="LastSchoolPercentage" (blur)="OnBlur()"
                                 autocomplete="Off" #Pincode matInput [maxlength]="10">
                         </mat-form-field>
@@ -426,7 +426,7 @@
                         <mat-form-field appearance="outline">
                             <mat-label>Club</mat-label>
                             <mat-select id="ddClub" formControlName="Club" (selectionChange)="OnBlur()">
-                                <mat-option [value]="Defaultvalue">---</mat-option>
+                                <mat-option [value]="Defaultvalue">select</mat-option>
                                 <mat-option *ngFor="let p of Clubs" [value]="p.MasterDataId">
                                     {{p.MasterDataName}}
                                 </mat-option>

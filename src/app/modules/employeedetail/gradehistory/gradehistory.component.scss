@@ -1,7 +1,3 @@
-.mat-form-field {
-    width: 98%;
-    margin-right: 15px;
-}
 
 .mat-column-EmployeeGradeHistoryId {
     flex           : 0 0 60px;
@@ -39,3 +35,7 @@ mat-cell:first-of-type {
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-start {
     border-radius: 0px !important;
 }
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
+  }
+  
