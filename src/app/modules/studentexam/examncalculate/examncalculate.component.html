@@ -6,7 +6,7 @@
     <div style="padding: 15px;">
         <div style="flex-direction: row;">
             <form [formGroup]="searchForm">
-                <mat-form-field appearance="outline" [style.width.px]="200">
+                <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                     <mat-label>Exam</mat-label>
                     <mat-select formControlName="searchExamId" (selectionChange)="ClearData()">
                         <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
@@ -37,7 +37,31 @@
                     <mat-cell *matCellDef="let element">
                         {{element.PropertyName}}
                     </mat-cell>
-                </ng-container>              
+                </ng-container>
+                <ng-container matColumnDef="Formula">
+                    <mat-header-cell *matHeaderCellDef>Formula
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                           <textarea cols="50" rows="1" type="text" maxlength="255" matInput [(ngModel)]="element.Formula"
+                            (blur)="onBlur(element)"
+                           [value]="element.Formula" autocomplete="Off"></textarea>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container> 
+                <ng-container matColumnDef="CalculateCategoryId">
+                    <mat-header-cell *matHeaderCellDef>Calculate Category
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.CalculateCategoryId"
+                                [(ngModel)]="element.CalculateCategoryId">
+                                <mat-option *ngFor="let item of CalculateCategories" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>             
                 <ng-container matColumnDef="Active">
                     <mat-header-cell *matHeaderCellDef>Active &nbsp;
                         <mat-checkbox  (click)="$event.stopPropagation()" (change)="SelectAll($event)">

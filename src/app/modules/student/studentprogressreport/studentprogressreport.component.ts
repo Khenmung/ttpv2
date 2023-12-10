@@ -14,6 +14,7 @@ import { IStudentEvaluation } from '../../evaluation/e-mark/e-mark.component';
 import { SwUpdate } from '@angular/service-worker';
 import { SharedataService } from '../../../shared/sharedata.service';
 import * as moment from 'moment';
+import { evaluate } from 'mathjs';
 @Component({
   selector: 'app-studentprogressreport',
   templateUrl: './studentprogressreport.component.html',
@@ -365,6 +366,44 @@ export class StudentprogressreportComponent implements OnInit {
         this.GetStudentSubjectResults();
       })
   }
+  ExamNCalculateList: any = [];
+  GetExamNCalculates() {
+
+    var orgIdSearchstr = this.FilterOrgSubOrg + ' and Active eq true';
+    // let _examId = this.searchForm.get("searchExamId")?.value;
+    // orgIdSearchstr += " and ExamId eq " + _examId;
+
+    let list: List = new List();
+    list.fields = [
+      "ExamNCalculateId",
+      "ExamId",
+      "CalculateResultPropertyId",
+      "Formula",
+      "CalculateCategoryId",
+      "Active"
+    ];
+
+    list.PageName = "ExamnCalculates";
+    list.filter = [orgIdSearchstr];
+    this.ExamNCalculateList = [];
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        //debugger;
+        this.ExamNCalculateList = [];
+        data.value.forEach(item => {
+          let exResult = this.ResultSummaryText.find(f => f.MasterDataId === item.CalculateResultPropertyId);
+          let exCat = this.ResultSummaryCategory.find(f => f.MasterDataId === item.CalculateCategoryId);
+          if (exResult) {
+            item.PropertyName = exResult.MasterDataName;
+            if (exCat) {
+              item.CalculateCategoryName = exCat.MasterDataName;
+              this.ExamNCalculateList.push(item);
+            }
+          }
+        });
+        this.GetExams();
+      })
+  }
   ReportCardSignatures: any = [];
   ReportSignatureList: any = [];
   GetExamGrandTotal() {
@@ -395,21 +434,26 @@ export class StudentprogressreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.ExamStudentResults = [];
-        this.ExamStudentResults.push(
-          { "FirstCol": "Grand Total" },
-          { "FirstCol": "Percentage (%)" },
-          { "FirstCol": "Division" },
-          { "FirstCol": "Rank" },
-          { "FirstCol": "Attendance" },
-          { "FirstCol": "Class Strength" });
-        var ToInclude = [
-          { "ColumnName": "TotalMarks", "Display": "Grand Total" },
-          { "ColumnName": "MarkPercent", "Display": "Percentage (%)" },
-          { "ColumnName": "Division", "Display": "Division" },
-          { "ColumnName": "Rank", "Display": "Rank" },
-          { "ColumnName": "Attendance", "Display": "Attendance" },
-          { "ColumnName": "ClassStrength", "Display": "Class Strength" }
-        ]
+        const _resultSummary = this.ExamNCalculateList.filter(ataglance => ataglance.CalculateCategoryName.toLowerCase() === "result summary");
+        _resultSummary.forEach(item => {
+          this.ExamStudentResults.push(
+            { "FirstCol": item.PropertyName })
+        })
+        // this.ExamStudentResults.push(
+        //   { "FirstCol": "Grand Total" },
+        //   { "FirstCol": "Percentage (%)" },
+        //   { "FirstCol": "Division" },
+        //   { "FirstCol": "Rank" },
+        //   { "FirstCol": "Attendance" },
+        //   { "FirstCol": "Class Strength" });
+        // var ToInclude = [
+        //   { "ColumnName": "TotalMarks", "Display": "Grand Total" },
+        //   { "ColumnName": "MarkPercent", "Display": "Percentage (%)" },
+        //   { "ColumnName": "Division", "Display": "Division" },
+        //   { "ColumnName": "Rank", "Display": "Rank" },
+        //   { "ColumnName": "Attendance", "Display": "Attendance" },
+        //   { "ColumnName": "ClassStrength", "Display": "Class Strength" }
+        // ]
         this.ReportCardSignatures.forEach(item => {
           this.ReportSignatureList.push({ 'FirstCol': item.MasterDataName })
         })
@@ -422,21 +466,42 @@ export class StudentprogressreportComponent implements OnInit {
           }
         });
         result = result.sort((a, b) => a.Sequence - b.Sequence);
+
+        //////////////
+        let _ValueForFormula: any = [];
+        var _ExamName = '';
         result.forEach(eachexam => {
-          var _ExamName = '';
-          var obj = this.Exams.filter(exam => exam.ExamId == eachexam.ExamId);
-          if (obj.length > 0) {
-            _ExamName = obj[0].ExamName;
+          _ValueForFormula = [];
+          _ExamName = '';
+          var obj = this.Exams.find(exam => exam.ExamId == eachexam.ExamId);
+          if (obj) {
+            _ExamName = obj.ExamName;
             eachexam.ExamName = _ExamName;
             if (this.DisplayColumns.indexOf(_ExamName) == -1)
               this.DisplayColumns.push(_ExamName);
             Object.keys(eachexam).forEach(col => {
-              var objcolumn = ToInclude.filter(include => include.ColumnName == col);
-              if (objcolumn.length > 0) {
-                var resultrow = this.ExamStudentResults.filter((f: any) => f.FirstCol == objcolumn[0].Display)
-                resultrow[0][_ExamName] = eachexam[objcolumn[0].ColumnName]
-              }
+              _ValueForFormula.push({ "Text": "[" + col + "]", "Val": eachexam[col] });
             })
+
+            //Object.keys(eachexam).forEach(col => {
+            _resultSummary.forEach(summary => {
+              let resultrow = this.ExamStudentResults.find((f: any) => f.FirstCol === summary.PropertyName)
+              let _formula = summary.Formula;
+              _ValueForFormula.forEach(f => {
+                _formula = _formula.replaceAll(f.Text, f.Val);
+              })
+              try {
+                let objresult = evaluate(_formula);
+                if (objresult)
+                  resultrow[_ExamName] = objresult.toFixed(0);
+              }
+              catch
+              {
+                resultrow[_ExamName] = _formula;
+              }
+
+            });
+
             this.ReportSignatureList.forEach(item => {
               if (this.SignatureColumns.indexOf(_ExamName) == -1)
                 this.SignatureColumns.push(_ExamName);
@@ -616,7 +681,8 @@ export class StudentprogressreportComponent implements OnInit {
     this.GetExamGrandTotal();
 
   }
-
+  ResultSummaryText: any = [];
+  ResultSummaryCategory: any = [];
   ETypes: any = [];
   GetMasterData() {
     debugger;
@@ -631,6 +697,8 @@ export class StudentprogressreportComponent implements OnInit {
     this.SubjectCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTCATEGORY);
     this.QuestionnaireTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.QUESTIONNAIRETYPE);
     this.ETypes = this.getDropDownData(globalconstants.MasterDefinitions.school.EVALUATIONTYPE);
+    this.ResultSummaryText = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMnCalculate);
+    this.ResultSummaryCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CALCULATECATEGORIES);
     this.Batches = this.tokenStorage.getBatches()!;
     this.CommonHeader = this.getDropDownData(globalconstants.MasterDefinitions.common.COMMONPRINTHEADING);
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -643,7 +711,8 @@ export class StudentprogressreportComponent implements OnInit {
       .subscribe((data: any) => {
         this.ClassGroups = [...data.value];
       });
-    this.GetExams();
+    this.GetExamNCalculates();
+
     this.GetOrganization();
 
   }

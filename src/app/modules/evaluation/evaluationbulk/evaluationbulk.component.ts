@@ -63,7 +63,7 @@ export class EvaluationBulkComponent implements OnInit {
   Students: any[] = [];
   EvaluationPlanColumns = [
     'EvaluationName',
-    'ClassGroup',
+    //'ClassGroup',
     'ExamName',
     'Action1'
   ];
@@ -532,7 +532,7 @@ export class EvaluationBulkComponent implements OnInit {
     //     mapping.Action = false;
     // })
     var _classEvaluations = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == row[0].EvaluationMasterId
-      && (f.ExamId == 0 || f.ExamId == null || f.ExamId == row[0].ExamId));
+      && (!f.ExamId || f.ExamId == row[0].ExamId));
     // //delete row all except selected one
     // for (var i = 0; i < this.RelevantEvaluationListForSelectedStudent.length; i++) {
     //   if (this.RelevantEvaluationListForSelectedStudent[i].EvaluationExamMapId != row.EvaluationExamMapId) {
@@ -540,7 +540,11 @@ export class EvaluationBulkComponent implements OnInit {
     //     i--;
     //   }
     // }
-    this.EvaluationForSelectedClassSemesterSection = this.EvaluationForSelectedClassSemesterSection.filter(f => f.EvaluationMasterId == _EvaluationMasterId)
+    if (_examId)
+      this.EvaluationForSelectedClassSemesterSection = this.EvaluationForSelectedClassSemesterSection.filter(f => f.EvaluationMasterId == _EvaluationMasterId
+        && f.ExamId === _examId)
+    else
+      this.EvaluationForSelectedClassSemesterSection = this.EvaluationForSelectedClassSemesterSection.filter(f => f.EvaluationMasterId == _EvaluationMasterId)
     this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.EvaluationForSelectedClassSemesterSection);
 
     let list: List = new List();
@@ -917,6 +921,7 @@ export class EvaluationBulkComponent implements OnInit {
     return this.dataservice.get(list);
   }
   EvaluationForSelectedClassSemesterSection: any[] = [];
+  EvaluationForDD: any = [];
   GetEvaluationMapping() {
     debugger;
     this.loading = true;
@@ -937,6 +942,11 @@ export class EvaluationBulkComponent implements OnInit {
     var _classgroupsOfSelectedSemesterSection = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
 
     this.EvaluationForSelectedClassSemesterSection = this.EvaluationExamMaps.filter((f: any) => _classgroupsOfSelectedSemesterSection.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
+    this.EvaluationForDD = [];
+    this.EvaluationForSelectedClassSemesterSection.forEach(item => {
+      if (!this.EvaluationForDD.find(d => d.EvaluationName == item.EvaluationName))
+        this.EvaluationForDD.push(item);
+    })
     this.loading = false;
   }
   GetEvaluationOption() {

@@ -12,7 +12,7 @@ import { StudentprogressreportComponent } from './studentprogressreport/studentp
 import { AuthGuard } from '../../guards/auth.guard';
 import { HomeComponent } from '../../shared/components/home/home.component';
 import { StudentviewComponent } from './studentview/studentview.component';
-import { EActComponent } from '../evaluation/e-act/e-act.component';
+//import { EActComponent } from '../evaluation/e-act/e-act.component';
 
 const routes: Routes = [
   {
@@ -43,7 +43,6 @@ export const StudentComponents = [
   StudentattendancereportComponent,
   StudentboardComponent,
   StudentprogressreportComponent,
-  EActComponent,
   StudentprogressreportComponent,
   StudentviewComponent
 ]

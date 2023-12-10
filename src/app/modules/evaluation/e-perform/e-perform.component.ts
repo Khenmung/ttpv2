@@ -12,12 +12,13 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
+import { filter } from 'mathjs';
 @Component({
-  selector: 'e-ActApp',
-  templateUrl: './e-act.component.html',
-  styleUrls: ['./e-act.component.scss']
+  selector: 'e-PerformApp',
+  templateUrl: './e-perform.component.html',
+  styleUrls: ['./e-perform.component.scss']
 })
-export class EActComponent implements OnInit {
+export class EPerformComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   //EvaluationEType: any = null;
@@ -148,7 +149,7 @@ export class EActComponent implements OnInit {
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EACT)
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EPERFORM)
       if (perObj.length > 0) {
         this.Permission = perObj[0].permission;
       }
@@ -709,7 +710,7 @@ export class EActComponent implements OnInit {
                   this.Classes.push(m);
                 }
               });
-              
+
               if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
                 let currentLoginStudent = this.StudentList.filter(s => s.StudentId == this.StudentId);
                 if (currentLoginStudent.length > 0) {
@@ -725,8 +726,13 @@ export class EActComponent implements OnInit {
                   var _classgroupsOfSelectedStudent = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
                   // var _EvaluationExamMapSelectedStudentObj: any[] = [];
 
-                  this.EvaluationForSelectedClassSemesterSection = this.EvaluationExamMaps.filter((f: any) => _classgroupsOfSelectedStudent.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
-                  this.ExamsForDD = this.Exams.filter(e => this.EvaluationForSelectedClassSemesterSection.map(s => s.ExamId).indexOf(e.ExamId) > -1);
+                  let _evaluations = this.EvaluationExamMaps.filter((f: any) => _classgroupsOfSelectedStudent.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
+                  this.EvaluationForSelectedClassSemesterSection = [];
+                  _evaluations.forEach((item) => {
+                    if (!this.EvaluationForSelectedClassSemesterSection.find(d => d.EvaluationName === item.EvaluationName))
+                      this.EvaluationForSelectedClassSemesterSection.push(item);
+                  })
+                  this.ExamsForDD = this.Exams.filter(e => _evaluations.map(s => s.ExamId).indexOf(e.ExamId) > -1);
                   this.searchForm.patchValue(
                     {
                       "searchClassId": _classId,
@@ -874,7 +880,7 @@ export class EActComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
 
-        let result:any =[];
+        let result: any = [];
 
         data.value.forEach(item => {
           let obj = this.ETypes.filter(t => t.MasterDataId == item.ETypeId)
@@ -1195,8 +1201,13 @@ export class EActComponent implements OnInit {
     this.Students = this.Students.sort((a, b) => a.RollNo.localeCompare(b.RollNo))
 
     var _classgroupsOfSelectedStudent = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, pClassId, pSectionId, pSemesterId);
-    this.EvaluationForSelectedClassSemesterSection = this.EvaluationExamMaps.filter((f: any) => _classgroupsOfSelectedStudent.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
-    this.ExamsForDD = this.Exams.filter(e => this.EvaluationForSelectedClassSemesterSection.map(s => s.ExamId).indexOf(e.ExamId) > -1);
+    let _evaluations = this.EvaluationExamMaps.filter((f: any) => _classgroupsOfSelectedStudent.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
+    this.EvaluationForSelectedClassSemesterSection = [];
+    _evaluations.forEach((item) => {
+      if (!this.EvaluationForSelectedClassSemesterSection.find(d => d.EvaluationName === item.EvaluationName))
+        this.EvaluationForSelectedClassSemesterSection.push(item);
+    })
+    this.ExamsForDD = this.Exams.filter(e => _evaluations.map(s => s.ExamId).indexOf(e.ExamId) > -1);
 
   }
   GetStudents() {

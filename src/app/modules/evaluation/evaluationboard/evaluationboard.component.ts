@@ -7,9 +7,9 @@ import { ClassEvaluationComponent } from '../classevaluation/classevaluation.com
 import { EvaluationExamMapComponent } from '../evaluationexammap/EvaluationExamMap.component';
 import { EvaluationMasterComponent } from '../evaluationmaster/evaluationmaster.component';
 import { EMarkComponent } from '../e-mark/e-mark.component';
-import { EActComponent } from '../e-act/e-act.component';
 import { EvaluationBulkComponent } from '../evaluationbulk/evaluationbulk.component';
 import { ECheckComponent } from '../e-check/e-check.component';
+import { EPerformComponent } from '../e-perform/e-perform.component';
 
 @Component({
   selector: 'app-evaluationboard',
@@ -22,7 +22,7 @@ export class EvaluationboardComponent implements AfterViewInit {
     EvaluationMasterComponent,
     ClassEvaluationComponent,
     EvaluationExamMapComponent,
-    EActComponent,
+    EPerformComponent,
     EvaluationBulkComponent,
     ECheckComponent,
     EMarkComponent    
@@ -67,8 +67,8 @@ export class EvaluationboardComponent implements AfterViewInit {
       this.Permissions.ParentPermission = perObj[0].permission;
     }
 
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EACT);
-    var comindx = this.components.indexOf(EActComponent);
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EPERFORM);
+    var comindx = this.components.indexOf(EPerformComponent);
     this.AddRemoveComponent(perObj, comindx);
 
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EVALUATION.EVALUATION);

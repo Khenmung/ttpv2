@@ -40,14 +40,19 @@ export class ExamncalculateComponent implements OnInit {
   ExamNCalculateData = {
     ExamNCalculateId: 0,
     ExamId: 0,
+    CalculateCategoryId: 0,
+    Formula: '',
     CalculateResultPropertyId: 0,
-    OrgId: 0, SubOrgId: 0,
+    OrgId: 0,
+    SubOrgId: 0,
     Active: false
   };
   MonthYears: any[] = [];
   displayedColumns = [
     "ExamNCalculateId",
     "PropertyName",
+    "CalculateCategoryId",
+    "Formula",
     "Active",
     "Action"
   ];
@@ -160,6 +165,8 @@ export class ExamncalculateComponent implements OnInit {
           this.ExamNCalculateData.Active = row.Active;
           this.ExamNCalculateData.ExamId = this.searchForm.get("searchExamId")?.value;
           this.ExamNCalculateData.CalculateResultPropertyId = row.CalculateResultPropertyId;
+          this.ExamNCalculateData.Formula = row.Formula;
+          this.ExamNCalculateData.CalculateCategoryId = row.CalculateCategoryId;
           this.ExamNCalculateData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ExamNCalculateData.SubOrgId = this.SubOrgId;
 
@@ -244,7 +251,14 @@ export class ExamncalculateComponent implements OnInit {
       this.ExamReleaseResult = examObj[0].ReleaseResult == 1 ? true : false;
     }
     let list: List = new List();
-    list.fields = ["*"];
+    list.fields = [
+      "ExamNCalculateId",
+      "ExamId",
+      "CalculateResultPropertyId",
+      "Formula",
+      "CalculateCategoryId",
+      "Active"
+    ];
 
     list.PageName = this.ExamNCalculateListName;
     list.filter = [filterStr];
@@ -260,6 +274,8 @@ export class ExamncalculateComponent implements OnInit {
             this.ExamNCalculateList.push({
               ExamNCalculateId: objExisting[0].ExamNCalculateId,
               ExamId: objExisting[0].ExamId,
+              Formula: objExisting[0].Formula,
+              CalculateCategoryId: objExisting[0].CalculateCategoryId,
               CalculateResultPropertyId: objExisting[0].CalculateResultPropertyId,
               PropertyName: f.MasterDataName,
               Action: false,
@@ -271,6 +287,8 @@ export class ExamncalculateComponent implements OnInit {
             this.ExamNCalculateList.push({
               ExamNCalculateId: 0,
               ExamId: _examId,
+              Formula: '',
+              CalculateCategoryId: 0,
               PropertyName: f.MasterDataName,
               CalculateResultPropertyId: f.MasterDataId,
               Action: false,
@@ -305,16 +323,18 @@ export class ExamncalculateComponent implements OnInit {
     })
   }
   ExamResultProperties: any[] = [];
+  CalculateCategories: any = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.ExamStatus = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSTATUS)
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME)
-    this.ExamResultProperties = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMRESULTPROPERTY)
+    this.ExamResultProperties = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMnCalculate)
+    this.CalculateCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.CALCULATECATEGORIES)
 
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-      if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+      if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.loading = false; this.PageLoading = false;
     });
@@ -340,6 +360,8 @@ export interface IExamNCalculate {
   ExamId: number;
   CalculateResultPropertyId: number;
   PropertyName: string;
+  Formula: string;
+  CalculateCategoryId: number;
   Active: boolean;
   Action: boolean;
 }

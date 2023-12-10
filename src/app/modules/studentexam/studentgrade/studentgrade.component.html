@@ -161,7 +161,29 @@
                         </mat-form-field>
                     </mat-cell>
                 </ng-container>
-
+                <ng-container matColumnDef="ResultCategoryId">
+                    <mat-header-cell *matHeaderCellDef>Result Category
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select (selectionChange)="onBlur(element)" [value]="element.ResultCategoryId"
+                                [(ngModel)]="element.ResultCategoryId">
+                                <mat-option *ngFor="let item of ResultCategories" [value]="item.MasterDataId">
+                                    {{item.MasterDataName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="AssignRank">
+                    <mat-header-cell *matHeaderCellDef>
+                     Assign Rank
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="updateAssignRank(element,$event)"
+                            [checked]="element.AssignRank">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="Active">
                     <mat-header-cell *matHeaderCellDef>
                         <mat-checkbox matTooltip="select all" (click)="$event.stopPropagation()"

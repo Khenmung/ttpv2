@@ -10,6 +10,7 @@ import { EMarkComponent } from './e-mark/e-mark.component';
 import { QuestionnexamComponent } from './questionnexam/questionnexam.component';
 import { EvaluationBulkComponent } from './evaluationbulk/evaluationbulk.component';
 import { ECheckComponent } from './e-check/e-check.component';
+import { EPerformComponent } from './e-perform/e-perform.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,7 @@ export const EvaluationComponents = [
   EMarkComponent,
   QuestionnexamComponent,
   EvaluationBulkComponent,
+  EPerformComponent,
   ECheckComponent
 ];
 

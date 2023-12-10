@@ -1,3 +1,17 @@
+
+.mat-column-ExamNCalculateId,
+.mat-column-Active,
+.mat-column-Action{
+    flex:1 0 80px;
+}
+.mat-column-PropertyName,
+.mat-column-Formula
+{
+    flex:1 0 200px;
+}
+.mat-column-CalculateCategoryId{
+    flex: 1 0 100px;
+}
 mat-form-field{
-    margin-right:15px;
+    width:100%;
 }

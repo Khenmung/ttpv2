@@ -177,7 +177,7 @@ export class ContentService implements OnInit {
     //+ ' and BatchId eq ' + this.SelectedBatchId;
     let list: List = new List();
 
-    list.fields = ["StudentGradeId,ExamId,GradeName,ClassGroupId,SubjectCategoryId,Formula,Sequence,Points"];
+    list.fields = ["StudentGradeId,ExamId,GradeName,ClassGroupId,SubjectCategoryId,Formula,Sequence,Points,AssignRank,ResultCategoryId"];
     list.PageName = "StudentGrades";
     list.filter = [pOrgSub + " and Active eq 1"];
     return this.dataservice.get(list)

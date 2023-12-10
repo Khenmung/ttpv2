@@ -26,7 +26,7 @@ export class EvaluationExamMapComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   EvaluationEType: any = null;
   EvaluationMasterId = 0;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   StudentClassId = 0;
@@ -34,22 +34,22 @@ export class EvaluationExamMapComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  EvaluationExamMapList: IEvaluationExamMap[]= [];
+  EvaluationExamMapList: IEvaluationExamMap[] = [];
   //ExamModes :any[]= [];
-  ExamNames :any[]= [];
-  Sessions :any[]= [];
+  ExamNames: any[] = [];
+  Sessions: any[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
   //SelectedClassSubjects :any[]= [];
   //ClassGroups :any[]= [];
-  ClassGroupMappings :any[]= [];
+  ClassGroupMappings: any[] = [];
   //ClassSubjects :any[]= [];
-  Classes :any[]= [];
-  RatingOptions :any[]= [];
+  Classes: any[] = [];
+  RatingOptions: any[] = [];
   filteredOptions: Observable<IEvaluationExamMap[]>;
   dataSource: MatTableDataSource<IEvaluationExamMap>;
-  allMasterData :any[]= [];
-  EvaluationNames :any[]= [];
-  Exams :any[]= [];
+  allMasterData: any[] = [];
+  EvaluationMasters: any[] = [];
+  Exams: any[] = [];
   EvaluationExamMapData = {
     EvaluationExamMapId: 0,
     //ClassGroupId: 0,
@@ -59,7 +59,7 @@ export class EvaluationExamMapComponent implements OnInit {
     OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
-  EvaluationExamMapForUpdate :any[]= [];
+  EvaluationExamMapForUpdate: any[] = [];
   displayedColumns = [
     'EvaluationExamMapId',
     'EvaluationName',
@@ -69,7 +69,7 @@ export class EvaluationExamMapComponent implements OnInit {
     'Active',
     'Action'
   ];
-  ClassGroups :any[]= [];
+  ClassGroups: any[] = [];
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
     private contentservice: ContentService,
@@ -104,7 +104,7 @@ export class EvaluationExamMapComponent implements OnInit {
     this.NotifyParent.emit(value);
 
   }
-  ExamClassGroups :any[]= [];
+  ExamClassGroups: any[] = [];
   PageLoad() {
     debugger;
     //console.log("EvaluationEType", this.EvaluationEType)
@@ -126,8 +126,8 @@ export class EvaluationExamMapComponent implements OnInit {
         this.GetMasterData();
         if (this.Classes.length == 0) {
           this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-            if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-            this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+            if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+            this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
           });
         }
 
@@ -187,7 +187,7 @@ export class EvaluationExamMapComponent implements OnInit {
       //ClassSubjectId: 0,
       ExamId: 0,
       EvaluationMasterId: _EvaluationMasterId,
-      EvaluationName: this.EvaluationNames.filter((f:any) => f.EvaluationMasterId == _EvaluationMasterId)[0].EvaluationName,
+      EvaluationName: this.EvaluationMasters.find((f: any) => f.EvaluationMasterId == _EvaluationMasterId).EvaluationName,
       Active: false,
       Deleted: "false",
       Action: false
@@ -207,19 +207,19 @@ export class EvaluationExamMapComponent implements OnInit {
 
     this.loading = true;
     let checkFilterString = this.FilterOrgSubOrg + " and Active eq true";
-    if (!this.EvaluationEType) {
+    //if (!this.EvaluationEType) {
 
-      if (row.ExamId > 0)
-        checkFilterString += " and ExamId eq " + row.ExamId;
-      else if(row.Active==1) {
-        this.loading = false; this.PageLoading = false;
-        this.contentservice.openSnackBar("Please select evaluation session or examination.", globalconstants.ActionText, globalconstants.RedBackground);
-        return;
-      }
+    if (row.ExamId > 0)
+      checkFilterString += " and ExamId eq " + row.ExamId;
+    else if (row.Active == 1) {
+      this.loading = false; this.PageLoading = false;
+      this.contentservice.openSnackBar("Please select evaluation session or examination.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
     }
+    //}
 
     //if (_EvaluationMasterId > 0)
-      checkFilterString += " and EvaluationMasterId eq " + row.EvaluationMasterId;
+    checkFilterString += " and EvaluationMasterId eq " + row.EvaluationMasterId;
     // else {
     //   this.loading = false; this.PageLoading = false;
     //   this.contentservice.openSnackBar("Please select evaluation.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -300,9 +300,9 @@ export class EvaluationExamMapComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           //this.contentservice.openSnackBar(globalconstants.UpdatedMessage,globalconstants.ActionText,globalconstants.BlueBackground);
           this.loadingFalse();
-        },error=>{
+        }, error => {
           this.loadingFalse();
-          this.contentservice.openSnackBar(globalconstants.formatError(error),globalconstants.ActionText,globalconstants.RedBackground);
+          this.contentservice.openSnackBar(globalconstants.formatError(error), globalconstants.ActionText, globalconstants.RedBackground);
         });
   }
   GetEvaluationNames() {
@@ -331,7 +331,7 @@ export class EvaluationExamMapComponent implements OnInit {
     list.PageName = "EvaluationMasters";
 
     list.filter = [filterStr];
-    this.EvaluationNames = [];
+    this.EvaluationMasters = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
@@ -339,14 +339,14 @@ export class EvaluationExamMapComponent implements OnInit {
             d.EvaluationName = globalconstants.decodeSpecialChars(d.EvaluationName);
             return d;
           })
-          this.EvaluationNames = this.contentservice.getConfidentialData(this.tokenStorage, result, "EvaluationName");
+          this.EvaluationMasters = this.contentservice.getConfidentialData(this.tokenStorage, result, "EvaluationName");
 
         }
         this.loadingFalse();
       });
 
   }
-  SelectedClassGroupExam :any[]= [];
+  SelectedClassGroupExam: any[] = [];
   SelectEvaluation() {
     debugger;
 
@@ -356,18 +356,18 @@ export class EvaluationExamMapComponent implements OnInit {
   getClassGroupForExam() {
     var _searchClassGroupId = this.searchForm.get("searchClassGroupId")?.value;
     var _classesForSelectedClassGroup = this.ClassGroupMappings.filter(m => m.ClassGroupId == _searchClassGroupId);
-    var allGroupsForAllTheSelectedClasses = this.ClassGroupMappings.filter(g => _classesForSelectedClassGroup.filter(i => i.ClassId == g.ClassId).length > 0)
-    let distinctClassGroupIds= alasql("select distinct ClassGroupId from ?",[allGroupsForAllTheSelectedClasses])
-    this.EvaluationMasterForClassGroup = this.EvaluationNames.filter(d => distinctClassGroupIds.map(e=>e.ClassGroupId).indexOf(d.ClassGroupId)>-1)
+    var allGroupsForAllTheSelectedClasses = this.ClassGroupMappings.filter(g => _classesForSelectedClassGroup.findIndex(i => i.ClassId == g.ClassId) > -1)
+    let distinctClassGroupIds = alasql("select distinct ClassGroupId from ?", [allGroupsForAllTheSelectedClasses])
+    this.EvaluationMasterForClassGroup = this.EvaluationMasters.filter(d => distinctClassGroupIds.map(e => e.ClassGroupId).indexOf(d.ClassGroupId) > -1)
     var _searchExamId = this.searchForm.get("searchExamId")?.value;
     this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _searchExamId)
       .subscribe((data: any) => {
         this.ExamClassGroups = [...data.value];
         var examIdsforselectedclsgroup = this.ExamClassGroups.filter(examclsgroup => examclsgroup.ClassGroupId == _searchClassGroupId);
-        this.SelectedClassGroupExam = this.Exams.filter((f:any) => examIdsforselectedclsgroup.findIndex(i => i.ExamId == f.ExamId) > -1);
+        this.SelectedClassGroupExam = this.Exams.filter((f: any) => examIdsforselectedclsgroup.findIndex(i => i.ExamId == f.ExamId) > -1);
       });
   }
-  EvaluationExamMap :any[]= [];
+  EvaluationExamMap: any[] = [];
   GetEvaluationExamMap() {
     var filterStr = 'OrgId eq ' + this.LoginUserDetail[0]['orgId']
     let list: List = new List();
@@ -387,7 +387,7 @@ export class EvaluationExamMapComponent implements OnInit {
 
       })
   }
-  EvaluationMasterForClassGroup :any[]= [];
+  EvaluationMasterForClassGroup: any[] = [];
 
   GetEvaluationExamMapList() {
     debugger;
@@ -410,14 +410,14 @@ export class EvaluationExamMapComponent implements OnInit {
       this.contentservice.openSnackBar("Please select class group.", globalconstants.ActionText, globalconstants.BlueBackground);
       return;
     }
-    var _evaluationMappedForSelectedClassGroup :any[]= [];
+    var _evaluationMappedForSelectedClassGroup: any[] = [];
     if (_EvaluationMasterId > 0) {
       _evaluationMappedForSelectedClassGroup = JSON.parse(JSON.stringify(this.EvaluationMasterForClassGroup.filter(e => e.EvaluationMasterId == _EvaluationMasterId)))
     }
-     else {
+    else {
       _evaluationMappedForSelectedClassGroup = JSON.parse(JSON.stringify(this.EvaluationMasterForClassGroup));
-     }
-      //   this.loading = false;
+    }
+    //   this.loading = false;
     //   this.PageLoading = false;
     //   this.contentservice.openSnackBar("Please select evaluation type.", globalconstants.ActionText, globalconstants.BlueBackground);
     //   return;
@@ -430,8 +430,8 @@ export class EvaluationExamMapComponent implements OnInit {
     let list: List = new List();
 
     if (_evaluationMappedForSelectedClassGroup.length > 0) {
-      var _evaluationExamMapForSelectedEval = this.EvaluationExamMap.filter((f:any) => {
-        return _evaluationMappedForSelectedClassGroup.map(e => e.EvaluationMasterId).indexOf(f.EvaluationMasterId)>-1
+      var _evaluationExamMapForSelectedEval = this.EvaluationExamMap.filter((f: any) => {
+        return _evaluationMappedForSelectedClassGroup.map(e => e.EvaluationMasterId).indexOf(f.EvaluationMasterId) > -1
       });
       //var _filter = this.FilterOrgSubOrg;// "OrgId eq " + this.LoginUserDetail[0]["orgId"];
       // var subfilter = '';
@@ -453,17 +453,17 @@ export class EvaluationExamMapComponent implements OnInit {
       //   list.filter = [_filter];
       //   this.dataservice.get(list)
       //     .subscribe((useddata: any) => {
-            this.EvaluationExamMapList = _evaluationExamMapForSelectedEval.map(item => {
-              item["EvaluationName"] = this.EvaluationNames.filter((f:any) => f.EvaluationMasterId == item.EvaluationMasterId)[0].EvaluationName
-              //item["AlreadyUsed"] = useddata.value.filter((f:any) => f.EvaluationExamMapId == item.EvaluationExamMapId).length > 0;
-              item.Action = false;
-              return item;
-            })
-            this.dataSource = new MatTableDataSource<IEvaluationExamMap>(this.EvaluationExamMapList);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.loadingFalse();
-          //})
+      this.EvaluationExamMapList = _evaluationExamMapForSelectedEval.map(item => {
+        item["EvaluationName"] = this.EvaluationMasters.find((f: any) => f.EvaluationMasterId == item.EvaluationMasterId).EvaluationName
+        //item["AlreadyUsed"] = useddata.value.filter((f:any) => f.EvaluationExamMapId == item.EvaluationExamMapId).length > 0;
+        item.Action = false;
+        return item;
+      })
+      this.dataSource = new MatTableDataSource<IEvaluationExamMap>(this.EvaluationExamMapList);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.loadingFalse();
+      //})
       //}
     }
     else {
@@ -545,7 +545,7 @@ export class EvaluationExamMapComponent implements OnInit {
 
   GetEvaluationMasterId() {
     this.EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
-    this.EvaluationEType = this.EvaluationNames.filter((f:any) => f.EvaluationMasterId == this.EvaluationMasterId)[0].ETypeId;
+    this.EvaluationEType = this.EvaluationMasters.find((f: any) => f.EvaluationMasterId == this.EvaluationMasterId).ETypeId;
     ////console.log("EvaluationEType", this.EvaluationEType);
     this.ClearData();
   }

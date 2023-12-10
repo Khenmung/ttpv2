@@ -32,6 +32,7 @@ export class StudentgradeComponent implements OnInit {
   dataSource: MatTableDataSource<IStudentGrade>;
   allMasterData :any[]= [];
   StudentGrade :any[]= [];
+  ResultCategories :any[]= [];
   Permission = 'deny';
   Classes :any[]= [];
   ExamStatus :any[]= [];
@@ -47,6 +48,8 @@ export class StudentgradeComponent implements OnInit {
     SubjectCategoryId: 0,
     GradeStatusId: 0,
     Sequence: 0,
+    AssignRank:false,
+    ResultCategoryId:0,
     Points: 0,
     OrgId: 0, SubOrgId: 0,
     BatchId: 0,
@@ -60,6 +63,8 @@ export class StudentgradeComponent implements OnInit {
     "ClassGroupId",
     "SubjectCategoryId",
     "Sequence",
+    "AssignRank",
+    "ResultCategoryId",
     "Active",
     "Action"
   ];
@@ -137,6 +142,8 @@ export class StudentgradeComponent implements OnInit {
       SubjectCategoryId: this.searchForm.get("searchSubjectCategoryId")?.value,
       GradeStatusId: 0,
       Sequence: 0,
+      AssignRank:false,
+      ResultCategoryId:0,
       Points: 0,
       Active: 0,
       Action: false
@@ -152,6 +159,10 @@ export class StudentgradeComponent implements OnInit {
   updateActive(row, value) {
     row.Action = true;
     row.Active = value.checked ? 1 : 0;
+  }
+  updateAssignRank(row, value){
+    row.Action = true;
+    row.AssignRank = value.checked;
   }
   delete(element) {
     let toupdate = {
@@ -229,11 +240,13 @@ export class StudentgradeComponent implements OnInit {
           this.StudentGradeData.GradeStatusId = row.GradeStatusId;
           this.StudentGradeData.Formula = row.Formula;
           this.StudentGradeData.Sequence = row.Sequence;
+          this.StudentGradeData.AssignRank = row.AssignRank;
+          this.StudentGradeData.ResultCategoryId = row.ResultCategoryId;
           this.StudentGradeData.Points = row.Points;
           this.StudentGradeData.BatchId = this.SelectedBatchId;
           this.StudentGradeData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.StudentGradeData.SubOrgId = this.SubOrgId;
-          ////console.log("this.StudentGradeData", this.StudentGradeData);
+          //console.log("this.StudentGradeData", this.StudentGradeData);
           if (this.StudentGradeData.StudentGradeId == 0) {
             this.StudentGradeData["CreatedDate"] = new Date();
             this.StudentGradeData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
@@ -420,6 +433,8 @@ export class StudentgradeComponent implements OnInit {
       "GradeStatusId",
       "ClassGroupId",
       "Sequence",
+      "AssignRank",
+      "ResultCategoryId",
       "Points",
       "Active"];
 
@@ -506,7 +521,7 @@ export class StudentgradeComponent implements OnInit {
     this.SubjectCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTCATEGORY)
     this.ExamStatus = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSTATUS);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
-    //this.ClassGroups = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSGROUP)
+    this.ResultCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.RESULTCATEGORIES)
     //var filterOrgSubOrg= globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
@@ -562,6 +577,8 @@ export interface IStudentGrade {
   ClassGroupId: number;
   Sequence: number;
   Points: number;
+  AssignRank:boolean;
+  ResultCategoryId:number;
   Active: number;
   Action: boolean;
 }

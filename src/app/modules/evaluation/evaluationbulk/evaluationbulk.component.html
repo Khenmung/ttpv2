@@ -53,7 +53,7 @@
                 <mat-label>Evaluation type</mat-label>
                 <mat-select formControlName="searchEvaluationMasterId" (selectionChange)="ChangeEvaluationType()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
-                    <mat-option *ngFor="let item of EvaluationForSelectedClassSemesterSection"
+                    <mat-option *ngFor="let item of EvaluationForDD"
                         [value]="item.EvaluationMasterId">
                         {{item.EvaluationName}}
                     </mat-option>

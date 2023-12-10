@@ -682,44 +682,44 @@ export class VerifyResultsComponent implements OnInit {
           _class = '';
           _subject = '';
 
-          var _activeStudents = this.Students.filter(a => a.StudentClasses[0].StudentClassId == s.StudentClassId)
-          if (_activeStudents.length > 0) {
-            let _stdClass = this.Classes.filter(c => c.ClassId == s.ClassId);
-            if (_stdClass.length > 0) {
-              _class = _stdClass[0].ClassName;
-              var _subjectIdObj = this.ClassSubjects.filter(p => p.ClassSubjectId == s.ClassSubjectId)
-              if (_subjectIdObj.length > 0) {
-                let _stdSubject = this.Subjects.filter(c => c.MasterDataId == _subjectIdObj[0].SubjectId);
+          var _activeStudents = this.Students.find(a => a.StudentClasses[0].StudentClassId === s.StudentClassId)
+          if (_activeStudents) {
+            let _stdClass = this.Classes.find(c => c.ClassId == s.ClassId);
+            if (_stdClass) {
+              _class = _stdClass.ClassName;
+              var _subjectIdObj = this.ClassSubjects.find(p => p.ClassSubjectId == s.ClassSubjectId)
+              if (_subjectIdObj) {
+                let _stdSubject = this.Subjects.filter(c => c.MasterDataId == _subjectIdObj.SubjectId);
                 if (_stdSubject.length > 0) {
 
                   _subject = _stdSubject[0].MasterDataName;
 
-                  let _stdSection = this.Sections.filter(c => c.MasterDataId == _activeStudents[0].StudentClasses[0].SectionId);
+                  let _stdSection = this.Sections.filter(c => c.MasterDataId == _activeStudents.StudentClasses[0].SectionId);
                   if (_stdSection.length > 0)
                     _section = _stdSection[0].MasterDataName;
 
-                  let _stdSemester = this.Semesters.filter(c => c.MasterDataId == _activeStudents[0].StudentClasses[0].SemesterId);
+                  let _stdSemester = this.Semesters.filter(c => c.MasterDataId == _activeStudents.StudentClasses[0].SemesterId);
                   if (_stdSemester.length > 0)
                     _semester = _stdSemester[0].MasterDataName;
 
                   this.StudentSubjects.push({
                     StudentClassSubjectId: s.StudentClassSubjectId,
-                    ClassSubjectId: _subjectIdObj[0].ClassSubjectId,
+                    ClassSubjectId: _subjectIdObj.ClassSubjectId,
                     StudentClassId: s.StudentClassId,
-                    RollNo: _activeStudents[0].StudentClasses[0].RollNo,
-                    SubjectId: _subjectIdObj[0].SubjectId,
+                    RollNo: _activeStudents.StudentClasses[0].RollNo,
+                    SubjectId: _subjectIdObj.SubjectId,
                     Subject: _subject,
                     Section: _section,
                     Semester: _semester,
                     ClassId: s.ClassId,
-                    SemesterId: _activeStudents[0].StudentClasses[0].SemesterId,
-                    StudentId: _activeStudents[0].StudentId,
-                    SectionId: _activeStudents[0].StudentClasses[0].SectionId,
-                    SubjectTypeId: _subjectIdObj[0].SubjectTypeId,
-                    SubjectType: _subjectIdObj[0].SubjectType,
-                    Remark: _subjectIdObj[0].Remark,
-                    SelectHowMany: _subjectIdObj[0].SelectHowMany,
-                    SubjectCategoryId: _subjectIdObj[0].SubjectCategoryId,
+                    SemesterId: _activeStudents.StudentClasses[0].SemesterId,
+                    StudentId: _activeStudents.StudentId,
+                    SectionId: _activeStudents.StudentClasses[0].SectionId,
+                    SubjectTypeId: _subjectIdObj.SubjectTypeId,
+                    SubjectType: _subjectIdObj.SubjectType,
+                    Remark: _subjectIdObj.Remark,
+                    SelectHowMany: _subjectIdObj.SelectHowMany,
+                    SubjectCategoryId: _subjectIdObj.SubjectCategoryId,
                     Active: s.Active
                   });
                 }
@@ -886,15 +886,23 @@ export class VerifyResultsComponent implements OnInit {
         var _subjectCategoryName = '';
         this.VerifiedResult.ExamResultSubjectMark = [];
         var errormessageforEachSubject: any[] = [];
-        var viewMarkPercent = this.searchForm.get("viewMarkPercentCheckBox")?.value;
+        //var viewMarkPercent = this.searchForm.get("viewMarkPercentCheckBox")?.value;
 
         /////////
-        var compulsorySubjectCount = 0;
-        var _subjectCategoryMarkingId = 0;
-        var _notToCalculateRankAndPercentage = ['fail', 'promoted'];
-        var _objSubjectCat = this.SubjectCategory.filter((f: any) => f.MasterDataName.toLowerCase() == 'marking')
-        if (_objSubjectCat.length > 0)
-          _subjectCategoryMarkingId = _objSubjectCat[0].MasterDataId;
+        let compulsorySubjectCount = 0;
+        let _subjectCategoryMarkingId = 0;
+        let _markingId = this.SubjectCategory.find((f: any) => f.MasterDataName.toLowerCase() == 'marking').MasterDataId;
+        let _SelectedClassStudentGrades = this.SelectedClassStudentGrades.filter((f: any) => f.SubjectCategoryId == _markingId);
+        let _ToCalculateRankAndPercentage = _SelectedClassStudentGrades.reduce((filtered, option: any) => {
+          if (option.AssignRank) {
+            let _gname = option.GradeName.toLowerCase();
+            filtered.push(_gname);
+          }
+          return filtered;
+        }, []);
+        var _objSubjectCat = this.SubjectCategory.find((f: any) => f.MasterDataName.toLowerCase() == 'marking')
+        if (_objSubjectCat)
+          _subjectCategoryMarkingId = _objSubjectCat.MasterDataId;
         // var _noOfSubjectForAStudent = this.ClassSubjects.filter(allsubj => allsubj.SubjectCategoryId == _subjectCategoryMarkingId
         //   && allsubj.ClassId == pClassId)
 
@@ -965,9 +973,9 @@ export class VerifyResultsComponent implements OnInit {
             //   debugger;
             //   //console.log("eachsubj.Subject", eachsubj.Subject);
             // }
-            var _objSubjectCategory = this.SubjectCategory.filter((f: any) => f.MasterDataId == eachsubj.SubjectCategoryId)
-            if (_objSubjectCategory.length > 0)
-              _subjectCategoryName = _objSubjectCategory[0].MasterDataName.toLowerCase();
+            var _objSubjectCategory = this.SubjectCategory.find((f: any) => f.MasterDataId === eachsubj.SubjectCategoryId)
+            if (_objSubjectCategory)
+              _subjectCategoryName = _objSubjectCategory.MasterDataName.toLowerCase();
 
             var markObtained = alasql("select ExamId,StudentClassSubjectId,SUM(Marks) as Marks FROM ? where StudentClassSubjectId = ? GROUP BY StudentClassSubjectId,ExamId",
               [AllComponentsMarkObtained, eachsubj.StudentClassSubjectId]);
@@ -1231,13 +1239,13 @@ export class VerifyResultsComponent implements OnInit {
         //for each student
         if (this.ExamStudentSubjectResult.length > 0) {
           //if (_subjectCategoryName == 'marking') {
-          var _markingId = this.SubjectCategory.filter((f: any) => f.MasterDataName.toLowerCase() == 'marking')[0].MasterDataId;
+
           if (this.FullMarkForAllSubjects100Pc)
             this.displayedColumns.push("Total Marks", "Total Percent", "Percentage", "Rank", "Division");
           else
             this.displayedColumns.push("Total Marks", "Percentage", "Rank", "Division");
 
-          var _SelectedClassStudentGrades = this.SelectedClassStudentGrades.filter((f: any) => f.SubjectCategoryId == _markingId);
+
 
           if (_SelectedClassStudentGrades.length > 0) {
             _SelectedClassStudentGrades.sort((a, b) => a.Sequence - b.Sequence);
@@ -1272,9 +1280,10 @@ export class VerifyResultsComponent implements OnInit {
 
 
             })
+            //const _notToCalculateRankAndPercentage
             this.ExamStudentSubjectResult = this.ExamStudentSubjectResult.sort((a: any, b: any) => b["Percentage"] - a["Percentage"]);
             this.ExamStudentSubjectResult.forEach((result: any, index) => {
-              if (!_notToCalculateRankAndPercentage.includes(result.Division.toLowerCase())) {
+              if (_ToCalculateRankAndPercentage.includes(result.Division.toLowerCase())) {
                 //result["Percentage"] = ((result.Total / this.ClassFullMark[0].FullMark) * 100).toFixed(2);
                 if (previousTotal != result["Percentage"] && result["Percentage"] > 0) {
                   rankCount += 1;
@@ -1437,7 +1446,7 @@ export class VerifyResultsComponent implements OnInit {
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.AttendanceModes = this.getDropDownData(globalconstants.MasterDefinitions.school.ATTENDANCEMODE);
     this.SubjectCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.SUBJECTCATEGORY);
-    this.ExamResultProperties = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMRESULTPROPERTY);
+    this.ExamResultProperties = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMnCalculate);
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
     this.CommonHeader = this.getDropDownData(globalconstants.MasterDefinitions.common.COMMONPRINTHEADING);
 
@@ -1528,8 +1537,8 @@ export class VerifyResultsComponent implements OnInit {
   GetStudentGrade() {
     debugger;
     var _classId = this.searchForm.get("searchClassId")?.value;
-    var _sectionId = this.searchForm.get("searchSectionId")?.value;
-    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    // var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    // var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     if (_classId > 0) {
       let obj = this.Classes.filter(c => c.ClassId == _classId);
       if (obj.length > 0)

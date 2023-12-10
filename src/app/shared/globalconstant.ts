@@ -288,7 +288,7 @@ export class globalconstants {
                     'EVALUATION': 'evaluation',
                     'EvaluationExamMap': 'e-mapping',
                     'EVALUATIONQUESTIONNAIRE': 'e-questionnaire',
-                    'EACT': 'e-perform',
+                    'EPERFORM': 'e-perform',
                     'ECHECK': 'E-Check',
                     'EVALUATIONRESULTLIST': 'E-Check',
                     'CLASSEVALUATIONOPTION': 'answer option',
@@ -423,7 +423,7 @@ export class globalconstants {
                 "ASSESSMENTPRINTHEADING": "Evaluation Print Heading",
                 "STUDENTREMARK1": "student remark 1",
                 "STUDENTREMARK2": "student remark 2",
-                "EXAMRESULTPROPERTY": "exam result property",
+                "EXAMnCalculate": "exam n calculate",
                 "DIFFICULTYLEVEL": "question difficulty level",
                 "POINTSCATEGORY": "points category",
                 "COURSEYEAR": "course year",
@@ -431,7 +431,9 @@ export class globalconstants {
                 "CLASSCATEGORY": "Class Category",
                 "FILECATEGORY":"File Category",
                 "CLASSSUBJECTREMARK":"Class Subject Remark",
-                "REPORTCARDSIGNATURE":"Report Card Signature"
+                "REPORTCARDSIGNATURE":"Report Card Signature",
+                "RESULTCATEGORIES":"Result Category",
+                "CALCULATECATEGORIES":"Calculate Category",
             },
             "leave": {
                 "REPORTNAMES": "leave report name",
