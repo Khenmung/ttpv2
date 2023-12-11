@@ -287,14 +287,14 @@ export class ExamsComponent implements OnInit {
       .subscribe((data: any) => {
         //this.Exams = [...data.value];
         this.Exams = this.ExamNames.map(e => {
-          let existing = data.value.filter(db => db.ExamNameId == e.MasterDataId);
-          if (existing.length > 0) {
-            if (existing[0].ReleaseDate != null)
-              existing[0].ReleaseDate = moment(existing[0].ReleaseDate).format("DD/MM/yyyy");
-            existing[0].ExamName = this.ExamNames.filter((f: any) => f.MasterDataId == existing[0].ExamNameId)[0].MasterDataName;
-            existing[0].Sequence = existing[0].Sequence;
-            existing[0].Action = false;
-            return existing[0];
+          let existing = data.value.find(db => db.ExamNameId == e.MasterDataId);
+          if (existing) {
+            if (existing.ReleaseDate)
+              existing.ReleaseDate = moment(existing.ReleaseDate).format("DD/MM/yyyy");
+            existing.ExamName = e.MasterDataName;// this.ExamNames.find((f: any) => f.MasterDataId == existing.ExamNameId).MasterDataName;
+            //existing.Sequence = existing[0].Sequence;
+            existing.Action = false;
+            return existing;
           }
           else {
             return {

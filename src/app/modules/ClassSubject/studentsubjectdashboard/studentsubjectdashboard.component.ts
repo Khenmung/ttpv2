@@ -250,9 +250,9 @@ export class studentsubjectdashboardComponent implements OnInit {
             && clssubj.SelectHowMany > 0);
         }
         filteredClassSubjects.forEach(clssubj => {
-          var existing = data.value.filter(db => db.ClassSubjectId == clssubj.ClassSubjectId);
-          if (existing.length > 0) {
-            existing.forEach(existing => {
+          var exist = data.value.filter(db => db.ClassSubjectId == clssubj.ClassSubjectId);
+          if (exist.length > 0) {
+            exist.forEach(existing => {
               this.StudentClassSubjects.push({
                 'StudentClassSubjectId': existing.StudentClassSubjectId,
                 'StudentClassId': existing.StudentClassId,
@@ -315,13 +315,13 @@ export class studentsubjectdashboardComponent implements OnInit {
               var specificclasssubjects = this.ClassSubjectList.filter((f: any) => f.ClassId == this.searchForm.get("searchClassId")?.value && f.SelectHowMany > 0)
               ////console.log("specificclasssubjects",specificclasssubjects)
               specificclasssubjects.forEach((subjectTypes, indx) => {
-                var clssubject = takensubjects.filter(c => c.ClassSubjectId == subjectTypes.ClassSubjectId)
-                if (clssubject.length > 0) {
-                  clssubject[0].SubjectId = subjectTypes.SubjectId;
-                  clssubject[0].SubjectTypeId = subjectTypes.SubjectTypeId;
-                  clssubject[0].SubjectType = subjectTypes.SubjectTypeName;
-                  clssubject[0].SelectHowMany = subjectTypes.SelectHowMany;
-                  this.formatData(clssubject[0]);
+                var clssubject = takensubjects.find(c => c.ClassSubjectId == subjectTypes.ClassSubjectId)
+                if (clssubject) {
+                  clssubject.SubjectId = subjectTypes.SubjectId;
+                  clssubject.SubjectTypeId = subjectTypes.SubjectTypeId;
+                  clssubject.SubjectType = subjectTypes.SubjectTypeName;
+                  clssubject.SelectHowMany = subjectTypes.SelectHowMany;
+                  this.formatData(clssubject);
                 }
                 else {
                   //debugger;

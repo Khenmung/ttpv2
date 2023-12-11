@@ -494,6 +494,7 @@ export class VerifyResultsComponent implements OnInit {
 
     this.VerifiedResult.ExamStudentResult = [];
     var _examId = this.searchForm.get("searchExamId")?.value;
+    console.log("_examId",_examId);
     var _TotalDays = 0;
     this.StudentAttendanceList.forEach(f => {
       f.AttendanceDate = moment(f.AttendanceDate).format('YYYY-MM-DD');
@@ -565,7 +566,7 @@ export class VerifyResultsComponent implements OnInit {
         "PassCount": d["PassCount"]
       });
     })
-    ////console.log("verifiedresult", this.VerifiedResult)
+    console.log("verifiedresult", this.VerifiedResult)
     this.dataservice.postPatch('ExamStudentResults', this.VerifiedResult, 0, 'post')
       .subscribe(
         (data: any) => {
@@ -624,7 +625,7 @@ export class VerifyResultsComponent implements OnInit {
       return;
     }
     else {
-      this.ExamReleased = this.Exams.filter((f: any) => f.ExamId == _examId)[0].ReleaseResult;
+      this.ExamReleased = this.Exams.find((f: any) => f.ExamId == _examId).ReleaseResult;
     }
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
@@ -638,7 +639,7 @@ export class VerifyResultsComponent implements OnInit {
       this.SemesterName = this.Semesters.filter(se => se.MasterDataId == _semesterId)[0].MasterDataName;
     if (_sectionId)
       this.SectionName = this.Sections.filter(se => se.MasterDataId == _sectionId)[0].MasterDataName;
-    this.ExamName = this.Exams.filter(se => se.ExamId == _examId)[0].ExamName;
+    this.ExamName = this.Exams.find(se => se.ExamId == _examId).ExamName;
     this.BatchName = this.tokenStorage.getSelectedBatchName()!;
     this.Loading(true);
     this.GetSpecificStudentGrades();
@@ -689,18 +690,17 @@ export class VerifyResultsComponent implements OnInit {
               _class = _stdClass.ClassName;
               var _subjectIdObj = this.ClassSubjects.find(p => p.ClassSubjectId == s.ClassSubjectId)
               if (_subjectIdObj) {
-                let _stdSubject = this.Subjects.filter(c => c.MasterDataId == _subjectIdObj.SubjectId);
-                if (_stdSubject.length > 0) {
+                let _stdSubject = this.Subjects.find(c => c.MasterDataId == _subjectIdObj.SubjectId);
+                if (_stdSubject) {
+                  _subject = _stdSubject.MasterDataName;
 
-                  _subject = _stdSubject[0].MasterDataName;
+                  let _stdSection = this.Sections.find(c => c.MasterDataId == _activeStudents.StudentClasses[0].SectionId);
+                  if (_stdSection)
+                    _section = _stdSection.MasterDataName;
 
-                  let _stdSection = this.Sections.filter(c => c.MasterDataId == _activeStudents.StudentClasses[0].SectionId);
-                  if (_stdSection.length > 0)
-                    _section = _stdSection[0].MasterDataName;
-
-                  let _stdSemester = this.Semesters.filter(c => c.MasterDataId == _activeStudents.StudentClasses[0].SemesterId);
-                  if (_stdSemester.length > 0)
-                    _semester = _stdSemester[0].MasterDataName;
+                  let _stdSemester = this.Semesters.find(c => c.MasterDataId == _activeStudents.StudentClasses[0].SemesterId);
+                  if (_stdSemester)
+                    _semester = _stdSemester.MasterDataName;
 
                   this.StudentSubjects.push({
                     StudentClassSubjectId: s.StudentClassSubjectId,
@@ -1600,24 +1600,24 @@ export class VerifyResultsComponent implements OnInit {
         this.Exams = [];
         data.value.forEach(e => {
           //var _examName = '';
-          var obj = this.ExamNames.filter(n => n.MasterDataId == e.ExamNameId && n.Active == 1)
-          if (obj.length > 0) {
+          let obj = this.ExamNames.find(n => n.MasterDataId == e.ExamNameId && n.Active == 1)
+          if (obj) {
             //_examName = obj[0].MasterDataName
             this.Exams.push({
               ExamId: e.ExamId,
-              ExamName: obj[0].MasterDataName,
+              ExamName: obj.MasterDataName,
               ClassGroupId: e.ClassGroupId,
               StartDate: e.StartDate,
               EndDate: e.EndDate,
               AttendanceStartDate: e.AttendanceStartDate,
               //AttendanceModeId: e.AttendanceModeId,
-              Sequence: obj[0].Sequence,
+              Sequence: obj.Sequence,
               ReleaseResult: e.ReleaseResult
             })
           }
         })
         this.Exams = this.Exams.sort((a, b) => a.Sequence - b.Sequence);
-        //this.GetTotalAttendance();
+        //console.log("this.exams",this.Exams)
         this.GetExamNCalculate();
       })
   }
@@ -1627,17 +1627,17 @@ export class VerifyResultsComponent implements OnInit {
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
-    let examObj = this.Exams.filter(e => e.ExamId == this.searchForm.get("searchExamId")?.value);
+    let examObj = this.Exams.find(e => e.ExamId == this.searchForm.get("searchExamId")?.value);
     var _filter = this.FilterOrgSubOrgBatchId;
     _filter += ' and ClassId eq ' + _classId;
     _filter += ' and SemesterId eq ' + _semesterId;
     _filter += ' and SectionId eq ' + _sectionId;
 
     var _startDate, _endDate;
-    if (examObj.length > 0 && examObj[0].AttendanceStartDate != null) {
+    if (examObj && examObj.AttendanceStartDate != null) {
       ////console.log("examObj[0].AttendanceStartDate",examObj[0].AttendanceStartDate)
-      _startDate = moment(examObj[0].AttendanceStartDate).format('YYYY-MM-DD');
-      _endDate = moment(examObj[0].EndDate).format('YYYY-MM-DD');
+      _startDate = moment(examObj.AttendanceStartDate).format('YYYY-MM-DD');
+      _endDate = moment(examObj.EndDate).format('YYYY-MM-DD');
       _filter += ' and AttendanceDate ge ' + _startDate + ' and AttendanceDate le ' + _endDate;
 
 

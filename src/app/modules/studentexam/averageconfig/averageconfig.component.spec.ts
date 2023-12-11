@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExammarkconfigComponent } from './exammarkconfig.component';
+import { AverageConfigComponent } from './averageconfig.component';
 
-describe('ExammarkconfigComponent', () => {
-  let component: ExammarkconfigComponent;
-  let fixture: ComponentFixture<ExammarkconfigComponent>;
+describe('EverageConfigComponent', () => {
+  let component: AverageConfigComponent;
+  let fixture: ComponentFixture<AverageConfigComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ExammarkconfigComponent ]
+      declarations: [ AverageConfigComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ExammarkconfigComponent);
+    fixture = TestBed.createComponent(AverageConfigComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

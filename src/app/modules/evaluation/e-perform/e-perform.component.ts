@@ -674,14 +674,14 @@ export class EPerformComponent implements OnInit {
             //this.NowTime = moment();
             // //console.log('this.EvaluationMaster', this.EvaluationMaster)
             data.value.forEach(m => {
-              let EvaluationObj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == m.EvaluationMasterId);
-              if (EvaluationObj.length > 0) {
-                m.EvaluationName = EvaluationObj[0].EvaluationName;
-                m.Duration = EvaluationObj[0].Duration;
-                m.TempDuration = EvaluationObj[0].Duration;
-                m.EType = EvaluationObj[0].EType;
-                m.StartTime = EvaluationObj[0].StartTime;
-                m.StartDate = EvaluationObj[0].StartDate;
+              let EvaluationObj = this.EvaluationMaster.find((f: any) => f.EvaluationMasterId == m.EvaluationMasterId);
+              if (EvaluationObj) {
+                m.EvaluationName = EvaluationObj.EvaluationName;
+                m.Duration = EvaluationObj.Duration;
+                m.TempDuration = EvaluationObj.Duration;
+                m.EType = EvaluationObj.EType;
+                m.StartTime = EvaluationObj.StartTime;
+                m.StartDate = EvaluationObj.StartDate;
 
 
                 var _clsObj = this.ClassGroups.filter((f: any) => f.MasterDataId == m.ClassGroupId);
@@ -689,7 +689,7 @@ export class EPerformComponent implements OnInit {
                   m.ClassGroupName = _clsObj[0].GroupName;
                 else
                   m.ClassGroupName = '';
-                m.ClassGroupId = EvaluationObj[0].ClassGroupId;
+                m.ClassGroupId = EvaluationObj.ClassGroupId;
                 var _examObj = this.Exams.filter((f: any) => f.ExamId == m.ExamId);
                 if (_examObj.length > 0)
                   m.ExamName = _examObj[0].ExamName
@@ -883,9 +883,9 @@ export class EPerformComponent implements OnInit {
         let result: any = [];
 
         data.value.forEach(item => {
-          let obj = this.ETypes.filter(t => t.MasterDataId == item.ETypeId)
-          if (obj.length > 0) {
-            item.EType = obj[0].MasterDataName;
+          let obj = this.ETypes.find(t => t.MasterDataId == item.ETypeId)
+          if (obj) {
+            item.EType = obj.MasterDataName;
             result.push(item)
           }
 
@@ -941,7 +941,7 @@ export class EPerformComponent implements OnInit {
       this.contentservice.openSnackBar("Please select student.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    var _classgroupsOfSelectedStudent = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
+   // var _classgroupsOfSelectedStudent = globalconstants.getFilteredClassGroupMapping(this.ClassGroupMappings, _classId, _sectionId, _semesterId);
     var _EvaluationExamMapSelectedStudentObj: any[] = [];
 
     //_EvaluationExamMapSelectedStudentObj = this.EvaluationExamMaps.filter((f: any) => _classgroupsOfSelectedStudent.filter((s: any) => s.ClassGroupId == f.ClassGroupId).length > 0);
@@ -954,13 +954,13 @@ export class EPerformComponent implements OnInit {
         this.RelevantEvaluationListForSelectedStudent = [];
         if (_EvaluationExamMapSelectedStudentObj.length > 0) {
           _EvaluationExamMapSelectedStudentObj.forEach(m => {
-            let obj = this.ClassGroups.filter((f: any) => f.ClassGroupId == m.ClassGroupId);
+            let obj = this.ClassGroups.find((f: any) => f.ClassGroupId == m.ClassGroupId);
 
-            if (obj.length > 0) {
-              m.ClassGroup = obj[0].GroupName;
+            if (obj) {
+              m.ClassGroup = obj.GroupName;
               //Class group type is exam, students are allowed to execute else not allowed.
               if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
-                if (obj[0].ClassGroupType.toLowerCase() == 'exam')
+                if (m.EType.toLowerCase() == 'exam')
                   m.AllowStudent = true;
                 else
                   m.AllowStudent = false;

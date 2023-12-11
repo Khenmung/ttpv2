@@ -203,9 +203,17 @@
     </mat-table>
     <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,100]"></mat-paginator>
 </div>
-<!-- <button type="button" class="btn btn-outline-secondary mr-2" placement="top"
-            ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
-            Popover on top
-        </button> -->
-<!-- </div> -->
-<!-- </div> -->
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>
+                If evaluation type is 'exam', students are allowed to execute the evaluation type or else 'start' button
+                will be disabled for students.
+            </li>
+        </ul>
+    </span>
+</div>

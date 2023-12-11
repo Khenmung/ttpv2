@@ -865,7 +865,7 @@ export class PrintprogressreportComponent implements OnInit {
   }
   GetExams() {
 
-    var orgIdSearchstr = this.StandardFilterWithBatchId +
+    var orgIdSearchstr = this.FilterOrgSubOrgBatchId +
       " and Active eq 1 and ReleaseResult eq 1"
 
     let list: List = new List();

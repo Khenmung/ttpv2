@@ -11,11 +11,11 @@ import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
-  selector: 'app-exammarkconfig',
-  templateUrl: './exammarkconfig.component.html',
-  styleUrls: ['./exammarkconfig.component.scss']
+  selector: 'app-averageconfig',
+  templateUrl: './averageconfig.component.html',
+  styleUrls: ['./averageconfig.component.scss']
 })
-export class ExammarkconfigComponent implements OnInit {
+export class AverageConfigComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -105,7 +105,7 @@ export class ExammarkconfigComponent implements OnInit {
       this.nav.navigate(['/auth/login']);
     else {
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EXAM.EXAMMARKCONFIG)
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EXAM.AVERAGECONFIG)
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
@@ -685,14 +685,14 @@ export class ExammarkconfigComponent implements OnInit {
   }
   GetExams() {
 
-    var orgIdSearchstr = 'and OrgId eq ' + this.LoginUserDetail[0]["orgId"] +
-      ' and BatchId eq ' + this.SelectedBatchId;
+    // var orgIdSearchstr = this.FilterOrgSubOrgBatchId 'and OrgId eq ' + this.LoginUserDetail[0]["orgId"] +
+    //   ' and BatchId eq ' + this.SelectedBatchId;
 
     let list: List = new List();
 
     list.fields = ["ExamId", "ExamNameId", "ReleaseResult", "ClassGroupId", "MarkFormula"];
     list.PageName = "Exams";
-    list.filter = ["Active eq 1 " + orgIdSearchstr];
+    list.filter = [this.FilterOrgSubOrgBatchId + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {

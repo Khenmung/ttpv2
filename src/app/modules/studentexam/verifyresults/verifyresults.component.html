@@ -100,7 +100,7 @@
         </div>
         <div>&nbsp;</div>
         <div style="overflow: auto;">
-            <mat-table #table [dataSource]="dataSource" matSort style="min-width: 2200px;">
+            <mat-table #table [dataSource]="dataSource" matSort>
                 <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
                     <mat-header-cell [class.gray]="disCol.includes('-')" *matHeaderCellDef mat-sort-header="{{disCol}}"
                         style="writing-mode: tb-rl;transform: rotate(-180deg);width:100%;display:flex; justify-content: flex-start;">

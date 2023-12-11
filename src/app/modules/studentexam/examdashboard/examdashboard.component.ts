@@ -13,7 +13,7 @@ import { StudentgradeComponent } from '../studentgrade/studentgrade.component';
 import { VerifyresultstatusComponent } from '../verifyresultstatus/verifyresultstatus.component';
 import { ExamncalculateComponent } from '../examncalculate/examncalculate.component';
 import {SwUpdate} from '@angular/service-worker';
-import { ExammarkconfigComponent } from '../exammarkconfig/exammarkconfig.component';
+import { AverageConfigComponent } from '../averageconfig/averageconfig.component';
 import { ExamclassgroupComponent } from '../examclassgroup/examclassgroup.component';
 
 @Component({
@@ -28,7 +28,7 @@ export class ExamdashboardComponent implements AfterViewInit {
     ExamsComponent,
     ExamclassgroupComponent,
     StudentgradeComponent,
-    ExammarkconfigComponent,
+    AverageConfigComponent,
     ExamncalculateComponent,    
     ExamSubjectMarkEntryComponent,
     VerifyResultsComponent,
@@ -87,7 +87,7 @@ export class ExamdashboardComponent implements AfterViewInit {
     this.GenerateComponent(globalconstants.Pages.edu.EXAM.STUDENTGRADE)
     //this.GenerateComponent(globalconstants.Pages.edu.EXAM.VERIFYRESULTSTATUS)
     this.GenerateComponent(globalconstants.Pages.edu.EXAM.EXAMNCALCULATE)
-    this.GenerateComponent(globalconstants.Pages.edu.EXAM.EXAMMARKCONFIG)
+    this.GenerateComponent(globalconstants.Pages.edu.EXAM.AVERAGECONFIG)
     this.GenerateComponent(globalconstants.Pages.edu.EXAM.EXAMCLASSGROUPMAP)
 
     this.shareddata.ChangePermissionAtParent(this.Permissions.ParentPermission);
@@ -141,8 +141,8 @@ export class ExamdashboardComponent implements AfterViewInit {
       case globalconstants.Pages.edu.EXAM.EXAMNCALCULATE:
         comindx = this.components.indexOf(ExamncalculateComponent);
         break;
-      case globalconstants.Pages.edu.EXAM.EXAMMARKCONFIG:
-        comindx = this.components.indexOf(ExammarkconfigComponent);
+      case globalconstants.Pages.edu.EXAM.AVERAGECONFIG:
+        comindx = this.components.indexOf(AverageConfigComponent);
         break;
       case globalconstants.Pages.edu.EXAM.EXAMCLASSGROUPMAP:
         comindx = this.components.indexOf(ExamclassgroupComponent);

@@ -679,7 +679,7 @@ export class ResultComponent implements OnInit {
 
   GetExams() {
 
-    this.contentservice.GetExams(this.FilterOrgSubOrg, 1)
+    this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 1)
       .subscribe((data: any) => {
         this.Exams = [];
         var result = data.value.filter((f: any) => f.ReleaseResult == 1);

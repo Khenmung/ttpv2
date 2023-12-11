@@ -1,12 +1,12 @@
-// mat-table{
-//     border-collapse: collapse;
-
-// }
+mat-table{
+    border-collapse: collapse;
+}
 mat-cell:first-of-type{
     padding-left: 0px;
 }
 .elementrow {
     height: 29px;
+    
     page-break-inside: avoid;
 }
 mat-header-cell{
