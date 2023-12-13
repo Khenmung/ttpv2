@@ -3,8 +3,6 @@
 //     //margin-right: 15px;
 // }
 .mat-column-AssignRank,
-.mat-column-Points,
-.mat-column-Sequence,
 .mat-column-StudentGradeId
 {
     justify-content: center;
@@ -15,6 +13,8 @@
 {    
     flex:1 0 100px;
 }
+.mat-column-Points,
+.mat-column-Sequence,
 .mat-column-Active,
 .mat-column-Action
 {

@@ -237,6 +237,7 @@ export class ResultComponent implements OnInit {
       "CalculateResultPropertyId",
       "Formula",
       "CalculateCategoryId",
+      "Sequence",
       "Active"
     ];
 
@@ -258,6 +259,7 @@ export class ResultComponent implements OnInit {
             }
           }
         });
+        this.ExamNCalculateList = this.ExamNCalculateList.sort((a,b)=>a.Sequence - b.Sequence);
         this.GetExamStudentResults();
       })
 
@@ -441,7 +443,7 @@ export class ResultComponent implements OnInit {
           let objresult = evaluate(formula);
           if (objresult) {
             this.ResultAtAGlance.push(
-              { "Text": item.PropertyName, "Val": objresult.toFixed(2) }
+              { "Text": item.PropertyName, "Val":(objresult%1)? objresult.toFixed(2):objresult }
             );
           }
         })

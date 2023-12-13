@@ -7,7 +7,9 @@ mat-header-cell {
 mat-cell {
     border-right: 1px solid lightgray;
 }
-
+.mat-column-ExamId{
+    flex:1 0 150px;
+}
 
 .mat-column-Active,
 .mat-column-Action,

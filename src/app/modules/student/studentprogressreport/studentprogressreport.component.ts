@@ -380,6 +380,7 @@ export class StudentprogressreportComponent implements OnInit {
       "CalculateResultPropertyId",
       "Formula",
       "CalculateCategoryId",
+      "Sequence",
       "Active"
     ];
 
@@ -401,6 +402,7 @@ export class StudentprogressreportComponent implements OnInit {
             }
           }
         });
+        this.ExamNCalculateList = this.ExamNCalculateList.sort((a,b)=>a.Sequence - b.Sequence);
         this.GetExams();
       })
   }
@@ -436,24 +438,12 @@ export class StudentprogressreportComponent implements OnInit {
         this.ExamStudentResults = [];
         const _resultSummary = this.ExamNCalculateList.filter(ataglance => ataglance.CalculateCategoryName.toLowerCase() === "result summary");
         _resultSummary.forEach(item => {
-          this.ExamStudentResults.push(
-            { "FirstCol": item.PropertyName })
+          let row = this.ExamStudentResults.find(x => x.FirstCol === item.PropertyName);
+          if (!row)
+            this.ExamStudentResults.push(
+              { "ExamId": item.ExamId, "FirstCol": item.PropertyName })
         })
-        // this.ExamStudentResults.push(
-        //   { "FirstCol": "Grand Total" },
-        //   { "FirstCol": "Percentage (%)" },
-        //   { "FirstCol": "Division" },
-        //   { "FirstCol": "Rank" },
-        //   { "FirstCol": "Attendance" },
-        //   { "FirstCol": "Class Strength" });
-        // var ToInclude = [
-        //   { "ColumnName": "TotalMarks", "Display": "Grand Total" },
-        //   { "ColumnName": "MarkPercent", "Display": "Percentage (%)" },
-        //   { "ColumnName": "Division", "Display": "Division" },
-        //   { "ColumnName": "Rank", "Display": "Rank" },
-        //   { "ColumnName": "Attendance", "Display": "Attendance" },
-        //   { "ColumnName": "ClassStrength", "Display": "Class Strength" }
-        // ]
+
         this.ReportCardSignatures.forEach(item => {
           this.ReportSignatureList.push({ 'FirstCol': item.MasterDataName })
         })

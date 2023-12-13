@@ -43,6 +43,7 @@ export class ExamncalculateComponent implements OnInit {
     CalculateCategoryId: 0,
     Formula: '',
     CalculateResultPropertyId: 0,
+    Sequence:0,
     OrgId: 0,
     SubOrgId: 0,
     Active: false
@@ -53,6 +54,7 @@ export class ExamncalculateComponent implements OnInit {
     "PropertyName",
     "CalculateCategoryId",
     "Formula",
+    "Sequence",
     "Active",
     "Action"
   ];
@@ -167,6 +169,7 @@ export class ExamncalculateComponent implements OnInit {
           this.ExamNCalculateData.CalculateResultPropertyId = row.CalculateResultPropertyId;
           this.ExamNCalculateData.Formula = row.Formula;
           this.ExamNCalculateData.CalculateCategoryId = row.CalculateCategoryId;
+          this.ExamNCalculateData.Sequence = row.Sequence;
           this.ExamNCalculateData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.ExamNCalculateData.SubOrgId = this.SubOrgId;
 
@@ -257,6 +260,7 @@ export class ExamncalculateComponent implements OnInit {
       "CalculateResultPropertyId",
       "Formula",
       "CalculateCategoryId",
+      "Sequence",
       "Active"
     ];
 
@@ -269,17 +273,18 @@ export class ExamncalculateComponent implements OnInit {
         this.ExamNCalculateList = [];
         this.ExamResultProperties.forEach(f => {
 
-          var objExisting = data.value.filter(c => c.CalculateResultPropertyId == f.MasterDataId);
-          if (objExisting.length > 0) {
+          var objExisting = data.value.find(c => c.CalculateResultPropertyId == f.MasterDataId);
+          if (objExisting) {
             this.ExamNCalculateList.push({
-              ExamNCalculateId: objExisting[0].ExamNCalculateId,
-              ExamId: objExisting[0].ExamId,
-              Formula: objExisting[0].Formula,
-              CalculateCategoryId: objExisting[0].CalculateCategoryId,
-              CalculateResultPropertyId: objExisting[0].CalculateResultPropertyId,
+              ExamNCalculateId: objExisting.ExamNCalculateId,
+              ExamId: objExisting.ExamId,
+              Formula: objExisting.Formula,
+              CalculateCategoryId: objExisting.CalculateCategoryId,
+              CalculateResultPropertyId: objExisting.CalculateResultPropertyId,
+              Sequence: objExisting.Sequence,
               PropertyName: f.MasterDataName,
               Action: false,
-              Active: objExisting[0].Active
+              Active: objExisting.Active
             })
 
           } // f.ClassName = objExisting[0].ClassName;
@@ -291,12 +296,13 @@ export class ExamncalculateComponent implements OnInit {
               CalculateCategoryId: 0,
               PropertyName: f.MasterDataName,
               CalculateResultPropertyId: f.MasterDataId,
+              Sequence: 0,
               Action: false,
               Active: false
             })
           }
         });
-
+        this.ExamNCalculateList = this.ExamNCalculateList.sort((a,b)=>a.CalculateCategoryId - b.CalculateCategoryId)
         this.dataSource = new MatTableDataSource<IExamNCalculate>(this.ExamNCalculateList);
         this.dataSource.paginator = this.paging;
         this.loadingFalse();
@@ -360,6 +366,7 @@ export interface IExamNCalculate {
   ExamId: number;
   CalculateResultPropertyId: number;
   PropertyName: string;
+  Sequence:number;
   Formula: string;
   CalculateCategoryId: number;
   Active: boolean;

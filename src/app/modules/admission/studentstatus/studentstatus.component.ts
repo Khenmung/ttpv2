@@ -55,6 +55,7 @@ export class StudentstatusComponent {
     StudentClassId: 0,
     StudentStatureId: 0,
     StatusId: 0,
+    ExamId: 0,
     ClassId: 0,
     SectionId: 0,
     SemesterId: 0,
@@ -64,9 +65,11 @@ export class StudentstatusComponent {
     Active: 1
   };
   displayedColumns = [
+    'StudentStatureId',
     'PID',
     'StudentName',
     'RollNo',
+    'ExamId',
     'StatusId',
     'Active',
     'Action'
@@ -102,6 +105,7 @@ export class StudentstatusComponent {
     this.searchForm = this.fb.group({
       searchPID: [0],
       searchClassId: [0],
+      searchExamId: [0],
       searchSemesterId: [0],
       searchSectionId: [0],
       searchStatusId: [0]
@@ -172,18 +176,25 @@ export class StudentstatusComponent {
       TableUtil.exportArrayToExcel(datatoExport, "studentstatus");
     }
   }
-
+  ResultReleased = 0;
+  ExamSelected(row, element) {
+    debugger;
+    const examObj = this.Exams.find(f => f.ExamId == element.value);
+    if (examObj)
+      row.ReleaseResult = examObj.ReleaseResult;
+  }
   CategoryName = '';
   GetStudentStatus() {
     debugger;
     let filterStr = this.FilterOrgSubOrgBatchId;//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     this.loading = true;
     let _paramstr = '';
-    var _PID = this.searchForm.get("searchPID")?.value;
+    var _PID = +this.searchForm.get("searchPID")?.value;
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _statusId = this.searchForm.get("searchStatusId")?.value;
+    var _exam = this.searchForm.get("searchExamId")?.value;
     let _studentClassId = 0;
     if (_PID) {
 
@@ -194,6 +205,9 @@ export class StudentstatusComponent {
       }
     }
     else {
+      if (_exam) {
+        _paramstr += " and ExamId eq " + _exam.ExamId;
+      }
       if (_classId)
         _paramstr += " and ClassId eq " + _classId;
       else {
@@ -234,6 +248,7 @@ export class StudentstatusComponent {
       'StudentStatureId',
       'StatusId',
       'StudentClassId',
+      'ExamId',
       'ClassId',
       'SectionId',
       'SemesterId',
@@ -248,7 +263,7 @@ export class StudentstatusComponent {
       .subscribe((data: any) => {
         let _student: any;
         if (_PID) {
-          _student =this.Students.filter((s: any)=>s.PID === +_PID);
+          _student = this.Students.filter((s: any) => s.PID === +_PID);
         }
         else {
           _student = this.Students.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].ClassId == _classId
@@ -259,6 +274,10 @@ export class StudentstatusComponent {
           let existing = data.value.filter(d => d.StudentClassId === st.StudentClasses[0].StudentClassId)
           if (existing.length > 0) {
             existing.forEach(ex => {
+              let _release = 0;
+              let obj = this.Exams.find(r => r.ExamId == ex.ExamId);
+              if (obj)
+                _release = obj.ReleaseResult;
               this.StudentStatusList.push({
                 PID: st.PID,
                 StudentStatureId: ex.StudentStatureId,
@@ -269,6 +288,8 @@ export class StudentstatusComponent {
                 RollNo: st.StudentClasses[0].RollNo,
                 StatusId: ex.StatusId,
                 ClassId: ex.ClassId,
+                ExamId: ex.ExamId,
+                ReleaseResult: _release,
                 SemesterId: ex.SemesterId,
                 SectionId: ex.SectionId,
                 Active: ex.Active,
@@ -284,6 +305,8 @@ export class StudentstatusComponent {
               StudentName: st.Name,
               ClassName: st.ClassName,
               Semester: st.Semester + st.Section,
+              ExamId: 0,
+              ReleaseResult: 0,
               RollNo: st.StudentClasses[0].RollNo,
               ClassId: st.StudentClasses[0].ClassId,
               SemesterId: st.StudentClasses[0].SemesterId,
@@ -298,7 +321,7 @@ export class StudentstatusComponent {
         if (this.StudentStatusList.length == 0) {
           this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        this.dataSource = new MatTableDataSource<IStudentStatus>(this.StudentStatusList.sort((a:any, b:any) => b.Active - a.Active));
+        this.dataSource = new MatTableDataSource<IStudentStatus>(this.StudentStatusList.sort((a: any, b: any) => b.Active - a.Active));
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.dataSource.filterPredicate = this.createFilter();
@@ -306,7 +329,6 @@ export class StudentstatusComponent {
       })
 
   }
-
   clear() {
     this.searchForm.patchValue({
       searchClassId: 0,
@@ -323,6 +345,44 @@ export class StudentstatusComponent {
       this.StudentStatusList.forEach(f => {
         f.Active = false;
         f.Action = true;
+      })
+  }
+  Exams: any = [];
+  GetExams() {
+    var orgIdSearchstr = this.FilterOrgSubOrgBatchId + " and Active eq 1";
+
+    let list: List = new List();
+
+    list.fields = [
+      "ExamId", "ExamNameId", "ClassGroupId",
+      "StartDate", "EndDate",
+      "ReleaseResult", "AttendanceStartDate"];
+    list.PageName = "Exams";
+    list.filter = [orgIdSearchstr];
+    //list.orderBy = "ParentId";
+
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        this.Exams = [];
+        data.value.forEach(e => {
+          //var _examName = '';
+          let obj = this.ExamNames.find(n => n.MasterDataId == e.ExamNameId && n.Active == 1)
+          if (obj) {
+            //_examName = obj[0].MasterDataName
+            this.Exams.push({
+              ExamId: e.ExamId,
+              ExamName: obj.MasterDataName,
+              ClassGroupId: e.ClassGroupId,
+              StartDate: e.StartDate,
+              EndDate: e.EndDate,
+              AttendanceStartDate: e.AttendanceStartDate,
+              //AttendanceModeId: e.AttendanceModeId,
+              Sequence: obj.Sequence,
+              ReleaseResult: e.ReleaseResult
+            })
+          }
+        })
+        this.Exams = this.Exams.sort((a, b) => a.Sequence - b.Sequence);
       })
   }
   updateActive(row, value) {
@@ -537,9 +597,14 @@ export class StudentstatusComponent {
   UpdateOrSave(row) {
 
     debugger;
-    this.loading = true;
 
+    if (!row.ExamId) {
+      this.contentservice.openSnackBar("Please select Exam.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+    this.loading = true;
     let checkFilterString = "StudentClassId eq " + row.StudentClassId +
+      ' and ExamId eq ' + row.ExamId +
       ' and StatusId eq ' + row.StatusId +
       ' and BatchId eq ' + this.SelectedBatchId +
       " and SemesterId eq " + row.SemesterId +
@@ -578,6 +643,7 @@ export class StudentstatusComponent {
               this.StudentStatusData.StatusId = item.StatusId;
               this.StudentStatusData.BatchId = this.SelectedBatchId;
               this.StudentStatusData.ClassId = item.ClassId;
+              this.StudentStatusData.ExamId = item.ExamId;
               this.StudentStatusData.SectionId = item.SectionId;
               this.StudentStatusData.SemesterId = item.SemesterId;
               this.StudentStatusData.StudentStatureId = item.StudentStatureId;
@@ -621,7 +687,7 @@ export class StudentstatusComponent {
         });
   }
   update(row) {
-    console.log("this.StudentStatusData", this.StudentStatusData)
+    //console.log("this.StudentStatusData", this.StudentStatusData)
     this.dataservice.postPatch('StudentStatures', this.StudentStatusData, this.StudentStatusData.StudentStatureId, 'patch')
       .subscribe(
         (data: any) => {
@@ -656,12 +722,14 @@ export class StudentstatusComponent {
     this.PageLoading = false;
     //  })
   }
+  ExamNames: any = [];
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.StudentStatuses = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTSTATUS);
+    this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
     this.loading = false; this.PageLoading = false;
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       this.Classes = data.value.map(m => {
@@ -677,7 +745,7 @@ export class StudentstatusComponent {
 
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
     })
-
+    this.GetExams();
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
@@ -689,6 +757,7 @@ export interface IStudentStatus {
   StudentName: string;
   StudentStatureId: number;
   StudentClassId: number;
+  ExamId: number;
   ClassId: number;
   SectionId: number;
   SemesterId: number;
@@ -696,6 +765,7 @@ export interface IStudentStatus {
   Semester: string;
   RollNo: string;
   StatusId: number;
+  ReleaseResult: number;
   Active: boolean;
   Action: boolean
 }

@@ -1,6 +1,6 @@
-mat-table{
-    border-collapse: collapse;
-}
+// mat-table{
+//     border-collapse: collapse;
+// }
 mat-cell:first-of-type{
     padding-left: 0px;
 }
@@ -11,8 +11,8 @@ mat-cell:first-of-type{
 }
 mat-header-cell{
     border-right: 1px solid lightgray;
-    min-width: 40px;
-    padding: 5px;
+    //min-width: 40px;
+    //padding: 5px;
     display: flex;
     justify-content: flex-end;
     align-items:center;
@@ -20,22 +20,32 @@ mat-header-cell{
 }
 mat-cell{
     border-right: 1px solid lightgray;
-    min-width: 40px;
-    padding: 5px;
-    width: fit-content;
+    //min-width: 40px;
+    //padding: 5px;
+    //width: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
-    //align-self: stretch;
+    align-self: stretch;
 }
 .mat-column-Student{
     justify-content: flex-start;
-    min-width: 180px;
+    flex:0 0 180px;
+    
+}
+.mat-column-RollNo{
+    //justify-content: flex-start;
+    flex:0 0 60px;
+    
+}
+.mat-column-*{
+    //justify-content: flex-start;
+    flex:0 0 100px;
     
 }
 mat-header-cell.gray, mat-cell.gray {
     background-color: #F7F4F3;
-    align-self: stretch; // so the cell take all the height
+    align-self: stretch; // so the cell takes all the height
     
 }
 .mat-column-Division{
@@ -46,13 +56,17 @@ mat-header-cell.gray, mat-cell.gray {
     justify-content:center;
     min-width: 50px;
 }
+mat-header-row{
+    border-bottom-style: dashed;
+    border-bottom-color: lightgray;
+}
 mat-row,mat-header-row, mat-footer-row{
-    min-height: 35px;
-    border-bottom: 1px solid lightgray;
+   min-height: 35px;
+   // border-bottom-style: 1px solid lightgray;
 }
-.mat-mdc-cell{
-    border-bottom-style: none;
-}
+// .mat-mdc-cell,.mat-mdc-header-cell{
+//     border-bottom-style: 1px solid lightgray;
+// }
 @media print {
     .mat-mdc-cell,.mat-mdc-header-cell {
       color: black;

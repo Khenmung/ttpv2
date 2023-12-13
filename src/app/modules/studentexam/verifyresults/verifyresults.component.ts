@@ -397,30 +397,7 @@ export class VerifyResultsComponent implements OnInit {
   // }
   SelectedStudentClass: any[] = [];
   GetStudents(pClassId, pSemesterId, pSectionId) {
-    //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
-    // var orgIdSearchstr = this.FilterOrgSubOrgBatchId;
-    // orgIdSearchstr += ' and ClassId eq ' + pClassId;
-    // orgIdSearchstr += ' and SemesterId eq ' + pSemesterId;
-    // orgIdSearchstr += ' and SectionId eq ' + pSectionId;
-    // orgIdSearchstr += ' and IsCurrent eq true and Active eq 1';
-
-    // let list: List = new List();
-    // list.fields = [
-    //   "StudentClassId",
-    //   "ClassId",
-    //   "SectionId",
-    //   "SemesterId",
-    //   "StudentId",
-    //   "SectionId",
-    //   "RollNo"
-    // ];
-    // list.PageName = "StudentClasses";
-    // //list.lookupFields = ["Student($select=Active,FirstName,LastName)"];
-    // list.filter = [orgIdSearchstr];
-
-    // this.dataservice.get(list)
-    //   .subscribe((data: any) => {
-    //     this.SelectedStudentClass = [...data.value];
+   
     this.Students = [];
     var studentList = this.tokenStorage.getStudents()!;
     //var _students = studentList.filter((s: any) => s["Active"] == 1 && data.value.findIndex(fi => fi.StudentId == s["StudentId"]) > -1)
@@ -435,16 +412,7 @@ export class VerifyResultsComponent implements OnInit {
         && s.StudentClasses[0].SemesterId == pSemesterId
         && s.StudentClasses[0].SectionId == pSectionId)
 
-    // _students.forEach(f => {
-    //   var match = _students.filter(stud => stud["StudentId"] == f.StudentId)
-    //   f.FirstName = match[0]["FirstName"];
-    //   f.LastName = match[0]["LastName"];
-    //   this.Students.push(f);
-    // })
-
-    //this.Loading(false);
-    //})
-
+    
   }
   Verified() {
     debugger;
@@ -797,9 +765,11 @@ export class VerifyResultsComponent implements OnInit {
     list.filter = [orgIdSearchstr + filterstr];
     //list.orderBy = "ParentId";
     this.displayedColumns = [
+      'RollNo',
       'Student'
     ];
     this.GradingDisplayedColumns = [
+      'RollNo',
       'Student'
     ];
     this.dataservice.get(list)
@@ -874,15 +844,16 @@ export class VerifyResultsComponent implements OnInit {
         var ForGrading, ForNonGrading;
 
         StudentOwnSubjects.forEach(f => {
-          var stud = this.Students.filter((s: any) => s.StudentClasses[0].StudentClassId == f.StudentClassId);
-          if (stud.length > 0) {
-            var _lastname = stud[0].LastName == null ? '' : " " + stud[0].LastName;
-            f.Student = stud[0].StudentClasses[0].RollNo + "-" + stud[0].FirstName + _lastname + "-" + f.Section;
-            f.StudentId = stud[0].StudentId;
+          var stud = this.Students.find((s: any) => s.StudentClasses[0].StudentClassId == f.StudentClassId);
+          if (stud) {
+            var _lastname = stud.LastName? " " + stud.LastName :'' ;
+            f.Student =  stud.FirstName + _lastname + "-" + f.Section;
+            f.RollNo = stud.StudentClasses[0].RollNo;
+            f.StudentId = stud.StudentId;
           }
         })
         //debugger;
-        var filteredIndividualStud = alasql("select distinct Student,StudentId,StudentClassId,FullMark from ? ", [StudentOwnSubjects]);
+        var filteredIndividualStud = alasql("select distinct RollNo,Student,StudentId,StudentClassId,FullMark from ? ", [StudentOwnSubjects]);
         var _subjectCategoryName = '';
         this.VerifiedResult.ExamResultSubjectMark = [];
         var errormessageforEachSubject: any[] = [];
@@ -941,9 +912,11 @@ export class VerifyResultsComponent implements OnInit {
           ForGrading = {
             "StudentClassId": ss.StudentClassId,
             "Student": ss.Student,
+            "RollNo":ss.RollNo,
             "Grade": 0
           }
           ForNonGrading = {
+            "RollNo":ss.RollNo,
             "StudentClassId": ss.StudentClassId,
             "StudentId": ss.StudentId,
             "Student": ss.Student,
@@ -1501,38 +1474,38 @@ export class VerifyResultsComponent implements OnInit {
       })
   }
 
-  GetStudentGradeDefn_old(classgroupmapping) {
-    var orgIdSearchstr = this.FilterOrgSubOrg + " and Active eq 1";
-    //batch wise not necessary
-    //+ ' and BatchId eq ' + this.SelectedBatchId;
-    let list: List = new List();
+  // GetStudentGradeDefn_old(classgroupmapping) {
+  //   var orgIdSearchstr = this.FilterOrgSubOrg + " and Active eq 1";
+  //   //batch wise not necessary
+  //   //+ ' and BatchId eq ' + this.SelectedBatchId;
+  //   let list: List = new List();
 
-    list.fields = ["StudentGradeId,GradeName,ClassGroupId,SubjectCategoryId,Formula,Sequence"];
-    list.PageName = "StudentGrades";
-    list.filter = [orgIdSearchstr];
-    this.StudentGrades = [];
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        //debugger;
-        classgroupmapping.forEach(f => {
-          var mapped = data.value.filter(d => d.ClassGroupId == f.ClassGroupId)
-          var _grades: any[] = [];
-          mapped.forEach(m => {
-            _grades.push(
-              {
-                StudentGradeId: m.StudentGradeId,
-                GradeName: m.GradeName,
-                SubjectCategoryId: m.SubjectCategoryId,
-                Formula: m.Formula,
-                ClassGroupId: m.ClassGroupId,
-                Sequence: m.Sequence
-              })
-          })
-          f.grades = _grades.sort((a, b) => a.Sequence - b.Sequence);
-          this.StudentGrades.push(f);
-        })
-      })
-  }
+  //   list.fields = ["StudentGradeId,GradeName,ClassGroupId,SubjectCategoryId,Formula,Sequence"];
+  //   list.PageName = "StudentGrades";
+  //   list.filter = [orgIdSearchstr];
+  //   this.StudentGrades = [];
+  //   this.dataservice.get(list)
+  //     .subscribe((data: any) => {
+  //       //debugger;
+  //       classgroupmapping.forEach(f => {
+  //         var mapped = data.value.filter(d => d.ClassGroupId == f.ClassGroupId)
+  //         var _grades: any[] = [];
+  //         mapped.forEach(m => {
+  //           _grades.push(
+  //             {
+  //               StudentGradeId: m.StudentGradeId,
+  //               GradeName: m.GradeName,
+  //               SubjectCategoryId: m.SubjectCategoryId,
+  //               Formula: m.Formula,
+  //               ClassGroupId: m.ClassGroupId,
+  //               Sequence: m.Sequence
+  //             })
+  //         })
+  //         f.grades = _grades.sort((a, b) => a.Sequence - b.Sequence);
+  //         this.StudentGrades.push(f);
+  //       })
+  //     })
+  // }
   SelectedClassCategory = '';
   GetStudentGrade() {
     debugger;

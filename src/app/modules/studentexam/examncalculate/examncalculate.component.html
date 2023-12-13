@@ -49,6 +49,17 @@
                         </mat-form-field>
                     </mat-cell>
                 </ng-container> 
+                <ng-container matColumnDef="Sequence">
+                    <mat-header-cell *matHeaderCellDef>Sequence
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                           <input type="number" max="255" matInput [(ngModel)]="element.Sequence"
+                            (blur)="onBlur(element)"
+                           [value]="element.Sequence" autocomplete="Off"/>
+                        </mat-form-field>
+                    </mat-cell>
+                </ng-container> 
                 <ng-container matColumnDef="CalculateCategoryId">
                     <mat-header-cell *matHeaderCellDef>Calculate Category
                     </mat-header-cell>
