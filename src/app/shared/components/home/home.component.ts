@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { Subscription } from 'rxjs';
 import { MediaObserver } from '@angular/flex-layout'
@@ -92,20 +92,6 @@ export class HomeComponent implements OnInit {
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       // if (this.SelectedApplicationId > 1)
       this.sideMenu = this.tokenStorage.getMenuData()!;
-      ////console.log("home init this.sideMenu", this.sideMenu)
-      // //console.log("this.scroller.nativeElement.scrollTop", this.scroller)
-      // this.scroller._elementRef.onscroll = () => {
-
-      //   let top = this.scroller.nativeElement.scrollTop;
-
-      //   if (top > 0) {               // We scrolled down
-      //     this.displayDiv = false;
-      //   }
-      //   else {
-      //     this.displayDiv = true;
-      //   }
-
-      // }
     })
 
 

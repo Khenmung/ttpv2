@@ -37,7 +37,8 @@ export class NaomitsuService {
    * * this will work on get and delete request with query params filtering
    */
   get<returnType>(list: List): Observable<returnType> {
-
+    //console.log("from",from)
+    //debugger;
     var url;
     url = this.END_POINT + "/odata/" + list.PageName + "?$select=" + list.fields.toString();
     //url = "/odata/" + list.PageName + "?$select=" + list.fields.toString();

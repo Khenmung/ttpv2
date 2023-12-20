@@ -18,9 +18,9 @@ import { ConnectionService } from 'ng-connection-service';
   styleUrls: ['./studentboard.component.scss']
 })
 export class StudentboardComponent implements AfterViewInit {
-  
 
-  components:any = [
+
+  components: any = [
     studentprimaryinfoComponent,
     AddstudentclassComponent,
     StudentattendancereportComponent,
@@ -43,10 +43,10 @@ export class StudentboardComponent implements AfterViewInit {
     };
   StudentId = 0;
   StudentName = '';
-  LoginUserDetail :any[]= [];
+  LoginUserDetail: any[] = [];
   @ViewChild('container', { read: ViewContainerRef, static: false })
   public viewContainer: ViewContainerRef;
-  isConnected:boolean = true;
+  isConnected: boolean = true;
   noInternetConnection: boolean;
   constructor(
     private sidenav: SidenavService,
@@ -56,7 +56,7 @@ export class StudentboardComponent implements AfterViewInit {
     private connectionService: ConnectionService,
     private tokenStorage: TokenStorageService,
     private shareddata: SharedataService) {
-   
+
     // this.connectionService.monitor().subscribe(isConnected => {
     //   debugger;
     //   this.isConnected = isConnected.hasInternetAccess;
@@ -66,7 +66,7 @@ export class StudentboardComponent implements AfterViewInit {
     //   }
     //   else {
     //     this.noInternetConnection = true;
-       
+
     //   }
     // })
     this.StudentId = tokenStorage.getStudentId()!;
@@ -74,23 +74,24 @@ export class StudentboardComponent implements AfterViewInit {
   toggleRightSidenav() {
     ////console.log("this.sidenav",this.sidenav.)
     this.sidenav.toggle();
-   
- }
- FeePaymentPermission='';
+
+  }
+  FeePaymentPermission = '';
   public ngAfterViewInit(): void {
     debugger
     this.shareddata.CurrentStudentName.subscribe(s => (this.StudentName = s));
     ////console.log("StudentName",this.StudentName);
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-    this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
+    if (this.LoginUserDetail.length == 0)
+      this.contentservice.GetApplicationRoleUser(this.LoginUserDetail);
     var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.STUDENT)
     if (perObj.length > 0) {
       this.Permissions.ParentPermission = perObj[0].permission;
     }
     var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.FEEPAYMENT);
-      if (perObj.length > 0) {
-        this.FeePaymentPermission = perObj[0].permission;
-      }
+    if (perObj.length > 0) {
+      this.FeePaymentPermission = perObj[0].permission;
+    }
     this.GenerateComponent(globalconstants.Pages.edu.STUDENT.STUDENTDETAIL)
     this.GenerateComponent(globalconstants.Pages.edu.STUDENT.STUDENTCLASS)
     this.GenerateComponent(globalconstants.Pages.edu.STUDENT.ATTENDANCEREPORT)
@@ -160,7 +161,7 @@ export class StudentboardComponent implements AfterViewInit {
     this.nav.navigate(['/edu/feepayment'])
     //http://localhost:4200/#/edu/addstudent/1044
   }
-  
+
   back() {
     this.nav.navigate(['/edu']);
   }

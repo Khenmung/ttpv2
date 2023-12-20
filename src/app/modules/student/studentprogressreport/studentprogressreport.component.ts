@@ -402,7 +402,7 @@ export class StudentprogressreportComponent implements OnInit {
             }
           }
         });
-        this.ExamNCalculateList = this.ExamNCalculateList.sort((a,b)=>a.Sequence - b.Sequence);
+        this.ExamNCalculateList = this.ExamNCalculateList.sort((a, b) => a.Sequence - b.Sequence);
         this.GetExams();
       })
   }
@@ -508,7 +508,7 @@ export class StudentprogressreportComponent implements OnInit {
   StudentStatuses: any = [];
   ExamIdToWithHeld: any = [];
   getStudentStatuss() {
-
+    debugger;
     let filterStr = this.FilterOrgSubOrgBatchId + ' and Active eq true and StudentClassId eq ' + this.StudentClassId;
     this.ExamIdToWithHeld = [];
     let list: List = new List();
@@ -526,12 +526,14 @@ export class StudentprogressreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.StudentStatuses = [...data.value];
-        this.Exams.forEach(x => {
-          if (x.WithHeldResultStatusId) {
-            if (this.StudentStatuses.findIndex(i => i.StatusId === x.WithHeldResultStatusId) >= -1)
-              this.ExamIdToWithHeld.push(x);
-          }
-        });
+        if (this.StudentStatuses.length > 0) {
+          this.Exams.forEach(x => {
+            if (x.WithHeldResultStatusId) {
+              if (this.StudentStatuses.findIndex(i => i.StatusId === x.WithHeldResultStatusId) >= -1)
+                this.ExamIdToWithHeld.push(x);
+            }
+          });
+        }
         this.GetStudentSubject();
       })
   }

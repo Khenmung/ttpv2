@@ -64,7 +64,7 @@
                         <div>{{CurrentStudent.PresentAddress}}</div>
                     </div>
                 </div>
-                <div *ngIf="ExamIdToWithHeld.length>0" style="display:flex;flex-direction: column;">
+                <div *ngIf="ExamIdToWithHeld.length>0" style="display:flex;flex-direction: column;margin-top: 15px;">
                     <div style="font-weight: bold;">Result withheld for Exam</div>
                     <div *ngFor="let item of ExamIdToWithHeld">
                         {{item.ExamName}}

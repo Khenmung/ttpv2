@@ -88,7 +88,7 @@ export class ContentService implements OnInit {
   }
   GetClasses(pOrgSubOrgFilter: string, refresh = 0) {
     let _classes: any[] = this.tokenService.getClasses()!;
-    if (refresh === 1 || _classes.length==0) {
+    if (refresh === 1 || _classes.length == 0) {
       // if (_classes?.length == 0 || refresh==1) {
       let list = new List();
       list.fields = ["ClassId,ClassName,Sequence,BatchId,CategoryId,MinStudent,MaxStudent,StartDate,EndDate"];
@@ -98,8 +98,8 @@ export class ContentService implements OnInit {
       return this.dataservice.get(list);
     }
     else {
-      let data: any={};
-      data={ value: _classes };
+      let data: any = {};
+      data = { value: _classes };
       return of(data)
     }
 
@@ -773,6 +773,8 @@ export class ContentService implements OnInit {
     return this.http.patch(this.url, body, httpOptions)
   }
   GetApplicationRoleUser(userdetail) {
+    if (userdetail[0]['applicationRolePermission'])
+      return;
     this.UserDetail = [...userdetail];
     let list: List = new List();
     list.fields = [

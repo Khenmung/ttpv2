@@ -300,7 +300,7 @@ export class searchstudentComponent implements OnInit {
         disable: true,
         group: this.Houses
       }
-     
+
     )
     ////console.log("Groups", this.Groups)
     this.UploadTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.UPLOADTYPE);
@@ -311,14 +311,14 @@ export class searchstudentComponent implements OnInit {
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       this.Classes = [];
       data.value.map(m => {
-        let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
-        if (obj.length > 0) {
-          m.Category = obj[0].MasterDataName.toLowerCase();
+        let obj = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
+        if (obj) {
+          m.Category = obj.MasterDataName.toLowerCase();
           this.Classes.push(m);
         }
       });
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-
+      this.tokenStorage.saveClasses(this.Classes);
       this.GetStudents();
 
 
@@ -363,7 +363,7 @@ export class searchstudentComponent implements OnInit {
   class(id) {
     this.route.navigate(['/edu/addstudentcls/' + id]);
   }
-  
+
   progressreport(element) {
     debugger;
     let StudentName = element.Name;

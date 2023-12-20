@@ -17,8 +17,7 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { EMPTY, forkJoin, Observable } from 'rxjs';
-import moment from 'moment';
+import { EMPTY } from 'rxjs';
 @Component({
   selector: 'app-studentprimaryinfo',
   templateUrl: './studentprimaryinfo.component.html',
@@ -466,24 +465,22 @@ export class studentprimaryinfoComponent implements OnInit {
   }
   GetStudentClassPhoto() {
     //var source = [this.GetStudent(), this.GetStudentClass(), this.GetPhoto()];
-    var source = [this.GetStudent(), this.GetPhoto()];
-    forkJoin(source)
+    //var source = [this.GetStudent(), this.GetPhoto()];
+    //forkJoin(source)
+    this.GetPhoto()
       .subscribe((all: any) => {
-        var _student = all[0].value;
-        //var _studentclass;// = all[1].value;
+        //var _student = all[0].value;
         this.Students = this.tokenStorage.getStudents()!;
+        var stud = this.Students.find(s=>s.StudentId === this.StudentId);
+        //var _studentclass;// = all[1].value;
 
-        var _photo = all[1].value;
-        if (_student.length > 0) {
-          var _studentclass = this.Students.filter(s => s.StudentId == this.StudentId)[0].StudentClasses;
-          //var studcls = this.Students.filter(store => store.StudentId == this.StudentId);
-          // if (studcls.length > 0)
-          //   all[0].value[0].StudentClasses = studcls[0].StudentClasses ? studcls[0].StudentClasses : [];
-          // else
-          //   all[1].value[0]["StudentClasses"] :any[]= [];
+        var _photo = all.value;
+        if (stud) {
+          //var _studentclass = this.Students.filter(s => s.StudentId == this.StudentId)[0].StudentClasses;
+          var _studentclass = stud.StudentClasses;
 
-          this.SetStudentClassForStore(_student[0], _studentclass);
-          _student.forEach(stud => {
+          this.SetStudentClassForStore(stud, _studentclass);
+          //_student.forEach(stud => {
             var _lastname = stud.LastName == null || stud.LastName == '' ? '' : " " + stud.LastName;
             var fatherName = stud.FatherName ? stud.FatherName : '';
             var motherName = stud.MotherName ? stud.MotherName : '';
@@ -494,10 +491,10 @@ export class studentprimaryinfoComponent implements OnInit {
               var _sectionName = '', _semesterName = '', _className = '', _rollNo = '';
               _rollNo = _studentclass[0].RollNo ? _studentclass[0].RollNo : '';
               if (_studentclass[0].SectionId > 0)
-                _sectionName = "-" + this.Sections.filter((s: any) => s.MasterDataId == _studentclass[0].SectionId)[0].MasterDataName;
+                _sectionName = "-" + this.Sections.find((s: any) => s.MasterDataId == _studentclass[0].SectionId).MasterDataName;
               if (_studentclass[0].SemesterId > 0)
-                _semesterName = "-" + this.Semesters.filter((s: any) => s.MasterDataId == _studentclass[0].SemesterId)[0].MasterDataName;
-              _className = this.Classes.filter(c => c.ClassId == _studentclass[0].ClassId)[0].ClassName;
+                _semesterName = "-" + this.Semesters.find((s: any) => s.MasterDataId == _studentclass[0].SemesterId).MasterDataName;
+              _className = this.Classes.find(c => c.ClassId == _studentclass[0].ClassId).ClassName;
               StudentName += _className + _semesterName + _sectionName + "-" + _rollNo;
               this.StudentClassId = _studentclass[0].StudentClassId;
               this.tokenStorage.saveStudentClassId(this.StudentClassId + "");
@@ -566,7 +563,7 @@ export class studentprimaryinfoComponent implements OnInit {
             }
             else if (this.StudentId > 0)
               this.imgURL = 'assets/images/emptyimageholder.jpg'
-          })
+          //})
         }
         else {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
@@ -615,40 +612,6 @@ export class studentprimaryinfoComponent implements OnInit {
       }
     })
 
-    // if (this.studentForm.get("FirstName")?.value == 0) {
-    //   errorMessage += "First Name is required.\n";
-    // }
-    // if (this.studentForm.get("FatherName")?.value == 0) {
-    //   errorMessage += "Father name is required.\n";
-
-    // }
-    // if (this.studentForm.get("BloodgroupId")?.value == 0) {
-    //   errorMessage += "Please select blood group.\n";
-
-    // }
-    // if (this.studentForm.get("GenderId")?.value == 0) {
-    //   errorMessage += "Please select gender.\n";
-
-    // }
-    // if (this.studentForm.get("ReligionId")?.value == 0) {
-    //   errorMessage += "Please select religion.\n";
-
-    // }
-    // if (this.studentForm.get("CategoryId")?.value == 0) {
-    //   errorMessage += "Please select Category.\n";
-    // }
-    // if (this.studentForm.get("ClassAdmissionSought")?.value == 0) {
-    //   errorMessage += "Please select Class for which admission is sought.\n";
-    // }
-    // if (this.studentForm.get("AdmissionStatusId")?.value == 0) {
-    //   errorMessage += "Please select admission status.\n";
-    // }
-    // if (this.studentForm.get("ContactNo")?.value == 0) {
-    //   errorMessage += "Please provide contact no..\n";
-    // }
-    // if (this.studentForm.get("WhatsAppNumber")?.value == 0) {
-    //   errorMessage += "Please provide whatsapp no..\n";
-    // }
 
     if (this.ErrorMessage.length > 0) {
       this.loading = false; this.PageLoading = false;
@@ -1092,7 +1055,7 @@ export class studentprimaryinfoComponent implements OnInit {
   Students: any[] = [];
   SetStudentClassForStore(stud, studclass) {
 
-    var _student = [{
+    let _student:any = {
       'StudentId': stud.StudentId,
       'FirstName': stud.FirstName,
       'LastName': stud.LastName,
@@ -1112,49 +1075,49 @@ export class studentprimaryinfoComponent implements OnInit {
       "ReasonForLeavingId": stud.ReasonForLeavingId,
       "AdmissionStatusId": stud.AdmissionStatusId,
       StudentClasses: studclass
-    }];
-    var _classNameobj: any[] = [];
+    };
+    var _classNameobj: any = [];
     var _className = '', _class;
 
-    _student.forEach((d: any) => {
+    //_student.forEach((d: any) => {
       _classNameobj = [];
       _className = ''; _class = '';
-      var studcls = d.StudentClasses.filter((f: any) => f.StudentId == d.StudentId);
-      if (studcls.length > 0) {
-        _classNameobj = this.Classes.filter(c => c.ClassId == studcls[0].ClassId);
-        if (_classNameobj.length > 0) {
-          _className = _classNameobj[0].ClassName;
-          _class = "-" + _classNameobj[0].ClassName;
+      var studcls = _student.StudentClasses.find((f: any) => f.StudentId == _student.StudentId);
+      if (studcls) {
+        _classNameobj = this.Classes.find(c => c.ClassId == studcls.ClassId);
+        if (_classNameobj) {
+          _className = _classNameobj.ClassName;
+          _class = "-" + _classNameobj.ClassName;
         }
         var _Section = '', _sectionName = '';
-        var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studcls[0].SectionId);
-        if (_sectionobj.length > 0) {
-          _sectionName = _sectionobj[0].MasterDataName;
-          _Section = "-" + _sectionobj[0].MasterDataName;
+        var _sectionobj = this.Sections.find((f: any) => f.MasterDataId == studcls.SectionId);
+        if (_sectionobj) {
+          _sectionName = _sectionobj.MasterDataName;
+          _Section = "-" + _sectionobj.MasterDataName;
         }
         var _Semester = '', _semesterName = '';
-        var _semesterobj = this.Semesters.filter((f: any) => f.MasterDataId == studcls[0].SemesterId);
-        if (_semesterobj.length > 0) {
-          _semesterName = _semesterobj[0].MasterDataName;
-          _Semester = "-" + _semesterobj[0].MasterDataName;
+        var _semesterobj = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
+        if (_semesterobj) {
+          _semesterName = _semesterobj.MasterDataName;
+          _Semester = "-" + _semesterobj.MasterDataName;
         }
-        var _lastname = d.LastName == null ? '' : " " + d.LastName;
-        var _RollNo = "-" + studcls[0].RollNo;
-        var _name = d.FirstName + _lastname;
+        var _lastname = _student.LastName == null ? '' : " " + _student.LastName;
+        var _RollNo = "-" + studcls.RollNo;
+        var _name = _student.FirstName + _lastname;
         var _fullDescription = _name + "-" + _class + _Semester + _Section + _RollNo;
-        d.StudentClassId = studcls[0].StudentClassId;
-        d.Name = _fullDescription;
-        d.ClassName = _className;
-        d.Section = _sectionName;
-        d.Semester = _semesterName;
-        d.StudentClasses = studcls;
+        _student.StudentClassId = studcls.StudentClassId;
+        _student.Name = _fullDescription;
+        _student.ClassName = _className;
+        _student.Section = _sectionName;
+        _student.Semester = _semesterName;
+        _student.StudentClasses = studcls;
         //this.Students.push(d);
       }
-    })
+   // })
 
-    var count = this.Students.filter(s => s.StudentId == _student[0].StudentId);
-    if (count.length == 0) {
-      this.Students.push(_student[0]);
+    var count = this.Students.find(s => s.StudentId == _student.StudentId);
+    if (!count) {
+      this.Students.push(_student);
       this.tokenStorage.saveStudents(this.Students);
     }
   }

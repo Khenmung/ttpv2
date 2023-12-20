@@ -631,19 +631,19 @@ export class HomeDashboardComponent implements OnInit {
             this.Classes = this.tokenStorage.getClasses()!;
 
             let refresh = 0;
-            if (this.Classes.length === 0)
+            if (this.Classes.length === 0) {
               refresh = 1;
-
-            this.contentservice.GetClasses(this.filterOrgSubOrg, refresh).subscribe((data: any) => {
-              if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-              this.tokenStorage.saveClasses(this.Classes);
-              this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-              let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
-              if (this.CurrentBatchId == this.SelectedBatchId)
-                this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
-              else
-                this.GetClassJoinStudent(obj.appShortName);
-            });
+              this.contentservice.GetClasses(this.filterOrgSubOrg, refresh).subscribe((data: any) => {
+                if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+                this.tokenStorage.saveClasses(this.Classes);
+                this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+                let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
+                if (this.CurrentBatchId == this.SelectedBatchId)
+                  this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
+                else
+                  this.GetClassJoinStudent(obj.appShortName);
+              });
+            }
           }
           // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedAppId)
           // .subscribe((data: any) => {
@@ -721,7 +721,7 @@ export class HomeDashboardComponent implements OnInit {
     //this.PageLoading = true;
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        let result = data.value.filter(s=>s.Student.Deleted==false);
+        let result = data.value.filter(s => s.Student.Deleted == false);
         this.Students = [];
         result.forEach(d => {
           var studcls = '{';
@@ -908,26 +908,54 @@ export class HomeDashboardComponent implements OnInit {
     this.Students = [];
     let list: List = new List();
     list.fields = [
-      'StudentId',
-      'FirstName',
-      'LastName',
-      'FatherName',
-      'MotherName',
-      'PersonalNo',
-      //'FatherContactNo',
-      //'MotherContactNo',
       "PID",
-      "Active",
+      "StudentId",
+      "FirstName",
+      "LastName",
+      "FatherName",
+      "FatherOccupation",
+      "MotherName",
+      "MotherOccupation",
+      "GenderId",
+      "PermanentAddress",
+      "PresentAddress",
+      "DOB",
+      "BloodgroupId",
+      "CategoryId",
+      "AccountHolderName",
+      "BankAccountNo",
+      "IFSCCode",
+      "MICRNo",
+      "AdhaarNo",
+      "Photo",
+      "ReligionId",
+      "PersonalNo",
+      "WhatsAppNumber",
+      "FatherContactNo",
+      "MotherContactNo",
+      "PrimaryContactFatherOrMother",
+      "NameOfContactPerson",
+      "RelationWithContactPerson",
+      "ContactPersonContactNo",
+      "AlternateContact",
+      "ClassAdmissionSought",
+      "LastSchoolPercentage",
+      "TransferFromSchool",
+      "TransferFromSchoolBoard",
+      "ClubId",
+      "HouseId",
       "RemarkId",
       "Remark2Id",
-      "GenderId",
-      "HouseId",
-      "EmailAddress",
-      //"UserId",
-      "ReasonForLeavingId",
       "AdmissionStatusId",
-      "PresentAddress",
-      "DOB"
+      "AdmissionDate",
+      "Notes",
+      "EmailAddress",
+      "Active",
+      "ReasonForLeavingId",
+      "IdentificationMark",
+      "BoardRegistrationNo",
+      "Height",
+      "Weight"      
     ];
     list.PageName = "Students";
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
@@ -939,6 +967,26 @@ export class HomeDashboardComponent implements OnInit {
     return this.dataservice.get(list);
 
   }
+  // 'StudentId',
+  //     'FirstName',
+  //     'LastName',
+  //     'FatherName',
+  //     'MotherName',
+  //     'PersonalNo',
+  //     //'FatherContactNo',
+  //     //'MotherContactNo',
+  //     "PID",
+  //     "Active",
+  //     "RemarkId",
+  //     "Remark2Id",
+  //     "GenderId",
+  //     "HouseId",
+  //     "EmailAddress",
+  //     //"UserId",
+  //     "ReasonForLeavingId",
+  //     "AdmissionStatusId",
+  //     "PresentAddress",
+  //     "DOB"
   sendmessage() {
     var api = "https://graph.facebook.com/v15.0/107273275514184/messages";
     var data = { "messaging_product": "whatsapp", "to": "918974098031", "type": "template", "template": { "name": "hello_world", "language": { "code": "en_US" } } }
