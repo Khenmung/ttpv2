@@ -275,16 +275,19 @@ export class AddMasterDataComponent implements OnInit {
   GetSubMasters(element) {
     debugger;
     this.loading = true;
-    var _appId = this.MasterData.filter((f: any) => f.MasterDataId == element.MasterDataId)[0].ApplicationId;
+    console.log("element", element)
+    var _appId = this.MasterData.find((f: any) => f.MasterDataId == element.MasterDataId);
+
     this.SubMasters = [];
     this.ClearData();
-    this.contentservice.GetDropDownDataFromDB(element.MasterDataId, this.FilterOrgSubOrg, _appId, 0)
-      .subscribe((data: any) => {
-        this.SubMasters = [...data.value];
-        this.searchForm.patchValue({ "SubId": 0 });
-        this.loading = false; this.PageLoading = false;
-      })
-
+    if (_appId) {
+      this.contentservice.GetDropDownDataFromDB(element.MasterDataId, this.FilterOrgSubOrg, _appId.ApplicationId, 0)
+        .subscribe((data: any) => {
+          this.SubMasters = [...data.value];
+          this.searchForm.patchValue({ "SubId": 0 });
+          this.loading = false; this.PageLoading = false;
+        })
+    }
   }
   ClearData() {
     this.MasterList = [];
@@ -306,9 +309,9 @@ export class AddMasterDataComponent implements OnInit {
     else
       _ParentId = this.searchForm.get("ParentId")?.value.MasterDataId;
 
-    var obj = this.MasterData.filter((f: any) => f.MasterDataId == _ParentId)
-    if (obj.length > 0)
-      _appId = obj[0].ApplicationId;
+    var obj = this.MasterData.find((f: any) => f.MasterDataId == _ParentId)
+    if (obj)
+      _appId = obj.ApplicationId;
     this.MasterList = [];
     let newrow = {
       "MasterDataId": 0,
@@ -484,7 +487,7 @@ export class AddMasterDataComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    row.MasterDataName = row.MasterDataName.replace("'","''");
+    row.MasterDataName = row.MasterDataName.replace("'", "''");
     // if (this.contentservice.checkSpecialChar(row.MasterDataName)) {
     //   this.loading = false;
     //   this.PageLoading = false;
@@ -576,7 +579,7 @@ export class AddMasterDataComponent implements OnInit {
 
             this.MasterList.push(mastertoUpdate)
             this.tokenStorage.saveMasterData(this.MasterList);
-            
+
             if (this.DataToSaveCount == 0) {
               this.loading = false;
               this.PageLoading = false;
@@ -602,9 +605,9 @@ export class AddMasterDataComponent implements OnInit {
 
           let indx = this.MasterList.findIndex(f => f.MasterDataId == mastertoUpdate.MasterDataId);
           this.MasterList[indx] = mastertoUpdate;
-          this.MasterData = Object.assign([],this.MasterList);
+          this.MasterData = Object.assign([], this.MasterList);
           this.tokenStorage.saveMasterData(this.MasterList);
-                   
+
           if (this.DataToSaveCount == 0) {
             this.loading = false;
             this.PageLoading = false;

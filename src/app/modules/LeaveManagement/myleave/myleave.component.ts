@@ -221,25 +221,28 @@ export class MyLeaveComponent implements OnInit {
 
   }
   GetNoOfDays(pFrom, pTo, pExcludeDays) {
-    let a = moment(pFrom).startOf('day');
+    let fromDate = moment(pFrom);
+    let a = fromDate.startOf('day');
     let b = moment(pTo).startOf('day');
     let _noOfDays = b.diff(a, 'days');
     if (_noOfDays < 0)
       return _noOfDays;
     else {
-      var tempdate, Holidays = 0, ExcludeDaysCount = 0;
+      let tempdate, Holidays = 0, ExcludeDaysCount = 0;
       _noOfDays = _noOfDays + 1;
       for (let day = 1; day <= _noOfDays; day++) {
-        tempdate = pFrom.add(day, 'days').startOf('day');
-        var inHoliday = this.HolidayList.filter((h: any) => tempdate.diff(moment(h.StartDate).startOf('day'), 'days') >= 0 && tempdate.diff(moment(h.EndDate).startOf('day'), 'days') <= 0)
+        tempdate = fromDate.add(day, 'days').startOf('day');
+        let inHoliday = this.HolidayList.filter((h: any) => tempdate.diff(moment(h.StartDate).startOf('day'), 'days') >= 0 && tempdate.diff(moment(h.EndDate).startOf('day'), 'days') <= 0)
         if (inHoliday.length > 0)
           Holidays += 1;
 
         //exclude days set in the formula by user.
-        pExcludeDays.forEach(w => {
-          if (w.toLowerCase() == this.WeekDays[tempdate.getDay()].toLowerCase())
-            ExcludeDaysCount += 1;
-        })      
+        if (pExcludeDays) {
+          pExcludeDays.forEach(w => {
+            if (w.toLowerCase() == this.WeekDays[tempdate.getDay()].toLowerCase())
+              ExcludeDaysCount += 1;
+          })
+        }
       }
       return _noOfDays - (ExcludeDaysCount + Holidays);
     }
@@ -434,36 +437,36 @@ export class MyLeaveComponent implements OnInit {
 
     // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SubOrgId, this.SelectedApplicationId)
     //   .subscribe((data: any) => {
-        //debugger;
-        this.allMasterData =this.tokenStorage.getMasterData()!;// [...data.value];
-        this.Leaves = this.getDropDownData(globalconstants.MasterDefinitions.leave.EMPLOYEELEAVE);
-        this.Leaves.sort((a, b) => a.Sequence - b.Sequence);
-        this.Grades = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGRADE);
-        this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.DEPARTMENT);
-        this.WorkAccounts = this.getDropDownData(globalconstants.MasterDefinitions.employee.WORKACCOUNT);
-        this.Designations = this.getDropDownData(globalconstants.MasterDefinitions.employee.DESIGNATION);
-        this.JobTitles = this.getDropDownData(globalconstants.MasterDefinitions.employee.JOBTITLE);
-        this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGENDER);
-        this.City = this.getDropDownData(globalconstants.MasterDefinitions.common.CITY);
-        this.Countries = this.getDropDownData(globalconstants.MasterDefinitions.common.COUNTRY);
-        this.States = this.getDropDownData(globalconstants.MasterDefinitions.common.STATE);
-        this.BloodGroups = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
-        this.Religions = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
-        this.Categories = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
-        this.Locations = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
-        this.EmploymentStatus = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYMENTSTATUS);
-        this.EmploymentTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYMENTTYPE);;
-        this.Natures = this.getDropDownData(globalconstants.MasterDefinitions.employee.NATURE);
-        this.MaritalStatus = this.getDropDownData(globalconstants.MasterDefinitions.employee.MARITALSTATUS);
-        this.ComponentTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.COMPONENTTYPE);
-        this.VariableTypes = this.getDropDownData(globalconstants.MasterDefinitions.common.CONFIGTYPE);
-        this.Grades = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGRADE);
-        this.Leaves = this.getDropDownData(globalconstants.MasterDefinitions.leave.EMPLOYEELEAVE);
-        this.LeaveStatus = this.getDropDownData(globalconstants.MasterDefinitions.leave.LEAVESTATUS);
-        this.loading = false; this.PageLoading = false;
-        this.GetEmployees();
-        this.GetLeavePolicy();
-      //});
+    //debugger;
+    this.allMasterData = this.tokenStorage.getMasterData()!;// [...data.value];
+    this.Leaves = this.getDropDownData(globalconstants.MasterDefinitions.leave.EMPLOYEELEAVE);
+    this.Leaves.sort((a, b) => a.Sequence - b.Sequence);
+    this.Grades = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGRADE);
+    this.Departments = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.DEPARTMENT);
+    this.WorkAccounts = this.getDropDownData(globalconstants.MasterDefinitions.employee.WORKACCOUNT);
+    this.Designations = this.getDropDownData(globalconstants.MasterDefinitions.employee.DESIGNATION);
+    this.JobTitles = this.getDropDownData(globalconstants.MasterDefinitions.employee.JOBTITLE);
+    this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGENDER);
+    this.City = this.getDropDownData(globalconstants.MasterDefinitions.common.CITY);
+    this.Countries = this.getDropDownData(globalconstants.MasterDefinitions.common.COUNTRY);
+    this.States = this.getDropDownData(globalconstants.MasterDefinitions.common.STATE);
+    this.BloodGroups = this.getDropDownData(globalconstants.MasterDefinitions.common.BLOODGROUP);
+    this.Religions = this.getDropDownData(globalconstants.MasterDefinitions.common.RELIGION);
+    this.Categories = this.getDropDownData(globalconstants.MasterDefinitions.common.CATEGORY);
+    this.Locations = this.getDropDownData(globalconstants.MasterDefinitions.schoolapps.LOCATION);
+    this.EmploymentStatus = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYMENTSTATUS);
+    this.EmploymentTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYMENTTYPE);;
+    this.Natures = this.getDropDownData(globalconstants.MasterDefinitions.employee.NATURE);
+    this.MaritalStatus = this.getDropDownData(globalconstants.MasterDefinitions.employee.MARITALSTATUS);
+    this.ComponentTypes = this.getDropDownData(globalconstants.MasterDefinitions.employee.COMPONENTTYPE);
+    this.VariableTypes = this.getDropDownData(globalconstants.MasterDefinitions.common.CONFIGTYPE);
+    this.Grades = this.getDropDownData(globalconstants.MasterDefinitions.employee.EMPLOYEEGRADE);
+    this.Leaves = this.getDropDownData(globalconstants.MasterDefinitions.leave.EMPLOYEELEAVE);
+    this.LeaveStatus = this.getDropDownData(globalconstants.MasterDefinitions.leave.LEAVESTATUS);
+    this.loading = false; this.PageLoading = false;
+    this.GetEmployees();
+    this.GetLeavePolicy();
+    //});
   }
   GetEmployees() {
 
@@ -517,65 +520,65 @@ export class MyLeaveComponent implements OnInit {
   GetEmployeeLeave() {
     debugger;
     //var orgIdSearchstr = this.FilterOrgSubOrg;// 'and OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-     var _leaveStatusId = this.searchForm.get("searchLeaveStatusId")?.value;
+    var _leaveStatusId = this.searchForm.get("searchLeaveStatusId")?.value;
     if (!_leaveStatusId) {
       this.contentservice.openSnackBar("Please select status.", globalconstants.ActionText, globalconstants.RedBackground);
     }
     else {
-    this.displayedColumns = [
-      "EmployeeLeaveId",
-      "LeaveTypeId",
-      "LeaveFrom",
-      "LeaveTo",
-      "NoOfDays",
-      "LeaveReason",
-      //"ApplyDate",      
-      //"ApproveRejecteDate",
-      //"ApprovedBy",
-      "Remarks",
-      "LeaveStatusId",
-      "Active",
-      "Action"
-    ];
-    let list: List = new List();
+      this.displayedColumns = [
+        "EmployeeLeaveId",
+        "LeaveTypeId",
+        "LeaveFrom",
+        "LeaveTo",
+        "NoOfDays",
+        "LeaveReason",
+        //"ApplyDate",      
+        //"ApproveRejecteDate",
+        //"ApprovedBy",
+        "Remarks",
+        "LeaveStatusId",
+        "Active",
+        "Action"
+      ];
+      let list: List = new List();
 
-    list.fields = [
-      "EmployeeLeaveId",
-      "EmployeeId",
-      "LeaveTypeId",
-      "LeaveFrom",
-      "LeaveTo",
-      "NoOfDays",
-      "LeaveReason",
-      "ApplyDate",
-      "LeaveStatusId",
-      "ApproveRejectedDate",
-      "ApprovedBy",
-      "Remarks",
-      "Active"
-    ];
-    this.loading = true;
-    list.PageName = this.EmployeeLeaveListName;
-    list.filter = [this.FilterOrgSubOrgBatchId + " and EmployeeId eq " + this.EmployeeId];
-    //list.orderBy = "ParentId";
-    this.EmployeeLeaveList = [];
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        //debugger;
+      list.fields = [
+        "EmployeeLeaveId",
+        "EmployeeId",
+        "LeaveTypeId",
+        "LeaveFrom",
+        "LeaveTo",
+        "NoOfDays",
+        "LeaveReason",
+        "ApplyDate",
+        "LeaveStatusId",
+        "ApproveRejectedDate",
+        "ApprovedBy",
+        "Remarks",
+        "Active"
+      ];
+      this.loading = true;
+      list.PageName = this.EmployeeLeaveListName;
+      list.filter = [this.FilterOrgSubOrgBatchId + " and EmployeeId eq " + this.EmployeeId];
+      //list.orderBy = "ParentId";
+      this.EmployeeLeaveList = [];
+      this.dataservice.get(list)
+        .subscribe((data: any) => {
+          //debugger;
 
-        if (data.value.length > 0)
-          this.EmployeeLeaveList = data.value.map(d => {
-            d.LeaveStatus = this.LeaveStatus.filter(l => l.MasterDataId == d.LeaveStatusId)[0].MasterDataName;
-            return d;
-          })
-        else {
-          this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
-        }
+          if (data.value.length > 0)
+            this.EmployeeLeaveList = data.value.map(d => {
+              d.LeaveStatus = this.LeaveStatus.filter(l => l.MasterDataId == d.LeaveStatusId)[0].MasterDataName;
+              return d;
+            })
+          else {
+            this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
+          }
 
-        this.dataSource = new MatTableDataSource<IEmployeeLeave>(this.EmployeeLeaveList);
-        this.loading = false;
-      })
-     }
+          this.dataSource = new MatTableDataSource<IEmployeeLeave>(this.EmployeeLeaveList);
+          this.loading = false;
+        })
+    }
   }
 
   getDropDownData(dropdowntype) {

@@ -471,7 +471,7 @@ export class studentprimaryinfoComponent implements OnInit {
       .subscribe((all: any) => {
         //var _student = all[0].value;
         this.Students = this.tokenStorage.getStudents()!;
-        var stud = this.Students.find(s=>s.StudentId === this.StudentId);
+        var stud = this.Students.find(s => s.StudentId === this.StudentId);
         //var _studentclass;// = all[1].value;
 
         var _photo = all.value;
@@ -481,88 +481,88 @@ export class studentprimaryinfoComponent implements OnInit {
 
           this.SetStudentClassForStore(stud, _studentclass);
           //_student.forEach(stud => {
-            var _lastname = stud.LastName == null || stud.LastName == '' ? '' : " " + stud.LastName;
-            var fatherName = stud.FatherName ? stud.FatherName : '';
-            var motherName = stud.MotherName ? stud.MotherName : '';
-            let StudentName = stud.PID + ' ' + stud.FirstName + _lastname + ' ' + fatherName +
-              ' ' + motherName + ", ";
+          var _lastname = stud.LastName == null || stud.LastName == '' ? '' : " " + stud.LastName;
+          var fatherName = stud.FatherName ? stud.FatherName : '';
+          var motherName = stud.MotherName ? stud.MotherName : '';
+          let StudentName = stud.PID + ' ' + stud.FirstName + _lastname + ' ' + fatherName +
+            ' ' + motherName + ", ";
 
-            if (_studentclass && _studentclass.length > 0) {
-              var _sectionName = '', _semesterName = '', _className = '', _rollNo = '';
-              _rollNo = _studentclass[0].RollNo ? _studentclass[0].RollNo : '';
-              if (_studentclass[0].SectionId > 0)
-                _sectionName = "-" + this.Sections.find((s: any) => s.MasterDataId == _studentclass[0].SectionId).MasterDataName;
-              if (_studentclass[0].SemesterId > 0)
-                _semesterName = "-" + this.Semesters.find((s: any) => s.MasterDataId == _studentclass[0].SemesterId).MasterDataName;
-              _className = this.Classes.find(c => c.ClassId == _studentclass[0].ClassId).ClassName;
-              StudentName += _className + _semesterName + _sectionName + "-" + _rollNo;
-              this.StudentClassId = _studentclass[0].StudentClassId;
-              this.tokenStorage.saveStudentClassId(this.StudentClassId + "");
-            }
+          if (_studentclass && _studentclass.length > 0) {
+            var _sectionName = '', _semesterName = '', _className = '', _rollNo = '';
+            _rollNo = _studentclass[0].RollNo ? _studentclass[0].RollNo : '';
+            if (_studentclass[0].SectionId > 0)
+              _sectionName = "-" + this.Sections.find((s: any) => s.MasterDataId == _studentclass[0].SectionId).MasterDataName;
+            if (_studentclass[0].SemesterId > 0)
+              _semesterName = "-" + this.Semesters.find((s: any) => s.MasterDataId == _studentclass[0].SemesterId).MasterDataName;
+            _className = this.Classes.find(c => c.ClassId == _studentclass[0].ClassId).ClassName;
+            StudentName += _className + _semesterName + _sectionName + "-" + _rollNo;
+            this.StudentClassId = _studentclass[0].StudentClassId;
+            this.tokenStorage.saveStudentClassId(this.StudentClassId + "");
+          }
 
-            this.PID = stud.PID;
-            this.shareddata.ChangeStudentName(StudentName);
-            this.studentForm.patchValue({
-              StudentId: stud.StudentId,
-              FirstName: stud.FirstName,
-              LastName: _lastname,
-              FatherName: stud.FatherName,
-              MotherName: stud.MotherName,
-              FatherOccupation: stud.FatherOccupation,
-              MotherOccupation: stud.MotherOccupation,
-              PresentAddress: stud.PresentAddress,
-              PermanentAddress: stud.PermanentAddress,
-              DOB: new Date(stud.DOB),//this.formatdate.transform(stud.DOB,'dd/MM/yyyy'),
-              Gender: stud.GenderId,
-              Bloodgroup: stud.BloodgroupId,
-              Category: stud.CategoryId,
-              Religion: stud.ReligionId,
-              AccountHolderName: stud.AccountHolderName,
-              BankAccountNo: stud.BankAccountNo,
-              IFSCCode: stud.IFSCCode,
-              MICRNo: stud.MICRNo,
-              AdhaarNo: stud.AdhaarNo,
-              Photo: stud.Photo,
-              PersonalNo: stud.PersonalNo,
-              WhatsAppNumber: stud.WhatsAppNumber,
-              FatherContactNo: stud.FatherContactNo,
-              MotherContactNo: stud.MotherContactNo,
-              PrimaryContactFatherOrMother: stud.PrimaryContactFatherOrMother,
-              NameOfContactPerson: stud.NameOfContactPerson,
-              RelationWithContactPerson: stud.RelationWithContactPerson,
-              ContactPersonContactNo: stud.ContactPersonContactNo,
-              AlternateContact: stud.AlternateContact,
-              EmailAddress: stud.EmailAddress,
-              LastSchoolPercentage: stud.LastSchoolPercentage,
-              ClassAdmissionSought: stud.ClassAdmissionSought,
-              TransferFromSchool: stud.TransferFromSchool,
-              TransferFromSchoolBoard: stud.TransferFromSchoolBoard,
-              Club: stud.ClubId,
-              House: stud.HouseId,
-              AdmissionStatus: stud.AdmissionStatusId,
-              AdmissionDate: stud.AdmissionDate,
-              RemarkId: stud.RemarkId,
-              Remark2Id: stud.Remark2Id,
-              Notes: stud.Notes,
-              Active: stud.Active,
-              ReasonForLeaving: stud.ReasonForLeavingId,
-              IdentificationMark: stud.IdentificationMark,
-              BoardRegistrationNo: stud.BoardRegistrationNo,
-              Weight: stud.Weight,
-              Height: stud.Height
-            })
+          this.PID = stud.PID;
+          this.shareddata.ChangeStudentName(StudentName);
+          this.studentForm.patchValue({
+            StudentId: stud.StudentId,
+            FirstName: stud.FirstName,
+            LastName: _lastname,
+            FatherName: stud.FatherName,
+            MotherName: stud.MotherName,
+            FatherOccupation: stud.FatherOccupation,
+            MotherOccupation: stud.MotherOccupation,
+            PresentAddress: stud.PresentAddress,
+            PermanentAddress: stud.PermanentAddress,
+            DOB: new Date(stud.DOB),//this.formatdate.transform(stud.DOB,'dd/MM/yyyy'),
+            Gender: stud.GenderId,
+            Bloodgroup: stud.BloodgroupId,
+            Category: stud.CategoryId,
+            Religion: stud.ReligionId,
+            AccountHolderName: stud.AccountHolderName,
+            BankAccountNo: stud.BankAccountNo,
+            IFSCCode: stud.IFSCCode,
+            MICRNo: stud.MICRNo,
+            AdhaarNo: stud.AdhaarNo,
+            Photo: stud.Photo,
+            PersonalNo: stud.PersonalNo,
+            WhatsAppNumber: stud.WhatsAppNumber,
+            FatherContactNo: stud.FatherContactNo,
+            MotherContactNo: stud.MotherContactNo,
+            PrimaryContactFatherOrMother: stud.PrimaryContactFatherOrMother,
+            NameOfContactPerson: stud.NameOfContactPerson,
+            RelationWithContactPerson: stud.RelationWithContactPerson,
+            ContactPersonContactNo: stud.ContactPersonContactNo,
+            AlternateContact: stud.AlternateContact,
+            EmailAddress: stud.EmailAddress,
+            LastSchoolPercentage: stud.LastSchoolPercentage,
+            ClassAdmissionSought: stud.ClassAdmissionSought,
+            TransferFromSchool: stud.TransferFromSchool,
+            TransferFromSchoolBoard: stud.TransferFromSchoolBoard,
+            Club: stud.ClubId,
+            House: stud.HouseId,
+            AdmissionStatus: stud.AdmissionStatusId,
+            AdmissionDate: stud.AdmissionDate,
+            RemarkId: stud.RemarkId,
+            Remark2Id: stud.Remark2Id,
+            Notes: stud.Notes,
+            Active: stud.Active,
+            ReasonForLeaving: stud.ReasonForLeavingId,
+            IdentificationMark: stud.IdentificationMark,
+            BoardRegistrationNo: stud.BoardRegistrationNo,
+            Weight: stud.Weight,
+            Height: stud.Height
+          })
 
-            if (stud.PrimaryContactFatherOrMother == this.PrimaryContactOtherId)
-              this.displayContactPerson = true;
-            else
-              this.displayContactPerson = false;
-            if (_photo.length > 0) {
-              var fileNames = _photo.sort((a, b) => b.FileId - a.FileId)
-              this.imgURL = globalconstants.apiUrl + "/Uploads/" + this.LoginUserDetail[0]["org"] +
-                "/StudentPhoto/" + fileNames[0].FileName;
-            }
-            else if (this.StudentId > 0)
-              this.imgURL = 'assets/images/emptyimageholder.jpg'
+          if (stud.PrimaryContactFatherOrMother == this.PrimaryContactOtherId)
+            this.displayContactPerson = true;
+          else
+            this.displayContactPerson = false;
+          if (_photo.length > 0) {
+            var fileNames = _photo.sort((a, b) => b.FileId - a.FileId)
+            this.imgURL = globalconstants.apiUrl + "/Uploads/" + this.LoginUserDetail[0]["org"] +
+              "/StudentPhoto/" + fileNames[0].FileName;
+          }
+          else if (this.StudentId > 0)
+            this.imgURL = 'assets/images/emptyimageholder.jpg'
           //})
         }
         else {
@@ -777,8 +777,8 @@ export class studentprimaryinfoComponent implements OnInit {
         let _student: any[] = this.tokenStorage.getStudents()!;
 
         //let indx = _student.findIndex(f => f.StudentId === this.StudentId);
-        let _stud = _student.filter(f => f.StudentId === this.StudentId);
-        let studcls = JSON.parse(JSON.stringify(_stud[0].StudentClasses));
+        let _stud = _student.find(f => f.StudentId === this.StudentId);
+        let studcls = JSON.parse(JSON.stringify(_stud.StudentClasses));
 
         //_student.splice(indx, 1);
 
@@ -793,11 +793,19 @@ export class studentprimaryinfoComponent implements OnInit {
             this.studentData[0].Remark2 = _remark2obj[0].MasterDataName;
         }
         this.studentData[0].StudentClasses = studcls;
-        _stud[0] = JSON.parse(JSON.stringify(this.studentData[0]));
+        let indx = _student.findIndex(f => f.StudentId === this.StudentId);
+        if (indx > -1)
+          _student[indx] = JSON.parse(JSON.stringify(this.studentData[0]));
+        else
+        {
+          this.contentservice.openSnackBar("StudentId index not found in Students",globalconstants.ActionText,globalconstants.RedBackground);
+          return;
+        }
+        //_stud = JSON.parse(JSON.stringify(this.studentData[0]));
         // _stud[0].StudentClasses = studcls;
         //_student.push(this.studentData[0]);
         this.tokenStorage.saveStudents(_student);
-        console.log("after", _student.filter(f => f.StudentId == this.StudentId))
+        //console.log("after", _student.filter(f => f.StudentId == this.StudentId))
         if (result != null && result.UserId != "") {
           this.contentservice.openSnackBar(globalconstants.UserLoginCreated, globalconstants.ActionText, globalconstants.BlueBackground);
         }
@@ -1055,7 +1063,7 @@ export class studentprimaryinfoComponent implements OnInit {
   Students: any[] = [];
   SetStudentClassForStore(stud, studclass) {
 
-    let _student:any = {
+    let _student: any = {
       'StudentId': stud.StudentId,
       'FirstName': stud.FirstName,
       'LastName': stud.LastName,
@@ -1080,40 +1088,40 @@ export class studentprimaryinfoComponent implements OnInit {
     var _className = '', _class;
 
     //_student.forEach((d: any) => {
-      _classNameobj = [];
-      _className = ''; _class = '';
-      var studcls = _student.StudentClasses.find((f: any) => f.StudentId == _student.StudentId);
-      if (studcls) {
-        _classNameobj = this.Classes.find(c => c.ClassId == studcls.ClassId);
-        if (_classNameobj) {
-          _className = _classNameobj.ClassName;
-          _class = "-" + _classNameobj.ClassName;
-        }
-        var _Section = '', _sectionName = '';
-        var _sectionobj = this.Sections.find((f: any) => f.MasterDataId == studcls.SectionId);
-        if (_sectionobj) {
-          _sectionName = _sectionobj.MasterDataName;
-          _Section = "-" + _sectionobj.MasterDataName;
-        }
-        var _Semester = '', _semesterName = '';
-        var _semesterobj = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
-        if (_semesterobj) {
-          _semesterName = _semesterobj.MasterDataName;
-          _Semester = "-" + _semesterobj.MasterDataName;
-        }
-        var _lastname = _student.LastName == null ? '' : " " + _student.LastName;
-        var _RollNo = "-" + studcls.RollNo;
-        var _name = _student.FirstName + _lastname;
-        var _fullDescription = _name + "-" + _class + _Semester + _Section + _RollNo;
-        _student.StudentClassId = studcls.StudentClassId;
-        _student.Name = _fullDescription;
-        _student.ClassName = _className;
-        _student.Section = _sectionName;
-        _student.Semester = _semesterName;
-        _student.StudentClasses = studcls;
-        //this.Students.push(d);
+    _classNameobj = [];
+    _className = ''; _class = '';
+    var studcls = _student.StudentClasses.find((f: any) => f.StudentId == _student.StudentId);
+    if (studcls) {
+      _classNameobj = this.Classes.find(c => c.ClassId == studcls.ClassId);
+      if (_classNameobj) {
+        _className = _classNameobj.ClassName;
+        _class = "-" + _classNameobj.ClassName;
       }
-   // })
+      var _Section = '', _sectionName = '';
+      var _sectionobj = this.Sections.find((f: any) => f.MasterDataId == studcls.SectionId);
+      if (_sectionobj) {
+        _sectionName = _sectionobj.MasterDataName;
+        _Section = "-" + _sectionobj.MasterDataName;
+      }
+      var _Semester = '', _semesterName = '';
+      var _semesterobj = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
+      if (_semesterobj) {
+        _semesterName = _semesterobj.MasterDataName;
+        _Semester = "-" + _semesterobj.MasterDataName;
+      }
+      var _lastname = _student.LastName == null ? '' : " " + _student.LastName;
+      var _RollNo = "-" + studcls.RollNo;
+      var _name = _student.FirstName + _lastname;
+      var _fullDescription = _name + "-" + _class + _Semester + _Section + _RollNo;
+      _student.StudentClassId = studcls.StudentClassId;
+      _student.Name = _fullDescription;
+      _student.ClassName = _className;
+      _student.Section = _sectionName;
+      _student.Semester = _semesterName;
+      _student.StudentClasses = studcls;
+      //this.Students.push(d);
+    }
+    // })
 
     var count = this.Students.find(s => s.StudentId == _student.StudentId);
     if (!count) {

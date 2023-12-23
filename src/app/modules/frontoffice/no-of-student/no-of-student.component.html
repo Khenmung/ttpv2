@@ -1,7 +1,8 @@
 <div style="padding:15px 15px 10px 15px;">
     <div><strong>No. Of Students</strong></div>
 </div>
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+<mat-spinner *ngIf="PageLoading" diameter="25"
+    style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
 <!-- <alert></alert> -->
 <div style="display: flex;flex-direction: row;">
     <form [formGroup]="searchForm">
@@ -23,25 +24,33 @@
         </button>
     </form>
 </div>
-<div style="font-size: medium;">{{ HeaderTitle }}</div>
-<mat-table #table style="overflow: auto;" [dataSource]="dataSource" matSort>
-    <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-        <mat-header-cell *matHeaderCellDef mat-sort-header="">{{disCol!='Action'?disCol:''}}
-        </mat-header-cell>
-        <mat-cell *matCellDef="let element">
-            {{element[disCol]}}
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef style="justify-content: center;">
-            <span *ngIf="BoyGirlTotal[disCol]!=undefined">
-                {{BoyGirlTotal[disCol]}}
-            </span>            
-            <span *ngIf="disCol=='Total'">
-                Grand Total: {{TotalStudent}}
-            </span>
-        </mat-footer-cell>
-    </ng-container>
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
-    <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
-</mat-table>
+<div id="printSection">
+    <div style="font-size: medium;">{{ HeaderTitle }}</div>
+    <mat-table #table style="overflow: auto;" [dataSource]="dataSource" matSort>
+        <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+            <mat-header-cell *matHeaderCellDef mat-sort-header="">{{disCol!='Action'?disCol:''}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element[disCol]}}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef style="justify-content: center;">
+                <span *ngIf="BoyGirlTotal[disCol]!=undefined">
+                    {{BoyGirlTotal[disCol]}}
+                </span>
+                <span *ngIf="disCol=='Total'">
+                    Grand Total: {{TotalStudent}}
+                </span>
+            </mat-footer-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+        <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+    </mat-table>
+</div>
 <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,50,100]"></mat-paginator>
+<div style="display:flex;justify-content: center;width:100%;margin-top: 15px;">
+    <button [disabled]="loading || StudentCount.length==0" matTooltip="print" printSectionId="printSection"
+        [useExistingCss]="true" color="accent" ngxPrint mat-raised-button>
+        <mat-icon>print</mat-icon>
+    </button>
+</div>

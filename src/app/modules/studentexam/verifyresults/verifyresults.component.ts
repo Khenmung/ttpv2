@@ -1393,7 +1393,7 @@ export class VerifyResultsComponent implements OnInit {
         for (var i = 0; i < _gradeDefinitionsForSpecificSubjectCategory.length; i++) {
           if (_markConvertTo > 0)
             result.Marks = +((result.Marks / _totalFullMark) * _markConvertTo).toFixed(2)
-          var formula = _gradeDefinitionsForSpecificSubjectCategory[i].Formula
+          let formula = _gradeDefinitionsForSpecificSubjectCategory[i].Formula
             .replaceAll("[Mark]", result.Marks)
           if (evaluate(formula)) {
             _StudentGrade = _gradeDefinitionsForSpecificSubjectCategory[i].GradeName;
@@ -1474,38 +1474,7 @@ export class VerifyResultsComponent implements OnInit {
       })
   }
 
-  // GetStudentGradeDefn_old(classgroupmapping) {
-  //   var orgIdSearchstr = this.FilterOrgSubOrg + " and Active eq 1";
-  //   //batch wise not necessary
-  //   //+ ' and BatchId eq ' + this.SelectedBatchId;
-  //   let list: List = new List();
-
-  //   list.fields = ["StudentGradeId,GradeName,ClassGroupId,SubjectCategoryId,Formula,Sequence"];
-  //   list.PageName = "StudentGrades";
-  //   list.filter = [orgIdSearchstr];
-  //   this.StudentGrades = [];
-  //   this.dataservice.get(list)
-  //     .subscribe((data: any) => {
-  //       //debugger;
-  //       classgroupmapping.forEach(f => {
-  //         var mapped = data.value.filter(d => d.ClassGroupId == f.ClassGroupId)
-  //         var _grades: any[] = [];
-  //         mapped.forEach(m => {
-  //           _grades.push(
-  //             {
-  //               StudentGradeId: m.StudentGradeId,
-  //               GradeName: m.GradeName,
-  //               SubjectCategoryId: m.SubjectCategoryId,
-  //               Formula: m.Formula,
-  //               ClassGroupId: m.ClassGroupId,
-  //               Sequence: m.Sequence
-  //             })
-  //         })
-  //         f.grades = _grades.sort((a, b) => a.Sequence - b.Sequence);
-  //         this.StudentGrades.push(f);
-  //       })
-  //     })
-  // }
+  
   SelectedClassCategory = '';
   GetStudentGrade() {
     debugger;
@@ -1513,26 +1482,14 @@ export class VerifyResultsComponent implements OnInit {
     // var _sectionId = this.searchForm.get("searchSectionId")?.value;
     // var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     if (_classId > 0) {
-      let obj = this.Classes.filter(c => c.ClassId == _classId);
-      if (obj.length > 0)
-        this.SelectedClassCategory = obj[0].Category;
+      let obj = this.Classes.find(c => c.ClassId == _classId);
+      if (obj)
+        this.SelectedClassCategory = obj.Category;
       else
         this.SelectedClassCategory = '';
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
-    // if (_classId > 0) {
-    //   //this.SelectedClassAttendances = this.AttendanceStatusSum.filter((f:any) => f.ClassId == _classId);
-    //   var studentList: any = this.tokenStorage.getStudents()!;
-    //   this.Students = studentList.filter((s: any) =>
-    //     s["Active"] == 1 && s.StudentClasses
-    //     && s.StudentClasses.length > 0
-    //     && s.StudentClasses[0].ClassId == _classId
-    //   );
-    //   this.ClearData();
-    //   if (this.Students.length == 0) {
-    //     this.route.navigate(['/']);
-    //   }
-    // }
+   
     this.FilterClass();
 
   }

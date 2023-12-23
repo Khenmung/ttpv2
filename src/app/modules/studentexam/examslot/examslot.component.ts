@@ -20,26 +20,28 @@ export class ExamslotComponent implements OnInit {
   PageLoading = true;
   weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   Permission = '';
+  FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
   DataCountToUpdate = 0;
-  ExamSlots: IExamSlots[]= [];
+  ExamSlots: IExamSlots[] = [];
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  Exams :any[]= [];
-  ExamNames :any[]= [];
-  SlotNames :any[]= [];
-  Batches :any[]= [];
+  Exams: any[] = [];
+  ExamNames: any[] = [];
+  SlotNames: any[] = [];
+  Batches: any[] = [];
   dataSource: MatTableDataSource<IExamSlots>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
 
   ExamId = 0;
   ExamSlotsData = {
     ExamSlotId: 0,
     ExamId: 0,
+    ClassGroupId:0,
     SlotNameId: 0,
     StartTime: '',
     EndTime: '',
@@ -52,6 +54,7 @@ export class ExamslotComponent implements OnInit {
   displayedColumns = [
     'ExamSlotId',
     'ExamDate',
+    'ClassGroupId',
     'SlotName',
     'StartTime',
     'EndTime',
@@ -82,7 +85,8 @@ export class ExamslotComponent implements OnInit {
     //debugger;
     this.searchForm = this.fb.group({
       searchExamId: [0],
-      searchExamDate: [new Date()]
+      searchExamDate: [new Date()],
+      searchClassGroupId: [0]
     });
     this.PageLoad();
   }
@@ -101,19 +105,22 @@ export class ExamslotComponent implements OnInit {
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
+        this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.Batches = this.tokenStorage.getBatches()!;;
         //this.shareddata.CurrentBatch.subscribe(b => this.Batches = b);
         this.GetMasterData();
+        this.Getclassgroups();
       }
     }
   }
   AssignExamDate(selected) {
-    var startdate = this.Exams.filter((f:any) => f.ExamId == selected.value)[0].StartDate;
+    var startdate = this.Exams.filter((f: any) => f.ExamId == selected.value)[0].StartDate;
     ////console.log("value", selected.value)
 
     this.searchForm.patchValue({ "searchExamDate": startdate });
     this.ClearData();
+    this.SelectClassGroup();
   }
   updateActive(row, value) {
     row.Action = true;
@@ -132,7 +139,7 @@ export class ExamslotComponent implements OnInit {
         });
   }
   SaveAll() {
-    var toUpdate = this.ExamSlots.filter((f:any) => f.Action);
+    var toUpdate = this.ExamSlots.filter((f: any) => f.Action);
     this.DataCountToUpdate = toUpdate.length;
     toUpdate.forEach(f => {
       this.DataCountToUpdate--;
@@ -176,6 +183,7 @@ export class ExamslotComponent implements OnInit {
     }
     var dateplusone = new Date(row.ExamDate).setDate(new Date(row.ExamDate).getDate() + 1)
     let checkFilterString = this.FilterOrgSubOrgBatchId + " and ExamId eq " + this.searchForm.get("searchExamId")?.value +
+      " and ClassGroupId eq " + row.ClassGroupId +
       " and SlotNameId eq " + row.SlotNameId +
       " and ExamDate ge " + this.datepipe.transform(row.ExamDate, 'yyyy-MM-dd') +
       " and ExamDate lt " + this.datepipe.transform(dateplusone, 'yyyy-MM-dd')
@@ -204,6 +212,7 @@ export class ExamslotComponent implements OnInit {
           this.ExamSlotsData.ExamId = this.searchForm.get("searchExamId")?.value;
           this.ExamSlotsData.Active = row.Active;
           this.ExamSlotsData.SlotNameId = row.SlotNameId;
+          this.ExamSlotsData.ClassGroupId = row.ClassGroupId;
           this.ExamSlotsData.ExamDate = row.ExamDate;
           this.ExamSlotsData.StartTime = row.StartTime;
           this.ExamSlotsData.EndTime = row.EndTime;
@@ -263,6 +272,35 @@ export class ExamslotComponent implements OnInit {
           }
         });
   }
+  ExamClassGroups: any = [];
+  ClassGroups: any = [];
+  FilteredClassGroup: any = [];
+  SelectClassGroup() {
+    var _examId = this.searchForm.get("searchExamId")?.value;
+    this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _examId)
+      .subscribe((data: any) => {
+        this.ExamClassGroups = data.value.map(e => {
+          e.GroupName = "";
+          var _group = this.ClassGroups.find(c => c.ClassGroupId == e.ClassGroupId)
+          if (_group)
+            e.GroupName = _group.GroupName;
+          return e;
+        })
+        this.FilteredClassGroup = this.ExamClassGroups.filter(e => e.ExamId == _examId);
+      })
+  }
+  Getclassgroups() {
+    this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
+      .subscribe((data: any) => {
+        if (data.value.length > 0) {
+          this.ClassGroups = [...data.value];
+
+        }
+        else {
+          this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
+        }
+      });
+  }
   GetExams() {
     this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 2)
       .subscribe((data: any) => {
@@ -285,26 +323,37 @@ export class ExamslotComponent implements OnInit {
         ////console.log("exam", this.Exams)
         this.loading = false;
         this.PageLoading = false;
-      },err=>{
+      }, err => {
         //console.log("error in get exams",err);
       })
   }
   GetExamSlots() {
     debugger;
     //var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and BatchId eq ' + this.SelectedBatchId;
-    var filterstr = '';
+    var filterstr = this.FilterOrgSubOrgBatchId;
     this.ExamSlots = [];
-    if (this.searchForm.get("searchExamId")?.value == 0) {
-
+    let _examId = this.searchForm.get("searchExamId")?.value;
+    let _classGroupId = this.searchForm.get("searchClassGroupId")?.value;
+    if (_examId) {
+      filterstr += ' and ExamId eq ' + _examId;
+    }
+    else {
       this.contentservice.openSnackBar("Please select exam", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    else
-      filterstr = ' and ExamId eq ' + this.searchForm.get("searchExamId")?.value;
 
-    var dateObj = this.Exams.filter(e => e.ExamId == this.searchForm.get("searchExamId")?.value);
-    var _startDate = new Date(dateObj[0].StartDate);
-    var _endDate = new Date(dateObj[0].EndDate);
+    if (_classGroupId) {
+      filterstr += ' and ClassGroupId eq ' + _classGroupId;
+    }
+    else {
+      this.contentservice.openSnackBar("Please select class group", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+
+
+    var dateObj = this.Exams.find(e => e.ExamId == _examId);
+    var _startDate = new Date(dateObj.StartDate);
+    var _endDate = new Date(dateObj.EndDate);
     _startDate.setHours(0, 0, 0, 0);
     _endDate.setHours(0, 0, 0, 0);
     var _filterExamDate = new Date(this.searchForm.get("searchExamDate")?.value);
@@ -327,8 +376,10 @@ export class ExamslotComponent implements OnInit {
 
     this.loading = true;
     let list: List = new List();
-    list.fields = ["ExamSlotId", "ExamId",
+    list.fields = [
+      "ExamSlotId", "ExamId",
       "SlotNameId",
+      "ClassGroupId",
       "ExamDate",
       "StartTime",
       "EndTime",
@@ -337,7 +388,7 @@ export class ExamslotComponent implements OnInit {
       "BatchId",
       "Active"];
     list.PageName = "ExamSlots";
-    list.filter = [this.FilterOrgSubOrgBatchId + filterstr];
+    list.filter = [filterstr];
     //list.orderBy = "ParentId";
     this.ExamSlots = [];
     this.dataservice.get(list)
@@ -368,6 +419,7 @@ export class ExamslotComponent implements OnInit {
             this.ExamSlots.push({
               ExamSlotId: 0,
               ExamId: 0,
+              ClassGroupId: 0,
               SlotNameId: e.MasterDataId,
               SlotName: e.MasterDataName,
               ExamDate: _examDate,
@@ -390,15 +442,15 @@ export class ExamslotComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
-  ClearData(){
-    this.ExamSlots =[];
+  ClearData() {
+    this.ExamSlots = [];
     this.dataSource = new MatTableDataSource<IExamSlots>(this.ExamSlots);
   }
   onBlur(row) {
     row.Action = true;
   }
   GetMasterData() {
-debugger;
+    debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.SlotNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMSLOTNAME);
     this.ExamNames = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMNAME);
@@ -426,6 +478,7 @@ export interface IExamSlots {
   ExamSlotId: number;
   ExamId: number;
   SlotNameId: number;
+  ClassGroupId: number;
   SlotName: string;
   ExamDate: Date;
   WeekDay: string;

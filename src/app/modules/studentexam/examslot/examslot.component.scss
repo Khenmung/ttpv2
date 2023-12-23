@@ -8,13 +8,14 @@ mat-cell:first-of-type {
 .mat-column-ExamSlotId{
     flex:1 1 70px;
 }
+.mat-column-ClassGroupId,
 .mat-column-ExamName,
 .mat-column-ExamDate,
 .mat-column-SlotName,
 .mat-column-StartTime,
 .mat-column-EndTime
 {
-    flex:1 1 150px;
+    flex:1 0 150px;
 }
 .mat-column-Sequence,
 .mat-column-Active,

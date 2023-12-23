@@ -16,6 +16,14 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
+                    <mat-label>Class group</mat-label>
+                    <mat-select formControlName="searchClassGroupId">
+                        <mat-option *ngFor="let item of FilteredClassGroup" [value]="item.ClassGroupId">
+                            {{item.GroupName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                     <mat-label>Exam Date</mat-label>
                     <input formControlName="searchExamDate" (dateChange)="ClearData()" matInput
                         [matDatepicker]="ExamDate" autocomplete="off">
@@ -52,6 +60,19 @@
                     <mat-header-cell *matHeaderCellDef> Exam Date </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element.ExamDate|date:'dd/MM/yyyy'}} - {{element.WeekDay}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ClassGroupId">
+                    <mat-header-cell *matHeaderCellDef>Class Group
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <mat-form-field appearance="outline">
+                            <mat-select [value]="element.ClassGroupId"
+                                [(ngModel)]="element.ClassGroupId">
+                                <mat-option *ngFor="let item of FilteredClassGroup" [value]="item.ClassGroupId">
+                                    {{item.GroupName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="SlotName">

@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormGroup, FormControl, UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import alasql from 'alasql';
 import { ConfirmDialogComponent } from '../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component';
 import { ContentService } from '../../../shared/content.service';
@@ -200,6 +200,7 @@ export class NoOfStudentComponent implements OnInit {
       })
   }
   BoyGirlTotal = {};
+  StudentCount: any = [];
   GetStudentClasses() {
     debugger;
     this.TotalStudent = 0;
@@ -212,54 +213,61 @@ export class NoOfStudentComponent implements OnInit {
       _students = _students.filter(s => s.StudentClasses && s.StudentClasses[0].ClassId == _classId)
     }
     else
-      
-    //   filterStr += " and ClassId eq " + _classId;
-    // filterStr += " and IsCurrent eq true";
 
-    // let list: List = new List();
-    // list.fields = [
-    //   'StudentClassId',
-    //   'ClassId',
-    //   'SectionId',
-    //   'SemesterId',
-    //   'StudentId',
-    //   'Active'
-    // ];
+      //   filterStr += " and ClassId eq " + _classId;
+      // filterStr += " and IsCurrent eq true";
 
-    // list.PageName = "StudentClasses";
-    // list.lookupFields = ["Class($select=ClassName,ClassId,Sequence,MaxStudent)"]
-    // list.filter = [filterStr + ' and Active eq 1'];
-    this.StudentClassList = [];
+      // let list: List = new List();
+      // list.fields = [
+      //   'StudentClassId',
+      //   'ClassId',
+      //   'SectionId',
+      //   'SemesterId',
+      //   'StudentId',
+      //   'Active'
+      // ];
+
+      // list.PageName = "StudentClasses";
+      // list.lookupFields = ["Class($select=ClassName,ClassId,Sequence,MaxStudent)"]
+      // list.filter = [filterStr + ' and Active eq 1'];
+      this.StudentClassList = [];
     // this.dataservice.get(list)
     //   .subscribe((StudentClassesdb: any) => {
     ////console.log("Studenclass no.", StudentClassesdb.value)
-    var errormsg = '';
+    let errormsg = '';
     this.BoyGirlTotal = [];
+    let _clsname = ''
+    let _sectionname = '', Seq = 0;
+    let _semesterName = ''
+    let _pid = 0
+    let _gender = '';
     //this.StudentClassList = StudentClassesdb.value.map(student => {
     _students.forEach(student => {
-      var _clsname = ''
-      var _sectionname = ''
-      var _semesterName = ''
-      var _pid = 0
-      var _gender = '';
-      var objStudent = this.Genders.filter((s: any) => s.MasterDataId == student.GenderId)
-      if (objStudent.length > 0)
-        _gender = objStudent[0].MasterDataName;
+      _clsname = ''
+      _sectionname = '', Seq = 0;
+      _semesterName = ''
+      _pid = 0
+      _gender = '';
+      let objgender = this.Genders.find((s: any) => s.MasterDataId == student.GenderId)
+      if (objgender)
+        _gender = objgender.MasterDataName;
 
       _pid = student.PID;
       if (student.StudentClasses) {
-        var clsobj = this.Classes.filter((s: any) => s.ClassId == student.StudentClasses[0].ClassId)
-        if (clsobj.length > 0)
-          _clsname = clsobj[0].ClassName;
-        var sectionobj = this.Sections.filter((s: any) => s.MasterDataId == student.StudentClasses[0].SectionId)
-        if (sectionobj.length > 0)
-          _sectionname = sectionobj[0].MasterDataName
+        let clsobj = this.Classes.find((s: any) => s.ClassId == student.StudentClasses[0].ClassId)
+        if (clsobj)
+          _clsname = clsobj.ClassName;
+        let sectionobj = this.Sections.find((s: any) => s.MasterDataId == student.StudentClasses[0].SectionId)
+        if (sectionobj) {
+          _sectionname = sectionobj.MasterDataName;
+          Seq = sectionobj.Sequence;
+        }
         else {
           errormsg += _pid + ",";
         }
-        var semesterobj = this.Semesters.filter((s: any) => s.MasterDataId == student.StudentClasses[0].SemesterId)
-        if (semesterobj.length > 0)
-          _semesterName = semesterobj[0].MasterDataName
+        let semesterobj = this.Semesters.find((s: any) => s.MasterDataId == student.StudentClasses[0].SemesterId)
+        if (semesterobj)
+          _semesterName = semesterobj.MasterDataName
         else {
           errormsg += _pid + ",";
         }
@@ -270,9 +278,10 @@ export class NoOfStudentComponent implements OnInit {
         student.Gender = _gender;
         student.ClassName = _clsname + (_sectionname == "" ? "" : " - " + _sectionname);
         student.Section = _sectionname;
+        student.SectionSequence = Seq;
         student.Semester = _semesterName;
-        student.Sequence = clsobj[0].Sequence;
-        student.MaxStudent = clsobj[0].MaxStudent;
+        student.Sequence = clsobj.Sequence;
+        student.MaxStudent = clsobj.MaxStudent;
         this.StudentClassList.push(student);
       }
     })
@@ -282,7 +291,7 @@ export class NoOfStudentComponent implements OnInit {
     // }
     var _classStudentCount: any[] = [];
     //if (errormsg.length == 0) {
-    _classStudentCount = alasql("select ClassId,ClassName,Section,Semester,Gender,MaxStudent,count(StudentClassId) NoOfStudent from ? group by ClassId,ClassName,Section,Semester,Gender,MaxStudent",
+    _classStudentCount = alasql("select ClassId,ClassName,Section,SectionSequence,Semester,Gender,MaxStudent,count(StudentClassId) NoOfStudent from ? group by ClassId,ClassName,Section,SectionSequence,Semester,Gender,MaxStudent",
       [this.StudentClassList])
     //}
     // else {
@@ -299,8 +308,9 @@ export class NoOfStudentComponent implements OnInit {
     var classNSection: any[] = [];
     _filteredClasses.forEach((c, indx) => {
       var currentCls = _classStudentCount.filter((s: any) => s.ClassId == c.ClassId);
-      var _noOfSections = alasql("select distinct Section,ClassName,Semester from ?", [currentCls]);
+      var _noOfSections = alasql("select distinct Section,SectionSequence,ClassName,Semester from ?", [currentCls]);
       if (_noOfSections.length > 0) {
+        _noOfSections = _noOfSections.sort((a, b) => a.SectionSequence - b.SectionSequence);
         _noOfSections.forEach(s => {
           classNSection.push({ MaxStudent: c.MaxStudent, Sequence: indx, ClassId: c.ClassId, ClassName: c.ClassName + "-" + s.Section, Section: s.Section, Semester: s.Semester });
         })
@@ -392,8 +402,8 @@ export class NoOfStudentComponent implements OnInit {
       this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
     }
     ////console.log("BoyGirlTotal", this.BoyGirlTotal);
-    var _sorted = pivottedClass.sort((a, b) => +a.Sequence - +b.Sequence);
-    this.dataSource = new MatTableDataSource<IStudentClass>(_sorted);
+    this.StudentCount = pivottedClass.sort((a, b) => +a.Sequence - +b.Sequence);
+    this.dataSource = new MatTableDataSource<IStudentClass>(this.StudentCount);
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.dataSource.filterPredicate = this.createFilter();
