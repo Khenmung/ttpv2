@@ -372,6 +372,7 @@ export class AddMasterDataComponent implements OnInit {
         this.MasterList.splice(idx, 1);
         this.datasource = new MatTableDataSource<any>(this.MasterList);
         this.datasource.filterPredicate = this.createFilter();
+        this.tokenStorage.saveMasterData(this.MasterList);
         this.contentservice.openSnackBar(globalconstants.DeletedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
 
       });
@@ -549,8 +550,8 @@ export class AddMasterDataComponent implements OnInit {
       MasterDataId: row.MasterDataId,
       MasterDataName: row.MasterDataName,
       Description: row.Description,
-      Logic: row.Logic == null ? '' : row.Logic,
-      Sequence: row.Sequence == null ? 0 : row.Sequence,
+      Logic: !row.Logic ? '' : row.Logic,
+      Sequence: !row.Sequence ? 0 : row.Sequence,
       ParentId: _ParentId,// this.SearchParentId,
       ApplicationId: row.ApplicationId,
       Confidential: row.Confidential,

@@ -14,7 +14,7 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { IStudentEvaluation } from '../studentprofilereport/studentprofilereport.component';
-
+import * as _ from 'lodash';
 @Component({
   selector: 'app-printprogressreport',
   templateUrl: './printprogressreport.component.html',
@@ -508,9 +508,9 @@ export class PrintprogressreportComponent implements OnInit {
         })
         data.value.forEach(eachexam => {
           var _ExamName = '';
-          var obj = this.Exams.filter(exam => exam.ExamId == eachexam.ExamId);
-          if (obj.length > 0) {
-            _ExamName = obj[0].ExamName;
+          var obj = this.Exams.find(exam => exam.ExamId == eachexam.ExamId);
+          if (obj) {
+            _ExamName = obj.ExamName;
             eachexam.ExamName = _ExamName;
             if (this.DisplayColumns.indexOf(_ExamName) == -1)
               this.DisplayColumns.push(_ExamName);
@@ -716,19 +716,27 @@ export class PrintprogressreportComponent implements OnInit {
   processEvaluationResult(data) {
     debugger;
     this.StudentEvaluationArray = [];
-    const students = alasql("select distinct StudentClassId from ?", [data]);
+    const students:any = _.take(data,3);// alasql("select  distinct StudentClassId from ?", [data]);
     let _studentEvaluationdata: any = [];
     //console.log("this.Result", this.Result);
     var _distinctEvaluationType = alasql('select distinct EvaluationMasterId,EvaluationName from ?', [this.EvaluationExamMap]);
+    
+    //for each student
     students.forEach(stud => {
       _studentEvaluationdata = data.reduce((filtered, option) => {
         if (option.StudentClassId === stud.StudentClassId) {
-          // var someNewValue = { name: option.name, newProperty: 'Foo' }
+
+          let objExam = this.EvaluationExamMap.find(e => e.EvaluationExamMapId === option.EvaluationExamMapId);
+          if (objExam)
+            option.ExamId = objExam.ExamId;
+
           filtered.push(option);
         }
         return filtered;
       }, []);
       this.StudentEvaluationList = [];
+
+      //for each evaluation type
       _distinctEvaluationType.forEach(distinctevaluation => {
 
         this.StudentEvaluationList.push({
@@ -740,13 +748,15 @@ export class PrintprogressreportComponent implements OnInit {
 
         var _oneEvaluationMultipExam = this.EvaluationExamMap.filter((f: any) => f.EvaluationMasterId == distinctevaluation.EvaluationMasterId);
         _oneEvaluationMultipExam = _oneEvaluationMultipExam.sort((a, b) => a.Sequence - b.Sequence)
+        
+        //foreach exam
         _oneEvaluationMultipExam.forEach(evalExam => {
 
           if (this.EvaluationDisplayedColumns.indexOf(evalExam.ExamName) == -1) {
             this.EvaluationDisplayedColumns.push(evalExam.ExamName);
           }
           var _classEvaluationExamMap = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == evalExam.EvaluationMasterId
-            && !f.ExamId || f.ExamId == evalExam.ExamId);
+            && f.ExamId == evalExam.ExamId);
 
           _classEvaluationExamMap.forEach(clseval => {
             var existing = _studentEvaluationdata.find((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId
@@ -794,7 +804,7 @@ export class PrintprogressreportComponent implements OnInit {
 
       this.StudentEvaluationArray.push(this.EvaluationArray);
     })
-    console.log("this.StudentEvaluationArray",this.StudentEvaluationArray)
+    console.log("this.StudentEvaluationArray", this.StudentEvaluationArray)
   }
   getDataSource(data) {
     return new MatTableDataSource<any>(data);
@@ -870,7 +880,7 @@ export class PrintprogressreportComponent implements OnInit {
 
     let list: List = new List();
 
-    list.fields = ["ExamId", "ExamNameId", "ClassGroupId", "EndDate", "Sequence"];
+    list.fields = ["ExamId", "ExamNameId", "ClassGroupId", "EndDate", "Sequence","BatchId"];
     list.PageName = "Exams";
     list.filter = [orgIdSearchstr];
     //list.orderBy = "EndDate desc";
@@ -885,7 +895,8 @@ export class PrintprogressreportComponent implements OnInit {
               ExamId: e.ExamId,
               Sequence: e.Sequence,
               ExamName: obj.MasterDataName,
-              ClassGroupId: e.ClassGroupId
+              ClassGroupId: e.ClassGroupId,
+              BatchId:e.BatchId
             })
         })
         //this.GetStudentSubject();
@@ -977,6 +988,7 @@ export class PrintprogressreportComponent implements OnInit {
       'EvaluationMasterId',
       'DisplayOrder',
       'Description',
+      'ExamId',
       'ClassEvaluationAnswerOptionParentId',
       'MultipleAnswer',
     ];
@@ -995,17 +1007,17 @@ export class PrintprogressreportComponent implements OnInit {
         this.ClassEvaluations = [];
         let _profileTypeId = this.ETypes.find(e => e.MasterDataName.toLowerCase() == 'student profile').MasterDataId;
         var _data = data.value.filter((f: any) => f.EvaluationMaster.ETypeId !== _profileTypeId);
-        if (_data.length > 0) {
+        //if (_data.length > 0) {
           _data.forEach(clseval => {
-            var obj = this.QuestionnaireTypes.filter((f: any) => f.MasterDataId == clseval.QuestionnaireTypeId);
-            if (obj.length > 0) {
+            let obj = this.QuestionnaireTypes.find((f: any) => f.MasterDataId == clseval.QuestionnaireTypeId);
+            if (obj) {
               clseval.Description = globalconstants.decodeSpecialChars(clseval.Description);
-              clseval.QuestionnaireType = obj[0].MasterDataName
+              clseval.QuestionnaireType = obj.MasterDataName
               clseval.ClassEvaluationOptions = this.ClassEvaluationOptionList.filter((f: any) => f.ParentId == clseval.ClassEvaluationAnswerOptionParentId)
               this.ClassEvaluations.push(clseval);
             }
           })
-        }
+        //}
         this.StartEvaluation(_classId, _semesterId, _sectionId);
         this.loading = false; this.PageLoading = false;
       })

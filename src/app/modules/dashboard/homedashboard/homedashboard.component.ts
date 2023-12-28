@@ -712,9 +712,54 @@ export class HomeDashboardComponent implements OnInit {
 
     //this.filterOrgSubOrgBatchId += " and IsCurrent eq true";
     list.PageName = "StudentClasses";
-    list.lookupFields = ["Student($select=StudentId," +
-      "FirstName,LastName,FatherName,MotherName,PID,Active,RemarkId,Remark2Id," +
-      "GenderId,HouseId,ReasonForLeavingId,AdmissionStatusId,Deleted)"];
+    list.lookupFields = ["Student($select=PID," +
+      "StudentId," +
+      "FirstName," +
+      "LastName," +
+      "FatherName," +
+      "FatherOccupation," +
+      "MotherName," +
+      "MotherOccupation," +
+      "GenderId," +
+      "PermanentAddress," +
+      "PresentAddress," +
+      "DOB," +
+      "BloodgroupId," +
+      "CategoryId," +
+      "AccountHolderName," +
+      "BankAccountNo," +
+      "IFSCCode," +
+      "MICRNo," +
+      "AdhaarNo," +
+      "Photo," +
+      "ReligionId," +
+      "PersonalNo," +
+      "WhatsAppNumber," +
+      "FatherContactNo," +
+      "MotherContactNo," +
+      "PrimaryContactFatherOrMother," +
+      "NameOfContactPerson," +
+      "RelationWithContactPerson," +
+      "ContactPersonContactNo," +
+      "AlternateContact," +
+      "ClassAdmissionSought," +
+      "LastSchoolPercentage," +
+      "TransferFromSchool," +
+      "TransferFromSchoolBoard," +
+      "ClubId," +
+      "HouseId," +
+      "RemarkId," +
+      "Remark2Id," +
+      "AdmissionStatusId," +
+      "AdmissionDate," +
+      "Notes," +
+      "EmailAddress," +
+      "Active," +
+      "ReasonForLeavingId," +
+      "IdentificationMark," +
+      "BoardRegistrationNo," +
+      "Height," +
+      "Weight,Deleted)"];
 
     list.filter = [this.filterOrgSubOrgBatchId];
     this.Loading();
@@ -955,7 +1000,7 @@ export class HomeDashboardComponent implements OnInit {
       "IdentificationMark",
       "BoardRegistrationNo",
       "Height",
-      "Weight"      
+      "Weight"
     ];
     list.PageName = "Students";
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {

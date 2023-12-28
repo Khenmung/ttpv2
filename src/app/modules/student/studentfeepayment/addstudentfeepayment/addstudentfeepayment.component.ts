@@ -498,7 +498,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
                 _semesterName = obj[0].MasterDataName;
               this.studentInfoTodisplay.Semester = _semesterName;
 
-              var clsObj = this.Classes.filter(cls => cls.MasterDataId == this.studentInfoTodisplay.ClassId)
+              var clsObj = this.Classes.filter(cls => cls.ClassId == this.studentInfoTodisplay.ClassId)
               if (clsObj.length > 0)
                 this.studentInfoTodisplay.StudentClassName = clsObj[0].ClassName;
 

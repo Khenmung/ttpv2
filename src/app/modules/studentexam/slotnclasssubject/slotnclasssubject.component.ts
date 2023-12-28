@@ -572,6 +572,7 @@ export class SlotnclasssubjectComponent implements OnInit {
     //   this.contentservice.openSnackBar("Please select exam slot", globalconstants.ActionText, globalconstants.RedBackground);
     //   return;
     // }
+  
     this.loading = true;
     //orgIdSearchstr += ' and SlotId eq ' + _slotId;
     orgIdSearchstr += ' and ClassId eq ' + _classId;
