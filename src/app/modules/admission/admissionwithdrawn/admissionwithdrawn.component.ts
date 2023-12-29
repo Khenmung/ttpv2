@@ -276,7 +276,7 @@ export class AdmissionWithdrawnComponent {
     var objFather = this.searchForm.get("searchFatherName")?.value;
     var objMother = this.searchForm.get("searchMotherName")?.value;
 
-    let _students: any =[...this.InActiveStudents];
+    let _students: any = [...this.InActiveStudents];
     if (_pid > 0)
       _students = this.InActiveStudents.filter(i => i.PID == _pid);
     if (objstudent.StudentId)
@@ -341,20 +341,10 @@ export class AdmissionWithdrawnComponent {
 
   }
   GetStudents() {
+    debugger;
     //let _batchId = this.searchForm.get('searchBatchId')?.value;
     let filterStr = '';
-    // let _pid = this.searchForm.get("searchPID")?.value;
-    // let _name = this.searchForm.get("searchName")?.value;
-
-    // if (_pid > 0)
-    //   filterStr += " and PID eq " + _pid;
-    // if (_name.length > 0)
-    //   filterStr += " and (FirstName eq '" + _name + "' or LastName eq '" + _name + "')";
-    // if (filterStr.length == 0 || filterStr.length <3)
-    //   this.contentservice.openSnackBar('Please enter search criteria.', globalconstants.ActionText, globalconstants.RedBackground);
-    // else
     filterStr = this.FilterOrgSubOrg + filterStr;
-
 
     this.Students = [];
     let list: List = new List();
@@ -382,32 +372,33 @@ export class AdmissionWithdrawnComponent {
     this.loading = true;
     this.PageLoading = true;
     this.dataservice.get(list).subscribe((data: any) => {
-
-      this.InActiveStudents = data.value.map(f => {
+      this.InActiveStudents=[];
+      data.value.forEach(f => {
         f.ClassName = '';
-        if (f.StudentClasses.length>0) {
-          let obj = this.Classes.filter(c => c.ClassId == f.StudentClasses[0].ClassId);
-          if (obj.length > 0)
-            f.ClassName = obj[0].ClassName;
+        if (f.StudentClasses.length > 0) {
+          let obj = this.Classes.find(c => c.ClassId == f.StudentClasses[0].ClassId);
+          if (obj)
+            f.ClassName = obj.ClassName;
           f.RollNo = f.StudentClasses[0].RollNo ? '-' + f.StudentClasses[0].RollNo : '';
           f.Section = '';
-          let objSection = this.Sections.filter(c => c.MasterDataId == f.StudentClasses[0].SectionId);
-          if (objSection.length > 0) {
-            f.Section = objSection[0].MasterDataName;
+          let objSection = this.Sections.find(c => c.MasterDataId == f.StudentClasses[0].SectionId);
+          if (objSection) {
+            f.Section = objSection.MasterDataName;
           }
           f.Semester = '';
-          let objSemester = this.Semesters.filter(c => c.MasterDataId == f.StudentClasses[0].SemesterId);
-          if (objSemester.length > 0) {
-            f.Semester = objSemester[0].MasterDataName;
+          let objSemester = this.Semesters.find(c => c.MasterDataId == f.StudentClasses[0].SemesterId);
+          if (objSemester) {
+            f.Semester = objSemester.MasterDataName;
           }
+
+          f.Name = (f.FirstName + " " + f.LastName).trim() + "-" + f.ClassName + "-" + f.Semester + f.Section + f.RollNo;
+          let item = this.ReasonForLeaving.find(h => h.MasterDataId == f.ReasonForLeavingId)
+          if (item)
+            f.ReasonForLeaving = item.MasterDataName
+          else
+            f.ReasonForLeaving = '';
+          this.InActiveStudents.push(f);
         }
-        f.Name = (f.FirstName + " " + f.LastName).trim() + "-" + f.ClassName + "-" + f.Semester + f.Section + f.RollNo;
-        let item = this.ReasonForLeaving.filter(h => h.MasterDataId == f.ReasonForLeavingId)
-        if (item.length > 0)
-          f.ReasonForLeaving = item[0].MasterDataName
-        else
-          f.ReasonForLeaving = '';
-        return f;
       })
 
       this.loading = false;
@@ -418,19 +409,6 @@ export class AdmissionWithdrawnComponent {
 
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
-    // let Id = 0;
-    // let Ids = this.allMasterData.filter((item, indx) => {
-    //   return item.MasterDataName.toLowerCase() == dropdowntype.toLowerCase();//globalconstants.GENDER
-    // })
-    // if (Ids.length > 0) {
-    //   Id = Ids[0].MasterDataId;
-    //   return this.allMasterData.filter((item, index) => {
-    //     return item.ParentId == Id
-    //   })
-    // }
-    // else
-    //   return [];
-
   }
 
 }

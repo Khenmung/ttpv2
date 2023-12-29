@@ -18,8 +18,8 @@ import { StudentstatusComponent } from '../studentstatus/studentstatus.component
 export class AdmissionboardComponent implements AfterViewInit {
 
   components:any = [   
-    AssignStudentclassdashboardComponent,
     PromoteclassComponent,
+    AssignStudentclassdashboardComponent,
     AdmissionWithdrawnComponent,
     StudenthistoryComponent,
     StudentstatusComponent,

@@ -259,60 +259,53 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
   PageLoad() {
     debugger;
-    this.shareddata.CurrentFeeDefinitions.subscribe(fy => (this.FeeDefinitions = fy));
-    if (this.FeeDefinitions.length == 0) {
-      this.nav.navigate(["/edu"]);
+    this.loading = true;
+    var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.FEEPAYMENT);
+    if (perObj.length > 0) {
+      this.Permission = perObj[0].permission;
+    }
+    if (this.Permission != 'deny') {
+      this.TotalAmount = 0;
+      this.Balance = 0;
+      this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
+      this.MonthlyDueDetail = [];
+      this.billdataSource = new MatTableDataSource<any>(this.MonthlyDueDetail);
+      this.Months = this.contentservice.GetSessionFormattedMonths();
+      this.LoginUserDetail = this.tokenStorage.getUserDetail();
+      this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+      this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+      this.studentInfoTodisplay.StudentId = this.tokenStorage.getStudentId()!;
+      var _currentStudent: any;
+      this.Students = this.tokenStorage.getStudents()!;
+      this.CustomerHeading = [];
+      if (this.Students.length > 0) {
+        _currentStudent = this.Students.filter((s: any) => s.StudentId == this.studentInfoTodisplay.StudentId)
+        this.CustomerHeading.push({ Text: _currentStudent[0].FirstName, 'Description': '' });
+        this.CustomerHeading.push({ Text: _currentStudent[0].PresentAddress, 'Description': '' });
+      }
+      this.studentInfoTodisplay.StudentClassId = this.tokenStorage.getStudentClassId()!;
+      this.shareddata.CurrentStudentName.subscribe(fy => (this.StudentName = fy));
+
+      this.Batches = this.tokenStorage.getBatches()!;
+      this.shareddata.CurrentLocation.subscribe(fy => (this.Locations = fy));
+      this.shareddata.CurrentFeeType.subscribe(fy => (this.FeeTypes = fy));
+      this.shareddata.CurrentSection.subscribe(fy => (this.Sections = fy));
+      var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+      this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+        if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+        this.GetMasterData();
+      });
+      this.GetStudentClass();
+      this.getGeneralAccounts();
     }
     else {
-
-      debugger;
-      this.loading = true;
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.STUDENT.FEEPAYMENT);
-      if (perObj.length > 0) {
-        this.Permission = perObj[0].permission;
-      }
-      if (this.Permission != 'deny') {
-        this.TotalAmount = 0;
-        this.Balance = 0;
-        this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
-        this.MonthlyDueDetail = [];
-        this.billdataSource = new MatTableDataSource<any>(this.MonthlyDueDetail);
-        this.Months = this.contentservice.GetSessionFormattedMonths();
-        this.LoginUserDetail = this.tokenStorage.getUserDetail();
-        this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
-        this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-        this.studentInfoTodisplay.StudentId = this.tokenStorage.getStudentId()!;
-        var _currentStudent: any;
-        this.Students = this.tokenStorage.getStudents()!;
-        this.CustomerHeading = [];
-        if (this.Students.length > 0) {
-          _currentStudent = this.Students.filter((s: any) => s.StudentId == this.studentInfoTodisplay.StudentId)
-          this.CustomerHeading.push({ Text: _currentStudent[0].FirstName, 'Description': '' });
-          this.CustomerHeading.push({ Text: _currentStudent[0].PresentAddress, 'Description': '' });
-        }
-        this.studentInfoTodisplay.StudentClassId = this.tokenStorage.getStudentClassId()!;
-        this.shareddata.CurrentStudentName.subscribe(fy => (this.StudentName = fy));
-
-        this.Batches = this.tokenStorage.getBatches()!;
-        this.shareddata.CurrentLocation.subscribe(fy => (this.Locations = fy));
-        this.shareddata.CurrentFeeType.subscribe(fy => (this.FeeTypes = fy));
-        this.shareddata.CurrentSection.subscribe(fy => (this.Sections = fy));
-        var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-          if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-          this.GetMasterData();
-        });
-        this.GetStudentClass();
-        this.getGeneralAccounts();
-      }
-      else {
-        this.loading = false; this.PageLoading = false;
-        this.contentservice.openSnackBar(globalconstants.PermissionDeniedMessage, globalconstants.ActionText, globalconstants.RedBackground);
-      }
+      this.loading = false; this.PageLoading = false;
+      this.contentservice.openSnackBar(globalconstants.PermissionDeniedMessage, globalconstants.ActionText, globalconstants.RedBackground);
     }
+
   }
   onBlur(row) {
     debugger;
@@ -614,17 +607,16 @@ export class AddstudentfeepaymentComponent implements OnInit {
           var clsobj = this.Classes.filter(c => c.ClassId == this.studentInfoTodisplay.ClassId);
           if (clsobj.length > 0)
             _className = clsobj[0].ClassName;
-          let _student= this.Students.filter(s=>s.StudentId === this.studentInfoTodisplay.StudentId);
-            if(_student.length>0)
-            {
-              remark1 =_student[0].Remark1;
-              remark2 =_student[0].Remark2;
-            }
+          let _student = this.Students.filter(s => s.StudentId === this.studentInfoTodisplay.StudentId);
+          if (_student.length > 0) {
+            remark1 = _student[0].Remark1;
+            remark2 = _student[0].Remark2;
+          }
           this.StudentClassFees = result.map(studclsfee => {
             //f.FeeName = this.FeeDefinitions.filter(n => n.FeeDefinitionId == f.FeeDefinitionId)[0].FeeName;
             var catObj = this.FeeCategories.filter(cat => cat.MasterDataId == studclsfee.FeeDefinition.FeeCategoryId);
             var subcatObj = this.allMasterData.filter(cat => cat.MasterDataId == studclsfee.FeeDefinition.FeeSubCategoryId);
-           
+
             var catName = '';
             if (catObj.length > 0)
               catName = catObj[0].MasterDataName
@@ -636,10 +628,10 @@ export class AddstudentfeepaymentComponent implements OnInit {
             studclsfee.FeeCategory = catName;
             studclsfee.FeeSubCategory = subcatName;
             studclsfee.FeeName = studclsfee.FeeDefinition.FeeName;
-            studclsfee.Section= _sectionName;
+            studclsfee.Section = _sectionName;
             studclsfee.Semester = _semesterName;
-            studclsfee.Remark1= remark1;
-            studclsfee.Remark2= remark2;
+            studclsfee.Remark1 = remark1;
+            studclsfee.Remark2 = remark2;
             studclsfee.AmountEditable = studclsfee.FeeDefinition.AmountEditable;
             if (studclsfee.Month == 0)
               studclsfee.MonthName = studclsfee.FeeName;
@@ -708,8 +700,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
   ApplyVariables(formula) {
     var filledVar = formula;
-    console.log("formula",formula)
-    console.log("this.VariableObjList",this.VariableObjList);
+    console.log("formula", formula)
+    console.log("this.VariableObjList", this.VariableObjList);
     this.VariableObjList.forEach(m => {
       Object.keys(m).forEach(f => {
         if (filledVar.includes(f)) {

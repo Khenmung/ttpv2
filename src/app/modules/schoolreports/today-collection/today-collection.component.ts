@@ -167,20 +167,21 @@ export class TodayCollectionComponent implements OnInit {
     this.expandedElement = null;
   }
   convertUTCDateToLocalDate(date) {
-    var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+    var newDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
 
     var offset = date.getTimezoneOffset() / 60;
     var hours = date.getHours();
 
     newDate.setHours(hours - offset);
 
-    return newDate;   
-}
-AddMinutes(date, minutes) {
-  date.setMinutes(date.getMinutes() + minutes);
+    return newDate;
+  }
+  AddMinutes(date, minutes) {
+    const mydate = Date.parse(date) - minutes * 60 * 100;
+    //date.setMinutes(date.getMinutes() + minutes);
 
-  return date;
-}
+    return new Date(mydate).toISOString();
+  }
   GetStudentFeePaymentDetails() {
     debugger;
     this.ErrorMessage = '';
@@ -240,9 +241,21 @@ AddMinutes(date, minutes) {
           var studcls = _students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.StudentClassId == db.StudentClassId) > -1);
           if (studcls.length > 0) {
             let _receiptdate = new Date(db.ReceiptDate);
-            let _offSet =new Date(db.ReceiptDate).getTimezoneOffset();
-            
-            db.ReceiptDate = this.AddMinutes(_receiptdate,_offSet);
+            const _hours =_receiptdate.getHours();
+            const _mins =_receiptdate.getMinutes();
+            const _offSet = new Date(db.ReceiptDate).getTimezoneOffset();
+            const offsetHours = Math.round(_offSet/60);
+            const offsetMins = _offSet%60;
+            _receiptdate.setMinutes(_mins - offsetMins);
+            _receiptdate.setHours(_hours - offsetHours);
+           
+
+           // let newDate = new Date(new Date(db.ReceiptDate).setHours( (_offSet*60*60));
+            //console.log("db.ReceiptDate",db.ReceiptDate);
+            //console.log("getTimezoneOffset",_offSet);
+            // db.ReceiptDate = new Date(db.ReceiptDate).to.toLocaleTimeString();//  this.AddMinutes(_receiptdate,_offSet);
+
+            db.ReceiptDate = _receiptdate;
             db.StudentClasses = studcls;
             db.PID = studcls[0].PID;
 
@@ -360,27 +373,8 @@ AddMinutes(date, minutes) {
   }
   GetStudents() {
 
-    // let list: List = new List();
-    // list.fields = [
-    //   'StudentClassId',
-    //   'StudentId',
-    //   'ClassId',
-    //   'RollNo',
-    //   'SectionId'
-    // ];
 
-    // list.PageName = "StudentClasses";
-    // //list.lookupFields = ["Student($select=FirstName,LastName)"]
-    // list.filter = ['OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and BatchId eq ' + this.SelectedBatchId];
-
-    // this.dataservice.get(list)
-    //   .subscribe((data: any) => {
-    //debugger;
-    //  ////console.log('data.value', data.value);
     var _students: any = this.tokenStorage.getStudents()!;
-    //this.Students = [..._students];
-    // var _filteredStudents = _students.filter((s:any) => data.value.findIndex(fi => fi.StudentId == s.StudentId) > -1)
-    // if (data.value.length > 0) {
     _students.forEach(studentcls => {
       //var matchstudent = _filteredStudents.filter(stud => stud.StudentId == studentcls.StudentId)
       if (studentcls.StudentClasses && studentcls.StudentClasses.length > 0) {
