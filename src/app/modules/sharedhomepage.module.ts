@@ -11,8 +11,6 @@ import { RightComponent } from '../shared/components/right/right.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MyFilterPipe } from '../shared/FilterPipe';
-//import { EmployeedataComponent } from './employeedata/employeedata.component';
-//import { EmployeeattendanceboardComponent } from './employeeattendance/employeeattendanceboard/employeeattendanceboard.component';
 
 const sharedHomeComponent = [
   HomeComponent,
@@ -22,12 +20,11 @@ const sharedHomeComponent = [
   AlertComponent,
   RightComponent,
   MyFilterPipe
-  //MatConfirmDialogComponent
 ]
 
 @NgModule({
   declarations: [
-    sharedHomeComponent,
+    sharedHomeComponent
   ],
   imports: [
     CommonModule,

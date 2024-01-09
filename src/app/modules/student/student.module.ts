@@ -7,8 +7,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { SharedhomepageModule } from '../sharedhomepage.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxPrintModule } from 'ngx-print';
-import { StudentviewComponent } from './studentview/studentview.component';
-
 @NgModule({
   declarations: [StudentComponents],
   imports: [
@@ -21,6 +19,7 @@ import { StudentviewComponent } from './studentview/studentview.component';
     SharedhomepageModule,
     FlexLayoutModule,
     NgxPrintModule,
+    //ThermalPrintModule
   ],
   exports:[StudentComponents]
 })

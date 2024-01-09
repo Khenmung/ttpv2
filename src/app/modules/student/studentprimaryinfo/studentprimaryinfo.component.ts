@@ -646,7 +646,7 @@ export class studentprimaryinfoComponent implements OnInit {
       GenderId: _genderId,
       PermanentAddress: this.studentForm.get("PermanentAddress")?.value,
       PresentAddress: this.studentForm.get("PresentAddress")?.value,
-      DOB: this.adjustDateForTimeOffset(new Date(this.studentForm.get("DOB")?.value)),
+      DOB:this.studentForm.get("DOB")?.value,// this.adjustDateForTimeOffset(new Date(this.studentForm.get("DOB")?.value)),
       BloodgroupId: this.studentForm.get("Bloodgroup")?.value,
       CategoryId: this.studentForm.get("Category")?.value,
       AccountHolderName: this.studentForm.get("AccountHolderName")?.value,
@@ -674,7 +674,7 @@ export class studentprimaryinfoComponent implements OnInit {
       RemarkId: this.studentForm.get("RemarkId")?.value,
       Remark2Id: this.studentForm.get("Remark2Id")?.value,
       AdmissionStatusId: this.studentForm.get("AdmissionStatus")?.value,
-      AdmissionDate: this.adjustDateForTimeOffset(new Date(this.studentForm.get("AdmissionDate")?.value)),
+      AdmissionDate:this.studentForm.get("AdmissionDate")?.value,// this.adjustDateForTimeOffset(new Date(this.studentForm.get("AdmissionDate")?.value)),
       Notes: this.studentForm.get("Notes")?.value,
       EmailAddress: _email,
       Active: this.studentForm.get("Active")?.value == true ? 1 : 0,
@@ -721,6 +721,7 @@ export class studentprimaryinfoComponent implements OnInit {
             this.PID = result.PID;
             this.StudentId = result.StudentId;
             this.studentData[0].StudentId = this.StudentId;
+            this.studentData[0].StudentClassId =result.StudentClassId; 
             // if (result != null && result.UserId != "")
             //   this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
             // else

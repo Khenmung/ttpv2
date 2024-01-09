@@ -377,9 +377,10 @@ export class AddstudentclassComponent implements OnInit {
 
           this.tokenStorage.saveStudentClassId(this.StudentClassId + "")
           let _Students: any = this.tokenStorage.getStudents()!;
-          let temp = _Students.filter(s => s.StudentId == this.studentclassData.StudentId);
-          if (temp.length > 0) {
-            temp[0].StudentClasses.push(this.studentclassData);
+          let indx = _Students.findIndex(s => s.StudentId == this.studentclassData.StudentId);
+          if (indx > -1) {
+            _Students[indx].StudentClasses.push(this.studentclassData);
+
             this.tokenStorage.saveStudents(_Students);
           }
           this.CreateInvoice(row);
@@ -398,27 +399,25 @@ export class AddstudentclassComponent implements OnInit {
         row.AdmissionNo = this.studentclassData.AdmissionNo;
         row.Action = false;
         let _Students: any = this.tokenStorage.getStudents()!;
-        let temp = _Students.filter(s => s.StudentId == this.studentclassData.StudentId);
-        if (temp.length > 0) {
-          let studcls = temp[0].StudentClasses.filter(c => c.StudentClassId == this.studentclassData.StudentClassId)
-          if (studcls.length > 0) {
-            if (this.studentclassData.Active == 0 && studcls[0].IsCurrent == true) {
-              let indx = _Students.indexOf(temp);
-              _Students.splice(indx, 1);
-            }
-            else {
-              studcls[0].Active = this.studentclassData.Active;
-              studcls[0].RollNo = this.studentclassData.RollNo;
-              studcls[0].SectionId = this.studentclassData.SectionId;
-              studcls[0].SemesterId = this.studentclassData.SemesterId;
-              studcls[0].FeeTypeId = this.studentclassData.FeeTypeId;
-              studcls[0].Remarks = this.studentclassData.Remarks;
-              studcls[0].AdmissionDate = this.studentclassData.AdmissionDate;
-              studcls[0].IsCurrent = this.studentclassData.IsCurrent;
-            }
-
-            this.tokenStorage.saveStudents(_Students);
+        let indx = _Students.findIndex(s => s.StudentId == this.studentclassData.StudentId);
+        if (indx > -1) {
+          let clsIndx = _Students[indx].StudentClasses.findIndex(c => c.StudentClassId == this.studentclassData.StudentClassId)
+          let studcls = _Students[indx].StudentClasses[clsIndx];//.find(c => c.StudentClassId == this.studentclassData.StudentClassId)
+          if (this.studentclassData.Active == 0 && studcls.IsCurrent) {
+            _Students.splice(indx, 1);
           }
+          else {
+            studcls.Active = this.studentclassData.Active;
+            studcls.RollNo = this.studentclassData.RollNo;
+            studcls.SectionId = this.studentclassData.SectionId;
+            studcls.SemesterId = this.studentclassData.SemesterId;
+            studcls.FeeTypeId = this.studentclassData.FeeTypeId;
+            studcls.Remarks = this.studentclassData.Remarks;
+            studcls.AdmissionDate = this.studentclassData.AdmissionDate;
+            studcls.IsCurrent = this.studentclassData.IsCurrent;
+            _Students[indx].StudentClasses[clsIndx] = studcls;
+          }
+          this.tokenStorage.saveStudents(_Students);
         }
       }, error => {
         var msg = globalconstants.formatError(error);
@@ -444,14 +443,13 @@ export class AddstudentclassComponent implements OnInit {
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
             let _Students: any = this.tokenStorage.getStudents()!;
-            var _feeName = '',_remark1='',_remark2='';
+            var _feeName = '', _remark1 = '', _remark2 = '';
             data.value.forEach(studcls => {
               let _currentStudent = _Students.filter(s => s.StudentId === studcls.StudentId);
-               _feeName = '';_remark1='';_remark2='';
-              if(_currentStudent.length>0)
-              {
-                _remark1 =_currentStudent[0].Remark1;
-                _remark2 =_currentStudent[0].Remark2;
+              _feeName = ''; _remark1 = ''; _remark2 = '';
+              if (_currentStudent.length > 0) {
+                _remark1 = _currentStudent[0].Remark1;
+                _remark2 = _currentStudent[0].Remark2;
               }
               objClassFee.forEach(clsfee => {
                 var _category = '';

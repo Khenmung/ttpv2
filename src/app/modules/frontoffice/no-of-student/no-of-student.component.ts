@@ -204,7 +204,6 @@ export class NoOfStudentComponent implements OnInit {
   GetStudentClasses() {
     debugger;
     this.TotalStudent = 0;
-    let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     this.loading = true;
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _students: any[] = [];
@@ -212,28 +211,8 @@ export class NoOfStudentComponent implements OnInit {
     if (_classId > 0) {
       _students = _students.filter(s => s.StudentClasses && s.StudentClasses[0].ClassId == _classId)
     }
-    else
 
-      //   filterStr += " and ClassId eq " + _classId;
-      // filterStr += " and IsCurrent eq true";
-
-      // let list: List = new List();
-      // list.fields = [
-      //   'StudentClassId',
-      //   'ClassId',
-      //   'SectionId',
-      //   'SemesterId',
-      //   'StudentId',
-      //   'Active'
-      // ];
-
-      // list.PageName = "StudentClasses";
-      // list.lookupFields = ["Class($select=ClassName,ClassId,Sequence,MaxStudent)"]
-      // list.filter = [filterStr + ' and Active eq 1'];
-      this.StudentClassList = [];
-    // this.dataservice.get(list)
-    //   .subscribe((StudentClassesdb: any) => {
-    ////console.log("Studenclass no.", StudentClassesdb.value)
+    this.StudentClassList = [];
     let errormsg = '';
     this.BoyGirlTotal = [];
     let _clsname = ''
@@ -241,7 +220,6 @@ export class NoOfStudentComponent implements OnInit {
     let _semesterName = ''
     let _pid = 0
     let _gender = '';
-    //this.StudentClassList = StudentClassesdb.value.map(student => {
     _students.forEach(student => {
       _clsname = ''
       _sectionname = '', Seq = 0;

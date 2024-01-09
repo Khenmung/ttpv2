@@ -9,6 +9,8 @@ import { globalconstants } from '../../../../shared/globalconstant';
 import { List } from '../../../../shared/interface';
 import { SharedataService } from '../../../../shared/sharedata.service';
 import { SwUpdate } from '@angular/service-worker';
+//import { PrintDriver } from 'ng-thermal-print/lib/drivers/PrintDriver';
+//import { PrintService, UsbDriver, WebPrintDriver } from 'ng-thermal-print';
 
 @Component({
   selector: 'app-feereceipt',
@@ -16,6 +18,11 @@ import { SwUpdate } from '@angular/service-worker';
   styleUrls: ['./feereceipt.component.scss'],
 })
 export class FeereceiptComponent implements OnInit {
+  // status: boolean = false;
+  // usbPrintDriver: UsbDriver;
+  // webPrintDriver: WebPrintDriver;
+  // ip: string = '';
+
   PageLoading = true;
   @Input("BillDetail") BillDetail: any[];
   @Input("StudentClass") studentInfoTodisplay: any;
@@ -70,11 +77,24 @@ export class FeereceiptComponent implements OnInit {
   Balance = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  constructor(private servicework: SwUpdate, private dataservice: NaomitsuService,
+  constructor(
+    //private printService: PrintService,
+    private servicework: SwUpdate,
+    private dataservice: NaomitsuService,
     private tokenStorage: TokenStorageService,
 
     private shareddata: SharedataService,
-    private contentservice: ContentService) { }
+    private contentservice: ContentService) {
+    // this.usbPrintDriver = new UsbDriver();
+    // this.printService.isConnected.subscribe(result => {
+    //   this.status = result;
+    //   if (result) {
+    //     console.log('Connected to printer!!!');
+    //   } else {
+    //     console.log('Not connected to printer.');
+    //   }
+    // });
+  }
 
   ngOnInit(): void {
     // this.servicework.activateUpdate().then(() => {
@@ -84,9 +104,28 @@ export class FeereceiptComponent implements OnInit {
     //     }
     //   })
     // })
-
+    //this.requestUsb();
   }
+  // requestUsb() {
+  //   this.usbPrintDriver.requestUsb().subscribe(result => {
+  //     this.printService.setDriver(this.usbPrintDriver, 'ESC/POS');
+  //   });
+  // }
 
+  // connectToWebPrint() {
+  //   this.webPrintDriver = new WebPrintDriver(this.ip);
+  //   this.printService.setDriver(this.webPrintDriver, 'WebPRNT');
+  // }
+
+  // print(driver: PrintDriver) {
+  //   this.printService.init()
+  //     .setBold(true)
+  //     .writeLine('Hello World!')
+  //     .setBold(false)
+  //     .feed(4)
+  //     .cut('full')
+  //     .flush();
+  // }
   public calculateTotal() {
 
     if (this.BillDetail.length > 0) {

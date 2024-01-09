@@ -166,7 +166,7 @@
                             *ngIf="!CancelReceiptMode" (click)="edit()" mat-raised-button>
                             <mat-icon>cancel</mat-icon>
                         </button>
-                        <button [disabled]="loading || Permission=='read'" matTooltip="print"
+                        <button [disabled]="loading || Permission=='read'" matTooltip="print" style="margin-right: 15px;"
                             printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button
                             color="accent">
                             <mat-icon>print</mat-icon>

@@ -17,6 +17,8 @@ import { ContentService } from '../../../../shared/content.service';
 import { map, startWith } from 'rxjs/operators';
 import { SwUpdate } from '@angular/service-worker';
 import * as moment from 'moment';
+import { StyleSheet } from "aphrodite";
+import { PrintmonoComponent } from '../printmono/printmono.component';
 @Component({
   selector: 'app-addstudentfeepayment',
   templateUrl: './addstudentfeepayment.component.html',
@@ -714,6 +716,10 @@ export class AddstudentfeepaymentComponent implements OnInit {
     })
     return filledVar;
   }
+  PrintTypeThermal = true;
+  SetPrintType(event) {
+    this.PrintTypeThermal = event.checked;
+  }
   SelectRow(row, event) {
     debugger;
     var _newCount = 0;
@@ -1144,7 +1150,10 @@ export class AddstudentfeepaymentComponent implements OnInit {
         this.billdataSource = new MatTableDataSource();
 
         this.contentservice.openSnackBar("Payment done successfully!", globalconstants.ActionText, globalconstants.BlueBackground);
-        this.tabChanged(1);
+        if (this.PrintTypeThermal)
+          this.tabChanged(2);
+        else
+          this.tabChanged(1);
       })
   }
   update() {
@@ -1221,8 +1230,185 @@ export class AddstudentfeepaymentComponent implements OnInit {
         break;
     }
   }
+  /////////////////////////////////////////////
+  //name = "Angular " + VERSION.major;
 
+  @ViewChild(PrintmonoComponent)
+  dirToPrint: PrintmonoComponent;
+
+  public testPrint(): void {
+    // const ps = new ThermalPrinterManager();
+    // ps.addLineWithClassName(`text-center font-bold`, `END OF DAY REPORT`);
+    // ps.addLineCenter(`John Dean`);
+
+    // ps.addEmptyLine();
+
+    // ps.addLine(`Date: 12.01.2020`);
+    // ps.addLine(`Check-In: 09:00`);
+    // ps.addLine(`Check-Out: 21:00`);
+
+    // ps.addEmptyLine();
+
+    // ps.addLine(`<strong>SUMMARY</strong>`);
+    // ps.addLine(`Total Tips: \$7.00`);
+    // ps.addLine(`Total Backbars: \$12.00`);
+    // ps.addLine(`Total Services: \$70.00`);
+
+    // ps.addEmptyLine();
+    // ps.addLine(`Ticket #1 - Walk-in`);
+    // ps.print();
+    this.dirToPrint.print();
+  }
 }
+
+class ThermalPrinterManager {
+  styles = StyleSheet.create({
+    red: {
+      backgroundColor: "red"
+    },
+
+    blue: {
+      backgroundColor: "blue"
+    },
+
+    hover: {
+      ":hover": {
+        backgroundColor: "red"
+      }
+    },
+
+    small: {
+      "@media (max-width: 600px)": {
+        backgroundColor: "red"
+      }
+    }
+  });
+
+  printContent = ``;
+
+  addRawHtml(htmlEl) {
+    this.printContent += `\n${htmlEl}`;
+  }
+
+  addLine(text) {
+    this.addRawHtml(`<p>${text}</p>`);
+  }
+
+  addLineWithClassName(className, text) {
+    this.addRawHtml(`<p class="${className}">${text}</p>`);
+  }
+
+  addEmptyLine() {
+    this.addLine(`&nbsp;`);
+  }
+
+  addLineCenter(text) {
+    this.addLineWithClassName("text-center", text);
+  }
+
+  print() {
+    const printerWindow = window.open(``, `_blank`)!;
+    printerWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    
+    <head>
+      <title>Print</title>
+      <style>
+
+        html {
+          padding: 0;
+          margin: 0;
+          font-family: monospace;
+          width: 80mm;
+        }
+
+        body {
+          margin: 0;
+          padding: 8px;
+        }
+
+        p {
+          margin-top: 0.25rem;
+          margin-bottom: 0.25rem;
+          white-space: pre-wrap;
+        }
+
+        .text-center {
+          text-align: center;
+        }
+
+        .text-right {
+          text-align: right;
+        }
+
+        .text-left {
+          text-align: left;
+        }
+
+        .font-bold {
+          font-weight: bold;
+        }
+
+        table {
+          width: 100%;
+        }
+
+        tr, th, td {
+          padding: 0;
+        }
+
+        .grid-line {
+          overflow: hidden;
+          text-overflow: clip;
+          white-space: nowrap;
+          grid-column: span 3 / span 3;
+        }
+
+        .nowrap {
+          overflow: hidden;
+          text-overflow: clip;
+          white-space: nowrap;
+        }
+
+        .col-span-2 {
+          grid-column: span 2 / span 2;
+        }
+
+        .max-line-2 {
+          max-height: 30px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
+
+      </style>
+      <script>
+        window.onafterprint = event => {
+          window.close();
+        };
+      </script>
+    </head>
+
+    <body>
+      ${this.printContent}
+    </body>
+    
+
+    </html>
+    
+    `);
+
+    printerWindow.document.close();
+    printerWindow.focus();
+    printerWindow.print();
+    // mywindow.close();
+  }
+}
+//////////////////////////////////////////////
+//}
 export interface ILedger {
   SlNo1: number,
   LedgerId: number;
