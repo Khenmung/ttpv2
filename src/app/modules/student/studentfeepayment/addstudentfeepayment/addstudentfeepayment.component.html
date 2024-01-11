@@ -98,9 +98,7 @@
                     </div>
                     <!-- <div style="background-color: lightgray;width:1px">&nbsp;asdf</div> -->
                     <div style="width:100%; margin: 15px 0px 0px 15px;border: 1px solid lightgray;">
-                        <div><mat-checkbox [disabled]="loading || Permission=='read'" mat-mini-fab
-                                (change)="SetPrintType($event)" [checked]="PrintTypeThermal">Thermal Printer
-                            </mat-checkbox></div>
+                        
                         <div id="invoiceSection" style="display:flex;flex-direction: column;">
                             <div style="display:flex;justify-content: center;">
                                 <div style="margin-right: 15px;" *ngIf="logourl.length>0" [innerHTML]="logourl"></div>
@@ -260,17 +258,17 @@
                 <app-feereceipt [OffLineReceiptNo]="OffLineReceiptNo" [StudentClassFees]="StudentClassFees"
                     [StudentClass]="studentInfoTodisplay" [BillDetail]="MonthlyDueDetail"></app-feereceipt>
             </mat-tab>
-            <mat-tab>
+            <!-- <mat-tab>
                 <ng-template mat-tab-label>
                     <mat-icon>receipt</mat-icon>Thermal Receipt
                 </ng-template>
-                <app-printmono [width]="'80mm'" [OffLineReceiptNo]="OffLineReceiptNo"
+                <app-printmono [width]="'58mm'" [OffLineReceiptNo]="OffLineReceiptNo"
                     [StudentClassFees]="StudentClassFees" [StudentClass]="studentInfoTodisplay"
                     [BillDetail]="MonthlyDueDetail"></app-printmono>
                 <button (click)="testPrint()" style="margin-top: 20px">
                     Test Printer
                 </button>
-            </mat-tab>
+            </mat-tab> -->
         </mat-tab-group>
         <!-- </div> -->
         <!-- </div> -->

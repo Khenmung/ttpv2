@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -9,8 +9,74 @@ import { globalconstants } from '../../../../shared/globalconstant';
 import { List } from '../../../../shared/interface';
 import { SharedataService } from '../../../../shared/sharedata.service';
 import { SwUpdate } from '@angular/service-worker';
-//import { PrintDriver } from 'ng-thermal-print/lib/drivers/PrintDriver';
-//import { PrintService, UsbDriver, WebPrintDriver } from 'ng-thermal-print';
+import { SheetsRegistry, create } from 'jss';
+import preset from "jss-preset-default";
+
+
+const jss = create(preset());
+const styles = {
+  singleLine: `
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    white-space: pre-wrap;
+  `,
+  printAreaContainer: `
+    padding: 8px;
+  `,
+  fontMono: {
+    fontFamily: "monospace"
+  },
+  textCenter: {
+    textAlign: "center"
+  },
+  textRight: {
+    textAlign: "right"
+  },
+  textLeft: {
+    textAlign: "left"
+  },
+  fontBold: {
+    fontWeight: "bold"
+  },
+  grid5Col: {
+    display: "grid",
+    columnGap: "5px",
+    gridTemplateColumns: "1fr auto auto auto auto"
+  },
+  gridBorderSolid: `
+    border-bottom: 1px solid;
+  `,
+  gridBorderDashed: `
+    border-bottom: 1px dashed;
+  `,
+  gridBorderDouble: `
+    border-bottom: 3px double;
+  `,
+  gridBorder: `
+    grid-column: 1 / -1;
+    margin: 4px 0;
+  `,
+  nowrap: {
+    overflow: "hidden",
+    textOverflow: "clip",
+    whiteSpace: "nowrap"
+  },
+  colSpan2: {
+    gridColumn: "span 2 / span 2"
+  },
+  maxLine2: {
+    maxHeight: "30px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    "-webkit-line-clamp": 2,
+    "-webkit-box-orient": "vertical"
+  }
+};
+const sheets = new SheetsRegistry();
+const sheet = jss.createStyleSheet(styles);
+sheets.add(sheet);
+const { classes } = sheet.attach();
 
 @Component({
   selector: 'app-feereceipt',
@@ -18,12 +84,12 @@ import { SwUpdate } from '@angular/service-worker';
   styleUrls: ['./feereceipt.component.scss'],
 })
 export class FeereceiptComponent implements OnInit {
-  // status: boolean = false;
-  // usbPrintDriver: UsbDriver;
-  // webPrintDriver: WebPrintDriver;
-  // ip: string = '';
+  @Input()
+  width: "58mm";
+  classes = classes;
 
   PageLoading = true;
+  @ViewChild('printSection') printSection: ElementRef;
   @Input("BillDetail") BillDetail: any[];
   @Input("StudentClass") studentInfoTodisplay: any;
   @Input("OffLineReceiptNo") OffLineReceiptNo: any;
@@ -106,26 +172,16 @@ export class FeereceiptComponent implements OnInit {
     // })
     //this.requestUsb();
   }
-  // requestUsb() {
-  //   this.usbPrintDriver.requestUsb().subscribe(result => {
-  //     this.printService.setDriver(this.usbPrintDriver, 'ESC/POS');
-  //   });
-  // }
-
-  // connectToWebPrint() {
-  //   this.webPrintDriver = new WebPrintDriver(this.ip);
-  //   this.printService.setDriver(this.webPrintDriver, 'WebPRNT');
-  // }
-
-  // print(driver: PrintDriver) {
-  //   this.printService.init()
-  //     .setBold(true)
-  //     .writeLine('Hello World!')
-  //     .setBold(false)
-  //     .feed(4)
-  //     .cut('full')
-  //     .flush();
-  // }
+  print(): void {
+    const tpm = new ThermalPrinterService(this.width);
+    const styles = sheets.toString();
+    console.log(this.printSection.nativeElement.innerHTML);
+    console.log(styles);
+    tpm.setStyles(styles);
+    tpm.addEmptyLine();
+    tpm.addRawHtml(this.printSection.nativeElement.innerHTML);
+    tpm.print();
+  }
   public calculateTotal() {
 
     if (this.BillDetail.length > 0) {
@@ -198,6 +254,7 @@ export class FeereceiptComponent implements OnInit {
     }
   }
   ReceivedBy = '';
+  TotalInWords:any='';
   viewDetail(row) {
     debugger;
     this.ReceivedBy = row.ReceivedBy;
@@ -213,6 +270,7 @@ export class FeereceiptComponent implements OnInit {
     this.Balance = row.Balance == null ? 0 : row.Balance;
     this.BillStatus = row.Active;
     this.dataSource = new MatTableDataSource<any>(this.clickPaymentDetails);
+   // this.TotalInWords = this.inWords(this.TotalAmount);
   }
   CancelReceipt() {
     //debugger;
@@ -465,6 +523,7 @@ export class FeereceiptComponent implements OnInit {
     this.ReceiptHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.RECEIPTHEADING);
 
     this.ReceiptHeading.forEach(f => {
+      f.MasterDataName=f.MasterDataName.replaceAll("''","'");
       f.Description = f.Description ? JSON.parse("{" + f.Description + "}") : ''
     })
     ////console.log("this.ReceiptHeading",this.ReceiptHeading);
@@ -473,16 +532,31 @@ export class FeereceiptComponent implements OnInit {
     //});
 
   }
+  
 
-  getDropDownData(dropdowntype) {
-    return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
-    // let Id = this.allMasterData.filter((item, indx) => {
-    //   return item.MasterDataName.toLowerCase() == dropdowntype//globalconstants.GENDER
-    // })[0].MasterDataId;
-    // return this.allMasterData.filter((item, index) => {
-    //   return item.ParentId == Id
-    // });
-  }
+// inWords(num) {
+//   var a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+//   var b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+//   if ((num = num.toString()).length > 9) return 'overflow';
+//   let n :any = ('000000000' + num).substring(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+//   if (!n) return ''; 
+//   var str = '';
+//   str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'crore ' : '';
+//   str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'lakh ' : '';
+//   str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'thousand ' : '';
+//   str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'hundred ' : '';
+//   str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'only ' : '';
+//   return str;
+// }
+getDropDownData(dropdowntype) {
+  return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
+  // let Id = this.allMasterData.filter((item, indx) => {
+  //   return item.MasterDataName.toLowerCase() == dropdowntype//globalconstants.GENDER
+  // })[0].MasterDataId;
+  // return this.allMasterData.filter((item, index) => {
+  //   return item.ParentId == Id
+  // });
+}
 }
 export interface IStudentFeePaymentReceipt {
   StudentReceiptId: number;
@@ -500,4 +574,68 @@ export interface IReceipt {
   ReceiptDate: Date;
   Active: number;
   Action: string;
+}
+class ThermalPrinterService {
+  printContent = ``;
+  cssStyles = ``;
+
+  constructor(private paperWidth: "80mm" | "58mm") { }
+
+  addRawHtml(htmlEl) {
+    this.printContent += `\n${htmlEl}`;
+  }
+
+  addLine(text) {
+    this.addRawHtml(`<p>${text}</p>`);
+  }
+
+  addLineWithClassName(className, text) {
+    this.addRawHtml(`<p class="${className}">${text}</p>`);
+  }
+
+  addEmptyLine() {
+    this.addLine(`&nbsp;`);
+  }
+
+  addLineCenter(text) {
+    this.addLineWithClassName("text-center", text);
+  }
+
+  setStyles(cssStyles) {
+    this.cssStyles = cssStyles;
+  }
+
+  print() {
+    const printerWindow = window.open(``, `_blank`)!;
+    printerWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    
+    <head>
+      <title>Print</title>
+      <style>
+        html { padding: 0; margin: 0; width: ${this.paperWidth}; }
+        body { margin: 0; }
+        ${this.cssStyles}
+      </style>
+      <script>
+        window.onafterprint = event => {
+          window.close();
+        };
+      </script>
+    </head>
+
+    <body>
+      ${this.printContent}
+    </body>
+    
+    </html>
+    
+    `);
+
+    printerWindow.document.close();
+    printerWindow.focus();
+    printerWindow.print();
+    // mywindow.close();
+  }
 }

@@ -20,8 +20,8 @@ export class LedgerAccountComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   PageLoading = true;
-  Defaultvalue=0;
-  LoginUserDetail:any[]= [];
+  Defaultvalue = 0;
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   SelectedApplicationId = 0;
   StudentClassId = 0;
@@ -29,18 +29,18 @@ export class LedgerAccountComponent implements OnInit {
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  GeneralLedgerList: IGeneralLedger[]= [];
+  GeneralLedgerList: IGeneralLedger[] = [];
   SelectedBatchId = 0;
   SubOrgId = 0;
-  TopAccountNatures :any[]= [];
-  AccountNatures :any[]= [];
-  AccountGroups :any[]= [];
-  GeneralLedgerAutoComplete :any[]= [];
-  AccountNatureList :any[]= [];
-  filteredOptions :any[]= [];
+  TopAccountNatures: any[] = [];
+  AccountNatures: any[] = [];
+  AccountGroups: any[] = [];
+  GeneralLedgerAutoComplete: any[] = [];
+  AccountNatureList: any[] = [];
+  filteredOptions: any[] = [];
   dataSource: MatTableDataSource<IGeneralLedger>;
-  allMasterData :any[]= [];
-  PlusOrMinus :any[]= [];
+  allMasterData: any[] = [];
+  PlusOrMinus: any[] = [];
   ExamId = 0;
   GeneralLedgerData = {
     GeneralLedgerId: 0,
@@ -62,10 +62,10 @@ export class LedgerAccountComponent implements OnInit {
     AssetPlus: 0,
     TBSequence: 0,
     TBPlus: 0,
-    OrgId: 0,SubOrgId: 0,
+    OrgId: 0, SubOrgId: 0,
     Active: 0
   };
-  GeneralLedgerForUpdate :any[]= [];
+  GeneralLedgerForUpdate: any[] = [];
   displayedColumns = [
     'Action',
     'Active',
@@ -159,12 +159,12 @@ export class LedgerAccountComponent implements OnInit {
       }
     }
   }
-  AccountSubGroups :any[]= [];
+  AccountSubGroups: any[] = [];
   GetSubGroup() {
     debugger;
     var _groupId = this.searchForm.get("searchAccountGroupId")?.value;
     if (_groupId > 0) {
-      this.AccountSubGroups = this.AccountNatures.filter((f:any) => f.ParentId == _groupId)
+      this.AccountSubGroups = this.AccountNatures.filter((f: any) => f.ParentId == _groupId)
       this.filteredOptions = this.GeneralLedgerAutoComplete.filter(x => x.AccountGroupId == _groupId)
     }
 
@@ -209,7 +209,7 @@ export class LedgerAccountComponent implements OnInit {
       Email: '',
       Address: '',
       OrgId: 0,
-      SubOrgId:0,
+      SubOrgId: 0,
       Active: 0,
       Action: false
     }
@@ -356,7 +356,7 @@ export class LedgerAccountComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.value.length > 0) {
           this.AccountNatures = [...data.value];
-          this.TopAccountNatures = this.AccountNatures.filter((f:any) => f.ParentId == 0);
+          this.TopAccountNatures = this.AccountNatures.filter((f: any) => f.ParentId == 0);
         }
         this.loadingFalse();
       });
@@ -365,7 +365,7 @@ export class LedgerAccountComponent implements OnInit {
   GetGeneralLedgerAutoComplete() {
     //debugger;
     this.loading = true;
-    let filterStr =this.FilterOrgSubOrg+ ' and Active eq 1';
+    let filterStr = this.FilterOrgSubOrg + ' and Active eq 1';
 
     let list: List = new List();
     list.fields = [
@@ -391,16 +391,19 @@ export class LedgerAccountComponent implements OnInit {
   }
   GetGeneralLedger() {
     //debugger;
-    this.loading = true;
 
-    let filterStr = ''+this.FilterOrgSubOrg + ' and Active eq 1';
-    var AccountNatureId = this.searchForm.get("searchAccountNatureId")?.value
+
+    let filterStr = this.FilterOrgSubOrg + ' and Active eq 1';
+    var AccountNatureId = this.searchForm.get("searchAccountNatureId")?.value;
+    if (!AccountNatureId) {
+      this.contentservice.openSnackBar("Please select Account Nature.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
     var AccountGroupId = this.searchForm.get("searchAccountGroupId")?.value
     var AccountSubGroupId = this.searchForm.get("searchAccountSubGroupId")?.value
     var GeneralLedgerId = this.searchForm.get("searchLedgerName")?.value.GeneralLedgerId;
 
     if (AccountNatureId == 0 && AccountGroupId == 0 && GeneralLedgerId == 0) {
-      this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please select search criteria", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
@@ -416,6 +419,7 @@ export class LedgerAccountComponent implements OnInit {
     if (GeneralLedgerId > 0) {
       filterStr += ' and GeneralLedgerId eq ' + GeneralLedgerId;
     }
+    this.loading = true;
     let list: List = new List();
     list.fields = [
       'GeneralLedgerId',
@@ -446,11 +450,11 @@ export class LedgerAccountComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
-          var acgroup :any[]= [];
+          var acgroup: any[] = [];
           this.GeneralLedgerList = data.value.map(item => {
             //acgroup = this.allMasterData.filter((f:any) => f.ParentId == item.AccountNatureId);
-            item.AccountGroups = this.AccountNatures.filter((f:any) => f.ParentId == item.AccountNatureId);
-            item.AccountSubGroups = this.AccountNatures.filter((f:any) => f.ParentId == item.AccountGroupId);
+            item.AccountGroups = this.AccountNatures.filter((f: any) => f.ParentId == item.AccountNatureId);
+            item.AccountSubGroups = this.AccountNatures.filter((f: any) => f.ParentId == item.AccountGroupId);
             item.Action = false;
             return item;
           });
@@ -477,7 +481,7 @@ export class LedgerAccountComponent implements OnInit {
   AccountNatureChanged(row) {
     debugger;
     row.Action = true;
-    var acgroup = this.AccountNatures.filter((f:any) => f.ParentId == row.AccountNatureId);
+    var acgroup = this.AccountNatures.filter((f: any) => f.ParentId == row.AccountNatureId);
     row.AccountGroups = acgroup;
     this.dataSource = new MatTableDataSource(this.GeneralLedgerList);
   }
@@ -486,7 +490,7 @@ export class LedgerAccountComponent implements OnInit {
     debugger;
     var natureId = this.searchForm.get("searchAccountNatureId")?.value;
     if (natureId > 0)
-      this.AccountGroups = this.AccountNatures.filter((f:any) => f.ParentId == natureId);
+      this.AccountGroups = this.AccountNatures.filter((f: any) => f.ParentId == natureId);
   }
   UpdateActive(row, event) {
     row.Active = event.checked ? 1 : 0;

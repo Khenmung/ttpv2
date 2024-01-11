@@ -31,7 +31,7 @@
                             {{item.applicationName}}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field [style.width.px]="130" appearance="outline">
+                <mat-form-field [style.width.px]="160" appearance="outline">
                     <mat-label>Company</mat-label>
                     <mat-select formControlName="searchSubOrgId" [compareWith]="compareWith"
                         (selectionChange)="SubOrgChange()">
@@ -39,7 +39,7 @@
                             [value]="item">{{item.MasterDataName}}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field [style.width.px]="130" appearance="outline">
+                <mat-form-field [style.width.px]="160" appearance="outline">
                     <mat-label>Batch</mat-label>
                     <mat-select formControlName="searchBatchId" (selectionChange)="changebatch()">
                         <mat-option *ngFor="let item of Batches" [value]="item.BatchId">{{item.BatchName}}</mat-option>

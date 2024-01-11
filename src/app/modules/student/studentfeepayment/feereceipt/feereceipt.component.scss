@@ -1,5 +1,5 @@
 mat-header-cell {
-    display: grid;
+  //  display: grid;
     justify-content: center;
 }
 
@@ -89,7 +89,7 @@ mat-footer-row {
 
 
 .divCls:nth-child(9) {
-    //font-family: Arial, Helvetica, sans-serif; 
+    //font-family:monospace;// Arial, Helvetica, sans-serif; 
     margin: 15px;
     //font-family: Arial, Helvetica, sans-serif;
     //font-size:large;
@@ -122,8 +122,10 @@ div {
 }
 
 @media print {
+    //html { padding: 0; margin: 0; width: 58mm; }
     * {
         //font-size: 14px;
-        flex-shrink: 2;
+        font-family:"monospace";
+        //flex-shrink: 2;
     }
 }

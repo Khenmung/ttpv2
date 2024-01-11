@@ -41,7 +41,7 @@
         </div>
         <div style="display: flex; flex-direction: column; width: 60%;padding: 15px 0px 15px 0px;">
             <div style="padding: 5px;"><b>Print/Cancel Receipt</b></div>
-            <div style="border:1px solid lightgray;" class="divCls" id="printSection">
+            <div style="border:1px solid lightgray" id="printSection" #printSection>
                 <div fxLayout="column" fxLayoutAlign="space-around center">
                     <div style="width:100%;display:flex;justify-content: center;flex-direction: column;"
                         *ngFor="let item of ReceiptHeading;let i=index">
@@ -133,6 +133,7 @@
                         <!-- <mat-footer-row class="sticky-footer" *matFooterRowDef="displayedColumns">
                         </mat-footer-row> -->
                     </mat-table>
+                    <div>{{TotalInWords}}</div>
                     <div style="display:flex;">
                         <div>Payment Type:</div>
                         <div style="margin-left:15px">{{PaymentType}}</div>
@@ -171,6 +172,12 @@
                             color="accent">
                             <mat-icon>print</mat-icon>
                         </button>
+                        <!-- <button [disabled]="loading || Permission=='read'" matTooltip="print" style="margin-right: 15px;"
+                            mat-raised-button
+                            (click)="print()"
+                            color="accent">
+                            <mat-icon>print</mat-icon>
+                        </button> -->
                     </div>
                     <div style="display: flex;flex-direction: column; padding:15px;margin-right:15px;border-collapse:collapse;border: 1px solid lightgray;"
                         *ngIf="CancelReceiptMode">

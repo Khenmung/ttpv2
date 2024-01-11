@@ -8,6 +8,7 @@
         <mat-form-field appearance="outline" style="width:250px;margin-right: 15px;">
             <mat-label>Account Nature</mat-label>
             <mat-select formControlName="searchAccountNatureId" (selectionChange)="SearchAccountNatureChanged()">
+                <mat-option [value]="Defaultvalue">select</mat-option>
                 <mat-option *ngFor="let option of TopAccountNatures" [value]="option.AccountNatureId">
                     {{option.AccountName}}
                 </mat-option>
@@ -66,7 +67,7 @@
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="IncomeStatementPlus">
-            <mat-header-cell *matHeaderCellDef style="justify-content: center;" mat-sort-header>P&L Plus
+            <mat-header-cell *matHeaderCellDef style="justify-content: center;" mat-sort-header>Income Statement Plus
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
@@ -78,7 +79,7 @@
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="IncomeStatementSequence">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>P&L Sequence
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Income Statement Sequence
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">

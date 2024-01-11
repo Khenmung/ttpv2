@@ -79,7 +79,7 @@ export class PrintmonoComponent {
   @Input("OffLineReceiptNo") OffLineReceiptNo: any;
   @Input("StudentClassFees") StudentClassFees: any;
   @Input()
-  width: "80mm";
+  width: "58mm";
   classes = classes;
 
   constructor(private elementRef: ElementRef) { }

@@ -392,6 +392,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     }
     this.ReceiptHeading = this.ReceiptHeading.filter(m => m.MasterDataName.toLowerCase() != 'img');
     this.ReceiptHeading.forEach(f => {
+      f.MasterDataName=f.MasterDataName.replaceAll("''","'");
       f.Description = f.Description ? JSON.parse("{" + f.Description + "}") : ''
     })
   }

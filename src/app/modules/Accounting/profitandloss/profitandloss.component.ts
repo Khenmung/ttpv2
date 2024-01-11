@@ -202,21 +202,21 @@ export class ProfitandlossComponent implements OnInit {
         this.TrialBalance = [];
         //var tuitionFee= data.value.filter((f:any)=>f.GeneralLedgerAccountId==)
         data.value.forEach(f => {
-          var _generalaccount = this.GLAccounts.filter(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
+          var _generalaccount = this.GLAccounts.find(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
 
-          if (_generalaccount.length > 0) {
+          if (_generalaccount) {
             f.Debit = f.Debit != undefined ? f.Debit : false;
-            f.AccountNature = _generalaccount[0].AccountNature;
-            f.AccountName = _generalaccount[0].GeneralLedgerName;
-            f.DebitAccount = _generalaccount[0].DebitAccount;
-            f.AccountGroupId = _generalaccount[0].AccountGroupId;
-            f.AccountSubGroupId = _generalaccount[0].AccountSubGroupId;
-            f.AccountNatureId = _generalaccount[0].AccountNatureId;
-            f.GeneralLedgerName = _generalaccount[0].GeneralLedgerName;
-            f.IncomeStatementSequence = _generalaccount[0].IncomeStatementSequence;
-            f.IncomeStatementPlus = _generalaccount[0].IncomeStatementPlus;
-            f.ExpenseSequence = _generalaccount[0].ExpenseSequence;
-            f.ExpensePlus = _generalaccount[0].ExpensePlus;
+            f.AccountNature = _generalaccount.AccountNature;
+            f.AccountName = _generalaccount.GeneralLedgerName;
+            f.DebitAccount = _generalaccount.DebitAccount;
+            f.AccountGroupId = _generalaccount.AccountGroupId;
+            f.AccountSubGroupId = _generalaccount.AccountSubGroupId;
+            f.AccountNatureId = _generalaccount.AccountNatureId;
+            f.GeneralLedgerName = _generalaccount.GeneralLedgerName;
+            f.IncomeStatementSequence = _generalaccount.IncomeStatementSequence;
+            f.IncomeStatementPlus = _generalaccount.IncomeStatementPlus;
+            f.ExpenseSequence = _generalaccount.ExpenseSequence;
+            f.ExpensePlus = _generalaccount.ExpensePlus;
             this.TrialBalance.push(f);
           }
         });
@@ -302,7 +302,7 @@ export class ProfitandlossComponent implements OnInit {
     })
     ////console.log("groupbyDebitCredit", groupbyDebitCredit)
 
-    result = result.filter((f:any) => f.Dr != undefined)
+    result = result.filter((f:any) => f.Dr)
     result.forEach(row => {
       if (row.Dr > row.Cr) {
         row.Balance = row.Dr - row.Cr;

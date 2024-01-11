@@ -333,12 +333,14 @@ export class JournalEntryComponent implements OnInit {
     if (row[colName] > 0 && colName.toLowerCase() == 'debitamount') {
       row.Debit = true;
       row.Amount = row[colName];
+      row.CreditAmount =0;
       row.BaseAmount = row[colName];
     }
     else if (row[colName] > 0 && colName.toLowerCase() == 'creditamount') {
       row.Debit = false;
       row.Amount = row[colName];
       row.BaseAmount = row[colName];
+      row.DebitAmount =0;
     }
   }
   updateActive(row, value) {
@@ -374,7 +376,7 @@ export class JournalEntryComponent implements OnInit {
     debugger;
     var errorMessage = '';
     //var reference = '';
-    if (row.GeneralLedgerAccountId == 0)
+    if (row.GeneralLedgerAccountId.GeneralLedgerId == 0)
       errorMessage += 'Please select one of the accounts<br>';
     if (row.Reference == '') {
       this.contentservice.openSnackBar("Please enter reference.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -384,8 +386,8 @@ export class JournalEntryComponent implements OnInit {
       this.reference = row.Reference;
 
     if (row.ShortText.length == 0) {
-      errorMessage += 'Please enter description.<br>';
-      //this.contentservice.openSnackBar(errorMessage, globalconstants.ActionText, globalconstants.RedBackground);
+      errorMessage += 'Please enter description.';
+      this.contentservice.openSnackBar(errorMessage, globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     if (row.Amount > 1000000 || row.Amount < -1000000)
@@ -396,7 +398,7 @@ export class JournalEntryComponent implements OnInit {
       this.PageLoading = false;
       //this.contentservice.openSnackBar(errorMessage,globalconstants.ActionText,globalconstants.RedBackground);
       this.contentservice.openSnackBar(errorMessage, globalconstants.ActionText, globalconstants.RedBackground);
-
+      return;
     }
     else {
       let checkFilterString = "GeneralLedgerAccountId eq " + row.GeneralLedgerAccountId.GeneralLedgerId +

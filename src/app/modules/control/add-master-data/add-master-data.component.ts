@@ -422,10 +422,12 @@ export class AddMasterDataComponent implements OnInit {
       //this.GetMasters(_searchParentId, _OrgId,_appId)
       .subscribe((data: any) => {
         debugger;
+        let _desc='';
         this.MasterList = data.value.map(item => {
+          _desc=item.MasterDataName.replace("''","'");
           return {
             "MasterDataId": item.MasterDataId,
-            "MasterDataName": item.MasterDataName,
+            "MasterDataName": _desc,
             "Description": item.Description,
             "Logic": item.Logic,
             "Sequence": item.Sequence,
@@ -488,7 +490,8 @@ export class AddMasterDataComponent implements OnInit {
 
     debugger;
     this.loading = true;
-    row.MasterDataName = row.MasterDataName.replace("'", "''");
+    if (!row.MasterDataName.includes("''") && row.MasterDataName.includes("'"))
+      row.MasterDataName = row.MasterDataName.replace("'", "''");
     // if (this.contentservice.checkSpecialChar(row.MasterDataName)) {
     //   this.loading = false;
     //   this.PageLoading = false;
