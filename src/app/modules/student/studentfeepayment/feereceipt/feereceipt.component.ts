@@ -503,6 +503,7 @@ export class FeereceiptComponent implements OnInit {
   }
   PaymentTypes: any[] = [];
   FeeCategories: any[] = [];
+  logourl='';
   GetMasterData() {
     this.loading = true;
     // let list: List = new List();
@@ -521,7 +522,11 @@ export class FeereceiptComponent implements OnInit {
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);
     this.ReceiptHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.RECEIPTHEADING);
-
+    var imgobj = this.ReceiptHeading.find((f: any) => f.MasterDataName == 'img' && f.Active==1);
+    if (imgobj) {
+      this.logourl = imgobj.Description;
+    }
+    this.ReceiptHeading = this.ReceiptHeading.filter(m => m.MasterDataName.toLowerCase() != 'img');
     this.ReceiptHeading.forEach(f => {
       f.MasterDataName=f.MasterDataName.replaceAll("''","'");
       f.Description = f.Description ? JSON.parse("{" + f.Description + "}") : ''

@@ -609,7 +609,6 @@ export class AddMasterDataComponent implements OnInit {
 
           let indx = this.MasterList.findIndex(f => f.MasterDataId == mastertoUpdate.MasterDataId);
           this.MasterList[indx] = mastertoUpdate;
-          this.MasterData = Object.assign([], this.MasterList);
           this.tokenStorage.saveMasterData(this.MasterList);
 
           if (this.DataToSaveCount == 0) {

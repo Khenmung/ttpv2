@@ -383,12 +383,12 @@ export class AddstudentfeepaymentComponent implements OnInit {
     this.AccountNature = this.getDropDownData(globalconstants.MasterDefinitions.accounting.ACCOUNTNATURE);
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);
     this.PaymentTypes = this.getDropDownData(globalconstants.MasterDefinitions.school.FEEPAYMENTTYPE);
-    this.PaymentTypeId = this.PaymentTypes.filter(p => p.MasterDataName.toLowerCase() == "cash")[0].MasterDataId;
+    this.PaymentTypeId = this.PaymentTypes.find(p => p.MasterDataName.toLowerCase() == "cash").MasterDataId;
     this.ReceiptHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.RECEIPTHEADING);
 
-    var imgobj = this.ReceiptHeading.filter((f: any) => f.MasterDataName == 'img');
-    if (imgobj.length > 0) {
-      this.logourl = imgobj[0].Description;
+    var imgobj = this.ReceiptHeading.find((f: any) => f.MasterDataName == 'img');
+    if (imgobj) {
+      this.logourl = imgobj.Description;
     }
     this.ReceiptHeading = this.ReceiptHeading.filter(m => m.MasterDataName.toLowerCase() != 'img');
     this.ReceiptHeading.forEach(f => {
@@ -759,10 +759,10 @@ export class AddstudentfeepaymentComponent implements OnInit {
           //latestReceipt.forEach((accVoucher, indx) => 
           {
             var _feeName = '';
-            var obj = this.StudentClassFees.filter((f: any) => f.ClassFeeId == latestReceipt[0].ClassFeeId);
-            if (obj.length > 0) {
+            var obj = this.StudentClassFees.find((f: any) => f.ClassFeeId == latestReceipt[0].ClassFeeId);
+            if (obj) {
 
-              _feeName = obj[0].FeeName;
+              _feeName = obj.FeeName;
 
               this.MonthlyDueDetail.push({
                 SlNo: 1,
@@ -774,15 +774,16 @@ export class AddstudentfeepaymentComponent implements OnInit {
                 Debit: false,
                 BaseAmount: latestReceipt[0].Balance,
                 FeeName: _feeName,
-                FeeCategory: obj[0].FeeCategory,
-                FeeSubCategory: obj[0].FeeSubCategory,
+                FeeCategory: obj.FeeCategory,
+                FeeSubCategory: obj.FeeSubCategory,
                 BaseAmountForCalc: latestReceipt[0].Balance,
                 FeeAmount: latestReceipt[0].Amount,
                 Amount: latestReceipt[0].Balance,
                 Balance: 0,
+                PaymentOrder: obj.PaymentOrder,
                 Month: latestReceipt[0].Month,
                 ClassFeeId: latestReceipt[0].ClassFeeId,
-                AmountEditable: obj[0].AmountEditable,
+                AmountEditable: obj.AmountEditable,
                 ShortText: '',
                 BalancePayment: true,
                 OrgId: this.LoginUserDetail[0]["orgId"],
@@ -941,7 +942,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     this.billdataSource = new MatTableDataSource<IPaymentDetail>(this.MonthlyDueDetail);
   }
   billpayment() {
-    //debugger;
+    debugger;
     var error: any[] = [];
 
     //checking within selected items
@@ -963,9 +964,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
     //ends checking within selected items
 
     //checking between months
-    var maxMonth = Math.max.apply(Math, this.MonthlyDueDetail.map(function (o) { return o.Month; }));
+    var _currentPaymentOrder = Math.max.apply(Math, this.MonthlyDueDetail.map(function (o) { return o.PaymentOrder; }));
     var previousBalanceMonthObj: any[] = [];
-    previousBalanceMonthObj = this.StudentLedgerList.filter((f: any) => f.Month < maxMonth && +f.Balance1 > 0);
+    previousBalanceMonthObj = this.StudentLedgerList.filter((f: any) => f.PaymentOrder >0 && f.PaymentOrder < _currentPaymentOrder && +f.Balance1 > 0);
     var MonthSelected: any[] = [];
     if (previousBalanceMonthObj.length > 0) {
       previousBalanceMonthObj.forEach(p => {

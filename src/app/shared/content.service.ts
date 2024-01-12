@@ -480,12 +480,12 @@ export class ContentService implements OnInit {
     return pFeeType;
   }
   getDropDownData(dropdowntype, token, pAllMasterData) {
-    let Id = 0;
-    let Ids = pAllMasterData.filter((item, indx) => item.MasterDataName.toLowerCase() == dropdowntype.toLowerCase());//globalconstants.GENDER
+    let _parentId = 0;
+    let Ids = pAllMasterData.find(item => item.MasterDataName.toLowerCase() == dropdowntype.toLowerCase());//globalconstants.GENDER
     let Permission = '';
-    if (Ids.length > 0) {
-      Id = Ids[0].MasterDataId;
-      var dropvalues = pAllMasterData.filter(item => item.ParentId == Id);
+    if (Ids) {
+      _parentId = Ids.MasterDataId;
+      var dropvalues = pAllMasterData.filter(item => item.ParentId == _parentId && item.Active==1);
       //var confidentialdatalist = dropvalues.filter((f:any) => f.Confidential == 1)
       for (var i = 0; i < dropvalues.length; i++) {
         if (dropvalues[i].Confidential) {

@@ -98,12 +98,13 @@
                     </div>
                     <!-- <div style="background-color: lightgray;width:1px">&nbsp;asdf</div> -->
                     <div style="width:100%; margin: 15px 0px 0px 15px;border: 1px solid lightgray;">
-                        
+
                         <div id="invoiceSection" style="display:flex;flex-direction: column;">
-                            <div style="display:flex;justify-content: center;">
-                                <div style="margin-right: 15px;" *ngIf="logourl.length>0" [innerHTML]="logourl"></div>
-                                <div
-                                    style="display:flex;flex-direction: column;justify-content: space-around;margin: 15px;">
+                            <div style="display:flex;justify-content: center;flex-direction: column;">
+                                <div *ngIf="logourl" style="display:flex;justify-content: center;">
+                                    <img src="{{logourl}}" width="60px">
+                                </div>
+                                <div style="display:flex;flex-direction: column;justify-content: space-around;margin: 8px;">
                                     <div style="width:100%;display:flex;justify-content: center;flex-direction: column;"
                                         *ngFor="let item of ReceiptHeading;let i=index">
                                         <span [ngStyle]="item.Description" [innerHTML]="item.MasterDataName"></span>

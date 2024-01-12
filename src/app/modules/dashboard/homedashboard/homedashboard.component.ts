@@ -628,22 +628,22 @@ export class HomeDashboardComponent implements OnInit {
 
           if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
 
-            this.Classes = this.tokenStorage.getClasses()!;
+            //this.Classes = this.tokenStorage.getClasses()!;
 
             let refresh = 0;
-            if (this.Classes.length === 0) {
-              refresh = 1;
-              this.contentservice.GetClasses(this.filterOrgSubOrg, refresh).subscribe((data: any) => {
-                if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-                this.tokenStorage.saveClasses(this.Classes);
-                this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-                let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
-                if (this.CurrentBatchId == this.SelectedBatchId)
-                  this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
-                else
-                  this.GetClassJoinStudent(obj.appShortName);
-              });
-            }
+            //if (this.Classes.length === 0) {
+            refresh = 1;
+            this.contentservice.GetClasses(this.filterOrgSubOrg, refresh).subscribe((data: any) => {
+              if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+              this.tokenStorage.saveClasses(this.Classes);
+              this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+              let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
+              if (this.CurrentBatchId == this.SelectedBatchId)
+                this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
+              else
+                this.GetClassJoinStudent(obj.appShortName);
+            });
+            // }
           }
           // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedAppId)
           // .subscribe((data: any) => {

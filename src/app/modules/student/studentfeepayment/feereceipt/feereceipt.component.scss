@@ -2,6 +2,12 @@ mat-header-cell {
   //  display: grid;
     justify-content: center;
 }
+mat-cell,mat-footer-cell,mat-header-cell{
+    border-right: 1px solid lightgray;
+}
+mat-cell:first-of-type {
+    border-left: 1px solid lightgray;
+}
 
 // html,body{
 //     font-family: Smooch;
@@ -125,7 +131,7 @@ div {
     //html { padding: 0; margin: 0; width: 58mm; }
     * {
         //font-size: 14px;
-        font-family:"monospace";
-        //flex-shrink: 2;
+        //font-family:"monospace";
+        flex-shrink: 2;
     }
 }

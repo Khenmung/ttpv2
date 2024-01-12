@@ -1,5 +1,6 @@
 <!-- <div class="divCls"><strong>Fee Receipts</strong></div> -->
-<mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+<mat-spinner *ngIf="PageLoading" diameter="25"
+    style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
 <div style="display:flex;flex-direction:column">
 
     <div style="display: flex;flex-direction: row;align-items: start;">
@@ -42,10 +43,15 @@
         <div style="display: flex; flex-direction: column; width: 60%;padding: 15px 0px 15px 0px;">
             <div style="padding: 5px;"><b>Print/Cancel Receipt</b></div>
             <div style="border:1px solid lightgray" id="printSection" #printSection>
-                <div fxLayout="column" fxLayoutAlign="space-around center">
-                    <div style="width:100%;display:flex;justify-content: center;flex-direction: column;"
-                        *ngFor="let item of ReceiptHeading;let i=index">
-                        <span [ngStyle]="item.Description" [innerHTML]="item.MasterDataName"></span>
+                <div style="display:flex;justify-content: center;flex-direction: column;">
+                    <div *ngIf="logourl" style="display:flex;justify-content: center;">
+                        <img src="{{logourl}}" width="60px">
+                    </div>
+                    <div style="display:flex;flex-direction: column;justify-content: space-around;margin: 8px;">
+                        <div style="width:100%;display:flex;justify-content: center;flex-direction: column;"
+                            *ngFor="let item of ReceiptHeading;let i=index">
+                            <span [ngStyle]="item.Description" [innerHTML]="item.MasterDataName"></span>
+                        </div>
                     </div>
                 </div>
                 <!-- <hr style="width:100%;margin-top: 0px;"> -->
@@ -66,7 +72,8 @@
                     </div>
                 </div>
                 <br>
-                <div style="display:flex;flex-direction: column;justify-content: space-between;padding: 0px 15px 15px 0px;">
+                <div
+                    style="display:flex;flex-direction: column;justify-content: space-between;padding: 0px 15px 15px 0px;">
                     <div>
                         Received with thanks from <b>{{studentInfoTodisplay.StudentName}}.</b>
                     </div>
@@ -167,9 +174,9 @@
                             *ngIf="!CancelReceiptMode" (click)="edit()" mat-raised-button>
                             <mat-icon>cancel</mat-icon>
                         </button>
-                        <button [disabled]="loading || Permission=='read'" matTooltip="print" style="margin-right: 15px;"
-                            printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button
-                            color="accent">
+                        <button [disabled]="loading || Permission=='read'" matTooltip="print"
+                            style="margin-right: 15px;" printSectionId="printSection" [useExistingCss]="true" ngxPrint
+                            mat-raised-button color="accent">
                             <mat-icon>print</mat-icon>
                         </button>
                         <!-- <button [disabled]="loading || Permission=='read'" matTooltip="print" style="margin-right: 15px;"
