@@ -241,8 +241,8 @@ export class JournalEntryComponent implements OnInit {
       })
   }
   GetAccountingVoucher() {
-
-    let filterStr = this.FilterOrgSubOrg + ' and LedgerId eq 0 and Active eq 1';
+    
+    let filterStr = this.FilterOrgSubOrg + ' and FeeReceiptId eq 0 and ClassFeeId eq 0 and Active eq 1';
     debugger;
     var _searchDescription = this.searchForm.get("searchDescription")?.value;
     var _PostingDateFrom = this.searchForm.get("searchPostingDateFrom")?.value;

@@ -2,12 +2,14 @@
     <mat-card-title style="margin-left: 10px;">Student Info</mat-card-title>
     <!-- <mat-card-subtitle>&nbsp;</mat-card-subtitle> -->
     <mat-card-content style="margin:0px 0px 20px 20px">
-        <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+        <mat-spinner *ngIf="PageLoading" diameter="25"
+            style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
         <form [formGroup]="studentSearchForm" style="display:flex;flex-direction: column;">
             <div>
                 <mat-form-field appearance="outline" style="width: 100px;margin-right: 15px;">
                     <mat-label>PID</mat-label>
-                    <input id="searchPID" formControlName="searchPID" onfocus="this.select()" autocomplete="Off" matInput [maxlength]="10">
+                    <input id="searchPID" formControlName="searchPID" onfocus="this.select()" autocomplete="Off"
+                        matInput [maxlength]="10">
                 </mat-form-field>
                 <mat-form-field appearance="outline" [style.width.px]="400">
                     <mat-label>Student</mat-label>
@@ -17,10 +19,10 @@
                             {{option.Name}}
                         </mat-option>
                     </mat-autocomplete>
-                </mat-form-field>                
+                </mat-form-field>
             </div>
 
-            <div>                      
+            <div>
                 <mat-form-field appearance="outline" style="width: 200px;margin-right: 15px;">
                     <mat-label>Class</mat-label>
                     <mat-select formControlName="searchClassId" (selectionChange)="BindSemesterSection()">
@@ -30,7 +32,8 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="outline" style="width: 200px;margin-right: 15px;" *ngIf="SelectedClassCategory=='college'">
+                <mat-form-field appearance="outline" style="width: 200px;margin-right: 15px;"
+                    *ngIf="SelectedClassCategory=='college'">
                     <mat-label>Semester</mat-label>
                     <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
                         <mat-option [value]="Defaultvalue">semester</mat-option>
@@ -38,8 +41,9 @@
                             {{item.MasterDataName}}
                         </mat-option>
                     </mat-select>
-                </mat-form-field>    
-                <mat-form-field appearance="outline" style="width: 200px;margin-right: 15px;" *ngIf="SelectedClassCategory=='high school'">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 200px;margin-right: 15px;"
+                    *ngIf="SelectedClassCategory=='high school'">
                     <mat-label>Section</mat-label>
                     <mat-select formControlName="searchSectionId" (selectionChange)="SelectStudent()">
                         <mat-option [value]="Defaultvalue">select</mat-option>
@@ -80,14 +84,17 @@
                     </mat-option> -->
                     </mat-select>
                 </mat-form-field>
-                <button style="margin-right: 15px;" [disabled]="loading" id="btnSearchStudent" matTooltip="search student" mat-raised-button color="accent"
-                    (click)="GetStudent()">
+            </div>
+            <div>
+                <button style="margin-right: 15px;" [disabled]="loading" id="btnSearchStudent"
+                    matTooltip="search student" mat-raised-button color="accent" (click)="GetStudent()">
                     <mat-icon>search</mat-icon>
                     <mat-icon *ngIf="loading">
                         <mat-spinner diameter="20" color="Blue"></mat-spinner>
                     </mat-icon>
                 </button>
-                <button [disabled]="loading" id="btnNewStudent" matTooltip="new student" mat-raised-button color="accent" (click)="new()">
+                <button [disabled]="loading" id="btnNewStudent" matTooltip="new student" mat-raised-button
+                    color="accent" (click)="new()">
                     <mat-icon>fiber_new</mat-icon>
                 </button>
             </div>
@@ -110,7 +117,7 @@
                         </button>
                         <button [disabled]="loading || element.ClassName==''" mat-menu-item
                             *ngIf="FeePaymentPermission !='' && FeePaymentPermission!='deny'" matTooltip="Fees"
-                             (click)="feepayment(element)">
+                            (click)="feepayment(element)">
                             <mat-icon>payments</mat-icon> Fees
                         </button>
                     </mat-menu>
@@ -138,9 +145,10 @@
             <ng-container matColumnDef="Name">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
                 <mat-cell *matCellDef="let element" style="display:flex;">
-                    <button style="padding:5px; float: left; width:100%;display: flex;" [disabled]="loading" mat-flat-button (click)="view(element)">
+                    <button style="padding:5px; float: left; width:100%;display: flex;" [disabled]="loading"
+                        mat-flat-button (click)="view(element)">
                         {{element.Name}}
-                    </button>                    
+                    </button>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="ClassName">

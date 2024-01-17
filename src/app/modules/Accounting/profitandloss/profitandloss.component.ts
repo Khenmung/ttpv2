@@ -170,7 +170,9 @@ export class ProfitandlossComponent implements OnInit {
   TotalDr = 0;
   TotalCr = 0;
   GetAccountingVoucher() {
-    let filterStr = this.FilterOrgSubOrg + " and FeeReceiptId eq 0 and Active eq 1";
+    //(FeeReceiptId eq 0 and ClassFeeId eq 0) is for amount entered through accounting
+    //FeeReceiptId eq 0 is for tuition fee from education management
+    let filterStr = this.FilterOrgSubOrg + " and (FeeReceiptId gt 0 or (FeeReceiptId eq 0 and ClassFeeId eq 0)) and Active eq 1";
     debugger;
     this.loading = true;
     var toDate = new Date(this.searchForm.get("searchToDate")?.value);
@@ -201,11 +203,12 @@ export class ProfitandlossComponent implements OnInit {
         this.Expense = [];
         this.TrialBalance = [];
         //var tuitionFee= data.value.filter((f:any)=>f.GeneralLedgerAccountId==)
+        let _glAccounts = this.GLAccounts.filter(g => g.ExpenseSequence>0 || g.IncomeStatementPlus>0 );
         data.value.forEach(f => {
-          var _generalaccount = this.GLAccounts.find(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
+          var _generalaccount = _glAccounts.find(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
 
           if (_generalaccount) {
-            f.Debit = f.Debit != undefined ? f.Debit : false;
+            f.Debit = f.Debit ? f.Debit : false;
             f.AccountNature = _generalaccount.AccountNature;
             f.AccountName = _generalaccount.GeneralLedgerName;
             f.DebitAccount = _generalaccount.DebitAccount;
@@ -260,7 +263,7 @@ export class ProfitandlossComponent implements OnInit {
   }
   FormatData(pdata) {
     ////console.log("this.AccountingVoucherList", this.AccountingVoucherList)
-    var sql = "select sum(BaseAmount) as Amount,Debit,AccountName,AccountNature,IncomeStatementSequence,IncomeStatementPlus," +
+    var sql = "select sum(Amount) as Amount,Debit,AccountName,AccountNature,IncomeStatementSequence,IncomeStatementPlus," +
       "ExpensePlus,ExpenseSequence from ? GROUP BY AccountName,Debit,AccountNature,IncomeStatementSequence,IncomeStatementPlus," +
       "ExpensePlus,ExpenseSequence order by AccountName";
     var groupbyDebitCredit = alasql(sql, [pdata]);
@@ -269,16 +272,16 @@ export class ProfitandlossComponent implements OnInit {
     var result :any[]= [];
     groupbyDebitCredit.forEach(f => {
 
-      var existing = result.filter(r => r.AccountName == f.AccountName);
+      var existing = result.find(r => r.AccountName == f.AccountName);
 
-      if (existing.length > 0) {
+      if (existing) {
         if (f.Debit) {
-          existing[0].Dr += f.Amount;
-          existing[0].Cr = existing[0].Cr ? existing[0].Cr : 0;
+          existing.Dr += f.Amount;
+          existing.Cr = existing.Cr ? existing.Cr : 0;
         }
         else {
-          existing[0].Cr += f.Amount;
-          existing[0].Dr = existing[0].Dr ? existing[0].Dr : 0;
+          existing.Cr += f.Amount;
+          existing.Dr = existing.Dr ? existing.Dr : 0;
         }
       }
       else {
@@ -302,7 +305,7 @@ export class ProfitandlossComponent implements OnInit {
     })
     ////console.log("groupbyDebitCredit", groupbyDebitCredit)
 
-    result = result.filter((f:any) => f.Dr)
+    //result = result.filter((f:any) => f.Dr)
     result.forEach(row => {
       if (row.Dr > row.Cr) {
         row.Balance = row.Dr - row.Cr;

@@ -232,7 +232,7 @@ export class FeecollectionreportComponent implements OnInit {
       //nestedFilter = "$filter=TotalCredit gt 0 and Balance gt 0 and Month eq " + selectedMonth + ";";
       nestedFilter = " and TotalDebit gt 0 and Balance gt 0 and Month eq " + selectedMonth + " and Active eq 1";
     else
-      nestedFilter = " and TotalDebit gt 0 and Balance eq 0 and Month eq " + selectedMonth;
+      nestedFilter = " and Balance eq 0 and Month eq " + selectedMonth + " and Active eq 1";//and TotalDebit gt 0 
 
     if (_selectedClassId) {
       filterstring += ' and ClassId eq ' + _selectedClassId;

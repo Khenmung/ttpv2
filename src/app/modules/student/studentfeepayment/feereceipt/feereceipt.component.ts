@@ -226,9 +226,9 @@ export class FeereceiptComponent implements OnInit {
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
         if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-        var obj = this.Classes.filter((f: any) => f.ClassId == this.studentInfoTodisplay.ClassId)
-        if (obj.length > 0)
-          this.studentInfoTodisplay.StudentClassName = obj[0].ClassName;
+        var obj = this.Classes.find((f: any) => f.ClassId == this.studentInfoTodisplay.ClassId)
+        if (obj)
+          this.studentInfoTodisplay.StudentClassName = obj.ClassName;
       })
       //this.shareddata.CurrentBatch.subscribe(lo => (this.Batches = lo));
       this.Batches = this.tokenStorage.getBatches()!;;
@@ -482,9 +482,9 @@ export class FeereceiptComponent implements OnInit {
             //k.BaseAmount = k.BaseAmount;
             //this.StudentFeePaymentList.push(k)
           })
-          var paymentobj = this.PaymentTypes.filter(p => p.MasterDataId == f.PaymentTypeId);
-          if (paymentobj.length > 0) {
-            f.PaymentType = paymentobj[0].MasterDataName;
+          var paymentobj = this.PaymentTypes.find(p => p.MasterDataId == f.PaymentTypeId);
+          if (paymentobj) {
+            f.PaymentType = paymentobj.MasterDataName;
           }
         })
         this.calculateTotal();

@@ -66,6 +66,7 @@ export class HomeDashboardComponent implements OnInit {
   Role = '';
   Roles: any[] = [];
   Submitted = false;
+  Permission='';
   ngOnInit(): void {
     debugger;
     this.servicework.activateUpdate().then(() => {
@@ -93,6 +94,15 @@ export class HomeDashboardComponent implements OnInit {
       this.route.navigate(['/auth/login']);
     }
     else {
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.FeaturePermission.MULTIPLEBATCH);
+      if (perObj.length > 0) {
+        this.Permission = perObj[0].permission;
+      }
+
+      // if (this.Permission == 'deny') {
+
+      //   //this.nav.navigate(['/edu'])
+      // }
       this.loading = true;
       this.Role = this.LoginUserDetail[0]['RoleUsers'][0]['role'];
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -227,7 +237,7 @@ export class HomeDashboardComponent implements OnInit {
     list.lookupFields = ["Page($select=PageId,PageTitle,label,faIcon,link,ParentId,HasSubmenu,UpdateDate,DisplayOrder)"];
     //list.orderBy = "DisplayOrder";
     list.filter = [strFilter];
-    var permission;
+    let _permission;
     this.dataservice.get(list).subscribe((data: any) => {
 
       this.sideMenu = [];
@@ -235,9 +245,9 @@ export class HomeDashboardComponent implements OnInit {
         if (m.Page.PageTitle == "Pages") {
           debugger;
         }
-        permission = this.LoginUserDetail[0]["applicationRolePermission"].filter(r => r.applicationFeature.toLowerCase().trim() == m.Page.PageTitle.toLowerCase().trim()
+        _permission = this.LoginUserDetail[0]["applicationRolePermission"].filter(r => r.applicationFeature.toLowerCase().trim() == m.Page.PageTitle.toLowerCase().trim()
           && r.applicationId == pSelectedAppId && m.Page.ParentId == 0)
-        if (permission.length > 0 && permission[0].permission != 'deny') {
+        if (_permission.length > 0 && _permission[0].permission != 'deny') {
           m.PageId = m.Page.PageId;
           m.PageTitle = m.Page.PageTitle;
           m.label = m.Page.label;
@@ -469,7 +479,7 @@ export class HomeDashboardComponent implements OnInit {
               'applicationFeature': item.CustomFeature.CustomFeatureName,//_applicationFeature,
               'roleId': item.RoleId,
               'permissionId': item.PermissionId,
-              'permission': globalconstants.PERMISSIONTYPES.filter((f: any) => f.val == item.PermissionId)[0].type,
+              'permission': globalconstants.PERMISSIONTYPES.find((f: any) => f.val == item.PermissionId)!.type,
               'applicationName': selectedApp.applicationName,
               'applicationId': item.ApplicationId,
               'appShortName': selectedApp.appShortName,
@@ -568,7 +578,7 @@ export class HomeDashboardComponent implements OnInit {
     this.SelectedAppId = +this.tokenStorage.getSelectedAPPId()!;
     this.SelectedAppName = this.tokenStorage.getSelectedAppName()!;
     var currentbatchfilter = '';
-    if (this.Role != 'Admin')
+    if (this.Role != 'Admin' && (this.Permission=='' || this.Permission=='deny'))
       currentbatchfilter = ' and CurrentBatch eq 1';
 
     var list = new List();

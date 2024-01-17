@@ -44,7 +44,7 @@
             <div style="padding: 5px;"><b>Print/Cancel Receipt</b></div>
             <div style="border:1px solid lightgray" id="printSection" #printSection>
                 <div style="display:flex;justify-content: center;flex-direction: column;">
-                    <div *ngIf="logourl" style="display:flex;justify-content: center;">
+                    <div [hidden]="!logourl" style="display:flex;justify-content: center;">
                         <img src="{{logourl}}" width="60px">
                     </div>
                     <div style="display:flex;flex-direction: column;justify-content: space-around;margin: 8px;">

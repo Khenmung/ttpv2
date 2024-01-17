@@ -445,11 +445,11 @@ export class AddstudentclassComponent implements OnInit {
             let _Students: any = this.tokenStorage.getStudents()!;
             var _feeName = '', _remark1 = '', _remark2 = '';
             data.value.forEach(studcls => {
-              let _currentStudent = _Students.filter(s => s.StudentId === studcls.StudentId);
+              let _currentStudent = _Students.find(s => s.StudentId === studcls.StudentId);
               _feeName = ''; _remark1 = ''; _remark2 = '';
-              if (_currentStudent.length > 0) {
-                _remark1 = _currentStudent[0].Remark1;
-                _remark2 = _currentStudent[0].Remark2;
+              if (_currentStudent) {
+                _remark1 = _currentStudent.Remark1;
+                _remark2 = _currentStudent.Remark2;
               }
               objClassFee.forEach(clsfee => {
                 var _category = '';
@@ -458,27 +458,27 @@ export class AddstudentclassComponent implements OnInit {
                 var _semesterName = '';
                 var _sectionName = '';
 
-                var objcls = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
-                if (objcls.length > 0)
-                  _className = objcls[0].ClassName;
+                let objcls = this.Classes.find((f: any) => f.ClassId == studcls.ClassId);
+                if (objcls)
+                  _className = objcls.ClassName;
 
-                var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
-                if (objsemester.length > 0)
-                  _semesterName = objsemester[0].MasterDataName;
+                let objsemester = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
+                if (objsemester)
+                  _semesterName = objsemester.MasterDataName;
 
-                var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
-                if (objsection.length > 0)
-                  _sectionName = objsection[0].MasterDataName;
+                let objsection = this.Sections.find((f: any) => f.ClassId == studcls.SectionId);
+                if (objsection)
+                  _sectionName = objsection.MasterDataName;
 
-                var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
-                if (objcat.length > 0)
-                  _category = objcat[0].MasterDataName;
+                let objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                if (objcat)
+                  _category = objcat.MasterDataName;
 
-                var objsubcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
-                if (objsubcat.length > 0)
-                  _subCategory = objsubcat[0].MasterDataName;
+                let objsubcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                if (objsubcat)
+                  _subCategory = objsubcat.MasterDataName;
 
-                var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
+                let _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
 
                 if (_formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;

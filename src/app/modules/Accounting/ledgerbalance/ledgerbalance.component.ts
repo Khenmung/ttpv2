@@ -31,24 +31,24 @@ export class LedgerBalanceComponent implements OnInit {
 
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
   AccountingVoucherListName = 'AccountingVouchers';
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   filteredOptions: Observable<IGeneralLedger[]>;
-  AccountingPeriod :any[]= [];
+  AccountingPeriod: any[] = [];
   SelectedApplicationId = 0;
   Permission = '';
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  GLAccounts :any[]= [];
-  GeneralLedgers :any[]= [];
+  GLAccounts: any[] = [];
+  GeneralLedgers: any[] = [];
   CurrentBatchId = 0;
   SelectedBatchId = 0;
   SubOrgId = 0;
-  AccountingVoucherList: IAccountingVoucher[]= [];
+  AccountingVoucherList: IAccountingVoucher[] = [];
   dataSource: MatTableDataSource<IAccountingVoucher>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   searchForm: UntypedFormGroup;
   TotalDebit = 0;
   TotalCredit = 0;
@@ -61,7 +61,7 @@ export class LedgerBalanceComponent implements OnInit {
     Debit: false,
     Amount: '',
     ShortText: '',
-    OrgId: 0,SubOrgId: 0,
+    OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
   headercolumns = ["Debit", "Credit"];
@@ -175,9 +175,12 @@ export class LedgerBalanceComponent implements OnInit {
   DebitBalance = 0;
   GetAccountingVoucher() {
     debugger;
-    let filterStr = this.FilterOrgSubOrg + " and LedgerId eq 0 and Active eq 1";
+    var toDate = new Date(this.searchForm.get("searchToDate")?.value);
+    toDate.setDate(toDate.getDate() + 1);
+
+    let filterStr = this.FilterOrgSubOrg + " and (FeeReceiptId eq 0 and ClassFeeId eq 0) and Active eq 1";
     filterStr += " and PostingDate ge " + this.datepipe.transform(this.searchForm.get("searchFromDate")?.value, 'yyyy-MM-dd') + //T00:00:00.000Z
-      " and  PostingDate le " + this.datepipe.transform(this.searchForm.get("searchToDate")?.value, 'yyyy-MM-dd');//T00:00:00.000Z
+      " and  PostingDate le " + this.datepipe.transform(toDate, 'yyyy-MM-dd');//T00:00:00.000Z
     this.loading = true;
 
     var _GeneralLedgerId = this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId;
@@ -205,31 +208,31 @@ export class LedgerBalanceComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         data.value.forEach(f => {
-          var _generalaccount = this.GLAccounts.filter(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
-          if (_generalaccount.length > 0) {
-            f.AccountName = _generalaccount[0].GeneralLedgerName;
+          let _generalaccount = this.GLAccounts.find(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
+          if (_generalaccount) {
+            f.AccountName = _generalaccount.GeneralLedgerName;
             //f.DebitAccount = _generalaccount[0].DebitAccount;
-            f.AccountGroupId = _generalaccount[0].AccountGroupId;
-            f.AccountSubGroupId = _generalaccount[0].AccountSubGroupId;
-            f.AccountNatureId = _generalaccount[0].AccountNatureId;
+            f.AccountGroupId = _generalaccount.AccountGroupId;
+            f.AccountSubGroupId = _generalaccount.AccountSubGroupId;
+            f.AccountNatureId = _generalaccount.AccountNatureId;
             this.AccountingVoucherList.push(f);
           }
         })
         var currentAccountType = this.AccountingVoucherList.filter(ac => ac.GeneralLedgerAccountId == _GeneralLedgerId)
         var allRelatedAccounts = this.AccountingVoucherList.filter(all => currentAccountType.findIndex(indx => indx.Reference == all.Reference) > -1);
         const DistinctReference = [...new Set(allRelatedAccounts.map(item => item.Reference))];
-        var _ledgerBalance :any[]= [];
+        var _ledgerBalance: any[] = [];
         DistinctReference.forEach((related: any) => {
           var sameReference = allRelatedAccounts.filter(same => same.Reference == related);
 
           sameReference.forEach((same: any) => {
             if (same.Debit) {
-              var credit = sameReference.filter(cr => !cr.Debit);
+              var credit = sameReference.filter(cr => cr.Debit);
               credit.forEach(onlycr => {
                 var emptytext: any = _ledgerBalance.filter(l => l.DrShortText.length == 0);
                 if (emptytext.length > 0) {
-                  emptytext[0].DrDate = same.PostingDate,
-                    emptytext[0].DrShortText = onlycr.ShortText;
+                  emptytext[0].DrDate = same.PostingDate;
+                  emptytext[0].DrShortText = onlycr.ShortText;
                   emptytext[0].DrAmt = same.BaseAmount;
                 }
                 else
@@ -243,7 +246,7 @@ export class LedgerBalanceComponent implements OnInit {
               })
             }
             else {
-              var debit = sameReference.filter(cr => cr.Debit);
+              var debit = sameReference.filter(cr => !cr.Debit);
               debit.forEach(onlydr => {
                 var emptytext: any = _ledgerBalance.filter(l => l.CrShortText.length == 0);
                 if (emptytext.length > 0) {

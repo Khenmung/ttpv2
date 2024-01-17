@@ -167,7 +167,7 @@ export class BalancesheetComponent implements OnInit {
   TotalDr = 0;
   TotalCr = 0;
   GetAccountingVoucher() {
-    let filterStr = this.FilterOrgSubOrg + " and FeeReceiptId eq 0 and Active eq 1";
+    let filterStr = this.FilterOrgSubOrg + " and (FeeReceiptId eq 0 and ClassFeeId eq 0) and Active eq 1";
     debugger;
     this.loading = true;
     var toDate = new Date(this.searchForm.get("searchToDate")?.value);

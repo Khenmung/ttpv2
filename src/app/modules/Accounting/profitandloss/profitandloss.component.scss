@@ -3,9 +3,15 @@ mat-cell,mat-header-cell,mat-footer-cell{
     padding:5px;
     border-right: 1px solid lightgray;
 }
+mat-cell:first-of-type,mat-header-cell:first-of-type,mat-footer-cell:first-of-type{
+    border-left: 1px solid lightgray;
+}
 .mat-column-CrBalance,.mat-column-DrBalance,.mat-column-Balance{
-    flex:1 1 120px;
+    flex:1 0 120px;
 }
 .mat-column-AccountName,.mat-column-ShortText{
-    flex:1 1 150px;
+    flex:1 0 150px;
 }
+// mat-table{
+//     border-right: 1px solid lightgray;
+// }

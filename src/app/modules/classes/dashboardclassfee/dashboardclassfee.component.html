@@ -208,13 +208,16 @@
         <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
             <ul>
                 <li>
-                    <div>Fee can be defined for each class, section or semester.
+                    <div>Fees can be defined for each class, section or semester.
                     </div>
                 </li>
                 <li>
                     <div>'Sequence' is important for validating which fee should be done for payment first. If there is no payment order for a fee,
                         assign zero.
                     </div>
+                </li>
+                <li>
+                    <div>Fees can be updated only for ('fee not paid' and Balance >0) or ('fee not paid' and current future months)</div>
                 </li>
             </ul>
         </span>

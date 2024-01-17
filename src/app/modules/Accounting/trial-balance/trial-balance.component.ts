@@ -30,27 +30,27 @@ export class TrialBalanceComponent implements OnInit {
 
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
   AccountingVoucherListName = 'AccountingVouchers';
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   filteredOptions: Observable<IGeneralLedger[]>;
-  AccountingPeriod :any[]= [];
+  AccountingPeriod: any[] = [];
   SelectedApplicationId = 0;
   Permission = '';
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
-  GLAccounts :any[]= [];
-  GeneralLedgers :any[]= [];
+  GLAccounts: any[] = [];
+  GeneralLedgers: any[] = [];
   CurrentBatchId = 0;
-  SelectedBatchId = 0;SubOrgId = 0;
-  AccountingVoucherList: IAccountingVoucher[]= [];
+  SelectedBatchId = 0; SubOrgId = 0;
+  AccountingVoucherList: IAccountingVoucher[] = [];
   dataSource: MatTableDataSource<IAccountingVoucher>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   searchForm: UntypedFormGroup;
   TotalDebit = 0;
   TotalCredit = 0;
-  TotalBalance=0;
+  TotalBalance = 0;
   AccountingVoucherData = {
     AccountingVoucherId: 0,
     DocDate: new Date(),
@@ -60,7 +60,7 @@ export class TrialBalanceComponent implements OnInit {
     Debit: false,
     Amount: '',
     ShortText: '',
-    OrgId: 0,SubOrgId: 0,
+    OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
 
@@ -83,7 +83,7 @@ export class TrialBalanceComponent implements OnInit {
     private nav: Router,
     private contentservice: ContentService,
   ) { }
-  MinDate :Date;
+  MinDate: Date;
   ngOnInit(): void {
     // this.servicework.activateUpdate().then(() => {
     //   this.servicework.checkForUpdate().then((value) => {
@@ -135,7 +135,7 @@ export class TrialBalanceComponent implements OnInit {
     else {
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+      this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
       this.AccountingPeriod = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
 
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.accounting.TRIALBALANCE);
@@ -175,7 +175,7 @@ export class TrialBalanceComponent implements OnInit {
   }
 
   GetAccountingVoucher() {
-    let filterStr = this.FilterOrgSubOrg + " and LedgerId eq 0 and Active eq 1";
+    let filterStr = this.FilterOrgSubOrg + " and (FeeReceiptId gt 0 or (FeeReceiptId eq 0 and ClassFeeId eq 0)) and Active eq 1";;
     debugger;
     this.loading = true;
 
@@ -191,7 +191,7 @@ export class TrialBalanceComponent implements OnInit {
 
     //filterStr += " and PostingDate ge datetime'" + this.datepipe.transform(this.AccountingPeriod[0].StartDate, 'yyyy-MM-dd') + //T00:00:00.000Z
     //  "' and  PostingDate le datetime'" + this.datepipe.transform(this.AccountingPeriod[0].EndDate, 'yyyy-MM-dd') + "'";//T00:00:00.000Z
-      filterStr += " and PostingDate ge " + this.datepipe.transform(this.searchForm.get("searchFromDate")?.value, 'yyyy-MM-dd') + //T00:00:00.000Z
+    filterStr += " and PostingDate ge " + this.datepipe.transform(this.searchForm.get("searchFromDate")?.value, 'yyyy-MM-dd') + //T00:00:00.000Z
       " and  PostingDate le " + this.datepipe.transform(this.searchForm.get("searchToDate")?.value, 'yyyy-MM-dd');//T00:00:00.000Z
     // if (_ClassId != 0)
     //   filterStr += " and ClassId eq " + _ClassId;
@@ -214,54 +214,70 @@ export class TrialBalanceComponent implements OnInit {
     this.AccountingVoucherList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
+        let _tuitionFeeRow: any = [];
+        let _CashRow: any = {};
+        let _CashAccountId = 0;
+        let _tuitionFeeId = this.GLAccounts.find(g => g.GeneralLedgerName == 'Tuition Fee').GeneralLedgerId;
+
         data.value.forEach(f => {
-          var _generalaccount = this.GLAccounts.filter(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
-          if (_generalaccount.length > 0) {
-            f.AccountName = _generalaccount[0].GeneralLedgerName;
-            f.DebitAccount = _generalaccount[0].DebitAccount;
-            f.AccountGroupId = _generalaccount[0].AccountGroupId;
-            f.AccountSubGroupId = _generalaccount[0].AccountSubGroupId;
-            f.AccountNatureId = _generalaccount[0].AccountNatureId;
+          let _generalaccount = this.GLAccounts.find(g => g.GeneralLedgerId == f.GeneralLedgerAccountId);
+          if (_generalaccount) {
+            f.AccountName = _generalaccount.GeneralLedgerName;
+            f.DebitAccount = _generalaccount.DebitAccount;
+            f.AccountGroupId = _generalaccount.AccountGroupId;
+            f.AccountSubGroupId = _generalaccount.AccountSubGroupId;
+            f.AccountNatureId = _generalaccount.AccountNatureId;
             this.AccountingVoucherList.push(f);
           }
         })
         ////console.log("this.AccountingVoucherList", this.AccountingVoucherList)
-        var groupbyDebitCredit = alasql("select sum(BaseAmount) as Amount,Debit,AccountName from ? GROUP BY AccountName,Debit order by AccountName",
+        var groupbyDebitCredit = alasql("select sum(BaseAmount) as Amount,Debit,AccountName,GeneralLedgerAccountId from ? GROUP BY AccountName,Debit,GeneralLedgerAccountId order by AccountName",
           [this.AccountingVoucherList])
-          groupbyDebitCredit = groupbyDebitCredit.sort((a,b)=>a.AccountName -b.AccountName);
-          var result :any[]=[];
-          groupbyDebitCredit.forEach(f => {
 
-            var existing = result.filter(r=>r.AccountName ==f.AccountName);
-            if(existing.length>0)
-            {
-              if (f.Debit) {
-                existing[0].Dr += f.Amount;
-                //existing[0].Cr = 0;
-              }
-              else {
-                existing[0].Cr += f.Amount
-                //f.Dr = 0;
-              }
+        if (_tuitionFeeId)
+          groupbyDebitCredit.forEach(item => {
+            if (item.GeneralLedgerAccountId == _tuitionFeeId)
+              _tuitionFeeRow.push(JSON.parse(JSON.stringify(item)));
+          });
+        //groupbyDebitCredit.push(_tuitionFeeRow);
+        if (_tuitionFeeRow.length > 0) {
+          _CashRow = this.GLAccounts.find(g => g.GeneralLedgerName.toLowerCase() == 'cash account');
+          _tuitionFeeRow[0].AccountName = _CashRow.GeneralLedgerName;
+          _tuitionFeeRow[0].Debit = true;
+          groupbyDebitCredit.push(_tuitionFeeRow[0]);
+        }
+        groupbyDebitCredit = groupbyDebitCredit.sort((a, b) => a.AccountName - b.AccountName);
+        var result: any[] = [];
+        groupbyDebitCredit.forEach(f => {
+
+          let existing = result.find(r => r.AccountName == f.AccountName);
+          if (existing) {
+            if (f.Debit) {
+              existing.Dr += f.Amount;
+              //existing[0].Cr = 0;
             }
-            else
-            {
-              var temprow:any ={"AccountName":f.AccountName, "Dr":0,"Cr":0};
-              if (f.Debit) {
-                temprow.Dr = f.Amount;
-                temprow.Cr = 0;
-              }
-              else {
-                temprow.Cr = f.Amount
-                temprow.Dr = 0;
-              }
-              result.push(temprow);
+            else {
+              existing.Cr += f.Amount
+              //f.Dr = 0;
             }
+          }
+          else {
+            var temprow: any = { "AccountName": f.AccountName, "Dr": 0, "Cr": 0 };
+            if (f.Debit) {
+              temprow.Dr = f.Amount;
+              temprow.Cr = 0;
+            }
+            else {
+              temprow.Cr = f.Amount
+              temprow.Dr = 0;
+            }
+            result.push(temprow);
+          }
         })
         ////console.log("groupbyDebitCredit", groupbyDebitCredit)
         //var display = result.filter((f:any) => f.Dr != undefined)
-        result.forEach(row=>{
-          row.Balance=row.Dr -row.Cr;
+        result.forEach(row => {
+          row.Balance = row.Dr - row.Cr;
         })
         this.TotalCredit = result.reduce((acc, current) => acc + current.Cr, 0)
         this.TotalDebit = result.reduce((acc, current) => acc + current.Dr, 0)
@@ -293,7 +309,7 @@ export class TrialBalanceComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
-  
+
   isNumeric(str: number) {
     if (typeof str != "string") return false // we only process strings!  
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...

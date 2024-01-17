@@ -13,6 +13,7 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
 import { TableUtil } from '../../../shared/TableUtil';
 import { evaluate } from 'mathjs';
+import moment from 'moment';
 
 @Component({
   selector: 'app-result',
@@ -144,11 +145,11 @@ export class ResultComponent implements OnInit {
       }
     }
   }
-  GetDataSource(data,indx) {
+  GetDataSource(data, indx) {
     const ds = new MatTableDataSource<any>(data);
     // ds.paginator = this.paginator.toArray()[indx];
     // ds.sort = this.sort.toArray()[indx];  
-    return ds;  
+    return ds;
   }
   ExportArray() {
     debugger;
@@ -259,7 +260,7 @@ export class ResultComponent implements OnInit {
             }
           }
         });
-        this.ExamNCalculateList = this.ExamNCalculateList.sort((a,b)=>a.Sequence - b.Sequence);
+        this.ExamNCalculateList = this.ExamNCalculateList.sort((a, b) => a.Sequence - b.Sequence);
         this.GetExamStudentResults();
       })
 
@@ -291,13 +292,13 @@ export class ResultComponent implements OnInit {
     }
     var _section = '';
     if (_sectionId > 0) {
-      _section = " " + this.Sections.filter((s: any) => s.MasterDataId == _sectionId)[0].MasterDataName;
+      _section = " " + this.Sections.find((s: any) => s.MasterDataId == _sectionId).MasterDataName;
     }
-    this.ClassName = this.Classes.filter(c => c.ClassId == _classId)[0].ClassName + _section;
+    this.ClassName = this.Classes.find(c => c.ClassId == _classId).ClassName + _section;
 
-    let objexamname = this.Exams.filter(c => c.ExamId == _examId);
-    if (objexamname.length > 0)
-      this.ExamNameShort = objexamname[0].ExamName;
+    let objexamname = this.Exams.find(c => c.ExamId == _examId);
+    if (objexamname)
+      this.ExamNameShort = objexamname.ExamName;
 
     this.ExamName = "Exam: " + this.ExamNameShort;
     this.loading = true;
@@ -333,7 +334,7 @@ export class ResultComponent implements OnInit {
         let objResCategory: any = [];
         data.value.forEach(studcls => {
           var stud = _students.filter(st => st.StudentClasses.length > 0 && st.StudentClasses[0].StudentClassId == studcls.StudentClassId)
-          objResCategory =[];
+          objResCategory = [];
           this.SelectedClassStudentGrades.forEach(rc => {
 
             let obj = rc.grades.find(i => i.GradeName === studcls.Division)
@@ -412,24 +413,31 @@ export class ResultComponent implements OnInit {
         let _ValueForFormula: any = [];
         let res: any = [];
         this.DisplayCategories = [];
-        let see = this.ExamStudentResult.map(m => m.ResultCategory + "-" +m.Division);
-        this.ResultCategories.forEach((cat: any) => {
+        //console.log("ExamStudentRe this.ResultCategoriessult0", this.ResultCategories);
+        let see = this.ExamStudentResult.map(m => m.ResultCategory + "-" + m.Division);
+        for (let i = 0; i < this.ResultCategories.length; i++) {
+
+          //this.ResultCategories.forEach((cat: any, idx) => {
           res = this.ExamStudentResult.reduce((filtered: any, option: any) => {
-            if (option.ResultCategory && option.ResultCategory.toLowerCase() === cat.MasterDataName.toLowerCase())
+            if (option.ResultCategory && option.ResultCategory.toLowerCase() === this.ResultCategories[i].MasterDataName.toLowerCase())
               filtered.push(option);
             return filtered;
           }, []);
 
-          _ValueForFormula.push({ "Text": "[" + cat.MasterDataName + "]", "Val": res.length })
-          if (res.length > 0)
-           { 
-            res = res.sort((a,b)=>a.Rank - b.Rank);
+          _ValueForFormula.push({ "Text": "[" + this.ResultCategories[i].MasterDataName + "]", "Val": res.length })
+          if (res.length > 0) {
+            res = res.sort((a, b) => a.Rank - b.Rank);
             this.DisplayCategories.push(res);
-           }
-        })
+          }
+          else {
+            this.ResultCategories.splice(i,1);
+            i-=1;
+          }
+        }
+
         var NOOFSTUDENT = this.ExamStudentResult.length;
         _ValueForFormula.push({ "Text": "[NoOfStudents]", "Val": NOOFSTUDENT });
-        //console.log("ExamStudentResult1", this.ExamStudentResult);
+       // console.log("ExamStudentRe this.ResultCategoriessult1", this.ResultCategories);
         this.ResultAtAGlance = [];
         let onlyAtAGlance = this.ExamNCalculateList.filter(ataglance => ataglance.CalculateCategoryName.toLowerCase() === "at a glance")
         let formula: any = '';
@@ -439,11 +447,11 @@ export class ResultComponent implements OnInit {
           for (var i = 0; i < _ValueForFormula.length; i++) {
             formula = formula.replaceAll(_ValueForFormula[i].Text, _ValueForFormula[i].Val);
           }
-
+          //console.log("formula",formula);
           let objresult = evaluate(formula);
           if (objresult) {
             this.ResultAtAGlance.push(
-              { "Text": item.PropertyName, "Val":(objresult%1)? objresult.toFixed(2):objresult }
+              { "Text": item.PropertyName, "Val": (objresult % 1) ? objresult.toFixed(2) : objresult }
             );
           }
         })
@@ -572,9 +580,9 @@ export class ResultComponent implements OnInit {
     this.SelectedClassCategory = '';
 
     if (_classId > 0) {
-      let obj = this.Classes.filter((f: any) => f.ClassId == _classId);
-      if (obj.length > 0)
-        this.SelectedClassCategory = obj[0].Category;
+      let obj = this.Classes.find((f: any) => f.ClassId == _classId);
+      if (obj)
+        this.SelectedClassCategory = obj.Category;
       this.SelectedClassStudentGrades = this.StudentGrades.filter((f: any) => f.ClassId === _classId
         && f.grades.find(e => e.ExamId === _examId));
     }
@@ -650,7 +658,9 @@ export class ResultComponent implements OnInit {
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
     this.ResultCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.RESULTCATEGORIES);
     this.ExamResultProperties = this.getDropDownData(globalconstants.MasterDefinitions.school.EXAMnCalculate);
-    this.CalculateCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.CALCULATECATEGORIES)
+    this.CalculateCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.CALCULATECATEGORIES);
+    this.CommonHeader = this.getDropDownData(globalconstants.MasterDefinitions.common.COMMONPRINTHEADING);
+    
     this.Batches = this.tokenStorage.getBatches()!;
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.contentservice.GetClassGroups(filterOrgSubOrg)
@@ -674,11 +684,103 @@ export class ResultComponent implements OnInit {
       else
         this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
     });
+    this.GetOrganization();
     this.GetExams();
     //this.GetStudentSubjects();
     this.GetClassGroupMapping();
   }
+  logourl = "";
+  CommonHeader: any[] = [];
+  Organization: any[] = [];
+  GetOrganization() {
 
+    let list: List = new List();
+    list.fields = [
+      "OrganizationId",
+      "OrganizationName",
+      "LogoPath",
+      "Address",
+      "CityId",
+      "StateId",
+      "CountryId",
+      "WebSite",
+      "Contact",
+      "RegistrationNo",
+      "ValidFrom",
+      "ValidTo"
+
+    ];
+    list.PageName = "Organizations";
+    list.filter = ["OrganizationId eq " + this.LoginUserDetail[0]["orgId"]];
+
+    this.dataservice.get(list)
+      .subscribe((org: any) => {
+        this.Organization = org.value.map(m => {
+          //m.CountryName = '';
+          var countryObj = this.allMasterData.filter((f: any) => f.MasterDataId == m.CountryId);
+          if (countryObj.length > 0)
+            m.Country = countryObj[0].MasterDataName;
+
+          var stateObj = this.allMasterData.filter((f: any) => f.MasterDataId == m.StateId);
+          if (stateObj.length > 0)
+            m.State = stateObj[0].MasterDataName;
+
+          var cityObj = this.allMasterData.filter((f: any) => f.MasterDataId == m.CityId);
+          if (cityObj.length > 0)
+            m.City = cityObj[0].MasterDataName;
+
+          return [{
+            name: "OrganizationId", val: m.OrganizationId
+          }, {
+            name: "Organization", val: m.OrganizationName
+          }, {
+            name: "LogoPath", val: m.LogoPath
+          }, {
+            name: "Address", val: m.Address
+          }, {
+            name: "City", val: m.City
+          }, {
+            name: "State", val: m.State
+          }, {
+            name: "Country", val: m.Country
+          }, {
+            name: "Contact", val: m.Contact
+          }, {
+            name: "RegistrationNo", val: m.RegistrationNo == null ? '' : m.RegistrationNo
+          }, {
+            name: "ValidFrom", val: m.ValidFrom
+          }, {
+            name: "ValidTo", val: m.ValidTo
+          },
+          {
+            name: "WebSite", val: m.WebSite == null ? '' : m.WebSite
+          },
+          {
+            name: "ToDay", val: moment(new Date()).format("DD/MM/YYYY")
+          }
+          ]
+        })
+        ////console.log("this.Organization",this.Organization);
+
+
+        var imgobj = this.CommonHeader.filter((f: any) => f.MasterDataName == 'img');
+        if (imgobj.length > 0) {
+          this.logourl = imgobj[0].Description;
+        }
+        this.CommonHeader = this.CommonHeader.filter((f: any) => f.MasterDataName != 'img');
+        ////console.log("this.commonheadersetting.",commonheadersetting);
+        this.CommonHeader.forEach(header => {
+          this.Organization[0].forEach(orgdet => {
+            header.Description = header.Description.replaceAll("[" + orgdet.name + "]", orgdet.val);
+            // header.Description = header.Description.replaceAll("[" + orgdet.OrganizationAddress + "]", orgdet.val);
+          })
+        })
+
+        this.loading = false; this.PageLoading = false;
+      });
+    ////console.log("this.Organization[0]",this.Organization[0])
+    ////console.log("this.CommonHeader",this.CommonHeader)
+  }
   GetExams() {
 
     this.contentservice.GetExams(this.FilterOrgSubOrgBatchId, 1)

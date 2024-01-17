@@ -303,9 +303,9 @@ export class TodayCollectionComponent implements OnInit {
             var _feeCategoryName = '';
             if (v.ClassFee != null) {
               var _feeCategoryId = v.ClassFee.FeeDefinition.FeeCategoryId;
-              var objCategory = this.FeeCategories.filter((f: any) => f.MasterDataId == _feeCategoryId)
-              if (objCategory.length > 0)
-                _feeCategoryName = objCategory[0].MasterDataName;
+              var objCategory = this.FeeCategories.find((f: any) => f.MasterDataId == _feeCategoryId)
+              if (objCategory)
+                _feeCategoryName = objCategory.MasterDataName;
               //var _lastname = d.StudentClass.Student.LastName == null ? '' : " " + d.StudentClass.Student.LastName;
               this.HeadsWiseCollection.push({
                 ClassFeeId: v.ClassFeeId,

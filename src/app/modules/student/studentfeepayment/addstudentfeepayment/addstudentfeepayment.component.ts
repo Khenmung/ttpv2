@@ -392,7 +392,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     }
     this.ReceiptHeading = this.ReceiptHeading.filter(m => m.MasterDataName.toLowerCase() != 'img');
     this.ReceiptHeading.forEach(f => {
-      f.MasterDataName=f.MasterDataName.replaceAll("''","'");
+      f.MasterDataName = f.MasterDataName.replaceAll("''", "'");
       f.Description = f.Description ? JSON.parse("{" + f.Description + "}") : ''
     })
   }
@@ -966,7 +966,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     //checking between months
     var _currentPaymentOrder = Math.max.apply(Math, this.MonthlyDueDetail.map(function (o) { return o.PaymentOrder; }));
     var previousBalanceMonthObj: any[] = [];
-    previousBalanceMonthObj = this.StudentLedgerList.filter((f: any) => f.PaymentOrder >0 && f.PaymentOrder < _currentPaymentOrder && +f.Balance1 > 0);
+    previousBalanceMonthObj = this.StudentLedgerList.filter((f: any) => f.PaymentOrder > 0 && f.PaymentOrder < _currentPaymentOrder && +f.Balance1 > 0);
     var MonthSelected: any[] = [];
     if (previousBalanceMonthObj.length > 0) {
       previousBalanceMonthObj.forEach(p => {
@@ -1152,10 +1152,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
         this.billdataSource = new MatTableDataSource();
 
         this.contentservice.openSnackBar("Payment done successfully!", globalconstants.ActionText, globalconstants.BlueBackground);
-        if (this.PrintTypeThermal)
-          this.tabChanged(2);
-        else
-          this.tabChanged(1);
+        this.tabChanged(1);
       })
   }
   update() {

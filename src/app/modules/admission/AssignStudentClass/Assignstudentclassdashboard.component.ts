@@ -825,6 +825,16 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         })
       })
   }
+  // GetStudentCls(){
+  //   var _classId = this.searchForm.get("searchClassId")?.value;
+  //   var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
+  //   var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+  //   let _sectionId = this.searchForm.get("searchSectionId")?.value;
+  //   let students = this.Students.filter((s:any)=>s.StudentClasses[0].ClassId == _classId
+  //   && s.StudentClasses[0].SemesterId == _semesterId
+  //   && s.StudentClasses[0].SectionId == _sectionId
+  //   && s.StudentClasses[0].FeeTypeId ==_FeeTypeId)
+  // }
   PreviousClassId = 0;
   GetStudentClasses(previousbatch: string) {
 
@@ -896,7 +906,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       ];
 
       list.PageName = "StudentClasses";
-      list.lookupFields = ["Student($select=PID,FirstName,LastName,GenderId,RemarkId)"];
+      //list.lookupFields = ["Student($select=PID,FirstName,LastName,GenderId,RemarkId,FatherName,MotherName)"];
       list.filter = [filterStr];
       this.StudentClassList = [];
       return this.dataservice.get(list);

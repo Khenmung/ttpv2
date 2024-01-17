@@ -6,7 +6,7 @@ import moment from "moment";
 
 export class globalconstants {
     //////"https://api.ttpsolutions.in";"https://ettest.ttpsolutions.in"; environment.apiU+++.*-=-0983`9556'nb656RL
-    public static apiUrl: string = "https://api.ttpsolutions.in"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
+    public static apiUrl: string = "https://ettest.ttpsolutions.in"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
     public static fileUrl: string = '';
     public static CompanyParentId = 31850;// 31850-production;// 27762;test site; 
     public static PremiumPlusId = 4;//4;//2 
@@ -84,7 +84,8 @@ export class globalconstants {
         };
     public static FeaturePermission = {
         'ACTIVATESTUDENT': 'activate student',
-        "FeeTypeDD": "fee type dd"
+        "FeeTypeDD": "fee type dd",
+        'MULTIPLEBATCH':'multiple batch'
     }
     public static Pages =
         {
@@ -119,7 +120,8 @@ export class globalconstants {
                 'AUTH': {
                     'CHANGEPASSWORD': 'change password',
                     'LOGIN': 'login',
-                    'REGISTER': 'register'
+                    'REGISTER': 'register',
+                
 
                 },
                 "CONTROL": {
@@ -680,7 +682,7 @@ export class globalconstants {
         var _permission = LoginUserDetail[0]["applicationRolePermission"]
             .filter(r => r.applicationFeature.toLowerCase().trim() == feature.toLowerCase().trim());
         if (_permission.length > 0) {
-            if (IsInCurrentBatch == 0)//not in current batch, 1 means user is in current batch.
+            if (IsInCurrentBatch == 0)//not in current batch, 
             {
                 _permission[0].permission = 'read';
             }
