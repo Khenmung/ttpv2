@@ -1,7 +1,8 @@
 <div>
     <div style="padding:15px 15px 10px 30px;"><strong>Class</strong></div>
     <!-- <alert></alert> -->
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25"
+        style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <!-- <span style="font-size: smaller;margin: 20px;">If fee type is updated, please run 'create invoice' in class-fee
     page.</span> -->
     <div style="display:flex;justify-content: flex-end;">
@@ -22,8 +23,9 @@
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
-                    <mat-select (selectionChange)="SetClassCategory(element)" [disabled]="true"
-                        [(ngModel)]="element.ClassId" [value]="element.ClassId">
+                    <mat-select (selectionChange)="SetClassCategory(element)"
+                        [disabled]="FeePaymentExist || MarkEntryExist" [(ngModel)]="element.ClassId"
+                        [value]="element.ClassId">
                         <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
                             {{item.ClassName}}
                         </mat-option>
@@ -107,8 +109,8 @@
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
                     <!-- <mat-label>remarks</mat-label> -->
-                    <textarea rows="1" [(ngModel)]="element.Remarks" [value]="element.Remarks" (blur)="enableAction(element)"
-                        matInput autocomplete="off"></textarea>
+                    <textarea rows="1" [(ngModel)]="element.Remarks" [value]="element.Remarks"
+                        (blur)="enableAction(element)" matInput autocomplete="off"></textarea>
                 </mat-form-field>
             </mat-cell>
         </ng-container>
@@ -163,4 +165,18 @@
             <mat-icon>arrow_back</mat-icon>
         </button>
     </mat-card-actions>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>
+                <div>Class can not be updated if fee payment or mark entry exist for the student's class. If Class to be updated,
+                    payments has to be cancelled or mark entry should be deleted.</div>
+            </li>
+        </ul>
+    </span>
 </div>

@@ -451,7 +451,7 @@ export class studentprimaryinfoComponent implements OnInit {
           this.PageLoading = false;
         }
         else {
-          this.studentForm.patchValue({ ClassAdmissionSought: this.Classes[0].ClassId });
+          //this.studentForm.patchValue({ ClassAdmissionSought: this.Classes[0].ClassId });
           if (this.StudentId > 0)
             this.GetStudentClassPhoto();
           //this.GetStudent();

@@ -148,11 +148,40 @@ export class AddstudentclassComponent implements OnInit {
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
 
         this.GetMasterData();
+        this.GetPayments();
+        this.GetMarkEntryExist();
         //this.GetStudentClass();
       }
     }
   }
-  //get f() { return this.studentclassForm.controls }
+  MarkEntryExist = false;
+  FeePaymentExist = false;
+  GetMarkEntryExist() {
+    let list: List = new List();
+    list.fields = ["ExamStudentSubjectResultId"];
+    list.PageName = "ExamStudentSubjectResults";
+    list.filter = [this.FilterOrgSubOrgBatchId + " and StudentClassId eq " + this.StudentClassId + " and Active eq 1"];
+
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        if (data.value.length > 0)
+          this.MarkEntryExist = true;
+      })
+  }
+  
+  GetPayments() {
+
+    let list: List = new List();
+    list.fields = ["StudentFeeReceiptId"];
+    list.PageName = "StudentFeeReceipts";
+    list.filter = [this.FilterOrgSubOrgBatchId + " and StudentClassId eq " + this.StudentClassId + " and Active eq 1"]
+
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        if (data.value.length > 0)
+          this.FeePaymentExist = true;
+      })
+  }
   ClassCategory: any[] = [];
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -225,7 +254,7 @@ export class AddstudentclassComponent implements OnInit {
     this.StudentClassList.push(newitem);
     this.dataSource = new MatTableDataSource<any>(this.StudentClassList);
   }
-
+  
   GetStudentClass() {
     debugger;
     this.NewItem = false;
