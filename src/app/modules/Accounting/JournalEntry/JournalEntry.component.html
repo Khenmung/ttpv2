@@ -6,13 +6,19 @@
 <form [formGroup]="searchForm">
     <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
         <mat-label>Posting Date From</mat-label>
-        <input formControlName="searchPostingDateFrom" matInput [matDatepicker]="searchPostingDateFrom" autocomplete="off">
+        <input formControlName="searchPostingDateFrom"
+        [min]="FinancialStart"
+        [max]="FinancialEnd"
+        matInput [matDatepicker]="searchPostingDateFrom" autocomplete="off">
         <mat-datepicker-toggle matSuffix [for]="searchPostingDateFrom"></mat-datepicker-toggle>
         <mat-datepicker #searchPostingDateFrom></mat-datepicker>
     </mat-form-field>
     <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
         <mat-label>Posting Date To</mat-label>
-        <input formControlName="searchPostingDateTo" matInput [matDatepicker]="searchPostingDateTo" autocomplete="off">
+        <input formControlName="searchPostingDateTo" 
+        [min]="FinancialStart"
+        [max]="FinancialEnd"
+        matInput [matDatepicker]="searchPostingDateTo" autocomplete="off">
         <mat-datepicker-toggle matSuffix [for]="searchPostingDateTo"></mat-datepicker-toggle>
         <mat-datepicker #searchPostingDateTo></mat-datepicker>
     </mat-form-field>
@@ -53,6 +59,13 @@
 
 <mat-table #table [dataSource]="dataSource">
 
+    <ng-container matColumnDef="AccountingVoucherId">
+        <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef>Id
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+           {{element.AccountingVoucherId}}
+        </mat-cell>
+    </ng-container>
     <ng-container matColumnDef="DocDate">
         <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef>Doc Date
         </mat-header-cell>

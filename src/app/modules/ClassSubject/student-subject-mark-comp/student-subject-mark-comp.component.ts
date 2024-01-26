@@ -222,7 +222,19 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     //debugger;
     this.loading = true;
     var _examId = this.searchForm.get("searchExamId")?.value;
-
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    if(!_examId)
+    {
+      this.loading=false;
+      this.contentservice.openSnackBar("Please select exam.",globalconstants.ActionText,globalconstants.RedBackground);
+      return;
+    }
+    if(!_classId)
+    {
+      this.loading=false;
+      this.contentservice.openSnackBar("Please select class.",globalconstants.ActionText,globalconstants.RedBackground);
+      return;
+    }
     let checkFilterString = this.FilterOrgSubOrgBatchId + //"OrgId eq " + this.LoginUserDetail[0]["orgId"] +
       " and ClassSubjectId eq " + row.ClassSubjectId +
       " and ClassId eq " + row.ClassId +
@@ -479,9 +491,9 @@ export class StudentSubjectMarkCompComponent implements OnInit {
   DisableSaveButton = false;
   SelectedClasses: any[] = [];
   DisableSave() {
-    var examobj = this.Exams.filter((f: any) => f.ExamId == this.searchForm.get("searchExamId")?.value);
-    if (examobj.length > 0) {
-      if (examobj[0].ReleaseResult == 1)
+    var examobj = this.Exams.find((f: any) => f.ExamId == this.searchForm.get("searchExamId")?.value);
+    if (examobj) {
+      if (examobj.ReleaseResult == 1)
         this.DisableSaveButton = true;
       else
         this.DisableSaveButton = false;
@@ -632,9 +644,9 @@ export class StudentSubjectMarkCompComponent implements OnInit {
           });
         }
         else {
-          console.log("filteredClassSubjectnComponents",filteredClassSubjectnComponents)
+         // console.log("filteredClassSubjectnComponents",filteredClassSubjectnComponents)
           filteredClassSubjectnComponents.forEach((subj, indx) => {
-            console.log("subj.Components",subj.Components);
+           // console.log("subj.Components",subj.Components);
             subj.Components.forEach(component => {
 
               let existing = ExistingClsSubjMarkComponentsDefinitionFiltered.filter(fromdb => fromdb.SubjectId == subj.SubjectId
@@ -702,9 +714,9 @@ export class StudentSubjectMarkCompComponent implements OnInit {
         this.FilteredClasses = this.FilteredClasses.sort((a, b) => a.Sequence - b.Sequence);
         this.loading = false;
       });
-    var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
-    if (obj.length > 0) {
-      this.ExamReleased = obj[0].ReleaseResult;
+    var obj = this.Exams.find((f: any) => f.ExamId == _examId);
+    if (obj) {
+      this.ExamReleased = obj.ReleaseResult;
     }
 
   }

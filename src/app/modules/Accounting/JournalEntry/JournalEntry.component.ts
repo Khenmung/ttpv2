@@ -64,13 +64,14 @@ export class JournalEntryComponent implements OnInit {
     BaseAmount: 0,
     Amount: 0,
     ShortText: '',
-    ActivityTypeId:0,
+    ActivityTypeId: 0,
+    LedgerPostingId: 0,
     OrgId: 0, SubOrgId: 0,
     Active: 0,
   };
 
   displayedColumns = [
-    //"DocDate",
+    "AccountingVoucherId",
     "PostingDate",
     "GeneralLedgerAccountId",
     "ShortText",
@@ -93,7 +94,8 @@ export class JournalEntryComponent implements OnInit {
     private nav: Router,
     private contentservice: ContentService,
   ) { }
-
+  FinancialStart: any;
+  FinancialEnd: any;
   ngOnInit(): void {
     // this.servicework.activateUpdate().then(() => {
     //   this.servicework.checkForUpdate().then((value) => {
@@ -102,12 +104,13 @@ export class JournalEntryComponent implements OnInit {
     //     }
     //   })
     // })
+
     this.searchForm = this.fb.group({
       searchGeneralLedgerId: [0],
       searchDescription: [''],
       searchShortText: [''],
-      searchPostingDateFrom:[new Date()],
-      searchPostingDateTo:[new Date()],
+      searchPostingDateFrom: [new Date()],
+      searchPostingDateTo: [new Date()],
     });
     this.PageLoad();
     //        this.GetTeachers();
@@ -117,7 +120,10 @@ export class JournalEntryComponent implements OnInit {
 
     this.loading = true;
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
-
+    var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
+    this.FinancialStart = moment(FinancialStartEnd.StartDate).format('YYYY-MM-DD');
+    this.FinancialEnd = moment(FinancialStartEnd.EndDate).format('YYYY-MM-DD');
+    console.log("this.FinancialStart", this.FinancialStart);
     this.filteredOptions = this.searchForm.get("searchGeneralLedgerId")?.valueChanges
       .pipe(
         startWith(''),
@@ -155,46 +161,61 @@ export class JournalEntryComponent implements OnInit {
   }
 
   TransactionMode = true;
-  addnew(mode) {
-    //this.TransactionMode = mode;
-    if (mode) {
+  addnew(freshentry, pdesc = '', pAmount = 0) {
+    debugger;
+    let _ShortText = '', _DebitAmount = 0, _CreditAmount = 0;
+    if (freshentry) {
       this.AccountingVoucherList = [];
       this.reference = ''
       this.TranParentId = 0;
     }
-    //var debitcredit = debit == 'debit' ? 0 : 1
-    if (this.reference.length > 0 || mode) {
-      let _operatingActivityId = 0;
-      let obj: any = this.ActivityTypes.filter((f: any) => f.MasterDataName.toLowerCase() == 'operating');
-      if (obj.length > 0) {
-        _operatingActivityId = obj[0].MasterDataId;
-      }
-      var newdata = {
-        AccountingVoucherId: 0,
-        DocDate: new Date(),
-        PostingDate: new Date(),
-        Reference: this.reference,
-        FeeReceiptId: 0,
-        ParentId: 0,
-        TranParentId: 0,
-        ClassFeeId: 0,
-        LedgerId: 0,
-        GeneralLedgerName: '',
-        GeneralLedgerAccountId: this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId,
-        Debit: false,
-        BaseAmount: 0,
-        DebitAmount: 0,
-        CreditAmount: 0,
-        Amount: 0,
-        ShortText: '',
-        ActivityTypeId: _operatingActivityId,
-        Active: 0,
-        Action: true
-      }
+    else {
+      _ShortText = pdesc;
+      if (this.AccountingVoucherList[0].Debit)
+        _CreditAmount = this.AccountingVoucherList[0].Amount;
+      else
+        _DebitAmount = this.AccountingVoucherList[0].Amount;
 
-      this.AccountingVoucherList.push(newdata);
-      this.dataSource = new MatTableDataSource<IAccountingVoucher>(this.AccountingVoucherList);
     }
+    //if (row.Reference || mode) {
+    let _operatingActivityId = 0, _action = true;
+    let obj: any = this.ActivityTypes.find((f: any) => f.MasterDataName.toLowerCase() == 'operating');
+    if (obj) {
+      _operatingActivityId = obj.MasterDataId;
+    }
+    if (this.CurrentAccountingMode == 'double entry') {
+      _action = false;
+    }
+    let _GeneralLedgerId = this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId;
+    let objLedger = this.GeneralLedgers.find(f => f.GeneralLedgerId == _GeneralLedgerId);
+    var newdata = {
+      AccountingVoucherId: 0,
+      DocDate: new Date(),
+      PostingDate: new Date(),
+      Reference: this.reference,
+      FeeReceiptId: 0,
+      ParentId: 0,
+      TranParentId: 0,
+      ClassFeeId: 0,
+      LedgerId: 0,
+      GeneralLedgerName: '',
+      GeneralLedgerAccountId: objLedger,
+      GeneralLedgerAccount: {},
+      Debit: false,
+      BaseAmount: pAmount,
+      DebitAmount: _DebitAmount,
+      CreditAmount: _CreditAmount,
+      LedgerPostingId: 0,
+      Amount: 0,
+      ShortText: _ShortText,
+      ActivityTypeId: _operatingActivityId,
+      Active: 0,
+      Action: _action
+    }
+
+    this.AccountingVoucherList.push(newdata);
+    this.dataSource = new MatTableDataSource<IAccountingVoucher>(this.AccountingVoucherList);
+    //}
   }
   TranParentId = 0;
   SetReference(row) {
@@ -215,7 +236,7 @@ export class JournalEntryComponent implements OnInit {
   }
   AllAccountingVouchers: any[] = [];
   GetAllAccountingVoucher() {
-    let filterStr = this.FilterOrgSubOrg + ' and LedgerId eq 0 and Active eq 1';
+    let filterStr = this.FilterOrgSubOrg + ' and LedgerId eq 0 and ClassFeeId eq 0 and Active eq 1';
     debugger;
     this.loading = true;
     var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
@@ -241,7 +262,7 @@ export class JournalEntryComponent implements OnInit {
       })
   }
   GetAccountingVoucher() {
-    
+
     let filterStr = this.FilterOrgSubOrg + ' and FeeReceiptId eq 0 and ClassFeeId eq 0 and Active eq 1';
     debugger;
     var _searchDescription = this.searchForm.get("searchDescription")?.value;
@@ -254,18 +275,18 @@ export class JournalEntryComponent implements OnInit {
       //this.contentservice.openSnackBar("Please select Account.", globalconstants.ActionText, globalconstants.RedBackground);
       //return;
     }
-   
+
     this.loading = true;
-    var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
-    filterStr += " and PostingDate ge " + this.datepipe.transform(FinancialStartEnd.StartDate, 'yyyy-MM-dd') + //T00:00:00.000Z
-      " and  PostingDate le " + this.datepipe.transform(FinancialStartEnd.EndDate, 'yyyy-MM-dd');//T00:00:00.000Z
-    let toDate = new Date(_PostingDateTo).setDate(new Date(_PostingDateTo).getDate()+1);
-      filterStr += " and PostingDate ge " + this.datepipe.transform(_PostingDateFrom, 'yyyy-MM-dd') + //T00:00:00.000Z
+    // var FinancialStartEnd = JSON.parse(this.tokenStorage.getSelectedBatchStartEnd()!);
+    // filterStr += " and PostingDate ge " + this.datepipe.transform(FinancialStartEnd.StartDate, 'yyyy-MM-dd') + //T00:00:00.000Z
+    //   " and PostingDate le " + this.datepipe.transform(FinancialStartEnd.EndDate, 'yyyy-MM-dd');//T00:00:00.000Z
+    let toDate = new Date(_PostingDateTo).setDate(new Date(_PostingDateTo).getDate() + 1);
+    filterStr += " and PostingDate ge " + this.datepipe.transform(_PostingDateFrom, 'yyyy-MM-dd') + //T00:00:00.000Z
       " and  PostingDate lt " + this.datepipe.transform(toDate, 'yyyy-MM-dd');//T00:00:00.000Z
 
-    
+
     if (_searchDescription != "") {
-      this.reference = _searchDescription;
+      //this.reference = _searchDescription;
       filterStr += " and ShortText eq '" + _searchDescription + "'"
     }
 
@@ -285,6 +306,7 @@ export class JournalEntryComponent implements OnInit {
       "Amount",
       "ShortText",
       "ActivityTypeId",
+      "LedgerPostingId",
       "Active",
     ];
 
@@ -302,16 +324,17 @@ export class JournalEntryComponent implements OnInit {
           else
             m.CreditAmount = m.BaseAmount;
 
-          var obj = this.GeneralLedgers.filter((f: any) => f.GeneralLedgerId == m.GeneralLedgerAccountId)
-          if (obj.length > 0) {
-            m.GeneralLedgerAccountId = obj[0];
+          let obj = this.GeneralLedgers.find((f: any) => f.GeneralLedgerId == m.GeneralLedgerAccountId)
+          if (obj) {
+            m.GeneralLedgerAccountId = obj;
+            //  m.GeneralLedgerName = obj.GeneralLedgerName
           }
-          else
-            m.GeneralLedgerName = '';
+          // else
+          //   m.GeneralLedgerName = '';
           return m;
         });
 
-                //console.log("AccountingVoucherList", this.AccountingVoucherList);
+        //console.log("AccountingVoucherList", this.AccountingVoucherList);
         if (this.AccountingVoucherList.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
@@ -323,30 +346,108 @@ export class JournalEntryComponent implements OnInit {
       });
   }
   filterAccount(name: string) {
+    //debugger;
     return name && this.GeneralLedgers.filter(
-      account => account.GeneralLedgerName.toLowerCase().includes(name?.toLowerCase())
-    ) || this.GeneralLedgers;
+      account => account.GeneralLedgerName.toLowerCase().includes(name?.toLowerCase())) || this.GeneralLedgers;
   }
+  EnableSave = true;
   onBlur(row, colName) {
     debugger;
-    row.Action = true;
+
     if (row[colName] > 0 && colName.toLowerCase() == 'debitamount') {
       row.Debit = true;
       row.Amount = row[colName];
-      row.CreditAmount =0;
+      row.CreditAmount = 0;
       row.BaseAmount = row[colName];
     }
     else if (row[colName] > 0 && colName.toLowerCase() == 'creditamount') {
       row.Debit = false;
       row.Amount = row[colName];
       row.BaseAmount = row[colName];
-      row.DebitAmount =0;
+      row.DebitAmount = 0;
     }
+    if (this.CurrentAccountingMode == 'double entry') {
+      let _drAmount = 0, _crAmount = 0;
+      this.AccountingVoucherList = this.AccountingVoucherList.filter(e => e.Reference == row.Reference);
+      if (this.AccountingVoucherList.length > 1) {
+        this.AccountingVoucherList.forEach(item => {
+          if (item.Debit && !_drAmount)
+            _drAmount = item.Amount;
+          else if (!_crAmount)
+            _crAmount = item.Amount;
+        })
+
+        if (_drAmount && _crAmount) {
+          //enable all rows save button.
+          this.AccountingVoucherList.forEach(item => {
+            item.Active = 1;
+            item.Action = true;
+          })
+
+          //////setting ledgerpostingId
+
+          if (this.AccountingVoucherList[0].Debit) {
+            let _debitCreditAccount: any = this.AccountingVoucherList.filter(f => !f.Debit && f.Reference == row.Reference);
+
+            this.AccountingVoucherList[0].LedgerPostingId = _debitCreditAccount[0].GeneralLedgerAccountId.GeneralLedgerId;
+            _debitCreditAccount.forEach(cr => {
+              cr.LedgerPostingId = this.AccountingVoucherList[0].GeneralLedgerAccountId['GeneralLedgerId'];
+            })
+          }
+          else {
+            let _debitCreditAccount: any = this.AccountingVoucherList.filter(f => f.Debit && f.Reference == row.Reference);
+            this.AccountingVoucherList[0].LedgerPostingId = _debitCreditAccount[0].GeneralLedgerAccountId.GeneralLedgerId;
+
+            _debitCreditAccount.forEach(dr => {
+              dr.LedgerPostingId = this.AccountingVoucherList[0].GeneralLedgerAccountId['GeneralLedgerId'];
+            })
+          }
+          //////ends setting ledgerpostingId
+
+        }
+        //assigning amount of the opposite amount to current row.
+        else if (row.Debit) {
+          let creditrow: any = this.AccountingVoucherList.find((n: any) => !n.Debit);
+          if (creditrow && creditrow.CreditAmount) {
+            row.DebitAmount = creditrow.CreditAmount;
+            row.Amount = creditrow.CreditAmount;
+            row.BaseAmount = creditrow.CreditAmount;
+          }
+          else {
+            let _newBlankRow = this.AccountingVoucherList.find(n => n.Amount == 0);
+            if (!_newBlankRow)
+              this.addnew(false, row.ShortText, row.Amount);
+          }
+        }
+        else if (!row.Debit) {
+          let drrow: any = this.AccountingVoucherList.find((n: any) => n.Debit);
+          if (drrow && drrow.DebitAmount) {
+            row.CreditAmount = drrow.DebitAmount;
+            row.Amount = drrow.DebitAmount;
+            row.BaseAmount = drrow.DebitAmount;
+          }
+          else {
+            let _newBlankRow = this.AccountingVoucherList.find(n => n.Amount == 0);
+            if (!_newBlankRow)
+              this.addnew(false, row.ShortText, row.Amount);
+          }
+        }
+        //ends of assigning amount of the opposite amount to current row.
+        this.dataSource = new MatTableDataSource<any>(this.AccountingVoucherList);
+      }
+      else {
+        let _newBlankRow = this.AccountingVoucherList.find(n => n.Amount == 0);
+        if (!_newBlankRow && row.Amount)
+          this.addnew(false, row.ShortText, row.Amount);
+      }
+    }
+    else
+      row.Action = true;
+
   }
   updateActive(row, value) {
 
     row.Active = value.checked ? 1 : 0;
-    row.Action = true;
   }
   // UpdateDebit(row, event) {
   //   if (event.checked)
@@ -402,7 +503,7 @@ export class JournalEntryComponent implements OnInit {
     }
     else {
       let checkFilterString = "GeneralLedgerAccountId eq " + row.GeneralLedgerAccountId.GeneralLedgerId +
-        " and Reference eq '" + this.reference + "'";
+        " and Reference eq '" + row.Reference + "'";
 
 
       if (row.AccountingVoucherId > 0)
@@ -424,6 +525,7 @@ export class JournalEntryComponent implements OnInit {
 
             this.AccountingVoucherData.Active = row.Active;
             this.AccountingVoucherData.AccountingVoucherId = row.AccountingVoucherId;
+            this.AccountingVoucherData.LedgerPostingId = row.LedgerPostingId;
             this.AccountingVoucherData.BaseAmount = +row.BaseAmount;
             this.AccountingVoucherData.Amount = +row.Amount;
             this.AccountingVoucherData.DocDate = row.DocDate;
@@ -446,7 +548,7 @@ export class JournalEntryComponent implements OnInit {
               this.AccountingVoucherData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
               delete this.AccountingVoucherData["UpdatedDate"];
               delete this.AccountingVoucherData["UpdatedBy"];
-              //console.log('to insert', this.AccountingVoucherData)
+              console.log('to insert', this.AccountingVoucherData)
               this.insert(row);
             }
             else {
@@ -454,7 +556,7 @@ export class JournalEntryComponent implements OnInit {
               delete this.AccountingVoucherData["CreatedBy"];
               this.AccountingVoucherData["UpdatedDate"] = new Date();
               this.AccountingVoucherData["UpdatedBy"] = this.LoginUserDetail[0]["userId"];
-              //console.log('to update', this.AccountingVoucherData)
+              console.log('to update', this.AccountingVoucherData)
               this.update(row);
             }
           }
@@ -470,6 +572,7 @@ export class JournalEntryComponent implements OnInit {
         (data: any) => {
           this.loading = false; this.PageLoading = false;
           row.AccountingVoucherId = data.AccountingVoucherId;
+          row.Action = false;
           var indx = this.AllAccountingVouchers.findIndex(f => f.GeneralLedgerAccountId == this.AccountingVoucherData.GeneralLedgerAccountId
             && f.Reference == this.reference);
           if (indx > -1) {
@@ -486,7 +589,7 @@ export class JournalEntryComponent implements OnInit {
         (data: any) => {
           this.loading = false; this.PageLoading = false;
 
-
+          row.Action = false;
           this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         });
   }
@@ -518,9 +621,17 @@ export class JournalEntryComponent implements OnInit {
       })
   }
   ActivityTypes = [];
+  AccountingModes: any = [];
+  CurrentAccountingMode = '';
   GetMasterData() {
     debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
+    this.AccountingModes = this.getDropDownData(globalconstants.MasterDefinitions.accounting.ACCOUNTINGMODE);
+    let objAccountingMode = this.AccountingModes.find(m => m.Active);
+    if (objAccountingMode)
+      this.CurrentAccountingMode = objAccountingMode.MasterDataName.toLowerCase();
+    console.log("CurrentAccountingMode", this.CurrentAccountingMode);
+
     this.ActivityTypes = this.getDropDownData(globalconstants.MasterDefinitions.accounting.ACTIVITYTYPE)
     this.loading = false; this.PageLoading = false;
   }
@@ -550,6 +661,7 @@ export interface IAccountingVoucher {
   LedgerId: number;
   GeneralLedgerAccountId: number;
   GeneralLedgerName: string;
+  LedgerPostingId: number;
   ParentId: number;
   Debit: boolean;
   Amount: number;

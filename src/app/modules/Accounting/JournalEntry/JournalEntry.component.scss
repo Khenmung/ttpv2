@@ -1,13 +1,16 @@
 .mat-column-DocDate,
 .mat-column-PostingDate {
-    flex: 1 0 130px;
+    flex: 1 0 110px;
 }
 
 .mat-column-Reference,
-.mat-column-GeneralLedgerAccountId {
+.mat-column-GeneralLedgerAccountId,.mat-column-GeneralLedgerAccount {
     flex: 1 0 150px;
 }
-
+.mat-column-Action,
+.mat-column-Debit,.mat-column-Active,.mat-column-Id{
+    flex: 1 0 80px;
+}
 .mat-column-Amount,
 .mat-column-BaseAmount,
 .mat-column-DebitAmount,
@@ -16,12 +19,12 @@
     flex: 1 0 100px;
 }
 
-.mat-column-Active,
-.mat-column-Action,
-.mat-column-Debit {
-    justify-content: center;
-    flex: 1 0 100px;
-}
+
+// .mat-column-Action,
+// .mat-column-Debit {
+//     justify-content: center;
+//     flex: 1 0 100px;
+// }
 
 .mat-column-ShortText {
     flex: 1 0 160px;

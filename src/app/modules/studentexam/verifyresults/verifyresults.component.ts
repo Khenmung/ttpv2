@@ -397,7 +397,7 @@ export class VerifyResultsComponent implements OnInit {
   // }
   SelectedStudentClass: any[] = [];
   GetStudents(pClassId, pSemesterId, pSectionId) {
-   
+
     this.Students = [];
     var studentList = this.tokenStorage.getStudents()!;
     //var _students = studentList.filter((s: any) => s["Active"] == 1 && data.value.findIndex(fi => fi.StudentId == s["StudentId"]) > -1)
@@ -412,7 +412,7 @@ export class VerifyResultsComponent implements OnInit {
         && s.StudentClasses[0].SemesterId == pSemesterId
         && s.StudentClasses[0].SectionId == pSectionId)
 
-    
+
   }
   Verified() {
     debugger;
@@ -462,7 +462,7 @@ export class VerifyResultsComponent implements OnInit {
 
     this.VerifiedResult.ExamStudentResult = [];
     var _examId = this.searchForm.get("searchExamId")?.value;
-    console.log("_examId",_examId);
+    console.log("_examId", _examId);
     var _TotalDays = 0;
     this.StudentAttendanceList.forEach(f => {
       f.AttendanceDate = moment(f.AttendanceDate).format('YYYY-MM-DD');
@@ -846,8 +846,8 @@ export class VerifyResultsComponent implements OnInit {
         StudentOwnSubjects.forEach(f => {
           var stud = this.Students.find((s: any) => s.StudentClasses[0].StudentClassId == f.StudentClassId);
           if (stud) {
-            var _lastname = stud.LastName? " " + stud.LastName :'' ;
-            f.Student =  stud.FirstName + _lastname + "-" + f.Section;
+            var _lastname = stud.LastName ? " " + stud.LastName : '';
+            f.Student = stud.FirstName + _lastname + "-" + f.Section;
             f.RollNo = stud.StudentClasses[0].RollNo;
             f.StudentId = stud.StudentId;
           }
@@ -912,11 +912,11 @@ export class VerifyResultsComponent implements OnInit {
           ForGrading = {
             "StudentClassId": ss.StudentClassId,
             "Student": ss.Student,
-            "RollNo":ss.RollNo,
+            "RollNo": ss.RollNo,
             "Grade": 0
           }
           ForNonGrading = {
-            "RollNo":ss.RollNo,
+            "RollNo": ss.RollNo,
             "StudentClassId": ss.StudentClassId,
             "StudentId": ss.StudentId,
             "Student": ss.Student,
@@ -1474,7 +1474,7 @@ export class VerifyResultsComponent implements OnInit {
       })
   }
 
-  
+
   SelectedClassCategory = '';
   GetStudentGrade() {
     debugger;
@@ -1489,7 +1489,7 @@ export class VerifyResultsComponent implements OnInit {
         this.SelectedClassCategory = '';
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
-   
+
     this.FilterClass();
 
   }
@@ -1647,7 +1647,7 @@ export class VerifyResultsComponent implements OnInit {
             this.ClassSubjectComponents.push(e);
           }
         })
-        let test = this.ClassSubjectComponents.filter(f => f.ClassSubjectId == 1136)
+        //let test = this.ClassSubjectComponents.filter(f => f.ClassSubjectId == 1136)
         //console.log("ClassSubjectComponents",test)
         this.Loading(false);
         this.PageLoading = false;

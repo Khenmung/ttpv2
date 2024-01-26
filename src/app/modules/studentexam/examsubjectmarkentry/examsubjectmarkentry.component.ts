@@ -485,22 +485,22 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           //   var _lastname = _studentObj[0].LastName == null || _studentObj[0].LastName == '' ? '' : " " + _studentObj[0].LastName;
           //   _studname = _studentObj[0].FirstName + _lastname;
 
-          let _stdClass = this.Classes.filter(c => c.ClassId == s.ClassId);
-          if (_stdClass.length > 0) {
+          let _stdClass = this.Classes.find(c => c.ClassId == s.ClassId);
+          if (_stdClass) {
 
-            _class = _stdClass[0].ClassName;
+            _class = _stdClass.ClassName;
 
-            let _stdSubject = this.Subjects.filter(c => c.MasterDataId == s.SubjectId);
-            if (_stdSubject.length > 0) {
-              _subject = _stdSubject[0].MasterDataName;
+            let _stdSubject = this.Subjects.find(c => c.MasterDataId == s.SubjectId);
+            if (_stdSubject) {
+              _subject = _stdSubject.MasterDataName;
 
-              let _stdSection = this.Sections.filter(c => c.MasterDataId == s.SectionId);
-              if (_stdSection.length > 0) {
-                _section = '-' + _stdSection[0].MasterDataName;
+              let _stdSection = this.Sections.find(c => c.MasterDataId == s.SectionId);
+              if (_stdSection) {
+                _section = '-' + _stdSection.MasterDataName;
               }
-              let _stdSemester = this.Semesters.filter(c => c.MasterDataId == s.SemesterId);
-              if (_stdSemester.length > 0) {
-                _semester = '-' + _stdSemester[0].MasterDataName;
+              let _stdSemester = this.Semesters.find(c => c.MasterDataId == s.SemesterId);
+              if (_stdSemester) {
+                _semester = '-' + _stdSemester.MasterDataName;
               }
 
               this.StudentSubjects.push({
@@ -607,12 +607,14 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       })
   }
   GetSubjectMarkComponents(pClassSubjectId) {
-    //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
+    debugger;
     var orgIdSearchstr = this.FilterOrgSubOrgBatchId;
-    var filterstr = ' and ClassSubjectId eq ' + pClassSubjectId + ' and Active eq 1';
+    var _classId = this.searchForm.get("searchClassId")?.value;
+    var filterstr = " and ClassId eq " + _classId + " and ExamId eq " + this.searchForm.get("searchExamId")?.value;
 
-    //filterstr = 'ExamId eq ' + this.searchForm.get("searchExamId")?.value;
+    filterstr += ' and ClassSubjectId eq ' + pClassSubjectId + ' and Active eq 1';
 
+    
     let list: List = new List();
     list.fields = [
       "ClassSubjectMarkComponentId",
@@ -631,20 +633,20 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //this.SubjectMarkComponents = data.value.filter(x => x.ClassSubject.Active == 1)
-        let clsSubject = this.ClassSubjects.filter((s: any) => s.ClassSubjectId == pClassSubjectId);
+        let clsSubject = this.ClassSubjects.find((s: any) => s.ClassSubjectId == pClassSubjectId);
         this.SubjectMarkComponents = data.value.map(c => {
           var _sequence = 0;
 
-          var _sequenceObj = this.MarkComponents.filter((s: any) => s.MasterDataId == c.SubjectComponentId);
-          if (_sequenceObj.length > 0) {
-            _sequence = _sequenceObj[0].Sequence
+          var _sequenceObj = this.MarkComponents.find((s: any) => s.MasterDataId == c.SubjectComponentId);
+          if (_sequenceObj) {
+            _sequence = _sequenceObj.Sequence
           }
           return {
             "ClassSubjectMarkComponentId": c.ClassSubjectMarkComponentId,
-            "ClassId": clsSubject[0].ClassId,
+            "ClassId": clsSubject.ClassId,
             //"SectionId": clsSubject[0].SectionId,
             //"SemesterId": clsSubject[0].SemesterId,
-            "SubjectId": clsSubject[0].SubjectId,
+            "SubjectId": clsSubject.SubjectId,
             "ClassSubjectId": c.ClassSubjectId,
             "SubjectComponentId": c.SubjectComponentId,
             "Sequence": _sequence,
@@ -758,7 +760,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     var _examId = this.searchForm.get("searchExamId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
-    filterstr = ' and ExamId eq ' + _examId + " and ClassSubjectId eq " + _classSubjectId;
+    filterstr = ' and ExamId eq ' + _examId + " and ClassSubjectId eq " + _classSubjectId + " and Active eq 1";
 
     let list: List = new List();
     list.fields = [
@@ -775,7 +777,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       .subscribe((data: any) => {
         debugger;
         //var _examReleased =this.Exams.filter(e=>e.ExamId == _examId)[0].ReleaseResult;
-        var result: any[] = [];
+        let result: any[] = [];
         data.value.forEach(db => {
           db.ExamStudentSubjectResults.forEach(mark => {
             result.push({
@@ -951,7 +953,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
     //var _classId = this.searchForm.get("searchClassId")?.value;
     var _classSubjectId = this.searchForm.get("searchClassSubjectId")?.value;
-    var _examId = this.searchForm.get("searchExamId")?.value;
+    //var _examId = this.searchForm.get("searchExamId")?.value;
 
 
     // var _examMarkFormulaObj = this.Exams.filter(e => e.ExamId == _examId && e.Formula.length > 0);
@@ -992,18 +994,18 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     list.filter = [this.FilterOrgSubOrgBatchId + mainfilter];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var result: any[] = [];
+        let result: any[] = [];
 
         data.value.forEach(d => {
 
           //loop through each exam marks
           d.ExamResultSubjectMarks.forEach(s => {
-            var _examName = '';
-            var examobj = this.Exams.filter(e => e.ExamId == s.ExamId)
-            if (examobj.length > 0)
-              _examName = examobj[0].ExamName;
+            let _examName = '';
+            let examobj = this.Exams.find(e => e.ExamId == s.ExamId)
+            if (examobj)
+              _examName = examobj.ExamName;
 
-            var item = {
+            let item = {
               StudentClassSubjectId: s.StudentClassSubjectId,
               ExamId: s.ExamId,
               ExamName: _examName,
