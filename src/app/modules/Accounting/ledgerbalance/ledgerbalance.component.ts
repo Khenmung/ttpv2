@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
@@ -12,7 +12,6 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 import { DatePipe } from '@angular/common';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import alasql from 'alasql';
 import { IAccountingVoucher } from '../JournalEntry/JournalEntry.component';
 import { IGeneralLedger } from '../ledgeraccount/ledgeraccount.component';
 import { map, startWith } from 'rxjs/operators';
@@ -41,7 +40,6 @@ export class LedgerBalanceComponent implements OnInit {
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
   loading = false;
-  GLAccounts: any[] = [];
   GeneralLedgers: any[] = [];
   CurrentBatchId = 0;
   SelectedBatchId = 0;
@@ -92,8 +90,8 @@ export class LedgerBalanceComponent implements OnInit {
     //   })
     // })
     this.searchForm = this.fb.group({
-      searchFromDate: [new Date()],
-      searchToDate: [new Date()],
+     // searchFromDate: [new Date()],
+     // searchToDate: [new Date()],
       searchGeneralLedgerId: [0]
     });
     this.filteredOptions = this.searchForm.get("searchGeneralLedgerId")?.valueChanges
@@ -144,7 +142,7 @@ export class LedgerBalanceComponent implements OnInit {
           this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
           this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
           //this.GetMasterData();
-          this.GetGLAccounts();
+          //this.GetGLAccounts();
           this.GetGeneralLedgerAutoComplete();
         }
 
@@ -173,19 +171,19 @@ export class LedgerBalanceComponent implements OnInit {
   // }
   CreditBalance = 0;
   DebitBalance = 0;
-  GetAccountingVoucher() {
+  GetLedgerPosting() {
     debugger;
-    var toDate = new Date(this.searchForm.get("searchToDate")?.value);
-    toDate.setDate(toDate.getDate() + 1);
-
-    let filterStr = this.FilterOrgSubOrg + " and (FeeReceiptId eq 0 and ClassFeeId eq 0) and Active eq 1";
-    filterStr += " and PostingDate ge " + this.datepipe.transform(this.searchForm.get("searchFromDate")?.value, 'yyyy-MM-dd') + //T00:00:00.000Z
-      " and PostingDate lt " + this.datepipe.transform(toDate, 'yyyy-MM-dd');//T00:00:00.000Z
+    // var toDate = new Date(this.searchForm.get("searchToDate")?.value);
+    // toDate.setDate(toDate.getDate() + 1);
+    //and (FeeReceiptId eq 0 and ClassFeeId eq 0)
+    let filterStr = this.FilterOrgSubOrg + " and Active eq 1";
+    // filterStr += " and PostingDate ge " + this.datepipe.transform(this.searchForm.get("searchFromDate")?.value, 'yyyy-MM-dd') + //T00:00:00.000Z
+    //   " and PostingDate lt " + this.datepipe.transform(toDate, 'yyyy-MM-dd');//T00:00:00.000Z
 
 
     var _GeneralLedgerId = this.searchForm.get("searchGeneralLedgerId")?.value.GeneralLedgerId;
     if (_GeneralLedgerId)
-      filterStr += " and LedgerPostingId eq " + _GeneralLedgerId;
+      filterStr += " and PostingGeneralLedgerId eq " + _GeneralLedgerId;
     else {
       this.contentservice.openSnackBar("Please select an account.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -194,20 +192,16 @@ export class LedgerBalanceComponent implements OnInit {
     let list: List = new List();
     list.fields = [
       "AccountingVoucherId",
-      "PostingDate",
-      "GeneralLedgerAccountId",
+      "PostingGeneralLedgerId",
       "ShortText",
       "Reference",
-      "LedgerId",
       "Debit",
-      "BaseAmount",
-      "LedgerPostingId",
       "Amount",
       "Active",
     ];
 
-    list.PageName = this.AccountingVoucherListName;
-    //list.lookupFields = ["AccountingTrialBalance"];
+    list.PageName = "LedgerPostings";
+    list.lookupFields = ["AccountingVoucher($select=ShortText,PostingDate)"];
     list.filter = [filterStr];
     this.AccountingVoucherList = [];
     this.dataservice.get(list)
@@ -216,23 +210,23 @@ export class LedgerBalanceComponent implements OnInit {
         let _creditAccounts: any = [];
 
         data.value.forEach(f => {
-          let _ledgerPostingAccount = this.GLAccounts.filter(g => g.GeneralLedgerId == f.LedgerPostingId);
+          let _ledgerPostingAccount = this.GeneralLedgers.filter(g => g.GeneralLedgerId == f.PostingGeneralLedgerId);
           if (_ledgerPostingAccount.length > 0) {
             _ledgerPostingAccount.forEach(item => {
 
               f.AccountName = item.GeneralLedgerName;
               if (f.Debit) {
                 _debitAccounts.push({
-                  DrDate: item.PostingDate,
-                  DebitAccountName: "To " + item.GeneralLedgerName,
-                  DrAmt: item.Amount
+                  DrDate: f.AccountingVoucher.PostingDate,
+                  DebitAccountName: f.ShortText,
+                  DrAmt: f.Amount
                 })
               }
               else {
                 _creditAccounts.push({
-                  CrDate: item.PostingDate,
-                  CreditAccountName: "By " + item.GeneralLedgerName,
-                  CrAmt: item.Amount
+                  CrDate: f.AccountingVoucher.PostingDate,
+                  CreditAccountName: f.ShortText,
+                  CrAmt: f.Amount
                 })
               }
             })
@@ -275,7 +269,6 @@ export class LedgerBalanceComponent implements OnInit {
 
     list.PageName = "GeneralLedgers";
     list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.GeneralLedgers = [...data.value];
@@ -365,37 +358,37 @@ export class LedgerBalanceComponent implements OnInit {
   }
 
 
-  GetGLAccounts() {
+  // GetGLAccounts() {
 
-    let list: List = new List();
-    list.fields = [
-      "GeneralLedgerId",
-      "GeneralLedgerName",
-      "AccountNatureId",
-      "AccountGroupId",
-      "AccountSubGroupId",
-      "Active"
-    ];
+  //   let list: List = new List();
+  //   list.fields = [
+  //     "GeneralLedgerId",
+  //     "GeneralLedgerName",
+  //     "AccountNatureId",
+  //     "AccountGroupId",
+  //     "AccountSubGroupId",
+  //     "Active"
+  //   ];
 
-    list.PageName = "GeneralLedgers";
-    list.lookupFields = ["AccountNature($select=Active,AccountNatureId,DebitType)"];
-    list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
-    this.GLAccounts = [];
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        //debugger;
-        //  ////console.log('data.value', data.value);
-        data.value.forEach(f => {
+  //   list.PageName = "GeneralLedgers";
+  //   list.lookupFields = ["AccountNature($select=Active,AccountNatureId,DebitType)"];
+  //   list.filter = [this.FilterOrgSubOrg + " and Active eq 1"];
+  //   //this.GLAccounts = [];
+  //   this.dataservice.get(list)
+  //     .subscribe((data: any) => {
+  //       //debugger;
+  //       //  ////console.log('data.value', data.value);
+  //       data.value.forEach(f => {
 
-          if (f.AccountNature.Active == true) {
-            f.DebitAccount = f.AccountNature.DebitType
-            this.GLAccounts.push(f)
-          }
-        });
+  //         if (f.AccountNature.Active == true) {
+  //           f.DebitAccount = f.AccountNature.DebitType
+  //           this.GLAccounts.push(f)
+  //         }
+  //       });
 
-        //this.loading = false; this.PageLoading = false;
-      })
-  }
+  //       //this.loading = false; this.PageLoading = false;
+  //     })
+  // }
   GetAccountingPeriod() {
 
     let list: List = new List();
@@ -407,7 +400,6 @@ export class LedgerBalanceComponent implements OnInit {
 
     list.PageName = "AccountingPeriods";
     list.filter = [this.FilterOrgSubOrg + " and CurrentPeriod eq 1 and Active eq 1"];
-    this.GLAccounts = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.AccountingPeriod = data.value.map(f => {

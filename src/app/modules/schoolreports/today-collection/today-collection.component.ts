@@ -182,6 +182,9 @@ export class TodayCollectionComponent implements OnInit {
 
     return new Date(mydate).toISOString();
   }
+  numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
   GetStudentFeePaymentDetails() {
     debugger;
     this.ErrorMessage = '';
@@ -211,6 +214,7 @@ export class TodayCollectionComponent implements OnInit {
       'StudentClassId',
       'TotalAmount',
       'PaymentTypeId',
+      'BatchId',
       'Active',
       'CreatedBy'
     ];
@@ -228,6 +232,7 @@ export class TodayCollectionComponent implements OnInit {
         ////console.log('paymentd ata', data.value);
         var result: any[] = [];
         var _students: any[] = [];
+        this.CategoryTotal =0;
         if (_classId > 0)
           _students = this.Students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.ClassId == _classId) > -1);
         else
@@ -241,16 +246,16 @@ export class TodayCollectionComponent implements OnInit {
           var studcls = _students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.StudentClassId == db.StudentClassId) > -1);
           if (studcls.length > 0) {
             let _receiptdate = new Date(db.ReceiptDate);
-            const _hours =_receiptdate.getHours();
-            const _mins =_receiptdate.getMinutes();
+            const _hours = _receiptdate.getHours();
+            const _mins = _receiptdate.getMinutes();
             const _offSet = new Date(db.ReceiptDate).getTimezoneOffset();
-            const offsetHours = Math.round(_offSet/60);
-            const offsetMins = _offSet%60;
+            const offsetHours = Math.round(_offSet / 60);
+            const offsetMins = _offSet % 60;
             _receiptdate.setMinutes(_mins - offsetMins);
             _receiptdate.setHours(_hours - offsetHours);
-           
 
-           // let newDate = new Date(new Date(db.ReceiptDate).setHours( (_offSet*60*60));
+
+            // let newDate = new Date(new Date(db.ReceiptDate).setHours( (_offSet*60*60));
             //console.log("db.ReceiptDate",db.ReceiptDate);
             //console.log("getTimezoneOffset",_offSet);
             // db.ReceiptDate = new Date(db.ReceiptDate).to.toLocaleTimeString();//  this.AddMinutes(_receiptdate,_offSet);
@@ -265,14 +270,13 @@ export class TodayCollectionComponent implements OnInit {
         });
 
 
-        var activebill = result.filter((f: any) => f.Active == 1);
+        var activebill = result.filter((f: any) => f.Active == 1).sort((a, b) => a.BatchId - b.BatchId);
         this.GrandTotalAmount = 0;//activebill.reduce((acc, current) => acc + current.TotalAmount, 0);
         result.forEach(t => {
           this.GrandTotalAmount += t.AccountingVouchers.reduce((acc, current) => acc + current.Amount, 0);
         })
         //console.log("activebill", activebill)
         var cancelledBill = result.filter((f: any) => f.Active == 0)
-        this.CancelledAmount = 0;
         cancelledBill.forEach(t => {
           this.CancelledAmount += t.AccountingVouchers.reduce((acc, current) => acc + current.Amount, 0);
         })
@@ -296,16 +300,21 @@ export class TodayCollectionComponent implements OnInit {
           return d;
         })
 
-        var groupbyPaymentType = alasql("Select PaymentType, Sum(TotalAmount) TotalAmount from ? group by PaymentType", [this.DateWiseCollection]);
+        var groupbyPaymentType = alasql("Select PaymentType, Sum(TotalAmount) TotalAmount,BatchId,Status from ? group by PaymentType,BatchId,Status order by Status,BatchId", [this.DateWiseCollection]);
         this.HeadsWiseCollection = [];
+
         activebill.forEach(d => {
-          d.AccountingVouchers.forEach(v => {
+          d.AccountingVouchers.forEach((v, indx) => {
             var _feeCategoryName = '';
-            if (v.ClassFee != null) {
+            if (v.ClassFee) {
               var _feeCategoryId = v.ClassFee.FeeDefinition.FeeCategoryId;
               var objCategory = this.FeeCategories.find((f: any) => f.MasterDataId == _feeCategoryId)
               if (objCategory)
                 _feeCategoryName = objCategory.MasterDataName;
+
+
+              //this.GroupByPaymentType.push(item);
+
               //var _lastname = d.StudentClass.Student.LastName == null ? '' : " " + d.StudentClass.Student.LastName;
               this.HeadsWiseCollection.push({
                 ClassFeeId: v.ClassFeeId,
@@ -313,6 +322,7 @@ export class TodayCollectionComponent implements OnInit {
                 PaymentType: this.PaymentTypes.filter(p => p.MasterDataId == d.PaymentTypeId)[0].MasterDataName,
                 Student: d.StudentClasses ? d.StudentClasses[0].Name : '', //d.StudentClass.Student.FirstName + _lastname,
                 //ClassName: d.StudentClass.Class.ClassName,
+                Batch: this.Batches.find(b => b.BatchId == d.BatchId).BatchName,
                 ClassName: d.ClassName,
                 FeeCategoryId: _feeCategoryId,
                 FeeCategory: _feeCategoryName,
@@ -321,11 +331,75 @@ export class TodayCollectionComponent implements OnInit {
           })
           return d.AccountingVouchers;
         })
-
-        this.HeadsWiseCollection = alasql("select FeeCategory,Sum(Amount) Amount from ? group by FeeCategory", [this.HeadsWiseCollection]);
+        let _currentBatch = '', _currentTotal = 0;
+        this.HeadsWiseCollection = alasql("select FeeCategory,Sum(Amount) Amount,Batch from ? group by FeeCategory,Batch", [this.HeadsWiseCollection]);
         ////console.log('this.HeadsWiseCollection', this.HeadsWiseCollection)
+        this.HeadsWiseCollection.forEach((item, indx1) => {
+          if (_currentBatch !== item.Batch && _currentBatch !== '') {
+            this.HeadsWiseCollection[indx1 - 1].BatchTotal = _currentTotal;
+            this.HeadsWiseCollection[indx1 - 1].Batch = '';
+            this.CategoryTotal +=_currentTotal;
+            _currentTotal = item.Amount;
 
-        this.GroupByPaymentType = [...groupbyPaymentType];
+            if (indx1 === this.HeadsWiseCollection.length - 1) {
+              this.CategoryTotal +=_currentTotal;
+              item.BatchTotal = _currentTotal;
+              item.Batch = '';
+            }
+          }
+          else if (indx1 === this.HeadsWiseCollection.length - 1) {
+            _currentTotal += item.Amount;
+            this.CategoryTotal +=_currentTotal;
+            item.BatchTotal = _currentTotal;
+            item.Batch = '';
+          }
+          else {
+            _currentTotal += item.Amount;
+            item.BatchTotal = '';
+            if (_currentBatch !== '')
+              item.Batch = '';
+          }
+          _currentBatch = item.Batch;
+        })
+
+        let _currentBatchId = 0;
+        _currentTotal = 0;
+        groupbyPaymentType.forEach((item, indx) => {
+          let _batch = this.Batches.find(b => b.BatchId == item.BatchId);
+          // if (_batch)
+          //   item.Batch = _batch.BatchName;
+          //same batchid last loop
+          if (_currentBatchId !== item.BatchId && _currentBatchId !== 0) {
+            this.GroupByPaymentType[this.GroupByPaymentType.length - 1].BatchTotal = _currentTotal;
+            let _previousbatch = this.Batches.find(b => b.BatchId == groupbyPaymentType[indx - 1].BatchId);
+            this.GroupByPaymentType[this.GroupByPaymentType.length - 1].Batch = _previousbatch.BatchName;
+            item.BatchTotal = '';
+            item.Batch = _batch.BatchName;
+            _currentTotal = item.TotalAmount;
+            if (indx === groupbyPaymentType.length - 1) {
+              item.BatchTotal = _currentTotal;
+            }
+            else
+              item.Batch = '';
+
+          }
+          //last loop
+          else if (indx === groupbyPaymentType.length - 1) {
+            item.BatchTotal = _currentTotal;
+            if (_currentBatchId !== item.BatchId && _currentBatchId !== 0)
+              item.Batch = _batch.BatchName;
+            else
+              item.Batch = '';
+          }
+          else {
+            _currentTotal += item.TotalAmount;
+            item.BatchTotal = '';
+            item.Batch = '';
+          }
+          _currentBatchId = item.BatchId;
+          this.GroupByPaymentType.push(item);
+        })
+        //console.log("this.HeadsWiseCollection", this.HeadsWiseCollection)
         if (this.DateWiseCollection.length == 0)
           this.contentservice.openSnackBar("No collection found.", globalconstants.ActionText, globalconstants.RedBackground);
 
@@ -341,6 +415,10 @@ export class TodayCollectionComponent implements OnInit {
       })
   }
   Reload = true;
+  CategoryTotal=0;
+  toFloat(r) {
+    return parseFloat(r);
+  }
   datechange() {
     this.Reload = true;
     this.DateWiseCollection = [];

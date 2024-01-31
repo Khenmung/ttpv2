@@ -223,29 +223,30 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.loading = true;
     var _examId = this.searchForm.get("searchExamId")?.value;
     var _classId = this.searchForm.get("searchClassId")?.value;
-    if(!_examId)
-    {
-      this.loading=false;
-      this.contentservice.openSnackBar("Please select exam.",globalconstants.ActionText,globalconstants.RedBackground);
+    if (!_examId) {
+      this.loading = false;
+      this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    if(!_classId)
-    {
-      this.loading=false;
-      this.contentservice.openSnackBar("Please select class.",globalconstants.ActionText,globalconstants.RedBackground);
+    if (!_classId) {
+      this.loading = false;
+      this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     let checkFilterString = this.FilterOrgSubOrgBatchId + //"OrgId eq " + this.LoginUserDetail[0]["orgId"] +
       " and ClassSubjectId eq " + row.ClassSubjectId +
       " and ClassId eq " + row.ClassId +
-      " and SemesterId eq " + row.SemesterId +
-      " and SectionId eq " + row.SectionId +
+      // " and SemesterId eq " + row.SemesterId +
+      // " and SectionId eq " + row.SectionId +
       " and SubjectComponentId eq " + row.SubjectComponentId +
       " and ExamId eq " + _examId;
 
     if (row.ClassSubjectMarkComponentId > 0)
       checkFilterString += " and ClassSubjectMarkComponentId ne " + row.ClassSubjectMarkComponentId;
-
+    if (row.Active == 0) {
+      checkFilterString = this.FilterOrgSubOrgBatchId + " and ClassSubjectMarkComponentId eq -1";
+    }
+    
     let list: List = new List();
     list.fields = ["ClassSubjectMarkComponentId"];
     list.PageName = "ClassSubjectMarkComponents";
@@ -636,17 +637,17 @@ export class StudentSubjectMarkCompComponent implements OnInit {
             // else {
             f.ClassSubjectMarkComponentId = 0;
             //}
-            f.ClassSubject = this.ClassSubjects.filter((s: any) => s.ClassSubjectId == f.ClassSubjectId)[0].ClassSubject;
-            f.SubjectComponent = this.MarkComponents.filter(m => m.MasterDataId == f.SubjectComponentId)[0].MasterDataName;
+            f.ClassSubject = this.ClassSubjects.find((s: any) => s.ClassSubjectId == f.ClassSubjectId).ClassSubject;
+            f.SubjectComponent = this.MarkComponents.find(m => m.MasterDataId == f.SubjectComponentId).MasterDataName;
             f.Action = false;
             f.Active = 0;
             return f;
           });
         }
         else {
-         // console.log("filteredClassSubjectnComponents",filteredClassSubjectnComponents)
+          // console.log("filteredClassSubjectnComponents",filteredClassSubjectnComponents)
           filteredClassSubjectnComponents.forEach((subj, indx) => {
-           // console.log("subj.Components",subj.Components);
+            // console.log("subj.Components",subj.Components);
             subj.Components.forEach(component => {
 
               let existing = ExistingClsSubjMarkComponentsDefinitionFiltered.filter(fromdb => fromdb.SubjectId == subj.SubjectId
@@ -655,7 +656,7 @@ export class StudentSubjectMarkCompComponent implements OnInit {
                 existing.forEach(e => {
                   //e.ClassSubjectMarkComponentId = existing[0].ClassSubjectMarkComponentId;
                   e.ClassSubject = subj.ClassSubject;
-                  e.SubjectComponent = this.MarkComponents.filter(m => m.MasterDataId == component.MasterDataId)[0].MasterDataName;
+                  e.SubjectComponent = this.MarkComponents.find(m => m.MasterDataId == component.MasterDataId).MasterDataName;
                   e.Action = false;
                   this.ELEMENT_DATA.push(e);
                 })
@@ -665,12 +666,12 @@ export class StudentSubjectMarkCompComponent implements OnInit {
                   ClassSubjectMarkComponentId: 0,
                   ClassSubjectId: subj.ClassSubjectId,
                   ClassSubject: subj.ClassSubject,
-                  ClassId:_classId,
+                  ClassId: _classId,
                   SemesterId: _semesterId,
                   SectionId: _sectionId,
                   ExamId: _examId,
                   SubjectComponentId: component.MasterDataId,
-                  SubjectComponent: this.MarkComponents.filter(m => m.MasterDataId == component.MasterDataId)[0].MasterDataName,
+                  SubjectComponent: this.MarkComponents.find(m => m.MasterDataId == component.MasterDataId).MasterDataName,
                   FullMark: 0,
                   PassMark: 0,
                   OverallPassMark: 0,

@@ -460,14 +460,14 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
             //x.SemesterId = clssubj[0].SemesterId;
             x.SubjectCategoryId = clssubj[0].SubjectCategoryId;
 
-            var stdcls = this.Students.filter(d => d.StudentClasses.length > 0 && d.StudentClasses[0].StudentClassId == x.StudentClassId);
-            if (stdcls.length > 0) {
-              var _lastname = stdcls[0].LastName == null || stdcls[0].LastName == '' ? '' : " " + stdcls[0].LastName;
-              _studname = stdcls[0].FirstName + _lastname;
+            var stdcls = this.Students.find(d => d.StudentClasses.length > 0 && d.StudentClasses[0].StudentClassId == x.StudentClassId);
+            if (stdcls) {
+              var _lastname = stdcls.LastName == null || stdcls.LastName == '' ? '' : " " + stdcls.LastName;
+              _studname = stdcls.FirstName + _lastname;
               x.Name = _studname;
               //x.SectionId = stdcls[0].StudentClasses[0].SectionId;
-              x.RollNo = stdcls[0].StudentClasses[0].RollNo;
-              x.StudentId = stdcls[0].StudentId;
+              x.RollNo = stdcls.StudentClasses[0].RollNo;
+              x.StudentId = stdcls.StudentId;
               dbdata.push(x);
             }
           }

@@ -118,31 +118,42 @@
 
     <div style="padding-top: 15px;display:flex; flex-direction: row;flex-wrap: wrap;">
         <div style="margin:10px 15px 20px 10px;padding-bottom: 15px; border: 1px solid lightgray;">
-            <div style="padding: 15px 20px 0px 20px;"><strong>Fee Category</strong></div>
+            <div style="padding: 15px 20px 10px 20px;"><strong>Fee Category</strong></div>
             <div *ngFor="let item of HeadsWiseCollection"
-                style="padding: 15px 15px 0px 20px; min-width:450px; display: flex;flex-direction: row;justify-content: center;align-items: center;">
-
-                <div style="width:100%;">{{item.FeeCategory}}</div>
-                <div style="width:100%;display: flex;justify-content: end;">&#x20b9; {{item.Amount}}</div>
-            </div>
-        </div>
-        <div style="margin:10px 20px 20px 10px;padding-bottom: 15px; border: 1px solid lightgray;">
-            <div style="padding: 15px 20px 0px 20px;"><strong>Receipt Type</strong></div>
-            <div *ngFor="let item of GroupByPaymentType"
-                style="padding: 15px 15px 0px 20px; min-width:450px; display: flex;flex-direction: row;justify-content: center;align-items: center;">
-                <div style="width:100%;">{{item.PaymentType}}</div>
-                <div style="width:100%;display: flex;justify-content: end;">&#x20b9; {{item.TotalAmount}}</div>
+                style="border-bottom: 1px solid lightgray;min-width:500px; display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                <div style="padding:8px;height:35px;width:100%;border-right: 1px solid lightgray;">{{item.Batch}}</div>
+                <div style="padding:8px;height:35px;width:100%;border-right: 1px solid lightgray;">{{item.FeeCategory}}</div>
+                <div style="padding:8px;height:35px;width:100%;display: flex;justify-content: end;border-right: 1px solid lightgray;">{{item.Amount}}</div>
+                <div style="padding:8px;height:35px;width:100%;display: flex;justify-content: end;">{{item.BatchTotal}}</div>
             </div>
             <div
                 style="padding: 15px 15px 0px 20px; min-width:450px;display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                <div *ngIf="GrandTotalAmount>0" style="width:100%;"><strong>Total Collection (less Cancelled)</strong></div>
+                <div style="width:100%;display: flex;justify-content: end;;font-weight: bold">{{numberWithCommas(CategoryTotal.toFixed(2))}}</div>
+                <span *ngIf="ErrorMessage.length>0"
+                    style="width:100%;display: flex;justify-content: end;">{{ErrorMessage}}</span>
+            </div>
+        </div>
+        <div style="margin:10px 20px 20px 10px;padding-bottom: 15px; border: 1px solid lightgray;">
+            <div style="padding: 15px 20px 10px 20px;"><strong>Receipt Type</strong></div>
+            <div *ngFor="let item of GroupByPaymentType"
+                style="border-bottom: 1px solid lightgray;min-width:500px; display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                <div style="padding:8px;height:35px;width:100%;border-right: 1px solid lightgray;">{{item.Batch}}</div>
+                <div style="padding:8px;height:35px;width:100%;border-right: 1px solid lightgray;">{{item.PaymentType}}</div>
+                <div style="padding:8px;height:35px;width:100%;border-right: 1px solid lightgray;">{{item.Status}}</div>
+                <div style="padding:8px;height:35px;width:100%;display: flex;justify-content: end;border-right: 1px solid lightgray;">{{item.TotalAmount}}</div>
+                <div style="padding:8px;height:35px;width:100%;display: flex;justify-content: end;">{{item.BatchTotal}}</div>
+            </div>
+            <!-- <div
+                style="padding: 15px 15px 0px 20px; min-width:450px;display: flex;flex-direction: row;justify-content: center;align-items: center;">
                 <div style="width:100%;">Cancelled</div>
                 <div style="width:100%;display: flex;justify-content: end;">&#x20b9; {{CancelledAmount}}</div>
-            </div>
-            <hr />
+            </div> -->
+            <!-- <hr /> -->
             <div
-                style="padding: 0px 15px 0px 20px; min-width:450px;display: flex;flex-direction: row;justify-content: center;align-items: center;">
-                <div *ngIf="GrandTotalAmount>0" style="width:100%;"><strong>Total Collection</strong></div>
-                <div style="width:100%;display: flex;justify-content: end;">&#x20b9; {{GrandTotalAmount}}</div>
+                style="padding: 15px 15px 0px 20px; min-width:450px;display: flex;flex-direction: row;justify-content: center;align-items: center;">
+                <div *ngIf="GrandTotalAmount>0" style="width:100%;"><strong>Total Collection (less Cancelled)</strong></div>
+                <div style="width:100%;display: flex;justify-content: end;font-weight: bold;">{{numberWithCommas(GrandTotalAmount.toFixed(2))}}</div>
                 <span *ngIf="ErrorMessage.length>0"
                     style="width:100%;display: flex;justify-content: end;">{{ErrorMessage}}</span>
             </div>

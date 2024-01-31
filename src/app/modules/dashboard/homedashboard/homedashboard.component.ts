@@ -66,7 +66,7 @@ export class HomeDashboardComponent implements OnInit {
   Role = '';
   Roles: any[] = [];
   Submitted = false;
-  Permission='';
+  Permission = '';
   ngOnInit(): void {
     debugger;
     this.servicework.activateUpdate().then(() => {
@@ -76,6 +76,7 @@ export class HomeDashboardComponent implements OnInit {
         }
       })
     })
+    this.CheckBrowser();
     this.searchForm = this.fb.group({
       searchApplicationId: [0],
       searchBatchId: [0],
@@ -392,7 +393,28 @@ export class HomeDashboardComponent implements OnInit {
     }
 
   }
-
+  CheckBrowser() {
+    var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    if(!isChrome)
+     this.contentservice.openSnackBar("Safari browser detected. Some functions might not work. Chrome is recommended for this application.",globalconstants.ActionText,globalconstants.RedBackground);
+    // if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1) {
+    //   alert('Opera');
+    // } else if (navigator.userAgent.indexOf("Edg") != -1) {
+    //   alert('Edge');
+    // } else if (navigator.userAgent.indexOf("Chrome") != -1) {
+    //   alert('Chrome');
+    //} else 
+    //if (navigator.userAgent.indexOf("Safari") > -1) //{
+    //  this.contentservice.openSnackBar("Safari browser detected. Some functions might not work. Chrome is recommended for this application.",globalconstants.ActionText,globalconstants.RedBackground);
+    // } else if (navigator.userAgent.indexOf("Firefox") != -1) {
+    //   alert('Firefox');
+    // } else if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true)) //IF IE > 10
+    // {
+    //   alert('IE');
+    // } else {
+    //   alert('unknown');
+    // }
+  }
   changebatch() {
     this.ValueChanged = true;
   }
@@ -578,7 +600,7 @@ export class HomeDashboardComponent implements OnInit {
     this.SelectedAppId = +this.tokenStorage.getSelectedAPPId()!;
     this.SelectedAppName = this.tokenStorage.getSelectedAppName()!;
     var currentbatchfilter = '';
-    if (this.Role != 'Admin' && (this.Permission=='' || this.Permission=='deny'))
+    if (this.Role != 'Admin' && (this.Permission == '' || this.Permission == 'deny'))
       currentbatchfilter = ' and CurrentBatch eq 1';
 
     var list = new List();

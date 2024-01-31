@@ -6,7 +6,7 @@ import moment from "moment";
 
 export class globalconstants {
     //////"https://api.ttpsolutions.in";"https://ettest.ttpsolutions.in"; environment.apiU+++.*-=-0983`9556'nb656RL
-    public static apiUrl: string = "https://ettest.ttpsolutions.in"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
+    public static apiUrl: string = "http://localhost:5000"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
     public static fileUrl: string = '';
     public static CompanyParentId = 31850;// 31850-production;// 27762;test site; 
     public static PremiumPlusId = 4;//4;//2 
@@ -19,7 +19,7 @@ export class globalconstants {
     public static TrialPeriod = 3;
     public static BlueBackground = { duration: 3000, panelClass: ['blue-snackbar'] };
     public static RedBackground = { duration: 10000, panelClass: ['red-snackbar'] };
-    public static GreenBackground = { duration: 10000, panelClass: ['green-snackbar'] };
+    public static GreenBackground = { duration: 10000, panelClass: ['green-snackbar'] }; 
     public static AddedMessage = 'Data saved successfully.';
     public static UpdatedMessage = 'Data updated successfully.';
     public static DeletedMessage = 'Data deleted successfully.';

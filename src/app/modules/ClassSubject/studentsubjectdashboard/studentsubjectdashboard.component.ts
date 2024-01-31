@@ -238,6 +238,7 @@ export class studentsubjectdashboardComponent implements OnInit {
     debugger;
     this.dataservice.get(list)
       .subscribe((data: any) => {
+        console.log("data.value",data.value);
         this.StudentClassSubjects = [];
         var filteredClassSubjects = this.ClassSubjectList.filter(clssubj =>
           clssubj.ClassId == _classId
@@ -354,7 +355,7 @@ export class studentsubjectdashboardComponent implements OnInit {
           this.contentservice.openSnackBar("No student found for the selected class " + _clsName, globalconstants.ActionText, globalconstants.RedBackground);
           this.loading = false; this.PageLoading = false;
         }
-        //console.log('this.StudentSubjectList', this.StudentSubjectList)
+        console.log('this.StudentSubjectList', this.StudentSubjectList)
         if (this.StudentSubjectList.length > 0) {
           this.StudentSubjectList = this.StudentSubjectList.sort((a, b) => a.RollNo - b.RollNo);
           this.dataSource = new MatTableDataSource<IStudentSubject>(this.StudentSubjectList);
@@ -426,7 +427,7 @@ export class studentsubjectdashboardComponent implements OnInit {
       "ClassId": clssubject.ClassId,
       "SectionId": clssubject.SectionId,
       "SemesterId": clssubject.SemesterId,
-      "ClassName": this.Classes.filter(c => c.ClassId == clssubject.ClassId)[0].ClassName,
+      "ClassName": this.Classes.find(c => c.ClassId == clssubject.ClassId).ClassName,
       "Action": false,
       "Active": clssubject.Active,
     }
