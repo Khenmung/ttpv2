@@ -155,6 +155,7 @@ export class HomeDashboardComponent implements OnInit {
               this.route.navigate(["/auth/selectplan"]);
             }
             else {
+
               var _UniquePermittedApplications = PermittedApps.filter((v, i, a) => a.findIndex(t => (t.applicationId === v.applicationId)) === i)
               if (_roleName.toLowerCase() != 'admin')
                 this.PermittedApplications = _UniquePermittedApplications.filter((f: any) => f.applicationName.toLowerCase() != 'common panel');
@@ -395,8 +396,8 @@ export class HomeDashboardComponent implements OnInit {
   }
   CheckBrowser() {
     var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-    if(!isChrome)
-     this.contentservice.openSnackBar("Safari browser detected. Some functions might not work. Chrome is recommended for this application.",globalconstants.ActionText,globalconstants.RedBackground);
+    if (!isChrome)
+      this.contentservice.openSnackBar("Safari browser detected. Some functions might not work. Chrome is recommended for this application.", globalconstants.ActionText, globalconstants.RedBackground);
     // if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1) {
     //   alert('Opera');
     // } else if (navigator.userAgent.indexOf("Edg") != -1) {
@@ -520,23 +521,14 @@ export class HomeDashboardComponent implements OnInit {
           this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
           this.Remark1 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
           this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
-          //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-          // this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-          //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-          //   this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
-          //   let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
-          //   //if selected batch is current batch.
-          //   if (this.CurrentBatchId == this.SelectedBatchId)
-          //     this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
-          //   else
-          //     this.GetClassJoinStudent(obj.appShortName);
-          // })
-          let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
-          //if selected batch is current batch.
-          if (this.CurrentBatchId == this.SelectedBatchId)
-            this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
-          else
-            this.GetClassJoinStudent(obj.appShortName);
+
+          this.GetTeacherSubject('edu')
+          // let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
+          // //if selected batch is current batch.
+          // if (this.CurrentBatchId == this.SelectedBatchId)
+          //   this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
+          // else
+          //   this.GetClassJoinStudent(obj.appShortName);
         }
         else {
           if (this.Submitted)
@@ -670,61 +662,24 @@ export class HomeDashboardComponent implements OnInit {
               this.tokenStorage.saveClasses(this.Classes);
               this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
               let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
-              if (this.CurrentBatchId == this.SelectedBatchId)
-                this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
-              else
-                this.GetClassJoinStudent(obj.appShortName);
+              this.GetTeacherSubject(obj.appShortName);
+              // if (this.CurrentBatchId == this.SelectedBatchId)
+              //   this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
+              // else
+              //   this.GetClassJoinStudent(obj.appShortName);
             });
             // }
           }
-          // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedAppId)
-          // .subscribe((data: any) => {
-          //   this.tokenStorage.saveMasterData([...data.value]);
-          //   this.allMasterData = [...data.value];
-          //   this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
 
-          //   let _obj = this.Roles.filter(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
-          //   if (_obj.length > 0 && _obj[0].Description)
-          //     this.RedirectionText = _obj[0].Description;
-
-          //   this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
-          //   this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
-          //   var selectedItem = this.SubOrganization.filter((s: any) => s.MasterDataId == this.SubOrgId);
-          //   this.searchForm.patchValue({ "searchSubOrgId": selectedItem[0] });
-
-          //   if (this.SelectedAppName && this.SelectedAppName.toLowerCase() == 'education management') {
-          //     this.contentservice.GetClasses(this.filterOrgSubOrg).subscribe((data: any) => {
-          //       if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-          //       this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
-          //       let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
-          //       if (this.CurrentBatchId == this.SelectedBatchId)
-          //         this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
-          //       else
-          //         this.GetClassJoinStudent(obj.appShortName);
-          //     });
-          //   }
-          //   //this.searchForm.patchValue({ "searchSubOrgId": this.SubOrgId });
-          // });
         }
 
         this.GetMenuData(this.SelectedAppId);
       }
-      //  });
-      ////console.log("this.SelectedAppName.toLowerCase()",this.SelectedAppName.toLowerCase())
-
-
-      // if (this.SelectedAppId > 0) {
-      //   // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]['orgId'], this.SubOrgId, this.SelectedAppId)
-      //   //   .subscribe((data: any) => {
-      //   //     this.tokenStorage.saveMasterData(data.value);
-      //   //   })
-      //   this.GetMenuData(this.SelectedAppId);
-      // }
-      /////////////
 
       this.LoadingFalse(); this.PageLoading = false;
     });
   }
+
   compareWith(option, value): boolean {
     return option.MasterDataId === value.MasterDataId;
   }
@@ -741,8 +696,8 @@ export class HomeDashboardComponent implements OnInit {
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }
+    this.filterOrgSubOrgBatchId += this.GetEmployeeClassIds();
 
-    //this.filterOrgSubOrgBatchId += " and IsCurrent eq true";
     list.PageName = "StudentClasses";
     list.lookupFields = ["Student($select=PID," +
       "StudentId," +
@@ -890,7 +845,7 @@ export class HomeDashboardComponent implements OnInit {
           this.tokenStorage.saveClassId(__studentClasses[0].ClassId);
         //let _studentWithClass = _students.map((item, i) => Object.assign({}, item, __studentClasses[i]));
         ////console.log("_studentWithClass",_studentWithClass)
-        var _classNameobj: any[] = [];
+        var _classNameobj: any = {};
         var _className = '';
         var _house = '';
         var _Section = '';
@@ -899,34 +854,34 @@ export class HomeDashboardComponent implements OnInit {
         var _semester = '';
         var _studentClassId = 0;
         _students.forEach(d => {
-          _classNameobj = [];
+          _classNameobj = {};
           _className = '';
           _studentClassId = 0;
           _house = '';
           var studcls = __studentClasses.filter((f: any) => f.StudentId == d.StudentId);
           if (studcls.length > 0) {
-            _classNameobj = this.Classes.filter(c => c.ClassId == studcls[0].ClassId);
-            if (_classNameobj.length > 0)
-              _className = _classNameobj[0].ClassName;
+            _classNameobj = this.Classes.find(c => c.ClassId == studcls[0].ClassId);
+            if (_classNameobj)
+              _className = _classNameobj.ClassName;
 
 
-            var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == studcls[0].SectionId);
-            if (_sectionobj.length > 0)
-              _Section = _sectionobj[0].MasterDataName;
-            var _semesterobj = this.Semesters.filter((f: any) => f.MasterDataId == studcls[0].SemesterId);
-            if (_semesterobj.length > 0)
-              _semester = _semesterobj[0].MasterDataName;
+            var _sectionobj = this.Sections.find((f: any) => f.MasterDataId == studcls[0].SectionId);
+            if (_sectionobj)
+              _Section = _sectionobj.MasterDataName;
+            var _semesterobj = this.Semesters.find((f: any) => f.MasterDataId == studcls[0].SemesterId);
+            if (_semesterobj)
+              _semester = _semesterobj.MasterDataName;
             if (d.RemarkId) {
-              var _remark1obj = this.Remark1.filter((f: any) => f.MasterDataId == d.RemarkId);
-              if (_remark1obj.length > 0)
-                _remark1 = _remark1obj[0].MasterDataName;
+              var _remark1obj = this.Remark1.find((f: any) => f.MasterDataId == d.RemarkId);
+              if (_remark1obj)
+                _remark1 = _remark1obj.MasterDataName;
             }
             if (d.Remark2Id) {
-              var _remark2obj = this.Remark2.filter((f: any) => f.MasterDataId == d.Remark2Id);
-              if (_remark2obj.length > 0)
-                _remark2 = _remark2obj[0].MasterDataName;
+              var _remark2obj = this.Remark2.find((f: any) => f.MasterDataId == d.Remark2Id);
+              if (_remark2obj)
+                _remark2 = _remark2obj.MasterDataName;
             }
-            var _RollNo = studcls[0].RollNo;
+            //var _RollNo = studcls[0].RollNo;
             _studentClassId = studcls[0].StudentClassId;
           }
           else
@@ -945,8 +900,11 @@ export class HomeDashboardComponent implements OnInit {
           d.Remark1 = _remark1;
           d.Remark2 = _remark2;
 
-          let obj = this.Houses.filter(h => h.MasterDataId == d.HouseId)
-          obj.length > 0 ? d.House = obj[0].MasterDataName : d.House = '';
+          let obj = this.Houses.find(h => h.MasterDataId == d.HouseId)
+          if (obj)
+            d.House = obj.MasterDataName
+          else
+            d.House = '';
           this.Students.push(d);
 
         })
@@ -972,12 +930,21 @@ export class HomeDashboardComponent implements OnInit {
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }
+
+    this.filterOrgSubOrgBatchId += this.GetEmployeeClassIds();
     this.filterOrgSubOrgBatchId += " and IsCurrent eq true";
 
     list.filter = [this.filterOrgSubOrgBatchId];
     this.Loading();
     this.PageLoading = true;
     return this.dataservice.get(list);
+  }
+  GetEmployeeClassIds() {
+    let filter = '';
+    this.EmployeeClassList.forEach(item => {
+      filter += " and ClassId eq " + item;
+    })
+    return filter;
   }
   GetStudents() {
     //var filterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
@@ -1044,26 +1011,40 @@ export class HomeDashboardComponent implements OnInit {
     return this.dataservice.get(list);
 
   }
-  // 'StudentId',
-  //     'FirstName',
-  //     'LastName',
-  //     'FatherName',
-  //     'MotherName',
-  //     'PersonalNo',
-  //     //'FatherContactNo',
-  //     //'MotherContactNo',
-  //     "PID",
-  //     "Active",
-  //     "RemarkId",
-  //     "Remark2Id",
-  //     "GenderId",
-  //     "HouseId",
-  //     "EmailAddress",
-  //     //"UserId",
-  //     "ReasonForLeavingId",
-  //     "AdmissionStatusId",
-  //     "PresentAddress",
-  //     "DOB"
+  EmployeeClassList: any = [];
+  GetTeacherSubject(appShortName) {
+    let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
+    //debugger;
+    this.loading = true;
+    let _employeeId = this.LoginUserDetail[0].EmployeeId;
+
+    filterStr = this.filterOrgSubOrgBatchId;
+    if (_employeeId > 0) {
+      filterStr += ' and EmployeeId eq ' + _employeeId
+    }
+    filterStr += " and Active eq 1";
+    let list: List = new List();
+    list.fields = [
+      'TeacherSubjectId',
+    ];
+
+    list.PageName = "TeacherSubjects";
+    list.lookupFields = ["ClassSubject($select=ClassId,Active)"];
+    list.filter = [filterStr];
+    this.EmployeeClassList = [];
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        data.value.forEach(d => {
+          if (d.ClassSubject.Active == 1 && this.EmployeeClassList.indexOf(d.ClassSubject.ClassId) == -1)
+            this.EmployeeClassList.push(d.ClassSubject.ClassId);
+        })
+        if (this.CurrentBatchId == this.SelectedBatchId)
+          this.GetStudentAndClassesWithForkJoin(appShortName);//this.GetStudents(obj);
+        else
+          this.GetClassJoinStudent(appShortName);
+      })
+  }
+
   sendmessage() {
     var api = "https://graph.facebook.com/v15.0/107273275514184/messages";
     var data = { "messaging_product": "whatsapp", "to": "918974098031", "type": "template", "template": { "name": "hello_world", "language": { "code": "en_US" } } }

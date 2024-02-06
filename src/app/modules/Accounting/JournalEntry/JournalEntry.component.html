@@ -111,7 +111,7 @@
             <mat-form-field appearance="outline">
                 <input type="text" matInput [(ngModel)]="element.GeneralLedgerAccountId"
                     [value]="element.GeneralLedgerName" [matAutocomplete]="autoRow">
-                <mat-autocomplete (optionSelected)="RemoveAccount(element)" #autoRow="matAutocomplete" [displayWith]="displayFn">
+                <mat-autocomplete (optionSelected)="UpdateLedgerPosting(element)" #autoRow="matAutocomplete" [displayWith]="displayFn">
                     <mat-option *ngFor="let option of filterAccount(element.GeneralLedgerName)" [value]="option">
                         {{option.GeneralLedgerName}}
                     </mat-option>

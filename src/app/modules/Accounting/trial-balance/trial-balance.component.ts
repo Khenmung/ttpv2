@@ -216,7 +216,7 @@ export class TrialBalanceComponent implements OnInit {
       .subscribe((data: any) => {
         let _tuitionFeeRow: any = [];
         let _CashRow: any = {};
-        let _CashAccountId = 0;
+        //let _CashAccountId = 0;
         let _tuitionFeeId = this.GLAccounts.find(g => g.GeneralLedgerName == 'Tuition Fee').GeneralLedgerId;
 
         data.value.forEach(f => {

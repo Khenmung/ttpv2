@@ -554,33 +554,59 @@ export class JournalEntryComponent implements OnInit {
   updateActive(row, value) {
 
     row.Active = value.checked ? 1 : 0;
+    if (!value.checked && this.CurrentAccountingMode.toLowerCase() == 'double entry') {
+      //updating the account related ledger posting
+      for (let i = 0; i < this.LedgerPosting.length; i++) {
+        if (this.LedgerPosting[i].PostingGeneralLedgerId === row.GeneralLedgerAccountId) {
+          let _deActivatedledgerName = this.GeneralLedgers.find(f => f.GeneralLedgerId == row.GeneralLedgerAccountId).GeneralLedgerName;
+          this.LedgerPosting[i].Active = 0;
+         // let _oldText = this.LedgerPosting[i].ShortText;
+          this.LedgerPosting.forEach(f => {
+            if (f.ShortText.includes(_deActivatedledgerName))
+              f.Active = 0;
+          })
+        }
+      }
+
+    }
   }
 
   ClearShorttext() {
     this.searchForm.patchValue({ "searchShortText": "" });
   }
-  RemoveAccount(row) {
-    let currentIndx = this.LedgerPosting.findIndex(x => x.AccountingVoucherId === row.AccountingVoucherId);
-    if (currentIndx > -1)
-      this.LedgerPosting[currentIndx].PostingGeneralLedgerId = row.GeneralLedgerAccountId;
+  UpdateLedgerPosting(row) {
+    if (this.CurrentAccountingMode.toLowerCase() == 'double entry') {
+      let currentIndx = this.LedgerPosting.findIndex(x => x.AccountingVoucherId === row.AccountingVoucherId);
+      if (currentIndx > -1) {
+        let _ledgerName = this.GeneralLedgers.find(f => f.GeneralLedgerId == row.GeneralLedgerAccountId).GeneralLedgerName;
+        //updating the account related ledger posting
+        this.LedgerPosting[currentIndx].PostingGeneralLedgerId = row.GeneralLedgerAccountId;
+
+        let _oldText = this.LedgerPosting[currentIndx].ShortText;
+        this.LedgerPosting.forEach(l => {
+          l.ShortText.replace(_oldText, _ledgerName);
+        })
+      }
+    }
   }
   RowsToSave = 0;
   JournalEntryNPosting: { "LedgerPosting": any[], "AccountingVoucher": any[] } = { "LedgerPosting": [], "AccountingVoucher": [] };
   SaveAll() {
     this.RowsToSave = 0;
-    let accountNotSelected = this.AccountingVoucherList.findIndex(x => !x.GeneralLedgerAccountId);
+    let accountNotSelected = this.AccountingVoucherList.findIndex(x => !x.GeneralLedgerAccountId && x.Active);
     if (accountNotSelected > -1) {
       this.contentservice.openSnackBar("Please select an account at row " + (accountNotSelected + 1) + ".", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     if (this.CurrentAccountingMode.toLowerCase() == 'double entry') {
-      let _totalDebit = this.AccountingVoucherList.reduce((acc, current) => current.Debit ? (acc + current.Amount) : acc, 0);
-      let _totalCredit = this.AccountingVoucherList.reduce((acc, current) => !current.Debit ? (acc + current.Amount) : acc, 0);
+      let _onlyActive = this.AccountingVoucherList.filter(f => f.Active);
+      let _totalDebit = _onlyActive.reduce((acc, current) => current.Debit ? (acc + current.Amount) : acc, 0);
+      let _totalCredit = _onlyActive.reduce((acc, current) => !current.Debit ? (acc + current.Amount) : acc, 0);
       if (_totalCredit !== _totalDebit) {
         this.contentservice.openSnackBar("Total Debit and Credit are not equal.", globalconstants.ActionText, globalconstants.RedBackground);
         return;
       }
-      let uniqueRows = _.uniqBy(this.AccountingVoucherList, 'ShortText');
+      let uniqueRows = _.uniqBy(_onlyActive, 'ShortText');
       if (uniqueRows.length > 1) {
         this.contentservice.openSnackBar("Narration should be the same for all rows.", globalconstants.ActionText, globalconstants.RedBackground);
         return;
@@ -771,8 +797,7 @@ export class JournalEntryComponent implements OnInit {
     let objAccountingMode = this.AccountingModes.find(m => m.Active);
     if (objAccountingMode)
       this.CurrentAccountingMode = objAccountingMode.MasterDataName.toLowerCase();
-    if(this.CurrentAccountingMode.toLowerCase() =='single entry')
-    {
+    if (this.CurrentAccountingMode.toLowerCase() == 'single entry') {
       this.displayedColumns = [
         "AccountingVoucherId",
         "PostingDate",

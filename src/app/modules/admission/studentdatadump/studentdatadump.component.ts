@@ -127,7 +127,7 @@ export class StudentDatadumpComponent implements OnInit {
 
 
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+        if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       });
 
@@ -388,16 +388,13 @@ export class StudentDatadumpComponent implements OnInit {
       this.contentservice.openSnackBar("Please enter atleast one parameter.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    // if (_remarkId > 0) {
-    //   var obj :any[]= [];
-    //   this.Groups.forEach(f => {
-    //     var check = f.group.filter(h => h.MasterDataId == _remarkId);
-    //     if (check.length > 0)
-    //       obj.push(check[0]);
-    //   });
-    //   checkFilterString += " and " + obj[0].type + " eq " + _remarkId;
-    //   //checkFilterString += " and RemarkId eq " + _remarkId;
-    // }
+    if (_classes.length > 2) {
+      this.loading = false;
+      this.PageLoading = false;
+      this.contentservice.openSnackBar("Class group should not contains more than 2 classes for this download.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+
     var classfilter = '';
     if (_classes.length > 0) {
       _classes.forEach(c => {
