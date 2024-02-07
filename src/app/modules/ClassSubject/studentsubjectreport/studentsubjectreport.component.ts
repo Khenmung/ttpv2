@@ -11,6 +11,7 @@ import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
+import { TableUtil } from '../../../shared/TableUtil';
 
 @Component({
   selector: 'app-studentsubjectreport',
@@ -134,15 +135,17 @@ export class StudentSubjectReportComponent implements OnInit {
   }
   FilteredClasses: any[] = [];
   SubjectCount: any[] = [];
-  // FilterClass() {
-  //   var _examId = this.searchForm.get("searchExamId")?.value
-  //   var _classGroupId = 0;
-  //   var obj = this.Exams.filter((f:any) => f.ExamId == _examId);
-  //   if (obj.length > 0)
-  //     _classGroupId = obj[0].ClassGroupId;
-  //   this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => f.ClassGroupId == _classGroupId);
-  //   this.SelectedClassStudentGrades = this.StudentGrades.filter((f:any) => f.ClassGroupId == _classGroupId);
-  // }
+  ExportArray() {
+    debugger;
+    if (this.StudentSubjects.length > 0) {
+      let stud = {}
+      const datatoExport: Partial<any>[] = this.StudentSubjects.map(m => {
+        stud = { "Student": m.Name, "Class": m.ClassName, "Section": m.SectionName, "Semester": m.SemesterName, "Subject": m.SubjectName, }
+        return stud;
+      });
+      TableUtil.exportArrayToExcel(datatoExport, "StudentSubjects");
+    }
+  }
   GetStudentSubjects() {
     debugger;
 
@@ -192,6 +195,7 @@ export class StudentSubjectReportComponent implements OnInit {
         var _class = '';
         var _subject = '';
         var _section = '';
+        var _semester = '';
         var _studname = '';
 
         this.StudentSubjects = [];
@@ -216,26 +220,30 @@ export class StudentSubjectReportComponent implements OnInit {
           //  var _lastname = _studentObj[0].LastName == null || _studentObj[0].LastName == '' ? '' : " " + _studentObj[0].LastName;
           //  _studname = _studentObj[0].FirstName + _lastname;
           if (studentcls.length > 0) {
-            let _stdClass = this.Classes.filter(c => c.ClassId == s.ClassId);
-            if (_stdClass.length > 0)
-              _class = _stdClass[0].ClassName;
+            let _stdClass = this.Classes.find(c => c.ClassId == s.ClassId);
+            if (_stdClass)
+              _class = _stdClass.ClassName;
 
-            let _stdSubject = this.Subjects.filter(c => c.MasterDataId == s.SubjectId);
-            if (_stdSubject.length > 0)
-              _subject = _stdSubject[0].MasterDataName;
+            let _stdSubject = this.Subjects.find(c => c.MasterDataId == s.SubjectId);
+            if (_stdSubject)
+              _subject = _stdSubject.MasterDataName;
 
-            let _stdSection = this.Sections.filter(c => c.MasterDataId == studentcls[0].StudentClasses[0].SectionId);
-            if (_stdSection.length > 0)
-              _section = _stdSection[0].MasterDataName;
+            let _stdSection = this.Sections.find(c => c.MasterDataId == studentcls[0].StudentClasses[0].SectionId);
+            if (_stdSection)
+              _section = _stdSection.MasterDataName;
+            let _stdSemester = this.Semesters.find(c => c.MasterDataId == studentcls[0].StudentClasses[0].SemesterId);
+            if (_stdSemester)
+              _semester = _stdSemester.MasterDataName;
             //if section is selected, item is taken only if section object length >0
             if (_sectionId > 0) {
-              if (_stdSection.length > 0 && studentcls[0].StudentClasses[0].SectionId == _sectionId) {
+              if (_stdSection && studentcls[0].StudentClasses[0].SectionId == _sectionId) {
                 this.StudentSubjects.push({
                   Name: studentcls[0].FirstName + " " + studentcls[0].LastName,
-                  RollNo:studentcls[0].StudentClasses[0].RollNo,
+                  RollNo: studentcls[0].StudentClasses[0].RollNo,
                   SubjectName: _subject,
                   ClassName: _class,
                   SectionName: _section,
+                  SemesterName: _semester,
                   SubjectId: s.SubjectId,
                   ClassId: s.ClassId,
                   StudentId: studentcls[0].StudentClasses[0].StudentId,
@@ -247,10 +255,11 @@ export class StudentSubjectReportComponent implements OnInit {
             else {
               this.StudentSubjects.push({
                 Name: studentcls[0].FirstName + " " + studentcls[0].LastName,
-                RollNo:studentcls[0].StudentClasses[0].RollNo,
+                RollNo: studentcls[0].StudentClasses[0].RollNo,
                 SubjectName: _subject,
                 ClassName: _class,
                 SectionName: _section,
+                SemesterName: _semester,
                 SubjectId: s.SubjectId,
                 ClassId: s.ClassId,
                 StudentId: studentcls[0].StudentClasses[0].StudentId,
@@ -265,7 +274,7 @@ export class StudentSubjectReportComponent implements OnInit {
         this.displayedColumns = [
           "RollNo",
           'Name',
-     //     'SubjectName'
+          //     'SubjectName'
         ];
 
         //this.SubjectCount = alasql("select count(SubjectName) SubjectCount,SubjectName,SectionName,ClassName,Name from ? group by SubjectName,SectionName,ClassName,Name", [this.StudentSubjects]);

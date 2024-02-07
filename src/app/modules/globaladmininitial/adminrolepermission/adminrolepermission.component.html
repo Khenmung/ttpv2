@@ -2,7 +2,8 @@
     <div style="padding:15px 15px 10px 15px;">
         <div><strong>Admin Role Permission</strong></div>
     </div>
-    <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+    <mat-spinner *ngIf="PageLoading" diameter="25"
+        style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <!-- <alert></alert> -->
     <form [formGroup]="searchForm">
         <mat-form-field appearance="outline" [style.width.px]="200">
@@ -39,12 +40,11 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <button [disabled]="loading" matTooltip="search" mat-raised-button
-            (click)="GetApplicationFeatureRole()">
-             <mat-icon>search</mat-icon>
-                            <mat-icon *ngIf="loading">
-                                <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                            </mat-icon>
+        <button [disabled]="loading" matTooltip="search" mat-raised-button (click)="GetApplicationFeatureRole()">
+            <mat-icon>search</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
         </button>
         <!-- </div> -->
     </form>

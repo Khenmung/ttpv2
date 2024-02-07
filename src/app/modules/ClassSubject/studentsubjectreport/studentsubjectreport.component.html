@@ -64,6 +64,10 @@
             </mat-table>
             <mat-paginator style="display:flex;justify-content:center" [pageSizeOptions]="[5,10,20,50,100]"></mat-paginator>
         </div>
-
+        <button [disabled]="loading || Permission=='read'" *ngIf="StudentSubjects.length>0"
+            matTooltip="export" (click)="ExportArray()" [useExistingCss]="true" ngxPrint mat-raised-button
+            color="accent">
+            <mat-icon>download</mat-icon>
+        </button>
     </div>
 </div>

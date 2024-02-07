@@ -238,6 +238,7 @@ export class EmployeesearchComponent implements OnInit { PageLoading=true;
   }
   addNew() {
     //var url = this.route.url;
+    this.shareddata.ChangeEmployeeName('');
     this.tokenStorage.saveEmployeeId("0");
     this.route.navigate(['/employee/info']);
   }

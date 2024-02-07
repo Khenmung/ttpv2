@@ -521,8 +521,10 @@ export class HomeDashboardComponent implements OnInit {
           this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
           this.Remark1 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
           this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
-
-          this.GetTeacherSubject('edu')
+          this.contentservice.GetClasses(this.filterOrgSubOrg, 0).subscribe((data: any) => {
+            if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+            this.GetTeacherAndClasses('edu')
+          });
           // let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
           // //if selected batch is current batch.
           // if (this.CurrentBatchId == this.SelectedBatchId)
@@ -639,13 +641,12 @@ export class HomeDashboardComponent implements OnInit {
 
           this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
 
-          let _obj = this.Roles.filter(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
-          if (_obj.length > 0 && _obj[0].Description)
-            this.RedirectionText = _obj[0].Description;
+          let _obj = this.Roles.find(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
+          if (_obj && _obj.Description)
+            this.RedirectionText = _obj.Description;
 
           this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
           this.Houses = this.getDropDownData(globalconstants.MasterDefinitions.school.HOUSE);
-          this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
           this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
           var selectedItem = this.SubOrganization.filter((s: any) => s.MasterDataId == this.SubOrgId);
           this.searchForm.patchValue({ "searchSubOrgId": selectedItem[0] });
@@ -659,10 +660,10 @@ export class HomeDashboardComponent implements OnInit {
             refresh = 1;
             this.contentservice.GetClasses(this.filterOrgSubOrg, refresh).subscribe((data: any) => {
               if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-              this.tokenStorage.saveClasses(this.Classes);
-              this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-              let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
-              this.GetTeacherSubject(obj.appShortName);
+              //this.tokenStorage.saveClasses(this.Classes);
+
+              //let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };
+              this.GetTeacherAndClasses('edu');
               // if (this.CurrentBatchId == this.SelectedBatchId)
               //   this.GetStudentAndClassesWithForkJoin(obj.appShortName);//this.GetStudents(obj);
               // else
@@ -942,13 +943,18 @@ export class HomeDashboardComponent implements OnInit {
   GetEmployeeClassIds() {
     let filter = '';
     this.EmployeeClassList.forEach(item => {
-      filter += " and ClassId eq " + item;
+      if (filter.length == 0)
+        filter = " and (ClassId eq " + item;
+      else
+        filter += " or ClassId eq " + item;
     })
+    if (filter.length > 0)
+      filter += ")"
     return filter;
   }
   GetStudents() {
     //var filterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-    let filterstr = this.filterOrgSubOrgBatchId + " and Active eq 1"
+    let filterstr = this.filterOrgSubOrgBatchId;
     this.Students = [];
     let list: List = new List();
     list.fields = [
@@ -1005,6 +1011,8 @@ export class HomeDashboardComponent implements OnInit {
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       filterstr += " and StudentId eq " + localStorage.getItem("studentId");
     }
+    filterstr += this.GetEmployeeClassIds();
+    filterstr += " and Active eq 1"
     list.filter = [filterstr];
     this.Loading();
     this.PageLoading = true;
@@ -1012,39 +1020,55 @@ export class HomeDashboardComponent implements OnInit {
 
   }
   EmployeeClassList: any = [];
-  GetTeacherSubject(appShortName) {
+  GetTeacherAndClasses(appShortName) {
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     //debugger;
     this.loading = true;
-    let _employeeId = this.LoginUserDetail[0].EmployeeId;
 
-    filterStr = this.filterOrgSubOrgBatchId;
-    if (_employeeId > 0) {
-      filterStr += ' and EmployeeId eq ' + _employeeId
+    let _employeeId = this.LoginUserDetail[0].employeeId;
+    this.EmployeeClassList = this.tokenStorage.getEmployeeClasses();
+    if (this.EmployeeClassList.length > 0) {
+      this.GetStudentsAndClasses(appShortName);
     }
-    filterStr += " and Active eq 1";
-    let list: List = new List();
-    list.fields = [
-      'TeacherSubjectId',
-    ];
+    else {
 
-    list.PageName = "TeacherSubjects";
-    list.lookupFields = ["ClassSubject($select=ClassId,Active)"];
-    list.filter = [filterStr];
-    this.EmployeeClassList = [];
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        data.value.forEach(d => {
-          if (d.ClassSubject.Active == 1 && this.EmployeeClassList.indexOf(d.ClassSubject.ClassId) == -1)
-            this.EmployeeClassList.push(d.ClassSubject.ClassId);
+      filterStr = this.filterOrgSubOrgBatchId;
+      if (_employeeId > 0) {
+        filterStr += ' and TeacherId eq ' + _employeeId
+      }
+      filterStr += " and Active eq 1";
+      let list: List = new List();
+      list.fields = [
+        'TeacherClassMappingId',
+        'ClassId',
+      ];
+
+      list.PageName = "StudTeacherClassMappings";
+      list.filter = [filterStr];
+
+      this.dataservice.get(list)
+        .subscribe((data: any) => {
+          data.value.forEach(d => {
+            if (this.EmployeeClassList.indexOf(d.ClassId) == -1)
+              this.EmployeeClassList.push(d.ClassId);
+          })
+
+          this.Classes = this.Classes.filter(c => this.EmployeeClassList.indexOf(c.ClassId) > -1);
+          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+          this.tokenStorage.saveClasses(this.Classes);
+          this.tokenStorage.saveEmployeeClasses(this.EmployeeClassList);
+
+          this.GetStudentsAndClasses(appShortName);
+
         })
-        if (this.CurrentBatchId == this.SelectedBatchId)
-          this.GetStudentAndClassesWithForkJoin(appShortName);//this.GetStudents(obj);
-        else
-          this.GetClassJoinStudent(appShortName);
-      })
+    }
   }
-
+  GetStudentsAndClasses(appShortName) {
+    if (this.CurrentBatchId == this.SelectedBatchId)
+      this.GetStudentAndClassesWithForkJoin(appShortName);//this.GetStudents(obj);
+    else
+      this.GetClassJoinStudent(appShortName);
+  }
   sendmessage() {
     var api = "https://graph.facebook.com/v15.0/107273275514184/messages";
     var data = { "messaging_product": "whatsapp", "to": "918974098031", "type": "template", "template": { "name": "hello_world", "language": { "code": "en_US" } } }

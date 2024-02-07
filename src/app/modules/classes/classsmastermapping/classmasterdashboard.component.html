@@ -53,6 +53,12 @@
     </form>
     <mat-table #table [dataSource]="dataSource">
 
+        <ng-container matColumnDef="ClassName">
+            <mat-header-cell *matHeaderCellDef> Class </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.ClassName}}
+            </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="Section">
             <mat-header-cell *matHeaderCellDef> Section </mat-header-cell>
             <mat-cell *matCellDef="let element">

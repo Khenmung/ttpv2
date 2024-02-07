@@ -55,6 +55,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   allMasterData: any[] = [];
   Permission = 'deny';
   ExamId = 0;
+  EmployeeClasses: any = [];
   ExamStudentSubjectResultData = {
     ExamStudentSubjectResultId: 0,
     StudentClassId: 0,
@@ -111,14 +112,17 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
     this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
+
       this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
       var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.EXAM.ExamMarkEntry)
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
       if (this.Permission != 'deny') {
+        this.EmployeeClasses = this.tokenStorage.getEmployeeClasses();
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         //this.GetStudents();
@@ -356,6 +360,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   //   this.FilteredClasses = this.ClassGroupMapping.filter((f:any) => f.ClassGroupId == _classGroupId);
   //   this.SelectedClassStudentGrades = this.StudentGrades.filter((f:any) => f.ClassGroupId == _classGroupId);
   // }
+
   ExamReleased = 0;
   FilterClass() {
     var _examId = this.searchForm.get("searchExamId")?.value
@@ -366,6 +371,8 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.ExamClassGroups = [...data.value];
         var objExamClassGroups = this.ExamClassGroups.filter(g => g.ExamId == _examId);
         this.FilteredClasses = this.ClassGroupMapping.filter((f: any) => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        if (this.EmployeeClasses.length > 0)
+          this.FilteredClasses = this.FilteredClasses.filter(f => this.EmployeeClasses.indexOf(f.ClassId) > -1);
         this.FilteredClasses = this.FilteredClasses.sort((a, b) => a.Sequence - b.Sequence);
       });
 
@@ -614,7 +621,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
     filterstr += ' and ClassSubjectId eq ' + pClassSubjectId + ' and Active eq 1';
 
-    
+
     let list: List = new List();
     list.fields = [
       "ClassSubjectMarkComponentId",

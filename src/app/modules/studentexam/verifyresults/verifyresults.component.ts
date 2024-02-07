@@ -38,7 +38,7 @@ export class VerifyResultsComponent implements OnInit {
   AttendanceStatusSum: any[] = [];
   AttendanceDisplay = '';
   ClassStrength = '';
-
+  EmployeeClasses: any = [];
   ClickedVerified = false;
   LoginUserDetail: any[] = [];
   CurrentRow: any = {};
@@ -162,7 +162,7 @@ export class VerifyResultsComponent implements OnInit {
 
         //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
 
-
+        this.EmployeeClasses = this.tokenStorage.getEmployeeClasses();
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.GetMasterData();
@@ -179,6 +179,8 @@ export class VerifyResultsComponent implements OnInit {
         this.ExamClassGroups = [...data.value];
         var objExamClassGroups = this.ExamClassGroups.filter(g => g.ExamId == _examId);
         this.FilteredClasses = this.ClassGroupMapping.filter((f: any) => objExamClassGroups.findIndex(fi => fi.ClassGroupId == f.ClassGroupId) > -1);
+        if (this.EmployeeClasses.length > 0)
+          this.FilteredClasses = this.FilteredClasses.filter(f => this.EmployeeClasses.indexOf(f.ClassId) > -1);
         this.FilteredClasses = this.FilteredClasses.sort((a, b) => a.Sequence - b.Sequence);
       });
 

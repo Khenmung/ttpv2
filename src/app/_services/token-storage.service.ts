@@ -31,6 +31,7 @@ const MASTERDATA = 'masterdata';
 const SubOrgId = 'SubOrgId';
 const COMPANYNAME ='CompanyName';
 const CLASSES ='classes';
+const EMPLOYEECLASSES ="EmployeeClasses";
 @Injectable({
   providedIn: 'root'
 })
@@ -64,6 +65,18 @@ export class TokenStorageService {
     // //console.log("tokenstorgage", batch)
     
     return JSON.parse(localStorage.getItem(MENUDATA) || "[]");
+  }
+  public saveEmployeeClasses(token: any): void {
+    localStorage.removeItem(EMPLOYEECLASSES);
+    localStorage.setItem(EMPLOYEECLASSES, JSON.stringify(token));
+  }
+  public getEmployeeClasses(): object[] | null {
+    var batch = localStorage.getItem(EMPLOYEECLASSES);
+    if (batch) {
+      return JSON.parse(batch);
+    }
+    return [];
+
   }
   public saveBatches(token: any): void {
     localStorage.removeItem(BATCHES);

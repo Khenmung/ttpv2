@@ -252,7 +252,7 @@ export class AdminrolepermissionComponent implements OnInit {
     list.PageName = "PlanFeatures";
     list.lookupFields = ["Page($select=ParentId,label,PageTitle,DisplayOrder)"]
     list.filter = ["PlanId eq " + this.SelectedCustomerPlanId +
-    " and ApplicationId eq " + this.SelectedApplicationId + " and Active eq 1"];
+      " and ApplicationId eq " + this.SelectedApplicationId + " and Active eq 1"];
     this.PlanFeaturePages = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -316,7 +316,8 @@ export class AdminrolepermissionComponent implements OnInit {
     }
     else
       rolefilter += " and RoleId eq " + _roleId;
-
+    rolefilter += " and PlanId eq " + _customer.PlanId;
+    
     let list: List = new List();
     list.fields = [
       "ApplicationFeatureRoleId",

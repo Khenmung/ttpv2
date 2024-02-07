@@ -318,7 +318,7 @@ export class searchstudentComponent implements OnInit {
         }
       });
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-      this.tokenStorage.saveClasses(this.Classes);
+      //this.tokenStorage.saveClasses(this.Classes);
       this.GetStudents();
 
 

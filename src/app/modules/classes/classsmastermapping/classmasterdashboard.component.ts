@@ -64,6 +64,7 @@ export class ClassmasterdashboardComponent implements OnInit {
     Active: 1
   };
   displayedColumns = [
+    "ClassName",
     "Section",
     "TeacherId",
     "HelperId",
@@ -166,7 +167,7 @@ export class ClassmasterdashboardComponent implements OnInit {
               m.Category = obj[0].MasterDataName.toLowerCase();
             return m;
           })
-          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
         });
 
       }
@@ -202,11 +203,16 @@ export class ClassmasterdashboardComponent implements OnInit {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
+    let obj = this.Classes.find(c => c.ClassId == _classId);
+    let _clsName = '';
+    if (obj)
+      _clsName = obj.ClassName;
     let newItem = {
       "TeacherClassMappingId": 0,
       "TeacherId": 0,
       "HelperId": 0,
       "ClassId": _classId,
+      "ClassName": _clsName,
       "SectionId": this.searchForm.get("searchSectionId")?.value,
       "SemesterId": this.searchForm.get("searchSemesterId")?.value,
       "Section": '',
@@ -214,19 +220,19 @@ export class ClassmasterdashboardComponent implements OnInit {
       "Active": 0,
       "Action": false
     }
-    this.ClassSubjectTeacherList  = [];
+    this.ClassSubjectTeacherList = [];
     this.ClassSubjectTeacherList.push(newItem);
     this.dataSource = new MatTableDataSource<IClassTeacher>(this.ClassSubjectTeacherList);
   }
   GetClassTeacher(previousbatch) {
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    //debugger;
+    debugger;
     this.loading = true;
     var _teacherId = this.searchForm.get("searchTeacherId")?.value.TeacherId;
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _sectionId = this.searchForm.get("searchSectionId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
-    if (_teacherId == undefined && _classId == 0) {
+    if (!_teacherId && !_classId) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please select atleast one of the options", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -239,7 +245,8 @@ export class ClassmasterdashboardComponent implements OnInit {
 
     if (_teacherId)
       filterStr += " and TeacherId eq " + _teacherId;
-    filterStr += " and ClassId eq " + _classId;
+    if (_classId)
+      filterStr += " and ClassId eq " + _classId;
     if (_semesterId)
       if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
     if (_sectionId)
@@ -267,7 +274,7 @@ export class ClassmasterdashboardComponent implements OnInit {
 
     list.PageName = this.TeacherClassSubjectListName;
     list.filter = [filterStr];
-    this.ClassSubjectTeacherList  = [];
+    this.ClassSubjectTeacherList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         debugger;
@@ -275,21 +282,28 @@ export class ClassmasterdashboardComponent implements OnInit {
         //if (_classId != 0 && _teacherId) {
         //if (data.value.length > 0)
         data.value.forEach(element => {
-          let objSection = this.Sections.filter((f: any) => f.MasterDataId == element.SectionId);
+          let objClass = this.Classes.find((f: any) => f.ClassId == element.ClassId);
+          let _className = '';
+          if (objClass)
+            _className = objClass.ClassName;
+
+          let objSection = this.Sections.find((f: any) => f.MasterDataId == element.SectionId);
           let _section = '';
-          if (objSection.length > 0)
-            _section = objSection[0].MasterDataName;
-          let objSemester = this.Semesters.filter((f: any) => f.MasterDataId == element.SemesterId);
+          if (objSection)
+            _section = objSection.MasterDataName;
+          let objSemester = this.Semesters.find((f: any) => f.MasterDataId == element.SemesterId);
           let _semester = '';
-          if (objSemester.length > 0)
-            _semester = objSemester[0].MasterDataName;
+          if (objSemester)
+            _semester = objSemester.MasterDataName;
 
           this.ClassSubjectTeacherList.push({
             "TeacherClassMappingId": previousbatch == 1 ? 0 : element.TeacherClassMappingId,
             "TeacherId": element.TeacherId,
             "HelperId": element.HelperId,
             "ClassId": element.ClassId,
+            "ClassName": _className,
             "SectionId": element.SectionId,
+            "SemesterId": element.SemesterId,
             "Section": _section,
             "Semester": _semester,
             "Active": previousbatch == 1 ? 0 : element.Active,
@@ -349,7 +363,7 @@ export class ClassmasterdashboardComponent implements OnInit {
       });
   }
   ClearData() {
-    this.ClassSubjectTeacherList  = [];
+    this.ClassSubjectTeacherList = [];
     this.dataSource = new MatTableDataSource<IClassTeacher>(this.ClassSubjectTeacherList);
   }
   onBlur(row) {
@@ -613,8 +627,10 @@ export interface IClassTeacher {
   TeacherClassMappingId: number;
   TeacherId: number;
   ClassId: number;
+  ClassName: string;
   HelperId: number;
   SectionId: number;
+  SemesterId: number;
   Section: string;
   Semester: string;
   Active: number;

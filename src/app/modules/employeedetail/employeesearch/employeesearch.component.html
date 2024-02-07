@@ -4,7 +4,7 @@
     <mat-card-content>
         <!-- <alert></alert> -->
         <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
-        <form [formGroup]="EmployeeSearchForm" fxLayout="row wrap" fxLayoutAlign="center center">
+        <form [formGroup]="EmployeeSearchForm">
             
             <mat-form-field appearance="outline" [style.width.px]="250">
                 <mat-label>employee code</mat-label>
