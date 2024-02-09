@@ -1,7 +1,8 @@
 <div>
     <div style="padding:15px 15px 10px 15px;">
         <div style="padding: 15px;"><strong>Teacher Subject</strong></div>
-        <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+        <mat-spinner *ngIf="PageLoading" diameter="25"
+            style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
         <!-- <alert></alert> -->
         <form [formGroup]="searchForm">
             <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
@@ -13,15 +14,6 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <!-- <mat-form-field appearance="outline" style="width:200px">
-                <mat-label>Class</mat-label>
-                <mat-select formControlName="searchClassId" (selectionChange)="GetSelectedClassSubjects()">
-                    <mat-option [value]="Defaultvalue">select</mat-option>
-                    <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
-                        {{item.ClassName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field> -->
             <mat-form-field appearance="outline" style="width:200px;margin-right: 15px;">
                 <mat-label>Class</mat-label>
                 <mat-select formControlName="searchClassId" (selectionChange)="GetSelectedClassSubjects()">
@@ -32,7 +24,7 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getCollegeCategory()"
-            style="width:200px;margin-right: 15px;">
+                style="width:200px;margin-right: 15px;">
                 <mat-label>semester</mat-label>
                 <mat-select formControlName="searchSemesterId" (selectionChange)="ClearData()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
@@ -42,7 +34,7 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" *ngIf="SelectedClassCategory==getHighSchoolCategory()"
-            style="width:200px;margin-right: 15px;">
+                style="width:200px;margin-right: 15px;">
                 <mat-label>section</mat-label>
                 <mat-select formControlName="searchSectionId" (selectionChange)="ClearData()">
                     <mat-option [value]="Defaultvalue">select</mat-option>
@@ -76,7 +68,6 @@
                         <!-- <mat-label>Teacher</mat-label> -->
                         <mat-select (selectionChange)="onBlur(element)" [(ngModel)]="element.EmployeeId"
                             [value]="element.EmployeeId">
-
                             <mat-option *ngFor="let option of Teachers" [value]="option.TeacherId">
                                 {{option.TeacherName}}
                             </mat-option>
@@ -84,16 +75,55 @@
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="ClsName">
+            <ng-container matColumnDef="ClassId">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>
                     Class/Course
                 </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <mat-select (selectionChange)="SelectClassSubject(element)" [(ngModel)]="element.ClassId"
+                            [value]="element.ClassId">
+                            <mat-option *ngFor="let option of Classes" [value]="option.ClassId">
+                                {{option.ClassName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="SemesterId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    Semester
+                </mat-header-cell>
                 <mat-cell *matCellDef="let element" style="display:flex;justify-content:center">
-                    {{element.ClsName}}
+                    <mat-form-field appearance="outline">
+                        <mat-select [(ngModel)]="element.SemesterId" [value]="element.SemesterId"
+                            [disabled]="SelectedClassCategory=='high school'" (selectionChange)="SelectSemester(element)">
+                            <mat-option [value]="Defaultvalue">select</mat-option>
+                            <mat-option *ngFor="let item of Semesters" [value]="item.MasterDataId">
+                                {{item.MasterDataName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="SectionId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    Section
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline">
+                        <mat-select [(ngModel)]="element.SectionId" [value]="element.SectionId"
+                            [disabled]="SelectedClassCategory=='college'" (selectionChange)="SelectSection(element)">
+                            <mat-option [value]="Defaultvalue">select</mat-option>
+                            <mat-option *ngFor="let item of Sections" [value]="item.MasterDataId">
+                                {{item.MasterDataName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="ClassSubjectId">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                <mat-header-cell *matHeaderCellDef mat-sort-header style="display:flex;justify-content:center">
                     Subject
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element">
@@ -102,7 +132,7 @@
                         <mat-select (selectionChange)="onBlur(element)" [(ngModel)]="element.ClassSubjectId"
                             [value]="element.ClassSubjectId">
                             <mat-option [value]="Defaultvalue">select</mat-option>
-                            <mat-option *ngFor="let option of TempClassSubject" [value]="option.ClassSubjectId">
+                            <mat-option *ngFor="let option of element.Subjects" [value]="option.ClassSubjectId">
                                 {{option.ClassSubject}}
                             </mat-option>
                         </mat-select>
@@ -119,8 +149,8 @@
             </ng-container>
             <ng-container matColumnDef="Action">
                 <mat-header-cell *matHeaderCellDef>
-                    <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab
-                        (click)="addnew()">
+                    <button [disabled]="loading || Permission=='read'" style="margin-right: 15px;" matTooltip="add new"
+                        mat-mini-fab (click)="addnew()">
                         <mat-icon>add</mat-icon>
                     </button>&nbsp;
                     <button [disabled]="loading || Permission=='read'" matTooltip="save all" mat-mini-fab

@@ -24,7 +24,7 @@ export class TeachersubjectComponent implements OnInit {
   @ViewChild("table") mattable;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   TeacherSubjectListName = "TeacherSubjects";
@@ -35,44 +35,48 @@ export class TeachersubjectComponent implements OnInit {
   StandardFilterWithPreviousBatchId = '';
   PreviousBatchId = 0;
   loading = false;
-  WorkAccounts :any[]= [];
-  Teachers :any[]= [];
-  Classes :any[]= [];
-  Subjects :any[]= [];
-  SubjectTypes :any[]= [];
+  WorkAccounts: any[] = [];
+  Teachers: any[] = [];
+  Classes: any[] = [];
+  Subjects: any[] = [];
+  SubjectTypes: any[] = [];
   CurrentBatchId = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   CheckBatchIDForEdit = 1;
   DataCountToSave = -1;
-  Batches :any[]= [];
-  ClassSubjects :any[]= [];
-  TeacherSubjectList: ITeacherSubject[]= [];
+  Batches: any[] = [];
+  ClassSubjects: any[] = [];
+  TeacherSubjectList: ITeacherSubject[] = [];
   dataSource: MatTableDataSource<ITeacherSubject>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   searchForm = this.fb.group({
     searchClassId: [0],
     searchEmployeeId: [0],
-    searchSectionId:[0],
-    searchSemesterId:[0]
+    searchSectionId: [0],
+    searchSemesterId: [0]
   });
   SelectedClassCategory = '';
   Defaultvalue = 0;
-  Semesters :any[]= [];
-  ClassCategory :any[]= [];
-  Sections :any[]= [];
+  Semesters: any[] = [];
+  ClassCategory: any[] = [];
+  Sections: any[] = [];
   TeacherSubjectId = 0;
   TeacherSubjectData = {
     TeacherSubjectId: 0,
     ClassSubjectId: 0,
     EmployeeId: 0,
-    OrgId: 0, SubOrgId: 0,
+    OrgId: 0,
+    SubOrgId: 0,
+    BatchId: 0,
     Active: 1
   };
   displayedColumns = [
     'TeacherSubjectId',
     'EmployeeId',
+    'ClassId',
+    'SectionId',
+    'SemesterId',
     'ClassSubjectId',
-    'ClsName',
     'Active',
     'Action'
   ];
@@ -163,7 +167,7 @@ export class TeachersubjectComponent implements OnInit {
       'Nov',
       'Dec'
     ]
-    var monthArray :any[]= [];
+    var monthArray: any[] = [];
     //setTimeout(() => {
 
     this.shareddata.CurrentSelectedBatchStartEnd$.subscribe((b: any) => {
@@ -296,20 +300,23 @@ export class TeachersubjectComponent implements OnInit {
     this.TeacherSubjectList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        var _classSubject :any[]= [];
+        var _classSubject: any[] = [];
         if (_classId > 0)
-          _classSubject = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects,_classId,_sectionId,_semesterId);
+          _classSubject = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
         else
           _classSubject = [...this.ClassSubjects];
 
         debugger;
         data.value.forEach(teachersubject => {
-          var objClsSubject = _classSubject.filter(clssubject => clssubject.ClassSubjectId == teachersubject.ClassSubjectId)
-          if (objClsSubject.length > 0) {
-            teachersubject["ClsName"] = objClsSubject[0]["ClsName"];
+          var objClsSubject = _classSubject.find(clssubject => clssubject.ClassSubjectId == teachersubject.ClassSubjectId)
+          if (objClsSubject) {
+
+            let objClassSubjects = globalconstants.getStrictFilteredClassSubjects(_classSubject, objClsSubject.ClassId, objClsSubject.SectionId, objClsSubject.SemesterId);
+            teachersubject["Subjects"] = objClassSubjects.filter(t => t.SubjectType.toLowerCase() != 'optional')
+
+            teachersubject.ClassId = objClsSubject.ClassId;
             this.TeacherSubjectList.push(teachersubject);
           }
-
         })
         if (this.TeacherSubjectList.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
@@ -331,6 +338,49 @@ export class TeachersubjectComponent implements OnInit {
 
       //searchBatchId: this.SelectedBatchId
     });
+  }
+  SelectedClassSubjects: any = [];
+  SelectClassSubject(row) {
+    debugger;
+    //this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value);
+    var _classId = row.ClassId;
+    var _sectionId = row.SectionId ? row.SectionId : 0;
+    var _semesterId = row.SemesterId ? row.SemesterId : 0;
+
+    let objClassSubjects = globalconstants.getFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
+    row.Subjects = objClassSubjects.filter(t => t.SubjectType.toLowerCase() != 'optional')
+
+    let obj = this.Classes.find(c => c.ClassId == _classId);
+    if (obj) {
+      this.SelectedClassCategory = obj.Category.toLowerCase();
+    }
+    this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
+  }
+  SelectSection(row) {
+    debugger;
+    //this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value);
+    var _classId = row.ClassId;
+    var _sectionId = row.SectionId ? row.SectionId : 0;
+    var _semesterId = row.SemesterId ? row.SemesterId : 0;
+
+    let objClassSubjects = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
+    row.Subjects = objClassSubjects.filter(t => t.SubjectType.toLowerCase() != 'optional')
+
+    this.searchForm.patchValue({ "searchSemesterId": 0 });
+    row.Action = true;
+  }
+  SelectSemester(row) {
+    debugger;
+    //this.SelectedClassSubjects = this.ClassSubjects.filter((f:any) => f.ClassId == this.searchForm.get("searchClassId")?.value);
+    var _classId = row.ClassId;
+    var _sectionId = row.SectionId ? row.SectionId : 0;
+    var _semesterId = row.SemesterId ? row.SemesterId : 0;
+
+    let objClassSubjects = globalconstants.getStrictFilteredClassSubjects(this.ClassSubjects, _classId, _sectionId, _semesterId);
+    row.Subjects = objClassSubjects.filter(t => t.SubjectType.toLowerCase() != 'optional')
+
+    this.searchForm.patchValue({ "searchSectionId": 0 });
+    row.Action = true;
   }
   onBlur(element) {
     element.Action = true;
@@ -354,12 +404,12 @@ export class TeachersubjectComponent implements OnInit {
   }
   updateSelectHowMany(row) {
     //debugger;
-    row.SelectHowMany = this.SubjectTypes.filter((f:any) => f.SubjectTypeId == row.SubjectTypeId)[0].SelectHowMany;
+    row.SelectHowMany = this.SubjectTypes.filter((f: any) => f.SubjectTypeId == row.SubjectTypeId)[0].SelectHowMany;
     row.Action = true;
   }
   SaveAll() {
     this.DataCountToSave = this.TeacherSubjectList.length;
-    var toUpdate = this.TeacherSubjectList.filter((f:any) => f.Action);
+    var toUpdate = this.TeacherSubjectList.filter((f: any) => f.Action);
     toUpdate.forEach(row => {
       this.DataCountToSave--;
       this.UpdateOrSave(row);
@@ -410,6 +460,8 @@ export class TeachersubjectComponent implements OnInit {
           this.TeacherSubjectData.EmployeeId = row.EmployeeId;
           this.TeacherSubjectData.OrgId = this.LoginUserDetail[0]["orgId"];
           this.TeacherSubjectData.SubOrgId = this.SubOrgId;
+          this.TeacherSubjectData.BatchId = this.SelectedBatchId;
+
           if (this.TeacherSubjectData.TeacherSubjectId == 0) {
             this.TeacherSubjectData["CreatedDate"] = new Date();
             this.TeacherSubjectData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
@@ -491,6 +543,7 @@ export class TeachersubjectComponent implements OnInit {
       'ClassId',
       'SectionId',
       'SemesterId',
+      'SubjectTypeId'
     ];
 
     list.PageName = "ClassSubjects";
@@ -501,33 +554,37 @@ export class TeachersubjectComponent implements OnInit {
       .subscribe((data: any) => {
         //this.ClassSubjects = [];
         data.value.forEach(item => {
-          var _subjectName = '';
-          var _className = this.Classes.filter((f:any) => f.ClassId == item.ClassId)[0].ClassName;
-          var objsubject = this.Subjects.filter((f:any) => f.MasterDataId == item.SubjectId)
-          if (objsubject.length > 0) {
-            _subjectName = objsubject[0].MasterDataName;
-
+          var _subjectName = '', _subjectTypeName = '';
+          // var _className = this.Classes.find((f: any) => f.ClassId == item.ClassId).ClassName;
+          var objsubject = this.Subjects.find((f: any) => f.MasterDataId == item.SubjectId)
+          if (objsubject) {
+            _subjectName = objsubject.MasterDataName;
+            let subTypes = this.SubjectTypes.find(f => f.SubjectTypeId == item.SubjectTypeId);
+            if (subTypes) {
+              _subjectTypeName = subTypes.SubjectTypeName;
+            }
             this.ClassSubjects.push({
               ClassSubjectId: item.ClassSubjectId,
-              ClassSubject: _className + "-" + _subjectName,
+              ClassSubject: _subjectName,
               ClassId: item.ClassId,
               SectionId: item.SectionId,
               SemesterId: item.SemesterId,
-              ClsName: _className
+              // ClsName: _className,
+              SubjectType: _subjectTypeName
             });
           }
         })
         ////console.log("this.ClassSubjects", this.ClassSubjects)
       })
   }
-  TempClassSubject :any[]= [];
+  TempClassSubject: any[] = [];
 
   GetTeachers() {
 
-    var _WorkAccount = this.WorkAccounts.filter((f:any) => f.MasterDataName.toLowerCase() == "teaching");
+    var _WorkAccount = this.WorkAccounts.find((f: any) => f.MasterDataName.toLowerCase() == "teaching");
     var _workAccountId = 0;
-    if (_WorkAccount.length > 0)
-      _workAccountId = _WorkAccount[0].MasterDataId;
+    if (_WorkAccount)
+      _workAccountId = _WorkAccount.MasterDataId;
 
     let list: List = new List();
 
@@ -539,7 +596,7 @@ export class TeachersubjectComponent implements OnInit {
     this.Teachers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        data.value.filter((f:any) => {
+        data.value.filter((f: any) => {
           this.Teachers.push({
             TeacherId: f.Employee.EmpEmployeeId,
             TeacherName: f.Employee.FirstName + " " + f.Employee.LastName
@@ -548,13 +605,13 @@ export class TeachersubjectComponent implements OnInit {
 
       })
   }
-  TeachingEmployees :any[]= [];
+  TeachingEmployees: any[] = [];
   GetTeachingEmployees() {
 
-    var _WorkAccount = this.WorkAccounts.filter((f:any) => f.MasterDataName.toLowerCase() == "teaching");
+    var _WorkAccount = this.WorkAccounts.find((f: any) => f.MasterDataName.toLowerCase() == "teaching");
     var _workAccountId = 0;
-    if (_WorkAccount.length > 0)
-      _workAccountId = _WorkAccount[0].MasterDataId;
+    if (_WorkAccount)
+      _workAccountId = _WorkAccount.MasterDataId;
 
     let list: List = new List();
 
@@ -566,7 +623,7 @@ export class TeachersubjectComponent implements OnInit {
     this.Teachers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        data.value.filter((f:any) => {
+        data.value.filter((f: any) => {
           this.TeachingEmployees.push({
             TeacherId: f.Employee.EmpEmployeeId,
             TeacherName: f.Employee.FirstName + " " + f.Employee.LastName
@@ -594,13 +651,13 @@ export class TeachersubjectComponent implements OnInit {
     // });
     this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
       data.value.forEach(m => {
-        let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
-        if (obj.length > 0) {
-          m.Category = obj[0].MasterDataName.toLowerCase();
-         this.Classes.push(m);
+        let obj = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
+        if (obj) {
+          m.Category = obj.MasterDataName.toLowerCase();
+          this.Classes.push(m);
         }
       });
-      this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.GetClassSubject();
     });
     this.loading = false; this.PageLoading = false;

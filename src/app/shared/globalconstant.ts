@@ -288,6 +288,7 @@ export class globalconstants {
                 },
                 'EVALUATION': {
                     'EVALUATION': 'evaluation',
+                    'EVALUATIONMASTER': 'E-Type',
                     'EvaluationExamMap': 'e-mapping',
                     'EVALUATIONQUESTIONNAIRE': 'e-questionnaire',
                     'EPERFORM': 'e-perform',
@@ -295,7 +296,7 @@ export class globalconstants {
                     'EVALUATIONRESULTLIST': 'E-Check',
                     'CLASSEVALUATIONOPTION': 'answer option',
                     'EVALUATIONANDEXAM': 'evaluation and exam',
-                    'EMARK': 'e-mark',
+                    'EMARK': 'E-mark',
                     'EBulk': 'E-Bulk'
                 },
                 'QUESTIONBANK': {

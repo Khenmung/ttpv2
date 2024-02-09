@@ -1034,23 +1034,24 @@ export class HomeDashboardComponent implements OnInit {
 
       filterStr = this.filterOrgSubOrgBatchId;
       if (_employeeId > 0) {
-        filterStr += ' and TeacherId eq ' + _employeeId
+        filterStr += ' and EmployeeId eq ' + _employeeId
       }
       filterStr += " and Active eq 1";
       let list: List = new List();
       list.fields = [
-        'TeacherClassMappingId',
-        'ClassId',
+        'TeacherSubjectId',
+        'ClassSubjectId',
       ];
 
-      list.PageName = "StudTeacherClassMappings";
+      list.PageName = "TeacherSubjects";
+      list.lookupFields=["ClassSubject($select=ClassId,Active)"]
       list.filter = [filterStr];
 
       this.dataservice.get(list)
         .subscribe((data: any) => {
           data.value.forEach(d => {
-            if (this.EmployeeClassList.indexOf(d.ClassId) == -1)
-              this.EmployeeClassList.push(d.ClassId);
+            if (this.EmployeeClassList.indexOf(d.ClassSubject.ClassId) == -1 && d.ClassSubject.Active==1)
+              this.EmployeeClassList.push(d.ClassSubject.ClassId);
           })
 
           this.Classes = this.Classes.filter(c => this.EmployeeClassList.indexOf(c.ClassId) > -1);
