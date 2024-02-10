@@ -3,7 +3,7 @@ import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import alasql from 'alasql';
 import { Observable } from 'rxjs';
 
@@ -13,6 +13,7 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
+import { TableUtil } from '../../../shared/TableUtil';
 //import { ClasssubjectComponent } from '../studentsubject/classsubject.component';
 
 @Component({
@@ -85,8 +86,6 @@ export class studentsubjectdashboardComponent implements OnInit {
     private dataservice: NaomitsuService,
     private contentservice: ContentService,
     private tokenStorage: TokenStorageService,
-
-    private route: ActivatedRoute,
     private nav: Router,
     private shareddata: SharedataService,
   ) { }
@@ -238,7 +237,7 @@ export class studentsubjectdashboardComponent implements OnInit {
     debugger;
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        console.log("data.value",data.value);
+        console.log("data.value", data.value);
         this.StudentClassSubjects = [];
         var filteredClassSubjects = this.ClassSubjectList.filter(clssubj =>
           clssubj.ClassId == _classId
@@ -305,7 +304,7 @@ export class studentsubjectdashboardComponent implements OnInit {
             }
             else {
               this.StudentDetail = {
-                // StudentClassSubjectId: cs.StudentClassSubjectId,
+                PID: cs.PID,
                 StudentClassId: cs.StudentClasses[0].StudentClassId,
                 Student: cs.Student,//cs.StudentClasses[0].Student,
                 RollNo: cs.StudentClasses[0].RollNo,
@@ -439,7 +438,7 @@ export class studentsubjectdashboardComponent implements OnInit {
   GetClassSubjects() {
 
     let list: List = new List();
-
+    this.loading = true;
     list.fields = [
       "ClassSubjectId",
       "ClassId",
@@ -471,7 +470,7 @@ export class studentsubjectdashboardComponent implements OnInit {
           })
         })
         this.ClassSubjectList = this.ClassSubjectList.sort((a, b) => a.SubjectTypeId - b.SubjectTypeId);
-        ////console.log("this.ClassSubjectList", this.ClassSubjectList)
+        this.loading = false; this.PageLoading = false;
       });
 
   }
@@ -665,7 +664,7 @@ export class studentsubjectdashboardComponent implements OnInit {
           //console.log("row.ClassSubjectId", row.ClassSubjectId)
           //console.log("data to insert", row);
           this.contentservice.openSnackBar("Record already exists!", globalconstants.ActionText, globalconstants.RedBackground);
-         // return;
+          // return;
         }
         else {
           this.rowCount += 1;
@@ -762,6 +761,12 @@ export class studentsubjectdashboardComponent implements OnInit {
 
         });
   }
+  exportArray() {
+    if (this.StudentSubjectList.length > 0) {
+      const datatoExport: Partial<IStudentSubject>[] = this.StudentSubjectList;
+      TableUtil.exportArrayToExcel(datatoExport, "StudentSubject");
+    }
+  }
   isNumeric(str: number) {
     if (typeof str != "string") return false // we only process strings!  
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
@@ -786,10 +791,11 @@ export class studentsubjectdashboardComponent implements OnInit {
         }
       });
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+      this.loading = false; this.PageLoading = false;
     });
     this.shareddata.ChangeSubjects(this.Subjects);
     this.GetClassSubjects();
-    this.loading = false; this.PageLoading = false;
+    //this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {
     return this.contentservice.getDropDownDataNoConfidentail(dropdowntype, this.tokenStorage, this.allMasterData);

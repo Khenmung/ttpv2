@@ -449,9 +449,9 @@ export class StudentprogressreportComponent implements OnInit {
         })
         let result: any = [];
         data.value.forEach(item => {
-          let _exam = this.Exams.filter(e => e.ExamId == item.ExamId);
-          if (_exam.length > 0) {
-            item.Sequence = _exam[0].Sequence;
+          let _exam = this.Exams.find(e => e.ExamId == item.ExamId);
+          if (_exam) {
+            item.Sequence = _exam.Sequence;
             result.push(item);
           }
         });
@@ -788,12 +788,12 @@ export class StudentprogressreportComponent implements OnInit {
         debugger;
         data.value.forEach(f => {
           var _ExamName = '';
-          var obj = this.CurrentStudentClassGroups.filter(g => g.ClassGroupId == f.EvaluationMaster.ClassGroupId);
+          var obj = this.CurrentStudentClassGroups.find(g => g.ClassGroupId == f.EvaluationMaster.ClassGroupId);
 
-          if (obj.length > 0 && f.EvaluationMaster.Active) {//} && f.EvaluationMaster.ETypeId == 0) {
-            var objexam = this.Exams.filter(e => e.ExamId == f.ExamId)
-            if (objexam.length > 0) {
-              _ExamName = objexam[0].ExamName;
+          if (obj && f.EvaluationMaster.Active) {//} && f.EvaluationMaster.ETypeId == 0) {
+            var objexam = this.Exams.find(e => e.ExamId == f.ExamId)
+            if (objexam) {
+              _ExamName = objexam.ExamName;
               f.ClassGroupId = f.EvaluationMaster.ClassGroupId;
               f.ExamName = _ExamName;
               f.EvaluationName = f.EvaluationMaster.EvaluationName;
@@ -825,7 +825,7 @@ export class StudentprogressreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.ClassEvaluations = [];
-        let _etypeId = this.ETypes.filter(e => e.MasterDataName.toLowerCase() == 'student profile')[0].MasterDataId;
+        let _etypeId = this.ETypes.find(e => e.MasterDataName.toLowerCase() == 'student profile').MasterDataId;
         var _data = data.value.filter((f: any) => f.EvaluationMaster.ETypeId !== _etypeId);
         if (_data.length > 0) {
           _data.forEach(clseval => {
@@ -877,6 +877,7 @@ export class StudentprogressreportComponent implements OnInit {
         this.Result = [...data.value]
         var _distinctEvaluationType = alasql('select distinct EvaluationMasterId,EvaluationName from ?', [this.EvaluationExamMap])
         let _evaluationCount = 0;
+        var ans: any[] = [];
         _distinctEvaluationType.forEach(distinctevaluation => {
           _evaluationCount += 100;
           this.StudentEvaluationList.push({
@@ -896,19 +897,20 @@ export class StudentprogressreportComponent implements OnInit {
             var _classEvaluationExamMap = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == evalExam.EvaluationMasterId);
             //&& f.ExamId == null || f.ExamId == 0 || f.ExamId == evalExam.ExamId);
             //&& f.ExamId == evalExam.ExamId);
+            let existing:any = {};
             _classEvaluationExamMap.forEach(clseval => {
-              var existing = this.Result.filter((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId
+              existing = this.Result.find((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId
                 && f.EvaluationExamMapId == evalExam.EvaluationExamMapId);
-              var ans: any[] = [];
-              if (existing.length > 0) {
+              ans = [];
+              if (existing) {
                 clseval.ClassEvaluationOptions.forEach(cls => {
-                  var selected = existing[0].StudentEvaluationAnswers
+                  var selected = existing.StudentEvaluationAnswers
                     .filter(stud => stud.ClassEvaluationAnswerOptionsId == cls.ClassEvaluationAnswerOptionsId)
                   if (selected.length > 0)
                     ans.push(cls.Title);
                 });
-                if (existing[0].AnswerText.length > 0 && ans.length == 0)
-                  ans = existing[0].AnswerText
+                if (existing.AnswerText.length > 0 && ans.length == 0)
+                  ans = existing.AnswerText
               }
 
               var _description = globalconstants.decodeSpecialChars(clseval.Description);

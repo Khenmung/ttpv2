@@ -100,6 +100,14 @@
 </div>
 <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,20,50]"></mat-paginator>
 <div style="color:crimson;width: 100%;display: flex;justify-content: center;margin: 10px;">{{subjectCounterr}}</div>
+<div *ngIf="StudentSubjectList.length>0">
+        <button (click)="exportArray()" mat-raised-button color="accent">
+            <mat-icon>download</mat-icon>
+            <mat-icon *ngIf="loading">
+                <mat-spinner diameter="25"></mat-spinner>
+            </mat-icon>
+        </button>
+    </div>
 <div style="margin-top:30px;" data-expand="false" #expandWrap>
     <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
         <mat-icon>info</mat-icon>

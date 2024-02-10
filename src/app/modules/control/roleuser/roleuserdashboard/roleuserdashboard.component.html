@@ -15,7 +15,7 @@
             </mat-select>
         </mat-form-field>
         <mat-form-field [style.width.px]="250" appearance="outline">
-            <mat-label>Name</mat-label>
+            <mat-label>Name/Email</mat-label>
             <input type="text" matInput formControlName="searchUserName" [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="ClearData()">
                 <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
@@ -34,7 +34,7 @@
 <div [ngClass]="{'disableDiv': RoleUserId!=0}">
     <mat-table #table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="User">
-            <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef mat-sort-header>Name
+            <mat-header-cell style="display: flex;justify-content: center;" *matHeaderCellDef mat-sort-header>Name/Email
             </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 {{element.User}}

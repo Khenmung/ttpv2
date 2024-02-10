@@ -98,7 +98,8 @@
                                 <span *ngIf="disCol!='FirstCol'">{{element[disCol]}}</span>
                             </mat-cell>
                         </ng-container>
-                        <mat-header-row *matHeaderRowDef="DisplayColumns" style="display: none;min-height: 29px;"></mat-header-row>
+                        <mat-header-row *matHeaderRowDef="DisplayColumns"
+                            style="display: none;min-height: 29px;"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: DisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
@@ -121,9 +122,6 @@
                     </mat-table>
                 </div>
                 <mat-divider style="border-top-color: grey;"></mat-divider>
-                
-
-
 
                 <div style="margin-top:15px;margin-bottom:15px;">
                     <mat-table #table [dataSource]="dataSourceEvaluation" matSort
@@ -164,7 +162,8 @@
                                 </span>
                             </mat-cell>
                         </ng-container>
-                        <mat-header-row *matHeaderRowDef="EvaluationDisplayedColumns" style="min-height: 29px;"></mat-header-row>
+                        <mat-header-row *matHeaderRowDef="EvaluationDisplayedColumns"
+                            style="min-height: 29px;"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: EvaluationDisplayedColumns;" class="element-row">
                         </mat-row>
                     </mat-table>
