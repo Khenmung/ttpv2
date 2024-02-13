@@ -151,7 +151,7 @@ export class FeecollectionreportComponent implements OnInit {
           .subscribe((data: any) => {
             this.Months = [];
             data.value.forEach((d: any) => {
-              this.Months.push({ Month: d.Month, FeeName: d.FeeDefinition.FeeName })
+              this.Months.push({ Month: d.MonthDisplay, FeeName: d.FeeDefinition.FeeName })
               return d;
             })
             this.Months = alasql("select distinct Month,FeeName from ?", [this.Months]);
@@ -256,7 +256,7 @@ export class FeecollectionreportComponent implements OnInit {
     let list: List = new List();
     list.fields = [
       //'ClassId,RollNo,SectionId,StudentClassId,SemesterId,StudentId'
-      "StudentClassId,Month,TotalDebit,Balance"
+      "StudentClassId,Month,MonthDisplay,TotalDebit,Balance"
     ];
     list.PageName = "AccountingLedgerTrialBalances";
     //StudentClassId','Month','TotalDebit','Balance'
@@ -303,6 +303,7 @@ export class FeecollectionreportComponent implements OnInit {
                   SemesterId: item.SemesterId,
                   ClassId: item.ClassId,
                   Month: item.Month,
+                  MonthDisplay: item.MonthDisplay,
                   Sequence: clsobj[0].Sequence,
                   PID: item.PID
                 })
@@ -312,7 +313,7 @@ export class FeecollectionreportComponent implements OnInit {
           debugger;
           //result =result.sort((a,b)=>a.Sequence - b.Sequence);
           let str = "select PID,Name,ClassRollNoSection,ClassId,SemesterId,SectionId,StudentClassId,RollNo,Sequence,Section," +
-            "MAX(Month) month from ? " +
+            "MAX(MonthDisplay) MonthDisplay from ? " +
             "group by PID,Name,Sequence,ClassRollNoSection,Section,RollNo,ClassId,SemesterId,SectionId,StudentClassId"
           this.ELEMENT_DATA = alasql(str, [result]);
           // if (paidNotPaid == 'NotPaid')

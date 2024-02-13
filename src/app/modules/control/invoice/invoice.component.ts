@@ -536,6 +536,7 @@ export class InvoiceComponent implements OnInit {
       "Amount",
       "BatchId",
       "Month",
+      "MonthDisplay",
       "Active",
       "LocationId",
       //"PaymentOrder"

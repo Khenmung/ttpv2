@@ -5,10 +5,10 @@
 button{
   margin-right: 15px;
 }
-  .mat-form-field {
-    margin-right: 15px;
-    width       : 99%;
-  }
+  // .mat-form-field {
+  //   margin-right: 15px;
+  //   width       : 99%;
+  // }
 
   .mat-column-ClassFeeId{
     flex: 1 0 70px;
@@ -24,6 +24,10 @@ button{
 
   
   .mat-column-FeeName,
+  .mat-column-MonthDisplay, 
   .mat-column-Month {
     flex: 1 0 150px;
+  }
+  .mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding:0px 15px 0px 0px;
   }

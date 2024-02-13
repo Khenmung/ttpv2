@@ -67,6 +67,7 @@ export class DashboardclassfeeComponent implements OnInit {
     Amount: 0,
     BatchId: 0,
     Month: 0,
+    MonthDisplay:0,
     PaymentOrder: 0,
     OrgId: 0,
     SubOrgId: 0,
@@ -126,6 +127,7 @@ export class DashboardclassfeeComponent implements OnInit {
         this.Permission = perObj[0].permission;
 
       this.Months = this.contentservice.GetSessionFormattedMonths();
+      this.MonthDisplays =JSON.parse(JSON.stringify( this.Months));
       ////console.log("this.Months",this.Months);
 
       if (this.Permission == 'deny') {
@@ -165,6 +167,7 @@ export class DashboardclassfeeComponent implements OnInit {
     'Quantity',
     'Amount',
     'Month',
+    'MonthDisplay',
     'PaymentOrder',
     'Active',
     'Action'];
@@ -277,6 +280,7 @@ export class DashboardclassfeeComponent implements OnInit {
                     _feeName = clsfee.FeeDefinition.FeeName;
                     studentfeedetail.push({
                       Month: clsfee.Month,
+                      MonthDisplay: clsfee.MonthDisplay,
                       Amount: clsfee.Amount,
                       Formula: _formula,
                       FeeName: _feeName,
@@ -296,7 +300,7 @@ export class DashboardclassfeeComponent implements OnInit {
 
                 })
               })
-              //console.log("studentfeedetailxxxx", studentfeedetail)
+              console.log("studentfeedetailxxxx", studentfeedetail)
               this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
                 .subscribe((data: any) => {
                   this.loading = false;
@@ -391,7 +395,7 @@ export class DashboardclassfeeComponent implements OnInit {
     debugger;
     this.DataCollection.push(JSON.parse(JSON.stringify(row)));
 
-    var objDiscount = this.ELEMENT_DATA.filter((f: any) => f.FeeName == 'Discount' && f.Active == 0);
+    var objDiscount = this.ELEMENT_DATA.find((f: any) => f.FeeName == 'Discount' && f.Active == 0);
     var objDiscountExist = this.ELEMENT_DATA.filter((f: any) => f.FeeName == 'Discount');
     let _otherClassId = this.searchForm.get("searchOtherClassId")?.value;
     if (objDiscountExist.length == 0 && _otherClassId == 0) {
@@ -430,8 +434,8 @@ export class DashboardclassfeeComponent implements OnInit {
       " and SectionId eq " + row.SectionId;
 
 
-    if (row.Month > 0)
-      checkFilterString += " and Month eq " + row.Month
+    if (row.MonthDisplay > 0)
+      checkFilterString += " and MonthDisplay eq " + row.MonthDisplay
 
     if (row.ClassFeeId > 0)
       checkFilterString += " and ClassFeeId ne " + row.ClassFeeId;
@@ -466,25 +470,27 @@ export class DashboardclassfeeComponent implements OnInit {
               this.classFeeData.LocationId = +item.LocationId;
               this.classFeeData.PaymentOrder = item.PaymentOrder;
               this.classFeeData.Month = item.Month;
+              this.classFeeData.MonthDisplay = item.MonthDisplay;
               this.classFeeData.OrgId = this.LoginUserDetail[0]["orgId"];
               this.classFeeData.SubOrgId = this.SubOrgId;
-              if (objDiscount.length > 0 && objDiscount[0].ClassFeeId == 0) {
+              if (objDiscount && objDiscount.ClassFeeId == 0) {
                 var insert: any[] = [];
                 insert.push({
                   Active: 1,
-                  Amount: objDiscount[0].Amount,
-                  BatchId: objDiscount[0].BatchId,
-                  ClassFeeId: objDiscount[0].ClassFeeId,
-                  ClassId: objDiscount[0].ClassId,
-                  FeeDefinitionId: objDiscount[0].FeeDefinitionId,
+                  Amount: objDiscount.Amount,
+                  BatchId: objDiscount.BatchId,
+                  ClassFeeId: objDiscount.ClassFeeId,
+                  ClassId: objDiscount.ClassId,
+                  FeeDefinitionId: objDiscount.FeeDefinitionId,
                   LocationId: 0,
-                  PaymentOrder: objDiscount[0].PaymentOrder,
-                  Month: objDiscount[0].Month,
+                  PaymentOrder: objDiscount.PaymentOrder,
+                  Month: objDiscount.Month,
+                  MonthDisplay: objDiscount.MonthDisplay,
                   OrgId: this.LoginUserDetail[0]["orgId"],
                   SubOrgId: this.SubOrgId
                 })
-                objDiscount[0].Active = 1;
-                this.insert(row, objDiscount[0], insert[0]);
+                objDiscount.Active = 1;
+                this.insert(row, objDiscount, insert[0]);
               }
               ////console.log("dataclassfee", this.classFeeData);
               if (this.classFeeData.ClassFeeId == 0)
@@ -505,12 +511,12 @@ export class DashboardclassfeeComponent implements OnInit {
         (data: any) => {
           tblrow.Action = false;
           this.loading = false; this.PageLoading = false;
-          let insertedItem = this.ELEMENT_DATA.filter(e => e.FeeDefinitionId == row.FeeDefinitionId
+          let insertedItem:any = this.ELEMENT_DATA.find(e => e.FeeDefinitionId == row.FeeDefinitionId
             && e.ClassId == row.ClassId
             && e.SectionId == row.SectionId
             && e.SemesterId == row.SemesterId)
 
-          insertedItem[0].ClassFeeId = data.ClassFeeId;
+          insertedItem.ClassFeeId = data.ClassFeeId;
           item.ClassFeeId = data.ClassFeeId;
           if (this.DataCountToUpdate == 0) {
             this.DataCountToUpdate = -1;
@@ -632,6 +638,7 @@ export class DashboardclassfeeComponent implements OnInit {
       "Rate",
       "Quantity",
       "Month",
+      "MonthDisplay",
       "BatchId",
       "Active",
       "PaymentOrder"];
@@ -685,6 +692,7 @@ export class DashboardclassfeeComponent implements OnInit {
 
       });
   }
+  MonthDisplays:any=[];
   ProcessClassFee(classFeeAfterFilteringExisting, otherClassId) {
     debugger;
     let _classId = 0;
@@ -696,7 +704,7 @@ export class DashboardclassfeeComponent implements OnInit {
       this.FeeDefinitions.forEach((mainFeeName, indx) => {
         var indx = this.Months.findIndex(m => m.MonthName == mainFeeName.FeeName);
         if (indx == -1)
-          this.Months.push({ "MonthName": mainFeeName.FeeName, "val": mainFeeName.FeeDefinitionId });
+          this.MonthDisplays.push({ "MonthName": mainFeeName.FeeName, "val": mainFeeName.FeeDefinitionId });
 
         let existing = classFeeAfterFilteringExisting.filter(fromdb => fromdb.FeeDefinitionId == mainFeeName.FeeDefinitionId)
         if (existing.length > 0) {
@@ -724,6 +732,7 @@ export class DashboardclassfeeComponent implements OnInit {
             "SemesterId": _semesterId,
             "FeeName": mainFeeName.FeeName,
             "Amount": 0,
+            "MonthDisplay":0,
             "Month": 0,
             "PaymentOrder": 100,
             "BatchId": this.SelectedBatchId,// this.Batches[0].MasterDataId,
@@ -737,7 +746,7 @@ export class DashboardclassfeeComponent implements OnInit {
       this.ELEMENT_DATA = this.FeeDefinitions.map((fee, indx) => {
         var indx = this.Months.findIndex(m => m.MonthName == fee.FeeName);
         if (indx == -1)
-          this.Months.push({ "MonthName": fee.FeeName, "val": fee.FeeDefinitionId });
+          this.MonthDisplays.push({ "MonthName": fee.FeeName, "val": fee.FeeDefinitionId });
 
         return {
           "SlNo": indx + 1,
@@ -749,6 +758,7 @@ export class DashboardclassfeeComponent implements OnInit {
           "FeeName": fee.FeeName,
           "Amount": 0,
           "Month": 0,
+          "MonthDisplay":0,
           "PaymentOrder": 100,
           "BatchId": this.SelectedBatchId,
           "Active": 0,
@@ -860,6 +870,7 @@ export interface Element {
   SemesterId: number;
   Amount: any;
   Month: number;
+  MonthDisplay: number;
   PaymentOrder: number,
   BatchId: number;
   Active: number;

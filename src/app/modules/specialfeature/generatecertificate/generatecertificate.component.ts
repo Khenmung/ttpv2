@@ -1366,7 +1366,7 @@ export class GenerateCertificateComponent implements OnInit {
     let list: List = new List();
     list.fields = [
       "LedgerId",
-      "Month"
+      "MonthDisplay"
     ];
     list.PageName = "AccountingLedgerTrialBalances";
     list.filter = ["OrgId eq " + this.LoginUserDetail[0]["orgId"] +
@@ -1376,7 +1376,7 @@ export class GenerateCertificateComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         if (data.value.length > 0) {
-          this.FeePaidLastMonth = data.value[0].Month;
+          this.FeePaidLastMonth = data.value[0].MonthDisplay;
         }
         this.GetStudentAndGenerateCerts();
       });

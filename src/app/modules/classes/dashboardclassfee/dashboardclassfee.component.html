@@ -149,8 +149,20 @@
                 </mat-form-field>
             </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="MonthDisplay">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Display </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-form-field appearance="outline">
+                    <mat-select [(ngModel)]="element.MonthDisplay" [disabled]="element.FeeName=='Discount'"
+                        (selectionChange)="UpdateActive(element,$event)">
+                        <mat-option [value]="0">select</mat-option>
+                        <mat-option *ngFor="let item of MonthDisplays" [value]="item.val">{{item.MonthName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="Month">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Month Year </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Bill Month </mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-form-field appearance="outline">
                     <mat-select [(ngModel)]="element.Month" [disabled]="element.FeeName=='Discount'"

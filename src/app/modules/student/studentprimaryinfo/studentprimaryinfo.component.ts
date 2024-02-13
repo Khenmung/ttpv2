@@ -889,6 +889,7 @@ export class studentprimaryinfoComponent implements OnInit {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
                     Month: clsfee.Month,
+                    MonthDisplay: clsfee.MonthDisplay,
                     Amount: clsfee.Amount,
                     Formula: _formula,
                     FeeName: _feeName,

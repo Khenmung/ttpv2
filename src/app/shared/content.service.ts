@@ -207,7 +207,7 @@ export class ContentService implements OnInit {
       filter += ' and Month ge ' + pMonth;
 
     let list = new List();
-    list.fields = ["ClassId", "Active", "Amount", "Month", "FeeDefinitionId", "PaymentOrder", "SectionId", "SemesterId"];
+    list.fields = ["ClassId", "Active", "Amount", "Month","MonthDisplay", "FeeDefinitionId", "PaymentOrder", "SectionId", "SemesterId"];
     list.PageName = "ClassFees";
     list.lookupFields = ["FeeDefinition($select=FeeCategoryId,FeeSubCategoryId,FeeName,Active)"];
     list.filter = [filter];
@@ -694,6 +694,7 @@ export class ContentService implements OnInit {
         BaseAmount: inv.Amount,
         Balance: AmountAfterFormulaApplied,
         Month: inv.Month,
+        MonthDisplay: inv.MonthDisplay,
         StudentClassId: inv.StudentClassId,
         ClassId: inv.ClassId,
         SectionId: inv.SectionId,
@@ -705,8 +706,8 @@ export class ContentService implements OnInit {
       });
     });
     var query = "select SUM(BaseAmount) BaseAmount,SUM(TotalCredit) TotalCredit,SUM(TotalDebit) TotalDebit, SUM(Balance) Balance," +
-      "StudentClassId,ClassId,SemesterId,SectionId,LedgerId, Active, GeneralLedgerId, BatchId, Month, OrgId,SubOrgId " +
-      "FROM ? GROUP BY StudentClassId,ClassId,SemesterId,SectionId, LedgerId,Active, GeneralLedgerId,BatchId, Month,OrgId,SubOrgId";
+      "StudentClassId,ClassId,SemesterId,SectionId,LedgerId, Active, GeneralLedgerId, BatchId,Month, MonthDisplay, OrgId,SubOrgId " +
+      "FROM ? GROUP BY StudentClassId,ClassId,SemesterId,SectionId, LedgerId,Active, GeneralLedgerId,BatchId,Month, MonthDisplay,OrgId,SubOrgId";
     var sumFeeData = alasql(query, [_LedgerData]);
     ////console.log("_LedgerData", _LedgerData);
     //console.log("sumFeeData", sumFeeData);

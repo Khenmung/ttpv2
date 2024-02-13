@@ -186,7 +186,7 @@ export class ExcelDataManagementComponent implements OnInit {
   onselectchange(event) {
     debugger;
     //    ////console.log('event', event);
-    this.SelectedUploadtype = this.UploadTypes.filter(item => item.MasterDataId == event.value)[0].MasterDataName
+    this.SelectedUploadtype = this.UploadTypes.find(item => item.MasterDataId == event.value).MasterDataName
 
     if (this.SelectedUploadtype.toLowerCase().includes(this.UploadType.CLASSROLLNOMAPPING)) {
       this.displayedColumns = ["StudentId", "Class", "Section", "RollNo"];
@@ -829,7 +829,8 @@ export class ExcelDataManagementComponent implements OnInit {
             StudentClassId: element.StudentClassId,
             BatchId: this.SelectedBatchId,
             OrgId: this.loginDetail[0]["orgId"],
-            SubOrgId: this.SubOrgId
+            SubOrgId: this.SubOrgId,
+            Active:1
           });
         }
         else {
@@ -1401,7 +1402,7 @@ export class ExcelDataManagementComponent implements OnInit {
     this.readAsJson(studentCls);
   }
   UploadNewStudent() {
-    this.SelectedUploadtype = "student upload";
+    //this.SelectedUploadtype = "student upload";
     //console.log("this.ELEMENT_DATA", this.ELEMENT_DATA)
     this.readAsJson(this.ELEMENT_DATA)
   }
@@ -1416,6 +1417,7 @@ export class ExcelDataManagementComponent implements OnInit {
   toUpdate = 0;
   ErrorCount = 0;
   readAsJson(dataToUpload) {
+    debugger;
     try {
       this.loading = true;
       this.toUpdate = dataToUpload.length;
@@ -1621,7 +1623,7 @@ export class ExcelDataManagementComponent implements OnInit {
   }
   saveStudentClass() {
     debugger;
-    ////console.log('student class to save', this.studentData[0])
+    console.log('student class to save', this.studentData[0])
     this.dataservice.postPatch('StudentClasses', this.studentData[0], 0, 'post')
       .subscribe((result: any) => {
         ////console.log('inserted');

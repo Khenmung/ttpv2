@@ -1012,7 +1012,7 @@ export class HomeDashboardComponent implements OnInit {
       filterstr += " and StudentId eq " + localStorage.getItem("studentId");
     }
     filterstr += this.GetEmployeeClassIds();
-    filterstr += " and Active eq 1"
+    filterstr += " and Active eq 1";
     list.filter = [filterstr];
     this.Loading();
     this.PageLoading = true;
