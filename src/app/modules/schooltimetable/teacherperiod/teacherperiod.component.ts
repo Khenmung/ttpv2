@@ -22,34 +22,34 @@ export class TeacherperiodComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   PageLoading = true;
-  Defaultvalue=0;
+  Defaultvalue = 0;
   SelectedApplicationId = 0;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   FilterOrgSubOrg = '';
   FilterOrgSubOrgBatchId = '';
   loading = false;
   rowCount = -1;
   DataToSave = 0;
-  SelectedBatchId = 0;SubOrgId = 0;
-  StoredForUpdate :any[]= [];
-  PeriodTypes :any[]= [];
-  Classes :any[]= [];
-  Sections :any[]= [];
-  Subjects :any[]= [];
-  WeekDays :any[]= [];
-  Periods :any[]= [];
-  Batches :any[]= [];
-  ClassSubjects :any[]= [];
-  ClassWiseSubjects :any[]= [];
-  AllClassPeriods :any[]= [];
-  AllTimeTable :any[]= [];
+  SelectedBatchId = 0; SubOrgId = 0;
+  StoredForUpdate: any[] = [];
+  PeriodTypes: any[] = [];
+  Classes: any[] = [];
+  Sections: any[] = [];
+  Subjects: any[] = [];
+  WeekDays: any[] = [];
+  Periods: any[] = [];
+  Batches: any[] = [];
+  ClassSubjects: any[] = [];
+  ClassWiseSubjects: any[] = [];
+  AllClassPeriods: any[] = [];
+  AllTimeTable: any[] = [];
   SchoolTimeTableListName = "SchoolTimeTables";
-  SchoolTimeTableList :any[]= [];
+  SchoolTimeTableList: any[] = [];
   dataSource: MatTableDataSource<any[]>;
   dataSourceDayStatistic: MatTableDataSource<any[]>;
   dataSourcePeriodStatistic: MatTableDataSource<any[]>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   Permission = '';
   SchoolTimeTableData = {
     TimeTableId: 0,
@@ -58,12 +58,12 @@ export class TeacherperiodComponent implements OnInit {
     SectionId: 0,
     SchoolClassPeriodId: 0,
     TeacherSubjectId: 0,
-    OrgId: 0,SubOrgId: 0,
+    OrgId: 0, SubOrgId: 0,
     BatchId: 0,
     Active: 0
   };
-  displayedColumns:any[]= [];
-  DataForAllClasses :any[]= [];
+  displayedColumns: any[] = [];
+  DataForAllClasses: any[] = [];
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
     private datepipe: DatePipe,
@@ -97,7 +97,7 @@ export class TeacherperiodComponent implements OnInit {
     this.LoginUserDetail = this.tokenStorage.getUserDetail();
     //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     if (this.LoginUserDetail == null)
       this.nav.navigate(['/auth/login']);
     else {
@@ -108,23 +108,24 @@ export class TeacherperiodComponent implements OnInit {
       if (this.Permission != 'deny') {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-          this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
-          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence);
-        });
+        this.Classes = this.tokenStorage.getAllClasses()!;
+        // this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
+        //if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+        //});
 
-        
+
         this.GetMasterData();
 
       }
     }
   }
-  Teachers :any[]= [];
-  WorkAccounts :any[]= [];
+  Teachers: any[] = [];
+  WorkAccounts: any[] = [];
   GetTeachers() {
 
-    var orgIdSearchstr = this.FilterOrgSubOrg ;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    var _WorkAccount = this.WorkAccounts.filter((f:any) => f.MasterDataName.toLowerCase() == "teaching");
+    var orgIdSearchstr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
+    var _WorkAccount = this.WorkAccounts.filter((f: any) => f.MasterDataName.toLowerCase() == "teaching");
     var _workAccountId = 0;
     if (_WorkAccount.length > 0)
       _workAccountId = _WorkAccount[0].MasterDataId;
@@ -139,7 +140,7 @@ export class TeacherperiodComponent implements OnInit {
     this.Teachers = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
-        data.value.filter((f:any) => {
+        data.value.filter((f: any) => {
           var _lastname = f.Employee.LastName == null ? '' : " " + f.Employee.LastName;
           this.Teachers.push({
             TeacherId: f.Employee.EmpEmployeeId,
@@ -153,7 +154,7 @@ export class TeacherperiodComponent implements OnInit {
 
     row.Action = true;
     row.Active = value.checked ? 1 : 0;
-    var updateActive = this.StoredForUpdate.filter((s:any) => s.DayId == row.DayId);
+    var updateActive = this.StoredForUpdate.filter((s: any) => s.DayId == row.DayId);
     updateActive.forEach(u => u.Active = 1)
   }
   // Save(row) {
@@ -176,21 +177,21 @@ export class TeacherperiodComponent implements OnInit {
     if (duplicateCheck.length > 1) {
       ////console.log("duplicateCheck",duplicateCheck);
       var _detail = '';
-      var _dupdetail = this.DataForAllClasses.filter((f:any) => f.DayId == row.DayId && f.PeriodId == row.PeriodId && row.TeacherId == row.TeacherId);
+      var _dupdetail = this.DataForAllClasses.filter((f: any) => f.DayId == row.DayId && f.PeriodId == row.PeriodId && row.TeacherId == row.TeacherId);
       _dupdetail.forEach(d => {
         var objclass = this.Classes.filter(c => c.ClassId == d.ClassId);
         var _className = '';
         if (objclass.length > 0)
           _className = objclass[0].ClassName;
         var _sectionName = '';
-        var objSection = this.Sections.filter((f:any) => f.MasterDataId == d.SectionId);
+        var objSection = this.Sections.filter((f: any) => f.MasterDataId == d.SectionId);
         if (objSection.length > 0)
           _sectionName = objSection[0].MasterDataName;
 
         _detail += "Class: " + _className + ", Section: " + _sectionName + ", Period: " + d.Period + "\n";
 
       })
-      var _teacherobj = this.TeacherSubjectList.filter((f:any) => f.EmployeeId == row.TeacherId)
+      var _teacherobj = this.TeacherSubjectList.filter((f: any) => f.EmployeeId == row.TeacherId)
       this.contentservice.openSnackBar("Teacher " + _teacherobj[0].TeacherName + " already exists in the same period in another class.\n" + _detail, globalconstants.ActionText, globalconstants.RedBackground);
       this.loading = false;
       element.Action = true;
@@ -266,12 +267,12 @@ export class TeacherperiodComponent implements OnInit {
   TeacherName = '';
   DayStatisticDisplay = ["TeacherName"];
   PeriodStatisticDisplay = ["Day"];
-  DayStatistics :any[]= [];
-  PeriodStatistics :any[]= [];
+  DayStatistics: any[] = [];
+  PeriodStatistics: any[] = [];
   GetSchoolTimeTable() {
     debugger;
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.SchoolTimeTableList = [];
 
     this.loading = true;
@@ -288,27 +289,27 @@ export class TeacherperiodComponent implements OnInit {
     this.PageLoading = false;
     //})
   }
-  ClearData(){
-    this.PeriodStatistics=[];
+  ClearData() {
+    this.PeriodStatistics = [];
     this.dataSourcePeriodStatistic = new MatTableDataSource<any>(this.PeriodStatistics);
   }
   FormatData(pClassId, pSectionId) {
 
-    var dbTimeTable :any[]= [];
+    var dbTimeTable: any[] = [];
     this.StoredForUpdate = [];
     if (pClassId > 0 && pSectionId > 0)
-      dbTimeTable = this.AllTimeTable.filter((f:any) => f.ClassId == pClassId && f.SectionId == pSectionId);
+      dbTimeTable = this.AllTimeTable.filter((f: any) => f.ClassId == pClassId && f.SectionId == pSectionId);
     else
       dbTimeTable = [...this.AllTimeTable]
 
     this.SchoolTimeTableList = [];
-    var forDisplay:any[]= [];
+    var forDisplay: any[] = [];
     var distinctClass = alasql("select distinct ClassId from ?", [dbTimeTable]);
     if (distinctClass.length == 0)
       distinctClass.push({ ClassId: pClassId, SectionId: pSectionId });
 
     distinctClass.forEach(distinctcls => {
-      this.ClassWiseSubjects = this.TeacherSubjectList.filter((f:any) => f.ClassId == distinctcls.ClassId);
+      this.ClassWiseSubjects = this.TeacherSubjectList.filter((f: any) => f.ClassId == distinctcls.ClassId);
       if (this.ClassWiseSubjects.length == 0 && pClassId > 0) {
         this.contentservice.openSnackBar("Subject Teacher not defined for this class!", globalconstants.ActionText, globalconstants.RedBackground);
       }
@@ -316,7 +317,7 @@ export class TeacherperiodComponent implements OnInit {
         //iterrate through class
         //iterrate through weekdays
         // iterate through class periods
-        var filterPeriods :any[]= [];
+        var filterPeriods: any[] = [];
         filterPeriods = this.AllClassPeriods.filter(a => a.ClassId == distinctcls.ClassId);
 
         if (filterPeriods.length == 0) {
@@ -404,12 +405,12 @@ export class TeacherperiodComponent implements OnInit {
   GetPeriodStatistic() {
     debugger;
     var groupbySubjects = alasql("select ClassSubjectId,Count(1) TeacherCount from ? group by ClassSubjectId", [this.TeacherSubjectList]);
-    var filterSubjectMorethanOneTeacher = groupbySubjects.filter((s:any) => s.TeacherCount > 1);
+    var filterSubjectMorethanOneTeacher = groupbySubjects.filter((s: any) => s.TeacherCount > 1);
     var ClassSubjectIdWithTeacherId = this.TeacherSubjectList.filter(t => filterSubjectMorethanOneTeacher.findIndex(s => s.ClassSubjectId == t.ClassSubjectId) > -1)
 
     var _teacherId = this.searchForm.get("searchEmployeeId")?.value;
     this.TeacherName = '';
-    var obj = this.Teachers.filter((f:any) => f.TeacherId == _teacherId);
+    var obj = this.Teachers.filter((f: any) => f.TeacherId == _teacherId);
     if (obj.length > 0)
       this.TeacherName = obj[0].TeacherName.trim();
     this.PeriodStatistics = [];
@@ -420,10 +421,10 @@ export class TeacherperiodComponent implements OnInit {
     this.WeekDays.forEach(weekday => {
       this.PeriodStatisticDisplay.forEach(col => {
 
-        var periodmatch = _forCurrentTeacher.filter((f:any) => f.Period == col && f.Day == weekday.MasterDataName);
+        var periodmatch = _forCurrentTeacher.filter((f: any) => f.Period == col && f.Day == weekday.MasterDataName);
         if (periodmatch.length > 0) {
           periodmatch.forEach(eachperiod => {
-            var row = this.PeriodStatistics.filter((s:any) => s.Day == weekday.MasterDataName && s.TeacherName.trim() == this.TeacherName);
+            var row = this.PeriodStatistics.filter((s: any) => s.Day == weekday.MasterDataName && s.TeacherName.trim() == this.TeacherName);
             if (row.length > 0) {
               var multipletime = '';
               row.forEach(r => {
@@ -439,13 +440,12 @@ export class TeacherperiodComponent implements OnInit {
         }
         else {
           //for one subject multiple teacher;
-          var subjectWithMultiTeacher = this.DataForAllClasses.filter((f:any) => ClassSubjectIdWithTeacherId.findIndex(d => d.ClassSubjectId == f.ClassSubjectId) > -1
+          var subjectWithMultiTeacher = this.DataForAllClasses.filter((f: any) => ClassSubjectIdWithTeacherId.findIndex(d => d.ClassSubjectId == f.ClassSubjectId) > -1
             && f.Period == col && f.Day == weekday.MasterDataName);
-            if(subjectWithMultiTeacher.length>0)
-            {
-              var _data = { TeacherName: this.TeacherName, TeacherId: _teacherId, Day: weekday.MasterDataName, [col]: subjectWithMultiTeacher[0].SubjectNClass }
-              this.PeriodStatistics.push(_data);
-            }
+          if (subjectWithMultiTeacher.length > 0) {
+            var _data = { TeacherName: this.TeacherName, TeacherId: _teacherId, Day: weekday.MasterDataName, [col]: subjectWithMultiTeacher[0].SubjectNClass }
+            this.PeriodStatistics.push(_data);
+          }
         }
       })
 
@@ -461,7 +461,7 @@ export class TeacherperiodComponent implements OnInit {
   GetAllSchoolTimeTable() {
     debugger;
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     //var orgIdSearchstr = ' and OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and BatchId eq ' + this.SelectedBatchId;
     var filterstr = this.FilterOrgSubOrgBatchId + ' and Active eq 1';
 
@@ -492,7 +492,7 @@ export class TeacherperiodComponent implements OnInit {
             _teacherId = f.TeacherSubject.EmployeeId;
 
           var _section = ''
-          var objsection = this.Sections.filter((s:any) => s.MasterDataId == f.SectionId);
+          var objsection = this.Sections.filter((s: any) => s.MasterDataId == f.SectionId);
           var objTeachersubj = this.TeacherSubjectList.filter(t => t.TeacherSubjectId == f.TeacherSubjectId);
 
           if (objsection.length > 0 && objTeachersubj.length > 0) {
@@ -510,7 +510,7 @@ export class TeacherperiodComponent implements OnInit {
         this.StoredForUpdate = [];
       })
   }
-  TeacherSubjectList :any[]= [];
+  TeacherSubjectList: any[] = [];
   GetTeacherSubject() {
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     //debugger;
@@ -555,7 +555,7 @@ export class TeacherperiodComponent implements OnInit {
   }
   GetAllClassPeriods() {
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
-        this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
+    this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.SchoolTimeTableList = [];
     //var orgIdSearchstr = ' OrgId eq ' + this.LoginUserDetail[0]["orgId"] + ' and BatchId eq ' + this.SelectedBatchId;
 
@@ -651,11 +651,11 @@ export class TeacherperiodComponent implements OnInit {
     this.rowCount = 0;
 
     //not action means data has been saved.
-    var filteredAction = this.SchoolTimeTableList.filter((s:any) => !s.Action);
+    var filteredAction = this.SchoolTimeTableList.filter((s: any) => !s.Action);
     var selectedClassIds = this.searchForm.get("searchClassIdApplyAll")?.value;
     delete selectedClassIds[this.searchForm.get("searchClassId")?.value];
     this.DataToSave = filteredAction.length * selectedClassIds.length;
-    var existInDB :any[]= [];
+    var existInDB: any[] = [];
 
     filteredAction.forEach(toReplicate => {
       selectedClassIds.forEach(toSelectedClassId => {
@@ -688,7 +688,7 @@ export class TeacherperiodComponent implements OnInit {
     this.loading = true;
     this.rowCount = 0;
 
-    var _toUpdate = this.StoredForUpdate.filter((s:any) => s.Day == element.Day && s.Action);
+    var _toUpdate = this.StoredForUpdate.filter((s: any) => s.Day == element.Day && s.Action);
 
     var validated = _toUpdate.filter(t => t.TeacherSubjectId == 0 && !t.Period.includes('f_'));
     if (validated.length > 0) {
@@ -705,7 +705,7 @@ export class TeacherperiodComponent implements OnInit {
 
   }
   SaveAll() {
-    var _toUpdate = this.StoredForUpdate.filter((s:any) => s.Action);
+    var _toUpdate = this.StoredForUpdate.filter((s: any) => s.Action);
 
     var validated = _toUpdate.filter(t => t.TeacherSubjectId == 0 && !t.Period.includes('f_'));
     if (validated.length > 0) {

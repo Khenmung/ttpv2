@@ -21,7 +21,7 @@ export class ClassperiodComponent implements OnInit {
   PageLoading = true;
 
   SelectedClassCategory = '';
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
@@ -30,16 +30,16 @@ export class ClassperiodComponent implements OnInit {
   DataToSave = 0;
   SelectedBatchId = 0; SubOrgId = 0;
   SelectedApplicationId = 0;
-  StoredForUpdate :any[]= [];
-  Classes :any[]= [];
-  Periods :any[]= [];
-  PeriodTypes :any[]= [];
-  Batches :any[]= [];
-  AllClassPeriods :any[]= [];
+  StoredForUpdate: any[] = [];
+  Classes: any[] = [];
+  Periods: any[] = [];
+  PeriodTypes: any[] = [];
+  Batches: any[] = [];
+  AllClassPeriods: any[] = [];
   SchoolClassPeriodListName = "SchoolClassPeriods";
-  SchoolClassPeriodList :any[]= [];
+  SchoolClassPeriodList: any[] = [];
   dataSource: MatTableDataSource<ISchoolClassPeriod>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   Permission = '';
   SchoolClassPeriodData = {
     SchoolClassPeriodId: 0,
@@ -55,10 +55,10 @@ export class ClassperiodComponent implements OnInit {
     Active: 0
   };
   Defaultvalue = 0;
-  Semesters :any[]= [];
-  ClassCategory :any[]= [];
-  Sections :any[]= [];
-  displayedColumns :any[]= [];
+  Semesters: any[] = [];
+  ClassCategory: any[] = [];
+  Sections: any[] = [];
+  displayedColumns: any[] = [];
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
     private datepipe: DatePipe,
@@ -107,19 +107,20 @@ export class ClassperiodComponent implements OnInit {
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-       
+
         this.GetMasterData();
-        this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          data.value.forEach(m => {
-            let obj = this.ClassCategory.filter((f:any) => f.MasterDataId == m.CategoryId);
-            if (obj.length > 0) {
-              m.Category = obj[0].MasterDataName.toLowerCase();
-              this.Classes.push(m);
-            }
-          });
-          this.Classes = this.Classes.sort((a,b)=>a.Sequence - b.Sequence)
+        let _allClasses: any = this.tokenStorage.getAllClasses();
+        //this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
+        _allClasses.forEach(m => {
+          let obj = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
+          if (obj) {
+            m.Category = obj.MasterDataName.toLowerCase();
+            this.Classes.push(m);
+          }
         });
-       
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence)
+        //});
+
         this.GetAllClassPeriods();
       }
     }
@@ -184,7 +185,7 @@ export class ClassperiodComponent implements OnInit {
     let checkFilterString = this.FilterOrgSubOrgBatchId + " and ClassId eq " + row.ClassId +
       " and SectionId eq " + row.SectionId +
       " and SemesterId eq " + row.SemesterId +
-      " and PeriodId eq " + row.PeriodId ;
+      " and PeriodId eq " + row.PeriodId;
 
 
     if (row.SchoolClassPeriodId > 0)
@@ -417,11 +418,11 @@ export class ClassperiodComponent implements OnInit {
     this.rowCount = 0;
 
     //not action means data has been saved.
-    var filteredAction = this.SchoolClassPeriodList.filter((s:any) => !s.Action);
+    var filteredAction = this.SchoolClassPeriodList.filter((s: any) => !s.Action);
     var selectedClassIds = this.searchForm.get("searchClassIdApplyAll")?.value;
     delete selectedClassIds[this.searchForm.get("searchClassId")?.value];
     this.DataToSave = filteredAction.length * selectedClassIds.length;
-    var existInDB :any[]= [];
+    var existInDB: any[] = [];
 
     //this.DataToSave = filteredAction.length;
     filteredAction.forEach(toReplicate => {
@@ -453,7 +454,7 @@ export class ClassperiodComponent implements OnInit {
 
     this.loading = true;
     this.rowCount = 0;
-    var checkedRows = this.SchoolClassPeriodList.filter((f:any) => f.Action);
+    var checkedRows = this.SchoolClassPeriodList.filter((f: any) => f.Action);
     this.DataToSave = checkedRows.length;
 
     checkedRows.forEach(record => {

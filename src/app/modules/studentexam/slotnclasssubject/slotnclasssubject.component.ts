@@ -402,17 +402,17 @@ export class SlotnclasssubjectComponent implements OnInit {
     debugger;
     var _examId = this.searchForm.get("searchExamId")?.value
     var _classGroupId = 0;
-    var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
+    var obj = this.Exams.find((f: any) => f.ExamId == _examId);
 
-    if (obj.length > 0) {
-      _classGroupId = obj[0].ClassGroupId;
-      this.ExamReleased = obj[0].ReleaseResult == 1 ? true : false;
+    if (obj) {
+      _classGroupId = obj.ClassGroupId;
+      this.ExamReleased = obj.ReleaseResult == 1 ? true : false;
     }
 
     this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, _examId)
       .subscribe((data: any) => {
         this.ExamClassGroups = data.value.map(e => {
-          e.GroupName = this.ClassGroups.filter(c => c.ClassGroupId == e.ClassGroupId)[0].GroupName;
+          e.GroupName = this.ClassGroups.find(c => c.ClassGroupId == e.ClassGroupId).GroupName;
           return e;
         })
         this.FilteredClassGroup = this.ExamClassGroups.filter(e => e.ExamId == _examId);
@@ -572,7 +572,7 @@ export class SlotnclasssubjectComponent implements OnInit {
     //   this.contentservice.openSnackBar("Please select exam slot", globalconstants.ActionText, globalconstants.RedBackground);
     //   return;
     // }
-  
+
     this.loading = true;
     //orgIdSearchstr += ' and SlotId eq ' + _slotId;
     orgIdSearchstr += ' and ClassId eq ' + _classId;
@@ -713,7 +713,7 @@ export class SlotnclasssubjectComponent implements OnInit {
                     selected = 2;
                   }
                 }
-                
+
                 displayrow["Subject"].push(
                   {
                     ClassSubjectId: clssub.ClassSubjectId,
@@ -817,27 +817,28 @@ export class SlotnclasssubjectComponent implements OnInit {
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
 
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-    this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-      this.Classes = [];
-      data.value.forEach(m => {
-        let obj: any = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
-        if (obj.length > 0) {
-          m.Category = obj[0].MasterDataName.toLowerCase();
-          this.Classes.push(m);
-        }
-      })
-      if (this.LoginUserDetail[0]['RoleUsers'][0]['role'].toLowerCase() == 'student') {
-        let _classId = this.tokenStorage.getClassId();
-        this.Classes = this.Classes.filter(c => c.ClassId == _classId);
+    let _allClasses: any = this.tokenStorage.getAllClasses()!;
+    //this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+    this.Classes = [];
+    _allClasses.forEach(m => {
+      let obj: any = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
+      if (obj) {
+        m.Category = obj.MasterDataName.toLowerCase();
+        this.Classes.push(m);
       }
-      else
-        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-
-      this.GetExams();
-      this.GetExamSlots();
-      this.GetClassSubject();
-      this.Getclassgroups();
     })
+    if (this.LoginUserDetail[0]['RoleUsers'][0]['role'].toLowerCase() == 'student') {
+      let _classId = this.tokenStorage.getClassId();
+      this.Classes = this.Classes.filter(c => c.ClassId == _classId);
+    }
+    else
+      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+
+    this.GetExams();
+    this.GetExamSlots();
+    this.GetClassSubject();
+    this.Getclassgroups();
+    //})
     //this.shareddata.ChangeBatch(this.Batches);
 
 

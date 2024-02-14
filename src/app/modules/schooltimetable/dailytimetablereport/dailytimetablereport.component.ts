@@ -109,30 +109,31 @@ export class DailytimetablereportComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.GetMasterData();
-        this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
-            let _classId = this.tokenStorage.getClassId();
-            let _classes = data.value.filter(d => d.ClassId == _classId);
-            _classes.forEach(m => {
-              let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
-              if (obj.length > 0) {
-                m.Category = obj[0].MasterDataName.toLowerCase();
-                this.Classes.push(m);
-              }
-            });
+        let _allClasses: any = this.tokenStorage.getAllClasses();
+        //this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
+        if (this.LoginUserDetail[0]["RoleUsers"][0].role.toLowerCase() == 'student') {
+          let _classId = this.tokenStorage.getClassId();
+          let _classes = _allClasses.filter(d => d.ClassId == _classId);
+          _classes.forEach(m => {
+            let obj = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
+            if (obj) {
+              m.Category = obj.MasterDataName.toLowerCase();
+              this.Classes.push(m);
+            }
+          });
 
-          }
-          else {
-            data.value.forEach(m => {
-              let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
-              if (obj.length > 0) {
-                m.Category = obj[0].MasterDataName.toLowerCase();
-                this.Classes.push(m);
-              }
-            });
-            this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-          }
-        });
+        }
+        else {
+          _allClasses.forEach(m => {
+            let obj = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
+            if (obj) {
+              m.Category = obj.MasterDataName.toLowerCase();
+              this.Classes.push(m);
+            }
+          });
+          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+        }
+        // });
 
       }
     }

@@ -159,16 +159,17 @@ export class ClassmasterdashboardComponent implements OnInit {
         //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         // })
         this.GetMasterData();
-        this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-          this.Classes = data.value.map(m => {
-            m.Category = '';
-            var obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
-            if (obj.length > 0)
-              m.Category = obj[0].MasterDataName.toLowerCase();
-            return m;
-          })
-          this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-        });
+        let _allClasses: any = this.tokenStorage.getAllClasses();
+        //this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
+        this.Classes = _allClasses.map(m => {
+          m.Category = '';
+          var obj = this.ClassCategory.find(c => c.MasterDataId == m.CategoryId);
+          if (obj)
+            m.Category = obj.MasterDataName.toLowerCase();
+          return m;
+        })
+        this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+        //});
 
       }
     }

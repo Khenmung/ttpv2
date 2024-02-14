@@ -108,7 +108,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('studentId', decodedUser.studentId);
         localStorage.setItem('role', decodedUser.role);
         localStorage.setItem('customerPlanId', decodedUser.customerPlanId);
-        localStorage.setItem('loggedTime',new Date() +"");
+        localStorage.setItem('loggedTime',new Date().getDate() +"");
         this.tokenStorage.saveSubOrgId(this.userInfo["subOrgId"]);
         this.FilterOrgSubOrg = "OrgId eq " + localStorage.getItem("orgId") + " and SubOrgId eq " + localStorage.getItem("subOrgId");// globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         //this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);

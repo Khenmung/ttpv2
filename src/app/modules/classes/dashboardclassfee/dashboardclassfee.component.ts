@@ -67,7 +67,7 @@ export class DashboardclassfeeComponent implements OnInit {
     Amount: 0,
     BatchId: 0,
     Month: 0,
-    MonthDisplay:0,
+    MonthDisplay: 0,
     PaymentOrder: 0,
     OrgId: 0,
     SubOrgId: 0,
@@ -127,7 +127,7 @@ export class DashboardclassfeeComponent implements OnInit {
         this.Permission = perObj[0].permission;
 
       this.Months = this.contentservice.GetSessionFormattedMonths();
-      this.MonthDisplays =JSON.parse(JSON.stringify( this.Months));
+      this.MonthDisplays = JSON.parse(JSON.stringify(this.Months));
       ////console.log("this.Months",this.Months);
 
       if (this.Permission == 'deny') {
@@ -261,7 +261,7 @@ export class DashboardclassfeeComponent implements OnInit {
                 var obj = this.Classes.filter(c => c.ClassId == studcls.ClassId);
                 if (obj.length > 0)
                   _className = obj[0].ClassName;
-                let _currentStudent =  _students.filter(s=>s.StudentId === studcls.StudentId);
+                let _currentStudent = _students.filter(s => s.StudentId === studcls.StudentId);
                 objClassFee.forEach(clsfee => {
                   var _category = '';
                   var _subCategory = '';
@@ -511,7 +511,7 @@ export class DashboardclassfeeComponent implements OnInit {
         (data: any) => {
           tblrow.Action = false;
           this.loading = false; this.PageLoading = false;
-          let insertedItem:any = this.ELEMENT_DATA.find(e => e.FeeDefinitionId == row.FeeDefinitionId
+          let insertedItem: any = this.ELEMENT_DATA.find(e => e.FeeDefinitionId == row.FeeDefinitionId
             && e.ClassId == row.ClassId
             && e.SectionId == row.SectionId
             && e.SemesterId == row.SemesterId)
@@ -692,7 +692,7 @@ export class DashboardclassfeeComponent implements OnInit {
 
       });
   }
-  MonthDisplays:any=[];
+  MonthDisplays: any = [];
   ProcessClassFee(classFeeAfterFilteringExisting, otherClassId) {
     debugger;
     let _classId = 0;
@@ -732,7 +732,7 @@ export class DashboardclassfeeComponent implements OnInit {
             "SemesterId": _semesterId,
             "FeeName": mainFeeName.FeeName,
             "Amount": 0,
-            "MonthDisplay":0,
+            "MonthDisplay": 0,
             "Month": 0,
             "PaymentOrder": 100,
             "BatchId": this.SelectedBatchId,// this.Batches[0].MasterDataId,
@@ -758,7 +758,7 @@ export class DashboardclassfeeComponent implements OnInit {
           "FeeName": fee.FeeName,
           "Amount": 0,
           "Month": 0,
-          "MonthDisplay":0,
+          "MonthDisplay": 0,
           "PaymentOrder": 100,
           "BatchId": this.SelectedBatchId,
           "Active": 0,
@@ -824,21 +824,21 @@ export class DashboardclassfeeComponent implements OnInit {
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
-    var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-
-    this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-      this.Classes = data.value.map(m => {
-        m.Category = '';
-        var obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
-        if (obj.length > 0)
-          m.Category = obj[0].MasterDataName.toLowerCase();
-        return m;
-      })
-      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-      //[...data.value];
-      //this.GetMasterData();
-      this.GetDistinctClassFee();
-    });
+    //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+    let _allClasses: any = this.tokenStorage.getAllClasses();
+    //this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+    this.Classes = _allClasses.map(m => {
+      m.Category = '';
+      var obj = this.ClassCategory.find(c => c.MasterDataId == m.CategoryId);
+      if (obj)
+        m.Category = obj.MasterDataName.toLowerCase();
+      return m;
+    })
+    this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+    //[...data.value];
+    //this.GetMasterData();
+    this.GetDistinctClassFee();
+    //});
 
 
   }

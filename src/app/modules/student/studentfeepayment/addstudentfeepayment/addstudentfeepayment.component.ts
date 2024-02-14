@@ -360,6 +360,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   logourl = '';
   CustomerHeading: any[] = [];
   GetMasterData() {
+    debugger;
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.Remarks = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
     //this.shareddata.CurrentFeeDefinitions.subscribe((f: any) => {
@@ -558,7 +559,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
 
   GetClassFee() {
-    //debugger;
+    debugger;
     if (!this.studentInfoTodisplay.ClassId || this.SelectedBatchId == 0) {
       //this.alert.error('Invalid Id', this.optionsNoAutoClose);
       this.contentservice.openSnackBar("Invalid Id", globalconstants.ActionText, globalconstants.RedBackground);

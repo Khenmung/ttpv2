@@ -223,16 +223,16 @@ export class FeecollectionreportComponent implements OnInit {
     }
     if (selectedMonth == 0) {
       this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar("Please select month.", globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar("Please select display month.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     
     this.loading = true;
     if (paidNotPaid == 'NotPaid')
       //nestedFilter = "$filter=TotalCredit gt 0 and Balance gt 0 and Month eq " + selectedMonth + ";";
-      nestedFilter = " and TotalDebit gt 0 and Balance gt 0 and Month eq " + selectedMonth + " and Active eq 1";
+      nestedFilter = " and TotalDebit gt 0 and Balance gt 0 and MonthDisplay eq " + selectedMonth + " and Active eq 1";
     else
-      nestedFilter = " and Balance eq 0 and Month eq " + selectedMonth + " and Active eq 1";//and TotalDebit gt 0 
+      nestedFilter = " and Balance eq 0 and MonthDisplay eq " + selectedMonth + " and Active eq 1";//and TotalDebit gt 0 
 
     if (_selectedClassId) {
       filterstring += ' and ClassId eq ' + _selectedClassId;
@@ -313,7 +313,7 @@ export class FeecollectionreportComponent implements OnInit {
           debugger;
           //result =result.sort((a,b)=>a.Sequence - b.Sequence);
           let str = "select PID,Name,ClassRollNoSection,ClassId,SemesterId,SectionId,StudentClassId,RollNo,Sequence,Section," +
-            "MAX(MonthDisplay) MonthDisplay from ? " +
+            "MAX(Sequence) Month from ? " +
             "group by PID,Name,Sequence,ClassRollNoSection,Section,RollNo,ClassId,SemesterId,SectionId,StudentClassId"
           this.ELEMENT_DATA = alasql(str, [result]);
           // if (paidNotPaid == 'NotPaid')

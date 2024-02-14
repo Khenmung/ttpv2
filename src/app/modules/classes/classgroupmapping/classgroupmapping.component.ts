@@ -22,26 +22,26 @@ import { MatDialog } from '@angular/material/dialog';
 export class ClassgroupmappingComponent implements OnInit {
   PageLoading = true;
   @ViewChild(MatPaginator) paging: MatPaginator;
-  Defaultvalue=0;
-  ClassGroupTypes :any[]= [];
-  ClassGroups :any[]= [];
-  LoginUserDetail:any[]= [];
+  Defaultvalue = 0;
+  ClassGroupTypes: any[] = [];
+  ClassGroups: any[] = [];
+  LoginUserDetail: any[] = [];
   CurrentRow: any = {};
   ClassGroupMappingListName = 'ClassGroupMappings';
-  Applications :any[]= [];
+  Applications: any[] = [];
   loading = false;
   SelectedBatchId = 0; SubOrgId = 0;
   FilterOrgSubOrgBatchId = '';
   FilterOrgSubOrg = '';
-  ClassGroupMappingList: IClassGroupMapping[]= [];
+  ClassGroupMappingList: IClassGroupMapping[] = [];
   filteredOptions: Observable<IClassGroupMapping[]>;
   dataSource: MatTableDataSource<IClassGroupMapping>;
-  allMasterData :any[]= [];
-  ClassGroupMapping :any[]= [];
+  allMasterData: any[] = [];
+  ClassGroupMapping: any[] = [];
   Permission = 'deny';
-  Classes :any[]= [];
-  Semesters :any[]= [];
-  Sections :any[]= [];
+  Classes: any[] = [];
+  Semesters: any[] = [];
+  Sections: any[] = [];
   ClassGroupMappingData = {
     ClassGroupMappingId: 0,
     ClassId: 0,
@@ -130,7 +130,7 @@ export class ClassgroupmappingComponent implements OnInit {
       Active: 0,
       Action: false
     };
-    this.ClassGroupMappingList= [];
+    this.ClassGroupMappingList = [];
     this.ClassGroupMappingList.push(newdata);
     this.dataSource = new MatTableDataSource<IClassGroupMapping>(this.ClassGroupMappingList);
     this.dataSource.paginator = this.paging;
@@ -217,9 +217,8 @@ export class ClassgroupmappingComponent implements OnInit {
   UpdateOrSave(row) {
 
     //debugger;
-    if(row.ClassGroupId==0)
-    {
-      this.contentservice.openSnackBar("Please select class group.",globalconstants.ActionText,globalconstants.RedBackground);
+    if (row.ClassGroupId == 0) {
+      this.contentservice.openSnackBar("Please select class group.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     this.loading = true;
@@ -298,7 +297,7 @@ export class ClassgroupmappingComponent implements OnInit {
           this.loadingFalse();
         });
   }
-  classgroupList :any[]= [];
+  classgroupList: any[] = [];
   Getclassgroups() {
     this.loading = true;
     this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
@@ -352,7 +351,7 @@ export class ClassgroupmappingComponent implements OnInit {
     list.fields = ["ClassGroupMappingId,ClassId,SectionId,SemesterId,ClassGroupId,Active"];
     list.PageName = this.ClassGroupMappingListName;
     list.filter = [filterStr];
-    this.ClassGroupMappingList= [];
+    this.ClassGroupMappingList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -368,7 +367,7 @@ export class ClassgroupmappingComponent implements OnInit {
       });
 
   }
-  ClassCategory :any[]= [];
+  ClassCategory: any[] = [];
   GetMasterData() {
 
     this.allMasterData = this.tokenStorage.getMasterData()!;
@@ -376,18 +375,20 @@ export class ClassgroupmappingComponent implements OnInit {
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);
     this.Semesters = this.getDropDownData(globalconstants.MasterDefinitions.school.SEMESTER);
     this.ClassCategory = this.getDropDownData(globalconstants.MasterDefinitions.school.CLASSCATEGORY);
-    var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-    this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
-      this.Classes = data.value.map(m => {
-        m.Category = '';
-        var obj = this.ClassCategory.filter(c => c.MasterDataId == m.CategoryId);
-        if (obj.length > 0)
-          m.Category = obj[0].MasterDataName.toLowerCase();
-        return m;
-      })
-      this.loading = false;
-      this.PageLoading = false;
-    });
+    //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+    let _allClasses: any = this.tokenStorage.getAllClasses();
+
+    //this.contentservice.GetClasses(filterOrgSubOrg).subscribe((data: any) => {
+    this.Classes = _allClasses.map(m => {
+      m.Category = '';
+      var obj = this.ClassCategory.find(c => c.MasterDataId == m.CategoryId);
+      if (obj)
+        m.Category = obj.MasterDataName.toLowerCase();
+      return m;
+    })
+    this.loading = false;
+    this.PageLoading = false;
+    // });
 
   }
   getDropDownData(dropdowntype) {

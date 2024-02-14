@@ -153,9 +153,9 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     //this.SelectedClassSubjects = objClassSubjects.filter(t=>t.SubjectType.toLowerCase()!='optional')
     this.ELEMENT_DATA = [];
     this.dataSource = new MatTableDataSource<any>([]);
-    let obj = this.Classes.filter(c => c.ClassId == _classId);
-    if (obj.length > 0) {
-      this.SelectedClassCategory = obj[0].Category.toLowerCase();
+    let obj = this.Classes.find(c => c.ClassId == _classId);
+    if (obj) {
+      this.SelectedClassCategory = obj.Category.toLowerCase();
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
   }
@@ -381,17 +381,18 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     //if (this.Classes.length == 0) {
     //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
     this.loading = true;
-    this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-      data.value.forEach(m => {
-        let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
-        if (obj.length > 0) {
-          m.Category = obj[0].MasterDataName.toLowerCase();
+    let _allClasses:any=this.tokenStorage.getAllClasses();
+    //this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
+      _allClasses.forEach(m => {
+        let obj = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
+        if (obj) {
+          m.Category = obj.MasterDataName.toLowerCase();
           this.Classes.push(m);
         }
       });
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
       this.GetClassSubject();
-    })
+    //})
     //}
 
     this.loading = false;

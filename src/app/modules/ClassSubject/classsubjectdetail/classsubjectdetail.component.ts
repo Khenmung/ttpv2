@@ -333,7 +333,7 @@ export class ClassSubjectDetailComponent implements OnInit {
           if (existing.length > 0) {
             existing.forEach(item => {
 
-             this.ClassSubjectList.push({
+              this.ClassSubjectList.push({
                 //ClassSubjectId: previousbatch==1?0:existing[0].ClassSubjectId,
                 ClassSubjectId: item.ClassSubjectId,
                 SubjectId: item.SubjectId,
@@ -553,7 +553,7 @@ export class ClassSubjectDetailComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
-        if (data.value.length > 0 && row.Active==1) {
+        if (data.value.length > 0 && row.Active == 1) {
           this.loading = false; this.PageLoading = false;
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
           row.Ative = 0;
@@ -705,16 +705,17 @@ export class ClassSubjectDetailComponent implements OnInit {
     //this.shareddata.CurrentBatch.subscribe(c => (this.Batches = c));
     this.Batches = this.tokenStorage.getBatches()!;
     //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-    this.contentservice.GetClasses(this.OrgSubOrgFilter).subscribe((data: any) => {
-      data.value.forEach(m => {
-        let obj = this.ClassCategory.filter((f: any) => f.MasterDataId == m.CategoryId);
-        if (obj.length > 0) {
-          m.Category = obj[0].MasterDataName.toLowerCase();
-          this.Classes.push(m);
-        }
-      });
-      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+    let _allClasses: any = this.tokenStorage.getAllClasses();
+    //this.contentservice.GetClasses(this.OrgSubOrgFilter).subscribe((data: any) => {
+    _allClasses.forEach(m => {
+      let obj = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
+      if (obj) {
+        m.Category = obj.MasterDataName.toLowerCase();
+        this.Classes.push(m);
+      }
     });
+    this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+    //});
     this.shareddata.ChangeSubjects(this.Subjects);
     //this.shareddata.ChangeBatch(this.Batches);
     this.GetSubjectTypes();

@@ -17,7 +17,6 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { IStudent } from '../../admission/AssignStudentClass/Assignstudentclassdashboard.component';
 import { SwUpdate } from '@angular/service-worker';
-import moment from 'moment';
 
 @Component({
   selector: 'app-today-collection',
@@ -38,7 +37,7 @@ export class TodayCollectionComponent implements OnInit {
   allRowsExpanded: boolean = false;
   expandedElement: any;
   isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
-
+  Defaultvalue = 0;
   loading = false;
   allMasterData: any[] = [];
   FeeDefinitions: any[] = [];
@@ -232,7 +231,7 @@ export class TodayCollectionComponent implements OnInit {
         ////console.log('paymentd ata', data.value);
         var result: any[] = [];
         var _students: any[] = [];
-        this.CategoryTotal =0;
+        this.CategoryTotal = 0;
         if (_classId > 0)
           _students = this.Students.filter((s: any) => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses.findIndex(d => d.ClassId == _classId) > -1);
         else
@@ -337,27 +336,35 @@ export class TodayCollectionComponent implements OnInit {
         this.HeadsWiseCollection.forEach((item, indx1) => {
           if (_currentBatch !== item.Batch && _currentBatch !== '') {
             this.HeadsWiseCollection[indx1 - 1].BatchTotal = _currentTotal;
-            this.HeadsWiseCollection[indx1 - 1].Batch = '';
-            this.CategoryTotal +=_currentTotal;
+            let noOfPreviousBatchObj = this.HeadsWiseCollection.filter(n => n.Batch == _currentBatch);
+            if (noOfPreviousBatchObj.length > 1)
+              this.HeadsWiseCollection[indx1 - 1].Batch = '';
+
+            this.CategoryTotal += _currentTotal;
             _currentTotal = item.Amount;
 
             if (indx1 === this.HeadsWiseCollection.length - 1) {
-              this.CategoryTotal +=_currentTotal;
+              this.CategoryTotal += _currentTotal;
               item.BatchTotal = _currentTotal;
               item.Batch = '';
             }
           }
           else if (indx1 === this.HeadsWiseCollection.length - 1) {
             _currentTotal += item.Amount;
-            this.CategoryTotal +=_currentTotal;
+            this.CategoryTotal += _currentTotal;
             item.BatchTotal = _currentTotal;
-            item.Batch = '';
+            let noOfPreviousBatchObj = this.HeadsWiseCollection.filter(n => n.Batch == _currentBatch);
+            if (noOfPreviousBatchObj.length > 1)
+              item.Batch = '';
+            else
+              item.Batch = item.Batch;
+
           }
           else {
             _currentTotal += item.Amount;
             item.BatchTotal = '';
-            if (_currentBatch !== '')
-              item.Batch = '';
+            // if (_currentBatch !== '')
+            //   item.Batch = '';
           }
           _currentBatch = item.Batch;
         })
@@ -379,22 +386,27 @@ export class TodayCollectionComponent implements OnInit {
             if (indx === groupbyPaymentType.length - 1) {
               item.BatchTotal = _currentTotal;
             }
-            else
-              item.Batch = '';
+            // else
+            //   item.Batch = '';
 
           }
           //last loop
           else if (indx === groupbyPaymentType.length - 1) {
             item.BatchTotal = _currentTotal;
-            if (_currentBatchId !== item.BatchId && _currentBatchId !== 0)
-              item.Batch = _batch.BatchName;
-            else
+            let noOfPreviousBatchObj = groupbyPaymentType.filter(n => n.Batch == _batch.BatchName);
+            if (noOfPreviousBatchObj.length > 1)
               item.Batch = '';
+            else
+              item.Batch = _batch.BatchName;
+            // if (_currentBatchId !== item.BatchId && _currentBatchId !== 0)
+            //   item.Batch = _batch.BatchName;
+            // else
+            //   item.Batch = '';
           }
           else {
             _currentTotal += item.TotalAmount;
             item.BatchTotal = '';
-            item.Batch = '';
+            item.Batch = _batch.BatchName;
           }
           _currentBatchId = item.BatchId;
           this.GroupByPaymentType.push(item);
@@ -415,7 +427,7 @@ export class TodayCollectionComponent implements OnInit {
       })
   }
   Reload = true;
-  CategoryTotal=0;
+  CategoryTotal = 0;
   toFloat(r) {
     return parseFloat(r);
   }

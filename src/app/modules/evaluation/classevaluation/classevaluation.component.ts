@@ -132,14 +132,14 @@ export class ClassEvaluationComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetEvaluationNames();
         this.GetMasterData();
-        if (this.Classes.length == 0) {
+        //if (this.Classes.length == 0) {
           this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
             if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
             this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
             this.loading = false; this.PageLoading = false;
           });
           //this.GetClassEvaluation();
-        }
+        //}
         this.contentservice.GetExamClassGroup(this.FilterOrgSubOrg, 0)
           .subscribe((data: any) => {
             this.ExamClassGroups = [...data.value];

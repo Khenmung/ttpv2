@@ -86,11 +86,11 @@ export class HomeDashboardComponent implements OnInit {
     ////console.log("HOme dashboard init")
     ////console.log('role',this.Role);
     //localStorage.setItem('loggedTime','10/11/2023');
-    let loggedin = moment(localStorage.getItem('loggedTime'));
+    let loggedin = +localStorage.getItem('loggedTime')!;
     //var loggedTime = new Date(loggedin);
-    var loggedInDiff = moment().diff(loggedin, 'days');
+    var loggedInDiff = new Date().getDate()-loggedin;
     //_today.setHours(0, 0, 0, 0);
-    if (this.LoginUserDetail.length == 0 || loggedInDiff) {
+    if (loggedInDiff !==0) {
       this.tokenStorage.signOut();
       this.route.navigate(['/auth/login']);
     }
@@ -523,6 +523,7 @@ export class HomeDashboardComponent implements OnInit {
           this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
           this.contentservice.GetClasses(this.filterOrgSubOrg, 0).subscribe((data: any) => {
             if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+            this.tokenStorage.saveAllClasses(this.Classes);
             this.GetTeacherAndClasses('edu')
           });
           // let obj = { appShortName: 'edu', applicationName: this.SelectedAppName };

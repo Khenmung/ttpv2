@@ -649,17 +649,18 @@ export class TeachersubjectComponent implements OnInit {
     //   if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
     //   this.GetClassSubject();
     // });
-    this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-      data.value.forEach(m => {
-        let obj = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
-        if (obj) {
-          m.Category = obj.MasterDataName.toLowerCase();
-          this.Classes.push(m);
-        }
-      });
-      this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-      this.GetClassSubject();
+    let _allClasses: any = this.tokenStorage.getAllClasses();
+    //this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
+    _allClasses.forEach(m => {
+      let obj = this.ClassCategory.find((f: any) => f.MasterDataId == m.CategoryId);
+      if (obj) {
+        m.Category = obj.MasterDataName.toLowerCase();
+        this.Classes.push(m);
+      }
     });
+    this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
+    this.GetClassSubject();
+    //});
     this.loading = false; this.PageLoading = false;
   }
   getDropDownData(dropdowntype) {
