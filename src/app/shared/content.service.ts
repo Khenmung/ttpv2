@@ -10,6 +10,7 @@ import alasql from 'alasql';
 import { evaluate } from 'mathjs';
 import { AuthService } from '../_services/auth.service';
 import { of } from 'rxjs';
+import moment from 'moment';
 //import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -193,7 +194,7 @@ export class ContentService implements OnInit {
     return this.dataservice.get(list);
   }
   ///semesterid and sectionid is not passed because if record does not exist we need class wise class fee.
-  GetClassFeeWithFeeDefinition(pOrgSubOrgBatchIdFilter, pMonth, pClassId) {//, pSemesterId, pSectionId
+  GetClassFeeWithFeeDefinition(pOrgSubOrgBatchIdFilter, pClassId, fromYearMonth = 0, toYearMonth = 0) {//, pSemesterId, pSectionId
     var filter = pOrgSubOrgBatchIdFilter + ' and Active eq 1';
     if (pClassId)
       filter += ' and ClassId eq ' + pClassId;
@@ -201,13 +202,17 @@ export class ContentService implements OnInit {
     // filter += ' and SemesterId eq ' + pSemesterId;
     // filter += ' and SectionId eq ' + pSectionId;
 
-    if (pMonth > 0)
-      filter += ' and Month eq ' + pMonth;
-    else
-      filter += ' and Month ge ' + pMonth;
+    if (fromYearMonth > 0 && toYearMonth > 0)
+      filter += ' and Month ge ' + fromYearMonth + " and Month le " + toYearMonth;
+    else if (fromYearMonth == 0 && toYearMonth > 0)
+      filter += ' and Month le ' + toYearMonth;
+    else if (fromYearMonth > 0 && toYearMonth == 0)
+      filter += ' and Month ge ' + fromYearMonth;
+    // else
+    //   filter += ' and Month ge ' + pMonth;
 
     let list = new List();
-    list.fields = ["ClassId", "Active", "Amount", "Month","MonthDisplay", "FeeDefinitionId", "PaymentOrder", "SectionId", "SemesterId"];
+    list.fields = ["ClassId", "Active", "Amount", "Month", "MonthDisplay", "FeeDefinitionId", "PaymentOrder", "SectionId", "SemesterId"];
     list.PageName = "ClassFees";
     list.lookupFields = ["FeeDefinition($select=FeeCategoryId,FeeSubCategoryId,FeeName,Active)"];
     list.filter = [filter];
@@ -373,6 +378,32 @@ export class ContentService implements OnInit {
     }
     return monthArray;
   }
+  InsertForSyncData(pTableName, pData, updateId, pOnline, pOrgId, pSubOrgId) {
+
+    let list = new List();
+    list.PageName = pTableName;
+    list.filter = [" and TableName eq '" + pTableName + " and Text eq '" + pData +
+      "' and OrgId eq " + pOrgId + " and SubOrgId eq " + pSubOrgId + " and Active eq true"];
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+
+      })
+    let nowId = moment().format('YYYYMMDDHHmmssms');
+    let data = {
+      DataSyncId: nowId,
+      TableName: pTableName,
+      Text: pData,
+      RecordId: updateId,
+      Online: pOnline,
+      Active: true,
+      Synced: false,
+      Deleted: false,
+      OrgId: pOrgId,
+      SubOrgId: pSubOrgId,
+      CreatedDate: new Date()
+    }
+    return this.dataservice.postPatch("SyncData", data, 0, 'post');
+  }
 
   ReSequence(editedrow, MasterList: any[]) {
     debugger;
@@ -485,7 +516,7 @@ export class ContentService implements OnInit {
     let Permission = '';
     if (Ids) {
       _parentId = Ids.MasterDataId;
-      var dropvalues = pAllMasterData.filter(item => item.ParentId == _parentId && item.Active==1);
+      var dropvalues = pAllMasterData.filter(item => item.ParentId == _parentId && item.Active == 1);
       //var confidentialdatalist = dropvalues.filter((f:any) => f.Confidential == 1)
       for (var i = 0; i < dropvalues.length; i++) {
         if (dropvalues[i].Confidential) {
@@ -634,7 +665,7 @@ export class ContentService implements OnInit {
     return this.dataservice.get(list);
 
   }
-  getStudentClassWithFeeType(pOrgSubOrgBatchId, pClassId, pSemesterId, pSectionId, pStudentClassId, pFeeTypeId) {
+  getStudentClassWithFeeType(pOrgSubOrgBatchId, pClassId, pSemesterId, pSectionId, pStudentClassId, pFeeTypeId, fromMonth = 0, toMonth = 0) {
 
     var filterstr = '';
     //new student class is inactive but should be able to pay fee and will become active.
@@ -652,6 +683,14 @@ export class ContentService implements OnInit {
     if (pFeeTypeId > 0)
       filterstr += " and FeeTypeId eq " + pFeeTypeId;
 
+    //edited for frommonth and toMonth
+    if (fromMonth > 0 && toMonth > 0)
+      filterstr += " and Month ge " + fromMonth + " and Month le " + toMonth;
+    else if (fromMonth == 0 && toMonth > 0)
+      filterstr += " and Month le " + toMonth;
+    else if (fromMonth > 0 && toMonth == 0)
+      filterstr += " and Month ge " + fromMonth;
+
     let list: List = new List();
     list.fields = [
       "StudentClassId",
@@ -663,7 +702,7 @@ export class ContentService implements OnInit {
       "SectionId",
       "RollNo"];
     list.PageName = "StudentClasses";
-    list.lookupFields = ["FeeType($select=Formula,Active)"]
+    list.lookupFields = ["StudentFeeTypes($filter=IsCurrent eq true and Active eq true;$select=FromMonth,ToMonth,FeeTypeId);FeeType($select=Formula,Active)"]
     list.filter = [filterstr];
     return this.dataservice.get(list);
 

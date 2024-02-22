@@ -1,0 +1,28 @@
+mat-form-field{
+    width: 100%;
+}
+.mat-column-Action,.mat-column-DefaultType,.mat-column-Confidential{
+    justify-content: center;
+    flex:1 0 100px;
+}
+.mat-column-FeeTypeId{
+    flex:1 0 150px;
+}
+.mat-column-Active{
+    flex:1 0 50px;
+}
+
+.mat-column-Formula{
+    flex:1 0 300px;
+}
+
+mat-cell:first-of-type{
+    padding-left: 0px;
+}
+.mat-table{
+    min-width: 700px;
+    max-width: 1000px;
+}
+.mdc-data-table__cell, .mdc-data-table__header-cell{
+    padding: 15px 0px 0px 8px !important;
+  }

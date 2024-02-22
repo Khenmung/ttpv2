@@ -57,6 +57,7 @@ export class AddstudentclassComponent implements OnInit {
     AdmissionDate: new Date(),
     Remarks: '',
     IsCurrent: false,
+    Admitted: false,
     Promoted: 0,
     Active: 1,
     OrgId: 0,
@@ -72,6 +73,7 @@ export class AddstudentclassComponent implements OnInit {
     "Remarks",
     "FeeTypeId",
     "IsCurrent",
+    "Admitted",
     "Active",
     "Action"
   ]
@@ -168,7 +170,7 @@ export class AddstudentclassComponent implements OnInit {
           this.MarkEntryExist = true;
       })
   }
-  
+
   GetPayments() {
 
     let list: List = new List();
@@ -254,7 +256,7 @@ export class AddstudentclassComponent implements OnInit {
     this.StudentClassList.push(newitem);
     this.dataSource = new MatTableDataSource<any>(this.StudentClassList);
   }
-  
+
   GetStudentClass() {
     debugger;
     this.NewItem = false;
@@ -268,7 +270,7 @@ export class AddstudentclassComponent implements OnInit {
       list.fields = [
         "StudentClassId", "ClassId",
         "StudentId", "RollNo", "SectionId", "AdmissionNo", "SemesterId",
-        "BatchId", "FeeTypeId", "IsCurrent",
+        "BatchId", "FeeTypeId", "IsCurrent", "Admitted",
         "AdmissionDate", "Remarks", "Active"];
       list.PageName = "StudentClasses";
       list.filter = [filterWithOrgAndBatchId + " and StudentId eq " + this.StudentId]// + " and IsCurrent eq true"];
@@ -371,7 +373,7 @@ export class AddstudentclassComponent implements OnInit {
             this.studentclassData.StudentId = this.StudentId;
             this.studentclassData.StudentClassId = row.StudentClassId;
             this.studentclassData.IsCurrent = row.IsCurrent;
-            //console.log("this.studentclassData", this.studentclassData)
+            this.studentclassData.Admitted = row.Admitted;
             if (this.studentclassData.StudentClassId == 0) {
               this.StudentClassId = 0;
               this.studentclassData.AdmissionNo = _year + ClassStrength;
@@ -386,6 +388,10 @@ export class AddstudentclassComponent implements OnInit {
   }
   updateIsCurrent(row, element) {
     row.IsCurrent = element.checked;
+    row.Action = true;
+  }
+  updateAdmitted(row, element) {
+    row.Admitted = element.checked;
     row.Action = true;
   }
   updateActive(row, element) {
@@ -457,7 +463,7 @@ export class AddstudentclassComponent implements OnInit {
   CreateInvoice(row) {
     debugger;
     this.loading = true;
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, row.ClassId)//, row.SemesterId, row.SectionId)
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, row.ClassId)//, row.SemesterId, row.SectionId)
       .subscribe((datacls: any) => {
 
         // var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
@@ -473,6 +479,11 @@ export class AddstudentclassComponent implements OnInit {
             var studentfeedetail: any[] = [];
             let _Students: any = this.tokenStorage.getStudents()!;
             var _feeName = '', _remark1 = '', _remark2 = '';
+            var _category = '';
+            var _subCategory = '';
+            var _className = '';
+            var _semesterName = '';
+            var _sectionName = '';
             data.value.forEach(studcls => {
               let _currentStudent = _Students.find(s => s.StudentId === studcls.StudentId);
               _feeName = ''; _remark1 = ''; _remark2 = '';
@@ -481,11 +492,11 @@ export class AddstudentclassComponent implements OnInit {
                 _remark2 = _currentStudent.Remark2;
               }
               objClassFee.forEach(clsfee => {
-                var _category = '';
-                var _subCategory = '';
-                var _className = '';
-                var _semesterName = '';
-                var _sectionName = '';
+                _category = '';
+                _subCategory = '';
+                _className = '';
+                _semesterName = '';
+                _sectionName = '';
 
                 let objcls = this.Classes.find((f: any) => f.ClassId == studcls.ClassId);
                 if (objcls)

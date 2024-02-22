@@ -237,7 +237,7 @@ export class DashboardclassfeeComponent implements OnInit {
     // }
     else {
       this.loading = true;
-      this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, _classId)//, _semesterId, _sectionId)
+      this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, _classId, 0, 0)//, _semesterId, _sectionId)
         .subscribe((datacls: any) => {
 
           //var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
@@ -254,6 +254,8 @@ export class DashboardclassfeeComponent implements OnInit {
             .subscribe((data: any) => {
               var studentfeedetail: any[] = [];
               let _students: any = this.tokenStorage.getStudents()!;
+              var _category = '';
+              var _subCategory = '';
               data.value.forEach(studcls => {
                 var _feeName = '';
                 var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
@@ -261,18 +263,18 @@ export class DashboardclassfeeComponent implements OnInit {
                 var obj = this.Classes.filter(c => c.ClassId == studcls.ClassId);
                 if (obj.length > 0)
                   _className = obj[0].ClassName;
-                let _currentStudent = _students.filter(s => s.StudentId === studcls.StudentId);
+                let _currentStudent = _students.find(s => s.StudentId === studcls.StudentId);
                 objClassFee.forEach(clsfee => {
-                  var _category = '';
-                  var _subCategory = '';
+                  _category = '';
+                  _subCategory = '';
 
-                  var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
-                  if (objcat.length > 0)
-                    _category = objcat[0].MasterDataName;
+                  var objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                  if (objcat)
+                    _category = objcat.MasterDataName;
 
-                  var objsubcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
-                  if (objsubcat.length > 0)
-                    _subCategory = objsubcat[0].MasterDataName;
+                  var objsubcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                  if (objsubcat)
+                    _subCategory = objsubcat.MasterDataName;
 
                   var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
 
@@ -293,8 +295,8 @@ export class DashboardclassfeeComponent implements OnInit {
                       SectionId: studcls.SectionId,
                       RollNo: studcls.RollNo,
                       ClassName: _className,
-                      Remark1: _currentStudent[0]["Remark1"],
-                      Remark2: _currentStudent[0]["Remark2"],
+                      Remark1: _currentStudent["Remark1"],
+                      Remark2: _currentStudent["Remark2"]
                     });
                   }
 

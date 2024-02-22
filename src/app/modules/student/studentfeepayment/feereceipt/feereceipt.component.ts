@@ -306,7 +306,7 @@ export class FeereceiptComponent implements OnInit {
     debugger;
     this.loading = true;
 
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, pClassId)//,pSemesterId,pSectionId)
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, pClassId)//,pSemesterId,pSectionId)
       .subscribe((datacls: any) => {
 
         var _clsfeeWithDefinitions: any = [];

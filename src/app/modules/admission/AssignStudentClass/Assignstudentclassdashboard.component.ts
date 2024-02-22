@@ -87,14 +87,13 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     SectionId: 0,
     FeeTypeId: 0,
     AdmissionNo: '',
+    Admitted:false,
     Remarks: '',
     Active: 1
   };
   displayedColumns = [
     'StudentName',
     'GenderName',
-    //'Remark',
-    //'AdmissionNo',
     'ClassId',
     'SectionId',
     'SemesterId',
@@ -103,6 +102,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     'Remarks',
     'Active',
     'ExamStatus',
+    'Admitted',
     'Action'
   ];
   nameFilter = new UntypedFormControl('');
@@ -249,6 +249,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       Remark: '',
       Remarks: '',
       Active: 0,
+      Admitted: false,
       Action: false
     }
     this.StudentClassList = []
@@ -256,6 +257,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     this.dataSource = new MatTableDataSource<IStudentClass>(this.StudentClassList);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+  UpdateFeePaymentStarted(row, event) {
+    row.Admitted = event.checked
+    this.onBlur(row);
   }
   createFilter(): (data: any, filter: string) => boolean {
     let filterFunction = function (data, filter): boolean {
@@ -791,6 +796,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         'Remarks',
         'Active',
         'ExamStatus',
+        'Admitted',
         'Action'
       ];
     else
@@ -806,6 +812,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         'Remarks',
         'Active',
         'ExamStatus',
+        'Admitted',
         'Action'
       ];
   }
@@ -839,7 +846,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     }
     let students: any = [];
     if (_classId && _FeeTypeId) {
-      students = this.AllStudents.filter((s: any) =>s.StudentClasses.length>0 && s.StudentClasses[0].ClassId == _classId
+      students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].ClassId == _classId
         && s.StudentClasses[0].SemesterId == _semesterId
         && s.StudentClasses[0].SectionId == _sectionId
         && s.StudentClasses[0].FeeTypeId == _FeeTypeId)
@@ -848,7 +855,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].FeeTypeId == _FeeTypeId)
     }
     else if (_classId && !_FeeTypeId) {
-      students = this.AllStudents.filter((s: any) =>s.StudentClasses.length>0 && s.StudentClasses[0].ClassId == _classId
+      students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].ClassId == _classId
         && s.StudentClasses[0].SemesterId == _semesterId
         && s.StudentClasses[0].SectionId == _sectionId)
     }
@@ -921,7 +928,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         'RollNo',
         'SectionId',
         'Remarks',
-        'Active'
+        'Active',
+        'Admitted'
       ];
 
       list.PageName = "StudentClasses";
@@ -947,7 +955,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     //this.GetStudentClasses('')
     //  .subscribe((StudentClassesdb: any) => {
     let _studentsWithClasses = this.GetStudentCls();
-    this.StudentClassList =[];
+    this.StudentClassList = [];
     if (_studentsWithClasses.length > 0) {
       this.GetExamResult(this.SelectedBatchId, _classId)
         .subscribe((examresult: any) => {
@@ -1011,6 +1019,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
               Remarks: s.StudentClasses[0].Remarks,
               GenderName: _genderName,
               ExamStatus: _examStatus,
+              Admitted: s.StudentClasses[0].Admitted,
               Action: false
             });
           })
@@ -1137,7 +1146,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
               this.StudentClassData.SectionId = item.SectionId;
               this.StudentClassData.Remarks = item.Remarks;
               this.StudentClassData.AdmissionNo = item.AdmissionNo;
-
+              this.StudentClassData.Admitted = item.Admitted;
               this.StudentClassData.OrgId = this.LoginUserDetail[0]["orgId"];
               this.StudentClassData.SubOrgId = this.SubOrgId;
               this.StudentClassData.BatchId = this.SelectedBatchId;
@@ -1177,7 +1186,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
           this.StudentClassData.StudentClassId = data.StudentClassId;
           iteminserted.Action = false;
           //let _students:any = this.tokenStorage.getStudents()!;
-          let indx =this.AllStudents.findIndex(f=>f.StudentId == row.StudentId);
+          let indx = this.AllStudents.findIndex(f => f.StudentId == row.StudentId);
           this.AllStudents[indx].StudentClasses.push(this.StudentClassData);
           this.tokenStorage.saveStudents(this.AllStudents);
           this.RowsToUpdate--;
@@ -1196,16 +1205,16 @@ export class AssignStudentclassdashboardComponent implements OnInit {
           let itemupdated: any = this.StudentClassList.find(s => s.StudentClassId == row.StudentClassId)
           itemupdated.Action = false;
           this.RowsToUpdate--;
-          let indx = this.AllStudents.findIndex(f=>f.StudentId == this.StudentClassData.StudentId);
-          let clsIndx = this.AllStudents[indx].StudentClasses.findIndex(d=>d.StudentClassId == this.StudentClassData.StudentClassId);
-          this.AllStudents[indx].StudentClasses[clsIndx]=this.StudentClassData;
+          let indx = this.AllStudents.findIndex(f => f.StudentId == this.StudentClassData.StudentId);
+          let clsIndx = this.AllStudents[indx].StudentClasses.findIndex(d => d.StudentClassId == this.StudentClassData.StudentClassId);
+          this.AllStudents[indx].StudentClasses[clsIndx] = this.StudentClassData;
           this.tokenStorage.saveStudents(this.AllStudents);
-          
+
           if (this.RowsToUpdate == 0) {
 
-            this.loading = false; 
+            this.loading = false;
             this.PageLoading = false;
-            this.CreateInvoice(row);
+            //this.CreateInvoice(row);
             this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           }
         }, error => {
@@ -1268,7 +1277,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   CreateInvoice(row) {
     debugger;
     this.loading = true;
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, row.ClassId)//,row.SemesterId,row.SectionId)
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, row.ClassId, 0, 0)//,row.SemesterId,row.SectionId)
       .subscribe((datacls: any) => {
 
         var _clsfeeWithDefinitions: any = [];
@@ -1286,11 +1295,11 @@ export class AssignStudentclassdashboardComponent implements OnInit {
             data.value.forEach(studcls => {
 
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
-              let _currentstudent: any = this.Students.filter(s => s.StudentId == studcls.StudentId);
+              let _currentstudent: any = this.Students.find(s => s.StudentId == studcls.StudentId);
               var _feeName = '', _remark1 = '', _remark2 = '';
-              if (_currentstudent.length > 0) {
-                _remark1 = _currentstudent[0].Remark1;
-                _remark2 = _currentstudent[0].Remark2;
+              if (_currentstudent) {
+                _remark1 = _currentstudent.Remark1;
+                _remark2 = _currentstudent.Remark2;
               }
               objClassFee.forEach(clsfee => {
                 var _category = '';
@@ -1299,25 +1308,25 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                 var _semesterName = '';
                 var _sectionName = '';
 
-                var objcls = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
-                if (objcls.length > 0)
-                  _className = objcls[0].ClassName;
+                var objcls = this.Classes.find((f: any) => f.ClassId == studcls.ClassId);
+                if (objcls)
+                  _className = objcls.ClassName;
 
-                var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
-                if (objsemester.length > 0)
-                  _semesterName = objsemester[0].MasterDataName;
+                var objsemester = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
+                if (objsemester)
+                  _semesterName = objsemester.MasterDataName;
 
-                var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
-                if (objsection.length > 0)
-                  _sectionName = objsection[0].MasterDataName;
+                var objsection = this.Sections.find((f: any) => f.MasterDataId == studcls.SectionId);
+                if (objsection)
+                  _sectionName = objsection.MasterDataName;
 
-                var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
-                if (objcat.length > 0)
-                  _category = objcat[0].MasterDataName;
+                var objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                if (objcat)
+                  _category = objcat.MasterDataName;
 
-                var objsubcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
-                if (objsubcat.length > 0)
-                  _subCategory = objsubcat[0].MasterDataName;
+                var objsubcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                if (objsubcat)
+                  _subCategory = objsubcat.MasterDataName;
 
                 var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
 
@@ -1496,6 +1505,7 @@ export interface IStudentClass {
   Remark: string;
   Remarks: string;
   Active: number;
+  Admitted: boolean;
   Action: boolean
 }
 export interface IStudent {

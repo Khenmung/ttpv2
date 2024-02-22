@@ -224,7 +224,7 @@
                 <mat-header-cell *matHeaderCellDef mat-sort-header> Fee Type </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-form-field>
-                        <mat-select matTooltip="{{element.FeeType}}" (selectionChange)="onBlur(element)"
+                        <mat-select [disabled]="true" matTooltip="{{element.FeeType}}" (selectionChange)="onBlur(element)"
                             [value]="element.FeeTypeId" [(ngModel)]="element.FeeTypeId">
                             <mat-option matTooltip="{{item.FeeTypeName}}" *ngFor="let item of FeeTypes"
                                 [value]="item.FeeTypeId">{{item.FeeTypeName}}
@@ -266,6 +266,14 @@
                 <mat-cell *matCellDef="let element">
                     <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
                         [checked]="element.Active==1?true:false">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Admitted">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Admitted</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="UpdateFeePaymentStarted(element,$event)"
+                        [checked]="element.Admitted">
                     </mat-checkbox>
                 </mat-cell>
             </ng-container>

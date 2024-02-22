@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { StudentviewComponent } from '../studentview/studentview.component';
 import { SidenavService } from '../../../shared/sidenav.service';
 import { ConnectionService } from 'ng-connection-service';
+import { AddStudentFeetypeComponent } from '../studentfeepayment/addstudentfeetype/addstudentfeetype.component';
 
 @Component({
   selector: 'app-studentboard',
@@ -23,12 +24,13 @@ export class StudentboardComponent implements AfterViewInit {
   components: any = [
     studentprimaryinfoComponent,
     AddstudentclassComponent,
+    AddStudentFeetypeComponent,
     StudentattendancereportComponent,
-    //StudentprogressreportComponent,
     StudentviewComponent
   ];
 
   tabNames = [
+    { "label": "khat peuhpeuh", "faIcon": '' },
     { "label": "khat peuhpeuh", "faIcon": '' },
     { "label": "khat peuhpeuh", "faIcon": '' },
     { "label": "khat peuhpeuh", "faIcon": '' },
@@ -95,7 +97,7 @@ export class StudentboardComponent implements AfterViewInit {
     this.GenerateComponent(globalconstants.Pages.edu.STUDENT.STUDENTDETAIL)
     this.GenerateComponent(globalconstants.Pages.edu.STUDENT.STUDENTCLASS)
     this.GenerateComponent(globalconstants.Pages.edu.STUDENT.ATTENDANCEREPORT)
-    //this.GenerateComponent(globalconstants.Pages.edu.STUDENT.PROGRESSREPORT)
+    this.GenerateComponent(globalconstants.Pages.edu.STUDENT.STUDENTFEETYPE)
     this.GenerateComponent(globalconstants.Pages.edu.STUDENT.STUDENTVIEW)
 
     this.shareddata.ChangePermissionAtParent(this.Permissions.ParentPermission);
@@ -133,6 +135,9 @@ export class StudentboardComponent implements AfterViewInit {
         break;
       case globalconstants.Pages.edu.STUDENT.ATTENDANCEREPORT:
         comindx = this.components.indexOf(StudentattendancereportComponent);
+        break;
+      case globalconstants.Pages.edu.STUDENT.STUDENTFEETYPE:
+        comindx = this.components.indexOf(AddStudentFeetypeComponent);
         break;
       case globalconstants.Pages.edu.STUDENT.PROGRESSREPORT:
         comindx = this.components.indexOf(StudentprogressreportComponent);

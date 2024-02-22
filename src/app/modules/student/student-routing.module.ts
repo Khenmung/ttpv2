@@ -12,8 +12,7 @@ import { StudentprogressreportComponent } from './studentprogressreport/studentp
 import { AuthGuard } from '../../guards/auth.guard';
 import { HomeComponent } from '../../shared/components/home/home.component';
 import { StudentviewComponent } from './studentview/studentview.component';
-import { PrintmonoComponent } from './studentfeepayment/printmono/printmono.component';
-//import { EActComponent } from '../evaluation/e-act/e-act.component';
+import { AddStudentFeetypeComponent } from './studentfeepayment/addstudentfeetype/addstudentfeetype.component';
 
 const routes: Routes = [
   {
@@ -46,5 +45,5 @@ export const StudentComponents = [
   StudentprogressreportComponent,
   StudentprogressreportComponent,
   StudentviewComponent,
-  PrintmonoComponent
+  AddStudentFeetypeComponent
 ]

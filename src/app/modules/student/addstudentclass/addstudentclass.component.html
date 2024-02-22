@@ -95,7 +95,7 @@
         <ng-container matColumnDef="AdmissionDate">
             <mat-header-cell *matHeaderCellDef> Admission Date </mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <mat-form-field appearance="outline" [style.width.px]="150">
+                <mat-form-field appearance="outline">
                     <!-- <mat-label>admission date</mat-label> -->
                     <input [(ngModel)]="element.AdmissionDate" [value]="element.AdmissionDate" matInput
                         [matDatepicker]="AdmissionDate" autocomplete="off" (dateChange)="enableAction(element)">
@@ -124,9 +124,17 @@
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="IsCurrent">
-            <mat-header-cell *matHeaderCellDef> Is Current </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> Current </mat-header-cell>
             <mat-cell style="justify-content: center;" *matCellDef="let element">
                 <mat-checkbox [checked]="element.IsCurrent" (change)="updateIsCurrent(element,$event)"
+                    (click)="$event.stopPropagation()">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Admitted">
+            <mat-header-cell *matHeaderCellDef> Admitted </mat-header-cell>
+            <mat-cell style="justify-content: center;" *matCellDef="let element">
+                <mat-checkbox [checked]="element.Admitted" (change)="updateAdmitted(element,$event)"
                     (click)="$event.stopPropagation()">
                 </mat-checkbox>
             </mat-cell>
@@ -174,7 +182,7 @@
     <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
         <ul>
             <li>
-                <div>Class can not be updated if fee payment or mark entry exist for the student's class. If Class to be updated,
+                <div>Class can not be updated if fee payment or mark entry exist for the student's class. If Class needs to be updated,
                     payments has to be cancelled or mark entry should be deleted.</div>
             </li>
         </ul>

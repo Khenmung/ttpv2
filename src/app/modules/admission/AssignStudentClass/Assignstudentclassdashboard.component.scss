@@ -13,12 +13,13 @@ mat-cell {
     border-right: 1px solid lightgray;
 }
 
-.mat-column-AdmissionNo {
-
-    flex: 1 1 100px;
+.mat-column-Admitted {
+    justify-content: center;
+    flex: 1 0 100px;
 }
 
 .mat-column-GenderName {
+    justify-content: center;
     flex: 1 0 80px;
 }
 

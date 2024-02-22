@@ -574,6 +574,7 @@ export class HomeDashboardComponent implements OnInit {
   }
   generateBatchIds(SelectedbatchId) {
     debugger;
+    this.Batches = this.Batches.sort((a,b)=> new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime());
     var previousBatchIndex = this.Batches.map(d => d.BatchId).indexOf(SelectedbatchId) - 1;
     var _previousBatchId = -1;
     if (previousBatchIndex > -1) {
@@ -693,7 +694,7 @@ export class HomeDashboardComponent implements OnInit {
     //   " and BatchId eq " + this.SelectedBatchId ;
     let list: List = new List();
     list.fields = [
-      "StudentClassId,StudentId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active"
+      "StudentClassId,StudentId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active,Admitted"
     ];
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
@@ -926,7 +927,7 @@ export class HomeDashboardComponent implements OnInit {
   GetStudentClasses() {
     let list: List = new List();
     list.fields = [
-      "StudentClassId,StudentId,HouseId,BatchId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active"
+      "StudentClassId,StudentId,HouseId,BatchId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active,Admitted"
     ];
     list.PageName = "StudentClasses";
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {

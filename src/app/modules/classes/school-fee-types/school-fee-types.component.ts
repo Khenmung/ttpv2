@@ -67,14 +67,6 @@ export class SchoolFeeTypesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.servicework.activateUpdate().then(() => {
-    //   this.servicework.checkForUpdate().then((value) => {
-    //     if (value) {
-    //       location.reload();
-    //     }
-    //   })
-    // })
-    //debugger;
     this.searchForm = this.fb.group({
       searchFeeTypeName: ['']
     });
@@ -251,7 +243,7 @@ export class SchoolFeeTypesComponent implements OnInit {
     debugger;
     this.loading = true;
 
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, 0)//,0,0)
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, 0, 0)
       .subscribe((datacls: any) => {
 
         var _clsfeeWithDefinitions: any = datacls.value.filter(m => m.FeeDefinition.Active == 1);

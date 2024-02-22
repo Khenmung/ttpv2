@@ -121,11 +121,30 @@
         <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
             <ul>
                 <li>
-                    <div>Whenever student class is uploaded, <b>Fee Type</b> of all uploaded students will be reset to
-                        default fee type.</div>
+                    <ul>
+                        <b>Upload Student</b> will create student's class as below:
+                        <li>Class = ClassForWhichAdmissionIsSought</li>
+                        <li>Admitted = Admission Status.</li>
+                        <li>IsCurrent = If selected batch is current otherwise not.</li>
+                        <li>Active =1.</li>
+                        <li>Upload Students with PID will not update student's class details i.e. RollNo, SectionId,
+                            SemesterId, FeeTypeId etc..</li>
+                    </ul>
                 </li>
                 <li>
-                    <div>Class all students uploaded through excel are active immediately.</div>
+                    <ul><b>Upload Student Class</b> will effect as below:
+                        <li>IsCurrent = If selected batch is current otherwise not.</li>
+                        <li>If IsCurrent = true, system will update student->BatchId = currentbatch, student->ClassId =
+                            Current Class.</li>
+                        <li>Active =1.</li>
+                        <li>
+                            <div>Whenever student class is uploaded, <b>Fee Type</b> of all uploaded students will be
+                                reset to default fee type.</div>
+                        </li>
+                        <li>
+                            <div>Class of students uploaded through excel are active immediately.</div>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </span>

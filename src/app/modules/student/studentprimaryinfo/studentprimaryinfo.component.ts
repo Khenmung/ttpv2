@@ -828,7 +828,7 @@ export class studentprimaryinfoComponent implements OnInit {
   CreateInvoice(row) {
     debugger;
     this.loading = true;
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, 0, row.ClassId)//, row.SemesterId, row.SectionId)
+    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, row.ClassId)//, row.SemesterId, row.SectionId)
       .subscribe((datacls: any) => {
 
         // var _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);

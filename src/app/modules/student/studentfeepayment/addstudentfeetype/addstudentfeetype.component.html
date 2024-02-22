@@ -1,0 +1,98 @@
+<div>
+  <div style="padding:15px 15px 10px 15px;">
+    <div><strong>Student Fee Type</strong></div>
+  </div>
+  <mat-spinner *ngIf="PageLoading" diameter="25"
+    style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+  <!-- <alert></alert> -->
+  <div style="width:100%;padding: 15px;" fxLayout="column">
+    <mat-table #table [dataSource]="dataSource">
+      <ng-container matColumnDef="StudentFeeTypeId">
+        <mat-header-cell *matHeaderCellDef>Id
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.StudentFeeTypeId}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="FeeTypeId">
+        <mat-header-cell *matHeaderCellDef>Fee Type
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-form-field appearance="outline">
+            <mat-select [(ngModel)]="element.FeeTypeId" [value]="element.FeeTypeName">
+              <mat-option *ngFor="let item in FeeTypeList" [value]="item.FeeTypeId">{{item.FeeTypeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="FromMonth">
+        <mat-header-cell *matHeaderCellDef>From
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-form-field appearance="outline">
+            <mat-select [(ngModel)]="element.FromMonth" [value]="element.FromMonth">
+              <mat-option [value]="Defaultvalue">select</mat-option>
+              <mat-option *ngFor="let item in Months" [value]="item.val">{{item.MonthName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="ToMonth">
+        <mat-header-cell *matHeaderCellDef>To
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-form-field appearance="outline">
+            <mat-select [(ngModel)]="element.ToMonth" [value]="element.ToMonth">
+              <mat-option [value]="Defaultvalue">select</mat-option>
+              <mat-option *ngFor="let item in Months" [value]="item.val">{{item.MonthName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="IsCurrent">
+        <mat-header-cell *matHeaderCellDef style="justify-content: center;">Current
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" style="justify-content: center;">
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="updateIsCurrent(element,$event)"
+            [checked]="element.IsCurrent">
+          </mat-checkbox>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="Active">
+        <mat-header-cell *matHeaderCellDef style="justify-content: center;">Active
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" style="justify-content: center;">
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+            [checked]="element.Active==1?true:false">
+          </mat-checkbox>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef style="justify-content: center;">
+          <button [disabled]="loading || Permission=='read'" matTooltip="add new" mat-mini-fab (click)="AddNew()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element" style="justify-content: center;">
+          <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save" mat-raised-button
+            color="accent" (click)="UpdateOrSave(element)">
+            <mat-icon>save</mat-icon>
+            <mat-icon *ngIf="loading">
+              <mat-spinner diameter="20" color="Blue"></mat-spinner>
+            </mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" style="display: flex;align-items: baseline;"
+        class="element-row"></mat-row>
+    </mat-table>
+    <mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50]"></mat-paginator>
+    <div style="width:100%;background-color: lightgray;font-size: medium;padding: 10px;margin:15px 15px 15px 0px">
+      Below variables can be
+      applied within square bracket '[]' in the formula.
+    </div>
+    <div>ClassName, FeeName, FeeCategory, FeeSubCategory, Month*, Amount, Remarks</div>
+    <div>* Month format: Year + month. Eg. 'Month' for the month of Jan 2021 is 202100, for Feb 2021 is 202101 and
+      so on..</div>
+  </div>

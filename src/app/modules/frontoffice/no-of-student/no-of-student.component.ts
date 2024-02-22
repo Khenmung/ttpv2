@@ -199,6 +199,22 @@ export class NoOfStudentComponent implements OnInit {
         this.loading = false; this.PageLoading = false;
       })
   }
+  // AdmissionPaymentDoneStudents :any=[];
+  // GetAdmissionPayment() {
+  //   this.loading = true;
+  //   //var filter = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
+  //   let list: List = new List();
+  //   list.fields = ["StudentClassId"];
+  //   list.PageName = "AccountingLedgerTrialBalances";
+  //   list.filter = [this.FilterOrgSubOrgBatchId + " and MonthDisplay in (" + + ") and Active eq 1"];
+
+  //   this.dataservice.get(list)
+  //     .subscribe((data: any) => {
+  //       this.FeeTypes = [...data.value];
+  //       this.shareddata.ChangeFeeType(this.FeeTypes);
+  //       this.loading = false; this.PageLoading = false;
+  //     })
+  // }
   BoyGirlTotal = {};
   StudentCount: any = [];
   GetStudentClasses() {
@@ -207,7 +223,7 @@ export class NoOfStudentComponent implements OnInit {
     this.loading = true;
     var _classId = this.searchForm.get("searchClassId")?.value;
     var _students: any[] = [];
-    var _students = this.AllStudents.filter(s => s.StudentClasses && s.StudentClasses.length > 0)
+    var _students = this.AllStudents.filter(s => s.StudentClasses && s.StudentClasses.length > 0 && s.StudentClasses[0].Admitted)
     if (_classId > 0) {
       _students = _students.filter(s => s.StudentClasses && s.StudentClasses[0].ClassId == _classId)
     }

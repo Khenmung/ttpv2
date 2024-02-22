@@ -26,6 +26,7 @@ const BATCHES = 'batches';
 const CUSTOM_FEATURE = 'customfeatures';
 const STUDENTSEARCH = 'studentsearch';
 const STUDENTS = 'students';
+const PREVIOUSSTUDENTS = 'previousstudents';
 const MENUDATA = 'menudata';
 const MASTERDATA = 'masterdata';
 const SubOrgId = 'SubOrgId';
@@ -99,6 +100,18 @@ export class TokenStorageService {
     var master = localStorage.getItem(MASTERDATA);
     if (master) {
       return JSON.parse(master);
+    }
+    return [];
+
+  }
+  public savePreviousBatchStudents(token: any): void {
+    localStorage.removeItem(PREVIOUSSTUDENTS);
+    localStorage.setItem(PREVIOUSSTUDENTS, JSON.stringify(token));
+  }
+  public getPreviousBatchStudents(): object[] | null {
+    var students = localStorage.getItem(PREVIOUSSTUDENTS);
+    if (students) {
+      return JSON.parse(students);
     }
     return [];
 

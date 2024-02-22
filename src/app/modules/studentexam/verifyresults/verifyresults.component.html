@@ -107,10 +107,10 @@
                         {{disCol!='Action'?disCol:''}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" [class.gray]="disCol.includes('-')"
-                        style="width:100%;align-self: stretch;">
-                        <span style="padding:5px;align-self: stretch;color:red"
+                        style="width:100%;align-self: stretch;padding:5px;">
+                        <span style="align-self: stretch;color:red"
                             *ngIf="disCol!=='RollNo' && disCol!=='Student' && (element[disCol]+'').includes('(')">{{element[disCol]}}</span>
-                        <span style="padding:5px;display: flex;align-self: stretch;"
+                        <span style="display: flex;align-self: stretch;"
                             *ngIf="disCol=='RollNo' || disCol=='Student' || !(element[disCol]+'').includes('(')">{{element[disCol]}}</span>
                     </mat-cell>
                 </ng-container>
