@@ -85,7 +85,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     StudentId: 0,
     RollNo: 0,
     SectionId: 0,
-    FeeTypeId: 0,
+    //FeeTypeId: 0,
     AdmissionNo: '',
     Admitted:false,
     Remarks: '',
@@ -98,7 +98,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     'SectionId',
     'SemesterId',
     'RollNo',
-    'FeeTypeId',
+    //'FeeTypeId',
     'Remarks',
     'Active',
     'ExamStatus',
@@ -135,7 +135,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     // })
     this.searchForm = this.fb.group({
       searchExamId: [0],
-      searchFeeTypeId: [0],
+      //searchFeeTypeId: [0],
       searchSectionId: [0],
       searchClassId: [0],
       searchSemesterId: [0],
@@ -201,7 +201,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
           'GenderName',
           'SectionId',
           'SemesterId',
-          'FeeTypeId',
+          //'FeeTypeId',
           'Action'
         ];
       //this.shareddata.CurrentPreviousBatchIdOfSelecteBatchId.subscribe(p => this.PreviousBatchId = p);
@@ -241,7 +241,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       RollNo: '',
       SectionId: 0,
       Section: '',
-      FeeTypeId: 0,
+      //FeeTypeId: 0,
       FeeType: '',
       Promote: 0,
       ExamStatus: '',
@@ -390,7 +390,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       'StudentClassId',
       'StudentId',
       'AdmissionNo',
-      'FeeTypeId',
+      //'FeeTypeId',
       'ClassId',
       'SemesterId',
       'RollNo',
@@ -409,10 +409,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         result = [...StudentClassesdb.value];
         var StudentClassRollNoGenList: any[] = [];
         result.forEach(stud => {
-          var feetype = this.FeeTypes.filter(t => t.FeeTypeId == stud.FeeTypeId);
-          var _feetype = ''
-          if (feetype.length > 0)
-            _feetype = feetype[0].FeeTypeName;
+          // var feetype = this.FeeTypes.filter(t => t.FeeTypeId == stud.FeeTypeId);
+          // var _feetype = ''
+          // if (feetype.length > 0)
+          //   _feetype = feetype[0].FeeTypeName;
 
 
           StudentClassRollNoGenList.push({
@@ -422,8 +422,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
             StudentId: stud.StudentId,
             StudentName: stud.Student.FirstName + " " + stud.Student.LastName,
             ClassName: this.Classes.filter(c => c.ClassId == stud.ClassId)[0].ClassName,
-            FeeTypeId: stud.FeeTypeId,
-            FeeType: _feetype,
+            //FeeTypeId: stud.FeeTypeId,
+            //FeeType: _feetype,
             SectionId: stud.SectionId,
             Section: stud.SectionId > 0 ? this.Sections.filter(sc => sc.MasterDataId == stud.SectionId)[0].MasterDataName : '',
             RollNo: stud.RollNo,
@@ -471,9 +471,9 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         else {
 
           this.RollNoGenerationSortBy = 'Gender ' + _gendersort + ',StudentName ' + _namesort;
-          var orderbystatement = "select StudentClassId,StudentId,StudentName,ClassId,SectionId,RollNo,Gender,FeeTypeId,Promote,Active,[Action] from ? order by " +
+          var orderbystatement = "select StudentClassId,StudentId,StudentName,ClassId,SectionId,RollNo,Gender,Promote,Active,[Action] from ? order by " +
             this.RollNoGenerationSortBy;
-          this.StudentClassForDownload = alasql("select StudentClassId,StudentId,StudentName,ClassId,SectionId,RollNo,Gender,FeeTypeId,FatherName,MotherName from ?", [StudentClassRollNoGenList])
+          this.StudentClassForDownload = alasql("select StudentClassId,StudentId,StudentName,ClassId,SectionId,RollNo,Gender,FatherName,MotherName from ?", [StudentClassRollNoGenList])
 
           this.StudentClassList = alasql(orderbystatement, [StudentClassRollNoGenList]);
           this.StudentClassList.forEach((student, index) => {
@@ -594,10 +594,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
             .subscribe((examresult: any) => {
               //var _classId = this.searchForm.get("searchClassId")?.value
 
-              var _defaultTypeId = 0;
-              var defaultFeeTypeObj = this.FeeTypes.filter((f: any) => f.defaultType == 1);
-              if (defaultFeeTypeObj.length > 0)
-                _defaultTypeId = defaultFeeTypeObj[0].FeeTypeId;
+              // var _defaultTypeId = 0;
+              // var defaultFeeTypeObj = this.FeeTypes.filter((f: any) => f.defaultType == 1);
+              // if (defaultFeeTypeObj.length > 0)
+              //   _defaultTypeId = defaultFeeTypeObj[0].FeeTypeId;
               result.forEach(s => {
                 var _genderName = '';
                 var _examStatus = '';
@@ -607,10 +607,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                 var genderObj = this.Genders.filter((f: any) => f.MasterDataId == s.Student.GenderId);
                 if (genderObj.length > 0)
                   _genderName = genderObj[0].MasterDataName;
-                var feetype = this.FeeTypes.filter(t => t.FeeTypeId == s.FeeTypeId);
-                var _feetype = ''
-                if (feetype.length > 0)
-                  _feetype = feetype[0].FeeTypeName;
+                // var feetype = this.FeeTypes.filter(t => t.FeeTypeId == s.FeeTypeId);
+                // var _feetype = ''
+                // if (feetype.length > 0)
+                //   _feetype = feetype[0].FeeTypeName;
                 var _lastname = s.Student.LastName == null ? '' : " " + s.Student.LastName;
                 SameClassPreviousBatchData.push({
                   StudentClassId: 0,
@@ -618,8 +618,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                   StudentId: s.StudentId,
                   StudentName: s.Student.FirstName + _lastname,
                   ClassName: this.Classes.filter(c => c.ClassId == s.ClassId)[0].ClassName,
-                  FeeTypeId: (s.FeeTypeId == 0 || s.FeeTypeId == null) ? _defaultTypeId : s.FeeTypeId,
-                  FeeType: _feetype,
+                  //FeeTypeId: (s.FeeTypeId == 0 || s.FeeTypeId == null) ? _defaultTypeId : s.FeeTypeId,
+                  //FeeType: _feetype,
                   RollNo: s.RollNo,
                   SectionId: s.SectionId,
                   Section: s.SectionId > 0 ? this.Sections.filter(sc => sc.MasterDataId == s.SectionId)[0].MasterDataName : '',
@@ -689,10 +689,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
             .subscribe((examresult: any) => {
 
               ////console.log('result',result)
-              var _defaultTypeId = 0;
-              var defaultFeeTypeObj = this.FeeTypes.filter((f: any) => f.defaultType == 1);
-              if (defaultFeeTypeObj.length > 0)
-                _defaultTypeId = defaultFeeTypeObj[0].FeeTypeId;
+              // var _defaultTypeId = 0;
+              // var defaultFeeTypeObj = this.FeeTypes.filter((f: any) => f.defaultType == 1);
+              // if (defaultFeeTypeObj.length > 0)
+              //   _defaultTypeId = defaultFeeTypeObj[0].FeeTypeId;
               var _examStatus = '';
               result.forEach(s => {
                 _examStatus = '';
@@ -703,10 +703,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                 var genderObj = this.Genders.filter((f: any) => f.MasterDataId == s.Student.GenderId);
                 if (genderObj.length > 0)
                   _genderName = genderObj[0].MasterDataName;
-                var feetype = this.FeeTypes.filter(t => t.FeeTypeId == s.FeeTypeId);
-                var _feetype = ''
-                if (feetype.length > 0)
-                  _feetype = feetype[0].FeeTypeName;
+                // var feetype = this.FeeTypes.filter(t => t.FeeTypeId == s.FeeTypeId);
+                // var _feetype = ''
+                // if (feetype.length > 0)
+                //   _feetype = feetype[0].FeeTypeName;
                 var _lastname = s.Student.LastName == null ? '' : " " + s.Student.LastName;
                 PreviousClassAndPreviousBatchData.push({
                   StudentClassId: 0,
@@ -714,8 +714,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
                   StudentId: s.StudentId,
                   StudentName: s.Student.FirstName + _lastname,
                   ClassName: this.Classes.filter(c => c.ClassId == s.ClassId)[0].ClassName,
-                  FeeTypeId: (s.FeeTypeId == 0 || s.FeeTypeId == null) ? _defaultTypeId : s.FeeTypeId,
-                  FeeType: _feetype,
+                  //FeeTypeId: (s.FeeTypeId == 0 || s.FeeTypeId == null) ? _defaultTypeId : s.FeeTypeId,
+                  //FeeType: _feetype,
                   RollNo: s.RollNo,
                   SectionId: s.SectionId,
                   Section: s.SectionId > 0 ? this.Sections.filter(sc => sc.MasterDataId == s.SectionId)[0].MasterDataName : '',
@@ -792,7 +792,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         'ClassId',
         'SectionId',
         'RollNo',
-        'FeeTypeId',
+        //'FeeTypeId',
         'Remarks',
         'Active',
         'ExamStatus',
@@ -808,7 +808,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         'ClassId',
         'SemesterId',
         'RollNo',
-        'FeeTypeId',
+        //'FeeTypeId',
         'Remarks',
         'Active',
         'ExamStatus',
@@ -835,7 +835,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   }
   GetStudentCls() {
     var _classId = this.searchForm.get("searchClassId")?.value;
-    var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
+    //var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     let _sectionId = this.searchForm.get("searchSectionId")?.value;
     if (_classId && !_semesterId && !_sectionId) {
@@ -845,20 +845,20 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       return;
     }
     let students: any = [];
-    if (_classId && _FeeTypeId) {
-      students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].ClassId == _classId
-        && s.StudentClasses[0].SemesterId == _semesterId
-        && s.StudentClasses[0].SectionId == _sectionId
-        && s.StudentClasses[0].FeeTypeId == _FeeTypeId)
-    }
-    else if (!_classId && _FeeTypeId) {
-      students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].FeeTypeId == _FeeTypeId)
-    }
-    else if (_classId && !_FeeTypeId) {
+    if (_classId) {
       students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].ClassId == _classId
         && s.StudentClasses[0].SemesterId == _semesterId
         && s.StudentClasses[0].SectionId == _sectionId)
+        //&& s.StudentClasses[0].FeeTypeId == _FeeTypeId)
     }
+    // else if (!_classId && _FeeTypeId) {
+    //   students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].FeeTypeId == _FeeTypeId)
+    // }
+    // else if (_classId && !_FeeTypeId) {
+    //   students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].ClassId == _classId
+    //     && s.StudentClasses[0].SemesterId == _semesterId
+    //     && s.StudentClasses[0].SectionId == _sectionId)
+    // }
     return students;
   }
   PreviousClassId = 0;
@@ -867,7 +867,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     this.loading = true;
     var _classId = this.searchForm.get("searchClassId")?.value;
-    var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
+    //var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     let _sectionId = this.searchForm.get("searchSectionId")?.value;
     //this.HeaderTitle = '';
@@ -897,8 +897,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         filterStr += " and ClassId eq " + _classId;
     }
 
-    if (_FeeTypeId > 0)
-      filterStr += " and FeeTypeId eq " + _FeeTypeId;
+    // if (_FeeTypeId > 0)
+    //   filterStr += " and FeeTypeId eq " + _FeeTypeId;
     if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
     if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
 
@@ -922,7 +922,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         'AdmissionNo',
         'AdmissionDate',
         'StudentId',
-        'FeeTypeId',
+        //'FeeTypeId',
         'ClassId',
         'SemesterId',
         'RollNo',
@@ -943,10 +943,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     debugger;
     this.HeaderTitle = '';
     var _classId = this.searchForm.get("searchClassId")?.value;
-    var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
-    if (!_classId && !_FeeTypeId) {
+    //var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
+    if (!_classId) {
       this.loading = false;
-      this.contentservice.openSnackBar("Please select either class or Fee type.", globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar("Please select either class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     this.loading = true;
@@ -967,10 +967,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
           else
             result = [..._studentsWithClasses];
 
-          var _defaultTypeId = 0;
-          var defaultFeeTypeObj = this.FeeTypes.find((f: any) => f.defaultType == 1);
-          if (defaultFeeTypeObj)
-            _defaultTypeId = defaultFeeTypeObj.FeeTypeId;
+          // var _defaultTypeId = 0;
+          // var defaultFeeTypeObj = this.FeeTypes.find((f: any) => f.defaultType == 1);
+          // if (defaultFeeTypeObj)
+          //   _defaultTypeId = defaultFeeTypeObj.FeeTypeId;
           result.forEach(s => {
             var obj = this.Remarks.find((f: any) => f.MasterDataId == s.RemarkId);
             var _remark = '';
@@ -990,10 +990,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
             if (semesterObj)
               _semesterName = semesterObj.MasterDataName;
 
-            var feetype = this.FeeTypes.find(t => t.FeeTypeId == s.StudentClasses[0].FeeTypeId);
-            var _feetype = ''
-            if (feetype)
-              _feetype = feetype.FeeTypeName;
+            //var feetype = this.FeeTypes.find(t => t.FeeTypeId == s.StudentClasses[0].FeeTypeId);
+            // var _feetype = ''
+            // if (feetype)
+            //   _feetype = feetype.FeeTypeName;
             var _lastname = s.LastName == null ? '' : " " + s.LastName;
             this.StudentClassList.push({
               PID: s.PID,
@@ -1008,8 +1008,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
               MotherName: s.MotherName,
               StudentName: s.FirstName + _lastname,
               ClassName: this.Classes.find(c => c.ClassId == s.StudentClasses[0].ClassId).ClassName,
-              FeeTypeId: (s.StudentClasses[0].FeeTypeId == 0 || s.StudentClasses[0].FeeTypeId == null) ? _defaultTypeId : s.StudentClasses[0].FeeTypeId,
-              FeeType: _feetype,
+              //FeeTypeId: (s.StudentClasses[0].FeeTypeId == 0 || s.StudentClasses[0].FeeTypeId == null) ? _defaultTypeId : s.StudentClasses[0].FeeTypeId,
+              //FeeType: _feetype,
               RollNo: s.StudentClasses[0].RollNo,
               SectionId: s.StudentClasses[0].SectionId,
               Section: s.StudentClasses[0].SectionId > 0 ? this.Sections.find(sc => sc.MasterDataId == s.StudentClasses[0].SectionId).MasterDataName : '',
@@ -1141,7 +1141,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
               this.StudentClassData.StudentId = item.StudentId;
               this.StudentClassData.ClassId = item.ClassId;
               this.StudentClassData.SemesterId = item.SemesterId;
-              this.StudentClassData.FeeTypeId = item.FeeTypeId;
+              //this.//StudentClassData.FeeTypeId = item.FeeTypeId;
               this.StudentClassData.RollNo = item.RollNo;
               this.StudentClassData.SectionId = item.SectionId;
               this.StudentClassData.Remarks = item.Remarks;
@@ -1274,103 +1274,103 @@ export class AssignStudentclassdashboardComponent implements OnInit {
   //   }
   //   return filterFunction;
   // }
-  CreateInvoice(row) {
-    debugger;
-    this.loading = true;
-    this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, row.ClassId, 0, 0)//,row.SemesterId,row.SectionId)
-      .subscribe((datacls: any) => {
+  // CreateInvoice(row) {
+  //   debugger;
+  //   this.loading = true;
+  //   this.contentservice.GetClassFeeWithFeeDefinition(this.FilterOrgSubOrgBatchId, row.ClassId, 0, 0)//,row.SemesterId,row.SectionId)
+  //     .subscribe((datacls: any) => {
 
-        var _clsfeeWithDefinitions: any = [];
-        let items = datacls.value.filter(m => m.FeeDefinition.Active == 1 && m.SemesterId == this.StudentClassData.SemesterId
-          && m.SectionId == this.StudentClassData.SectionId);
-        if (items.length == 0) {
-          _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
-        }
-        else
-          _clsfeeWithDefinitions = [...items];
+  //       var _clsfeeWithDefinitions: any = [];
+  //       let items = datacls.value.filter(m => m.FeeDefinition.Active == 1 && m.SemesterId == this.StudentClassData.SemesterId
+  //         && m.SectionId == this.StudentClassData.SectionId);
+  //       if (items.length == 0) {
+  //         _clsfeeWithDefinitions = datacls.value.filter(m => m.FeeDefinition.Active == 1);
+  //       }
+  //       else
+  //         _clsfeeWithDefinitions = [...items];
 
-        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, row.ClassId, row.SemesterId, row.SectionId, row.StudentClassId, row.FeeTypeId)
-          .subscribe((data: any) => {
-            var studentfeedetail: any[] = [];
-            data.value.forEach(studcls => {
+  //       this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, row.ClassId, row.SemesterId, row.SectionId, row.StudentClassId, row.FeeTypeId)
+  //         .subscribe((data: any) => {
+  //           var studentfeedetail: any[] = [];
+  //           data.value.forEach(studcls => {
 
-              var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
-              let _currentstudent: any = this.Students.find(s => s.StudentId == studcls.StudentId);
-              var _feeName = '', _remark1 = '', _remark2 = '';
-              if (_currentstudent) {
-                _remark1 = _currentstudent.Remark1;
-                _remark2 = _currentstudent.Remark2;
-              }
-              objClassFee.forEach(clsfee => {
-                var _category = '';
-                var _subCategory = '';
-                var _className = '';
-                var _semesterName = '';
-                var _sectionName = '';
+  //             var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
+  //             let _currentstudent: any = this.Students.find(s => s.StudentId == studcls.StudentId);
+  //             var _feeName = '', _remark1 = '', _remark2 = '';
+  //             if (_currentstudent) {
+  //               _remark1 = _currentstudent.Remark1;
+  //               _remark2 = _currentstudent.Remark2;
+  //             }
+  //             objClassFee.forEach(clsfee => {
+  //               var _category = '';
+  //               var _subCategory = '';
+  //               var _className = '';
+  //               var _semesterName = '';
+  //               var _sectionName = '';
 
-                var objcls = this.Classes.find((f: any) => f.ClassId == studcls.ClassId);
-                if (objcls)
-                  _className = objcls.ClassName;
+  //               var objcls = this.Classes.find((f: any) => f.ClassId == studcls.ClassId);
+  //               if (objcls)
+  //                 _className = objcls.ClassName;
 
-                var objsemester = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
-                if (objsemester)
-                  _semesterName = objsemester.MasterDataName;
+  //               var objsemester = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
+  //               if (objsemester)
+  //                 _semesterName = objsemester.MasterDataName;
 
-                var objsection = this.Sections.find((f: any) => f.MasterDataId == studcls.SectionId);
-                if (objsection)
-                  _sectionName = objsection.MasterDataName;
+  //               var objsection = this.Sections.find((f: any) => f.MasterDataId == studcls.SectionId);
+  //               if (objsection)
+  //                 _sectionName = objsection.MasterDataName;
 
-                var objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
-                if (objcat)
-                  _category = objcat.MasterDataName;
+  //               var objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+  //               if (objcat)
+  //                 _category = objcat.MasterDataName;
 
-                var objsubcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
-                if (objsubcat)
-                  _subCategory = objsubcat.MasterDataName;
+  //               var objsubcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+  //               if (objsubcat)
+  //                 _subCategory = objsubcat.MasterDataName;
 
-                var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
+  //               var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
 
-                if (_formula.length > 0) {
-                  _feeName = clsfee.FeeDefinition.FeeName;
-                  studentfeedetail.push({
-                    Month: clsfee.Month,
-                    MonthDisplay: clsfee.MonthDisplay,
-                    Amount: clsfee.Amount,
-                    Formula: _formula,
-                    FeeName: _feeName,
-                    StudentClassId: studcls.StudentClassId,
-                    FeeCategory: _category,
-                    FeeSubCategory: _subCategory,
-                    FeeTypeId: studcls.FeeTypeId,
-                    SectionId: studcls.SectionId,
-                    SemesterId: studcls.SemesterId,
-                    ClassId: studcls.ClassId,
-                    ClassName: _className,
-                    Section: _sectionName,
-                    Semester: _semesterName,
-                    Remark1: _remark1,
-                    Remark2: _remark2,
-                    RollNo: studcls.RollNo
-                  });
-                }
+  //               if (_formula.length > 0) {
+  //                 _feeName = clsfee.FeeDefinition.FeeName;
+  //                 studentfeedetail.push({
+  //                   Month: clsfee.Month,
+  //                   MonthDisplay: clsfee.MonthDisplay,
+  //                   Amount: clsfee.Amount,
+  //                   Formula: _formula,
+  //                   FeeName: _feeName,
+  //                   StudentClassId: studcls.StudentClassId,
+  //                   FeeCategory: _category,
+  //                   FeeSubCategory: _subCategory,
+  //                   //FeeTypeId: studcls.FeeTypeId,
+  //                   SectionId: studcls.SectionId,
+  //                   SemesterId: studcls.SemesterId,
+  //                   ClassId: studcls.ClassId,
+  //                   ClassName: _className,
+  //                   Section: _sectionName,
+  //                   Semester: _semesterName,
+  //                   Remark1: _remark1,
+  //                   Remark2: _remark2,
+  //                   RollNo: studcls.RollNo
+  //                 });
+  //               }
 
-              })
-            })
-            // //console.log("studentfeedetailxxxx",studentfeedetail)
-            this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
-              .subscribe((data: any) => {
-                this.loading = false;
-                this.contentservice.openSnackBar("Invoice created successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
-              },
-                error => {
-                  this.loading = false;
-                  //console.log("create invoice error", error);
-                  this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
-                })
-          })
-      });
+  //             })
+  //           })
+  //           // //console.log("studentfeedetailxxxx",studentfeedetail)
+  //           this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
+  //             .subscribe((data: any) => {
+  //               this.loading = false;
+  //               this.contentservice.openSnackBar("Invoice created successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
+  //             },
+  //               error => {
+  //                 this.loading = false;
+  //                 //console.log("create invoice error", error);
+  //                 this.contentservice.openSnackBar(globalconstants.TechnicalIssueMessage, globalconstants.ActionText, globalconstants.RedBackground);
+  //               })
+  //         })
+  //     });
 
-  }
+  // }
 
   isNumeric(str: number) {
     if (typeof str != "string") return false // we only process strings!  
@@ -1497,8 +1497,8 @@ export interface IStudentClass {
   RollNo: string;
   SectionId?: number;
   Section: string;
-  FeeTypeId: number;
-  FeeType: string;
+  //FeeTypeId: number;
+  //FeeType: string;
   Promote: number;
   ExamStatus: string;
   GenderName: string;

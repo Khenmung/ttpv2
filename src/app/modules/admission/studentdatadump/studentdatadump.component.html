@@ -3,11 +3,11 @@
     <mat-spinner *ngIf="PageLoading" diameter="25" style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
     <form [formGroup]="studentSearchForm">
         <mat-form-field appearance="outline" style="width: 150px;">
-            <mat-label>Class group</mat-label>
-            <mat-select formControlName="searchGroupId">
+            <mat-label>Class</mat-label>
+            <mat-select formControlName="searchClassId">
                 <mat-option [value]="Defaultvalue">select</mat-option>
-                <mat-option *ngFor="let item of ClassGroups" [value]="item.ClassGroupId">
-                    {{item.GroupName}}
+                <mat-option *ngFor="let item of Classes" [value]="item.ClassId">
+                    {{item.ClassName}}
                 </mat-option>
             </mat-select>
         </mat-form-field>

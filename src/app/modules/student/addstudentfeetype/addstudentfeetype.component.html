@@ -2,7 +2,7 @@
   <div style="padding:15px 15px 10px 15px;">
     <div><strong>Student Fee Type</strong></div>
   </div>
-  <mat-spinner *ngIf="PageLoading" diameter="25"
+  <mat-spinner *ngIf="PageLoading || loading" diameter="25"
     style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
   <!-- <alert></alert> -->
   <div style="width:100%;padding: 15px;" fxLayout="column">
@@ -20,7 +20,7 @@
         <mat-cell *matCellDef="let element">
           <mat-form-field appearance="outline">
             <mat-select [(ngModel)]="element.FeeTypeId" [value]="element.FeeTypeName">
-              <mat-option *ngFor="let item in FeeTypeList" [value]="item.FeeTypeId">{{item.FeeTypeName}}</mat-option>
+              <mat-option *ngFor="let item of FeeTypeList" [value]="item.FeeTypeId">{{item.FeeTypeName}}</mat-option>
             </mat-select>
           </mat-form-field>
         </mat-cell>
@@ -32,7 +32,7 @@
           <mat-form-field appearance="outline">
             <mat-select [(ngModel)]="element.FromMonth" [value]="element.FromMonth">
               <mat-option [value]="Defaultvalue">select</mat-option>
-              <mat-option *ngFor="let item in Months" [value]="item.val">{{item.MonthName}}</mat-option>
+              <mat-option *ngFor="let item of Months" [value]="item.val">{{item.MonthName}}</mat-option>
             </mat-select>
           </mat-form-field>
         </mat-cell>
@@ -44,7 +44,7 @@
           <mat-form-field appearance="outline">
             <mat-select [(ngModel)]="element.ToMonth" [value]="element.ToMonth">
               <mat-option [value]="Defaultvalue">select</mat-option>
-              <mat-option *ngFor="let item in Months" [value]="item.val">{{item.MonthName}}</mat-option>
+              <mat-option *ngFor="let item of Months" [value]="item.val">{{item.MonthName}}</mat-option>
             </mat-select>
           </mat-form-field>
         </mat-cell>

@@ -286,12 +286,12 @@ export class FeecollectionreportComponent implements OnInit {
               item.SectionId = stud[0].SectionId;
               item.RollNo = stud[0].RollNo;
               item.PID = stud[0].PID;
-              var clsobj = this.Classes.filter(c => c.ClassId == item.ClassId)
-              if (clsobj.length > 0) {
-                _className = clsobj[0].ClassName
-                var sectionObj = this.Sections.filter((s: any) => s.MasterDataId == item.SectionId)
-                if (sectionObj.length > 0)
-                  _sectionName = sectionObj[0].MasterDataName
+              var clsobj = this.Classes.find(c => c.ClassId == item.ClassId)
+              if (clsobj) {
+                _className = clsobj.ClassName
+                var sectionObj = this.Sections.find((s: any) => s.MasterDataId == item.SectionId)
+                if (sectionObj)
+                  _sectionName = sectionObj.MasterDataName
                 //var _lastname = item.Student.LastName == null ? '' : " " + item.Student.LastName;
                 result.push({
                   Name: item.Name,
@@ -304,7 +304,7 @@ export class FeecollectionreportComponent implements OnInit {
                   ClassId: item.ClassId,
                   Month: item.Month,
                   MonthDisplay: item.MonthDisplay,
-                  Sequence: clsobj[0].Sequence,
+                  Sequence: clsobj.Sequence,
                   PID: item.PID
                 })
               }
@@ -345,6 +345,7 @@ export class FeecollectionreportComponent implements OnInit {
             }
           })
           //}
+          console.log("this.ELEMENT_DATA",this.ELEMENT_DATA);
           this.dataSource = new MatTableDataSource<ITodayReceipt>(this.ELEMENT_DATA);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
@@ -440,7 +441,7 @@ debugger;
   }
   UpdateOrSave(row) {
 
-    //debugger;
+    debugger;
     this.loading = true;
     var _classId = this.searchForm.get("searchClassId")?.value;
     //var _StatusId = this.searchForm.get("searchStatusId")?.value;
@@ -554,7 +555,7 @@ debugger;
         });
   }
   update(row) {
-    ////console.log("updating",this.StudentEvaluationForUpdate);
+    console.log("updating",this.StudentStatusList[0]);
     this.dataservice.postPatch('StudentStatures', this.StudentStatusList[0], this.StudentStatusList[0].StudentStatureId, 'patch')
       .subscribe(
         (data: any) => {

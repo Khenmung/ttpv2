@@ -74,11 +74,12 @@ export class StudenthistoryComponent implements OnInit {
     'GenderName',
     'FatherName',
     'MotherName',
-    'AdmissionDate',
     'ClassName',
+    'AdmissionDate',
     'Section',
     'Semester',
     'RollNo',
+    'FeeType',
     'Batch',
     'Remarks',
     'Active',
@@ -239,15 +240,15 @@ export class StudenthistoryComponent implements OnInit {
     ];
 
     list.PageName = "Students";
-    list.lookupFields = ["StudentClasses($select=StudentClassId,AdmissionDate,StudentId,FeeTypeId,ClassId,SemesterId,RollNo,SectionId,Remarks,Active,BatchId)"];
+    list.lookupFields = ["StudentClasses($select=StudentClassId,AdmissionDate,StudentId,FeeTypeId,ClassId,SemesterId,RollNo,SectionId,Remarks,Active,BatchId;$expand=StudentFeeTypes($filter=IsCurrent eq true and Active eq true;$select=FeeTypeId))"];
     list.filter = [filterStr + _paramstr];
     this.StudentClassList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         var _defaultTypeId = 0;
-        var defaultFeeTypeObj = this.FeeTypes.filter((f: any) => f.defaultType == 1);
-        if (defaultFeeTypeObj.length > 0)
-          _defaultTypeId = defaultFeeTypeObj[0].FeeTypeId;
+        var defaultFeeTypeObj = this.FeeTypes.find((f: any) => f.defaultType == 1);
+        if (defaultFeeTypeObj)
+          _defaultTypeId = defaultFeeTypeObj.FeeTypeId;
         data.value.forEach(s => {
           s.StudentClasses.forEach(c => {
 
@@ -273,11 +274,16 @@ export class StudenthistoryComponent implements OnInit {
             var _sectionObj = this.Sections.filter((f: any) => f.MasterDataId == c.SectionId);
             if (_sectionObj.length > 0)
               _section = _sectionObj[0].MasterDataName;
-
-            var feetype = this.FeeTypes.filter(t => t.FeeTypeId == c.FeeTypeId);
             var _feetype = ''
-            if (feetype.length > 0)
-              _feetype = feetype[0].FeeTypeName;
+            if (c.StudentFeeTypes.length > 0 && c.StudentFeeTypes[0].FeeTypeId) {
+              let feetypeobj = this.FeeTypes.find(t => t.FeeTypeId == c.StudentFeeTypes[0].FeeTypeId);
+
+              if (feetypeobj) {
+                _defaultTypeId = c.StudentFeeTypes[0].FeeTypeId;
+
+                _feetype = feetypeobj.FeeTypeName;
+              }
+            }
             var _lastname = s.LastName == null ? '' : " " + s.LastName;
             this.StudentClassList.push({
               PID: s.PID,
@@ -290,7 +296,7 @@ export class StudenthistoryComponent implements OnInit {
               FatherName: s.FatherName,
               MotherName: s.MotherName,
               StudentName: s.FirstName + _lastname,
-              FeeTypeId: !c.FeeTypeId ? _defaultTypeId : c.FeeTypeId,
+              FeeTypeId: _defaultTypeId,
               FeeType: _feetype,
               RollNo: c.RollNo,
               Section: _section,

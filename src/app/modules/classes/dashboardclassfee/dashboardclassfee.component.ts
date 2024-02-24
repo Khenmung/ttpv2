@@ -276,7 +276,12 @@ export class DashboardclassfeeComponent implements OnInit {
                   if (objsubcat)
                     _subCategory = objsubcat.MasterDataName;
 
-                  var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
+                  var _formula = '';
+                  let _feeTypeId = 0;
+                  if (studcls.StudentFeeTypes.length > 0) {
+                    _feeTypeId = studcls.StudentFeeTypes[0].FeeTypeId;
+                    _formula = studcls.StudentFeeTypes[0].FeeType.Formula;
+                  }
 
                   if (_formula.length > 0) {
                     _feeName = clsfee.FeeDefinition.FeeName;
@@ -289,7 +294,7 @@ export class DashboardclassfeeComponent implements OnInit {
                       StudentClassId: studcls.StudentClassId,
                       FeeCategory: _category,
                       FeeSubCategory: _subCategory,
-                      FeeTypeId: studcls.FeeTypeId,
+                      FeeTypeId: _feeTypeId,
                       ClassId: studcls.ClassId,
                       SemesterId: studcls.SemesterId,
                       SectionId: studcls.SectionId,
@@ -302,7 +307,7 @@ export class DashboardclassfeeComponent implements OnInit {
 
                 })
               })
-              console.log("studentfeedetailxxxx", studentfeedetail)
+              //console.log("studentfeedetailxxxx", studentfeedetail)
               this.contentservice.createInvoice(studentfeedetail, this.SelectedBatchId, this.LoginUserDetail[0]["orgId"], this.SubOrgId)
                 .subscribe((data: any) => {
                   this.loading = false;

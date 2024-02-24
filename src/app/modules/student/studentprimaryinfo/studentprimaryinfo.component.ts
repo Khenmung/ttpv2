@@ -646,7 +646,7 @@ export class studentprimaryinfoComponent implements OnInit {
       GenderId: _genderId,
       PermanentAddress: this.studentForm.get("PermanentAddress")?.value,
       PresentAddress: this.studentForm.get("PresentAddress")?.value,
-      DOB:this.studentForm.get("DOB")?.value,// this.adjustDateForTimeOffset(new Date(this.studentForm.get("DOB")?.value)),
+      DOB: this.studentForm.get("DOB")?.value,// this.adjustDateForTimeOffset(new Date(this.studentForm.get("DOB")?.value)),
       BloodgroupId: this.studentForm.get("Bloodgroup")?.value,
       CategoryId: this.studentForm.get("Category")?.value,
       AccountHolderName: this.studentForm.get("AccountHolderName")?.value,
@@ -674,7 +674,7 @@ export class studentprimaryinfoComponent implements OnInit {
       RemarkId: this.studentForm.get("RemarkId")?.value,
       Remark2Id: this.studentForm.get("Remark2Id")?.value,
       AdmissionStatusId: this.studentForm.get("AdmissionStatus")?.value,
-      AdmissionDate:this.studentForm.get("AdmissionDate")?.value,// this.adjustDateForTimeOffset(new Date(this.studentForm.get("AdmissionDate")?.value)),
+      AdmissionDate: this.studentForm.get("AdmissionDate")?.value,// this.adjustDateForTimeOffset(new Date(this.studentForm.get("AdmissionDate")?.value)),
       Notes: this.studentForm.get("Notes")?.value,
       EmailAddress: _email,
       Active: this.studentForm.get("Active")?.value == true ? 1 : 0,
@@ -721,7 +721,7 @@ export class studentprimaryinfoComponent implements OnInit {
             this.PID = result.PID;
             this.StudentId = result.StudentId;
             this.studentData[0].StudentId = this.StudentId;
-            this.studentData[0].StudentClassId =result.StudentClassId; 
+            this.studentData[0].StudentClassId = result.StudentClassId;
             // if (result != null && result.UserId != "")
             //   this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
             // else
@@ -797,9 +797,8 @@ export class studentprimaryinfoComponent implements OnInit {
         let indx = _student.findIndex(f => f.StudentId === this.StudentId);
         if (indx > -1)
           _student[indx] = JSON.parse(JSON.stringify(this.studentData[0]));
-        else
-        {
-          this.contentservice.openSnackBar("StudentId index not found in Students",globalconstants.ActionText,globalconstants.RedBackground);
+        else {
+          this.contentservice.openSnackBar("StudentId index not found in Students", globalconstants.ActionText, globalconstants.RedBackground);
           return;
         }
         //_stud = JSON.parse(JSON.stringify(this.studentData[0]));
@@ -883,8 +882,13 @@ export class studentprimaryinfoComponent implements OnInit {
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
-                var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
+                var _formula = '';
+                let _feeTypeId = 0;
 
+                if (studcls.StudentFeeTypes.length > 0) {
+                  _feeTypeId = studcls.StudentFeeTypes[0].FeeTypeId;
+                  _formula = studcls.StudentFeeTypes[0].FeeType.Formula;
+                }
                 if (_formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
@@ -896,7 +900,7 @@ export class studentprimaryinfoComponent implements OnInit {
                     StudentClassId: studcls.StudentClassId,
                     FeeCategory: _category,
                     FeeSubCategory: _subCategory,
-                    FeeTypeId: studcls.FeeTypeId,
+                    FeeTypeId: _feeTypeId,
                     ClassId: studcls.ClassId,
                     SectionId: studcls.SectionId,
                     SemesterId: studcls.SemesterId,

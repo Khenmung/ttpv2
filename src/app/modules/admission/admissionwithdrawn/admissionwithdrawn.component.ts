@@ -366,7 +366,7 @@ export class AdmissionWithdrawnComponent {
       "Active"
     ];
     list.PageName = "Students";
-    list.lookupFields = ["StudentClasses($filter=BatchId eq " + this.SelectedBatchId + ";$select=UpdatedDate,StudentClassId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,BatchId,IsCurrent,HouseId,StudentId)"];
+    list.lookupFields = ["StudentClasses($filter=BatchId eq " + this.SelectedBatchId + ";$select=UpdatedDate,StudentClassId,ClassId,SectionId,SemesterId,RollNo,BatchId,IsCurrent,HouseId,StudentId)"];
 
     list.filter = [filterStr + " and Active eq 0"];
     this.loading = true;
@@ -428,7 +428,7 @@ export interface IStudentClass {
   RollNo: string;
   SectionId?: number;
   Section: string;
-  FeeTypeId: number;
+  //FeeTypeId: number;
   FeeType: string;
   Promote: number;
   ExamStatus: string;

@@ -667,7 +667,7 @@ export class ContentService implements OnInit {
   }
   getStudentClassWithFeeType(pOrgSubOrgBatchId, pClassId, pSemesterId, pSectionId, pStudentClassId, pFeeTypeId, fromMonth = 0, toMonth = 0) {
 
-    var filterstr = '';
+    var filterstr = '', studentFeeTypeFilter = '';
     //new student class is inactive but should be able to pay fee and will become active.
     filterstr = pOrgSubOrgBatchId + " and (Active eq 1 or AdmissionDate lt 1970-01-01)";// + " and Active eq 1";
 
@@ -681,7 +681,7 @@ export class ContentService implements OnInit {
       filterstr += " and SectionId eq " + pSectionId;
 
     if (pFeeTypeId > 0)
-      filterstr += " and FeeTypeId eq " + pFeeTypeId;
+      studentFeeTypeFilter += " and FeeTypeId eq " + pFeeTypeId;
 
     //edited for frommonth and toMonth
     if (fromMonth > 0 && toMonth > 0)
@@ -698,11 +698,11 @@ export class ContentService implements OnInit {
       "ClassId",
       "SectionId",
       "SemesterId",
-      "FeeTypeId",
+      "BatchId",
       "SectionId",
       "RollNo"];
     list.PageName = "StudentClasses";
-    list.lookupFields = ["StudentFeeTypes($filter=IsCurrent eq true and Active eq true;$select=FromMonth,ToMonth,FeeTypeId);FeeType($select=Formula,Active)"]
+    list.lookupFields = ["StudentFeeTypes($filter=IsCurrent eq true and Active eq true" + studentFeeTypeFilter + ";$select=FromMonth,ToMonth,FeeTypeId,Active;$expand=FeeType($select=FeeTypeName,Formula,Active))"]
     list.filter = [filterstr];
     return this.dataservice.get(list);
 

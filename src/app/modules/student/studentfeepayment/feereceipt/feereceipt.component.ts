@@ -254,7 +254,7 @@ export class FeereceiptComponent implements OnInit {
     }
   }
   ReceivedBy = '';
-  TotalInWords:any='';
+  TotalInWords: any = '';
   viewDetail(row) {
     debugger;
     this.ReceivedBy = row.ReceivedBy;
@@ -270,7 +270,7 @@ export class FeereceiptComponent implements OnInit {
     this.Balance = row.Balance == null ? 0 : row.Balance;
     this.BillStatus = row.Active;
     this.dataSource = new MatTableDataSource<any>(this.clickPaymentDetails);
-   // this.TotalInWords = this.inWords(this.TotalAmount);
+    // this.TotalInWords = this.inWords(this.TotalAmount);
   }
   CancelReceipt() {
     //debugger;
@@ -346,8 +346,12 @@ export class FeereceiptComponent implements OnInit {
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
-                var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
-
+                var _formula = '';
+                let _feeTypeId = 0;
+                if (studcls.StudentFeeTypes.length > 0) {
+                  _feeTypeId = studcls.StudentFeeTypes[0].FeeTypeId;
+                  _formula = studcls.StudentFeeTypes[0].FeeType.Formula;
+                }
                 if (_formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
@@ -359,7 +363,7 @@ export class FeereceiptComponent implements OnInit {
                     StudentClassId: studcls.StudentClassId,
                     FeeCategory: _category,
                     FeeSubCategory: _subCategory,
-                    FeeTypeId: studcls.FeeTypeId,
+                    FeeTypeId: _feeTypeId,
                     ClassId: studcls.ClassId,
                     SemesterId: studcls.SemesterId,
                     SectionId: studcls.SectionId,
@@ -504,7 +508,7 @@ export class FeereceiptComponent implements OnInit {
   }
   PaymentTypes: any[] = [];
   FeeCategories: any[] = [];
-  logourl='';
+  logourl = '';
   GetMasterData() {
     this.loading = true;
     // let list: List = new List();
@@ -523,13 +527,13 @@ export class FeereceiptComponent implements OnInit {
     this.allMasterData = this.tokenStorage.getMasterData()!;
     this.FeeCategories = this.getDropDownData(globalconstants.MasterDefinitions.school.FEECATEGORY);
     this.ReceiptHeading = this.getDropDownData(globalconstants.MasterDefinitions.school.RECEIPTHEADING);
-    var imgobj = this.ReceiptHeading.find((f: any) => f.MasterDataName == 'img' && f.Active==1);
+    var imgobj = this.ReceiptHeading.find((f: any) => f.MasterDataName == 'img' && f.Active == 1);
     if (imgobj) {
       this.logourl = imgobj.Description;
     }
     this.ReceiptHeading = this.ReceiptHeading.filter(m => m.MasterDataName.toLowerCase() != 'img');
     this.ReceiptHeading.forEach(f => {
-      f.MasterDataName=f.MasterDataName.replaceAll("''","'");
+      f.MasterDataName = f.MasterDataName.replaceAll("''", "'");
       f.Description = f.Description ? JSON.parse("{" + f.Description + "}") : ''
     })
     ////console.log("this.ReceiptHeading",this.ReceiptHeading);
@@ -538,31 +542,31 @@ export class FeereceiptComponent implements OnInit {
     //});
 
   }
-  
 
-// inWords(num) {
-//   var a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
-//   var b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-//   if ((num = num.toString()).length > 9) return 'overflow';
-//   let n :any = ('000000000' + num).substring(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-//   if (!n) return ''; 
-//   var str = '';
-//   str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'crore ' : '';
-//   str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'lakh ' : '';
-//   str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'thousand ' : '';
-//   str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'hundred ' : '';
-//   str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'only ' : '';
-//   return str;
-// }
-getDropDownData(dropdowntype) {
-  return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
-  // let Id = this.allMasterData.filter((item, indx) => {
-  //   return item.MasterDataName.toLowerCase() == dropdowntype//globalconstants.GENDER
-  // })[0].MasterDataId;
-  // return this.allMasterData.filter((item, index) => {
-  //   return item.ParentId == Id
-  // });
-}
+
+  // inWords(num) {
+  //   var a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+  //   var b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  //   if ((num = num.toString()).length > 9) return 'overflow';
+  //   let n :any = ('000000000' + num).substring(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+  //   if (!n) return ''; 
+  //   var str = '';
+  //   str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'crore ' : '';
+  //   str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'lakh ' : '';
+  //   str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'thousand ' : '';
+  //   str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'hundred ' : '';
+  //   str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'only ' : '';
+  //   return str;
+  // }
+  getDropDownData(dropdowntype) {
+    return this.contentservice.getDropDownData(dropdowntype, this.tokenStorage, this.allMasterData);
+    // let Id = this.allMasterData.filter((item, indx) => {
+    //   return item.MasterDataName.toLowerCase() == dropdowntype//globalconstants.GENDER
+    // })[0].MasterDataId;
+    // return this.allMasterData.filter((item, index) => {
+    //   return item.ParentId == Id
+    // });
+  }
 }
 export interface IStudentFeePaymentReceipt {
   StudentReceiptId: number;

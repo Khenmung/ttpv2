@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { StudentviewComponent } from '../studentview/studentview.component';
 import { SidenavService } from '../../../shared/sidenav.service';
 import { ConnectionService } from 'ng-connection-service';
-import { AddStudentFeetypeComponent } from '../studentfeepayment/addstudentfeetype/addstudentfeetype.component';
+import { AddStudentFeetypeComponent } from '../addstudentfeetype/addstudentfeetype.component';
 
 @Component({
   selector: 'app-studentboard',

@@ -435,33 +435,33 @@ export class AddstudentfeepaymentComponent implements OnInit {
       this.nav.navigate(["/edu"]);
     }
     else {
+      this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0,0,0, this.studentInfoTodisplay.StudentClassId, 0)
+      // let filterstr = "StudentClassId eq " + this.studentInfoTodisplay.StudentClassId;
+      // this.loading = true;
+      // let list: List = new List();
+      // list.fields = [
+      //   "StudentClassId",
+      //   "AdmissionNo",
+      //   "SectionId",
+      //   "SemesterId",
+      //   "StudentId",
+      //   "BatchId",
+      //   "ClassId",
+      //   "RollNo",
+      //   //"FeeTypeId"
+      // ];
+      // list.lookupFields = [
+      //   //"Student($select=PID,FirstName,LastName)",
+      //   "FeeType($select=FeeTypeName,Formula)"
+      // ];
+      // list.PageName = "StudentClasses";
+      // list.filter = [filterstr];
 
-      let filterstr = "StudentClassId eq " + this.studentInfoTodisplay.StudentClassId;
-      this.loading = true;
-      let list: List = new List();
-      list.fields = [
-        "StudentClassId",
-        "AdmissionNo",
-        "SectionId",
-        "SemesterId",
-        "StudentId",
-        "BatchId",
-        "ClassId",
-        "RollNo",
-        "FeeTypeId"
-      ];
-      list.lookupFields = [
-        //"Student($select=PID,FirstName,LastName)",
-        "FeeType($select=FeeTypeName,Formula)"
-      ];
-      list.PageName = "StudentClasses";
-      list.filter = [filterstr];
-
-      this.dataservice.get(list)
+      // this.dataservice.get(list)
         .subscribe((data: any) => {
           debugger;
           if (data.value.length > 0) {
-            if (!data.value[0].FeeType) {
+            if (data.value[0].StudentFeeTypes.length==0) {
               this.contentservice.openSnackBar("Fee Type not yet defined.", globalconstants.ActionText, globalconstants.RedBackground);
               //this.snackbar.open("Fee type not yet defined.",'Dimiss',{duration:10000});
               this.loading = false;
@@ -475,9 +475,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
               this.studentInfoTodisplay.ClassId = data.value[0].ClassId;
               this.studentInfoTodisplay.SectionId = data.value[0].SectionId;
               this.studentInfoTodisplay.SemesterId = data.value[0].SemesterId;
-              this.studentInfoTodisplay.FeeTypeId = data.value[0].FeeTypeId;
-              this.studentInfoTodisplay.FeeType = data.value[0].FeeType.FeeTypeName;
-              this.studentInfoTodisplay.Formula = data.value[0].FeeType.Formula;
+              this.studentInfoTodisplay.FeeTypeId = data.value[0].StudentFeeTypes[0].FeeTypeId;
+              this.studentInfoTodisplay.FeeType = data.value[0].StudentFeeTypes[0].FeeType.FeeTypeName;
+              this.studentInfoTodisplay.Formula = data.value[0].StudentFeeTypes[0].FeeType.Formula;
               this.studentInfoTodisplay.RollNo = data.value[0].RollNo;
               this.studentInfoTodisplay.StudentName = _studdetail[0].FirstName + _lastname;
 

@@ -296,7 +296,7 @@ export class SchoolFeeTypesComponent implements OnInit {
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
-                var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
+                var _formula = studcls.StudentFeeTypes[0].FeeType.Formula;// == 1 ? studcls.FeeType.Formula : '';
 
                 if (_formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;

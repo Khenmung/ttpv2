@@ -216,11 +216,10 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
     this.loading = true;
     var _examId = this.searchForm.get("searchExamId")?.value;
-    //this.shareddata.CurrentSelectedBatchId.subscribe(b => this.SelectedBatchId = b);
     let checkFilterString = this.FilterOrgSubOrgBatchId + " and ExamId eq " + _examId +
       " and StudentClassSubjectId eq " + row.StudentClassSubjectId +
       " and ClassSubjectMarkComponentId eq " + row.ClassSubjectMarkComponentId;
-
+    " and StudentClassId eq " + row.StudentClassId
 
     if (row.ExamStudentSubjectResultId > 0)
       checkFilterString += " and ExamStudentSubjectResultId ne " + row.ExamStudentSubjectResultId;
@@ -253,9 +252,9 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
               let _examstatus = 0;
               if (item.Marks >= item.PassMark)
-                _examstatus = this.ExamStatuses.filter((f: any) => f.MasterDataName.toLowerCase() == "pass")[0].MasterDataId;
+                _examstatus = this.ExamStatuses.find((f: any) => f.MasterDataName.toLowerCase() == "pass").MasterDataId;
               else
-                _examstatus = this.ExamStatuses.filter((f: any) => f.MasterDataName.toLowerCase() == "fail")[0].MasterDataId;
+                _examstatus = this.ExamStatuses.find((f: any) => f.MasterDataName.toLowerCase() == "fail").MasterDataId;
 
               this.ExamStudentSubjectResultData.ExamStudentSubjectResultId = item.ExamStudentSubjectResultId;
               this.ExamStudentSubjectResultData.ExamId = _examId;
@@ -376,11 +375,9 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         this.FilteredClasses = this.FilteredClasses.sort((a, b) => a.Sequence - b.Sequence);
       });
 
-    var obj = this.Exams.filter((f: any) => f.ExamId == _examId);
-    if (obj.length > 0) {
-      //this.ClassGroupIdOfExam = obj[0].ClassGroupId;     
-
-      this.ExamReleased = obj[0].ReleaseResult;
+    var obj = this.Exams.find((f: any) => f.ExamId == _examId);
+    if (obj) {
+      this.ExamReleased = obj.ReleaseResult;
     }
 
     //this.SelectedClassStudentGrades = this.StudentGrades.filter((f:any) =>f.ExamId == _examId 
@@ -1097,6 +1094,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
   }
   DataToSave: any = [];
   SaveAll() {
+    this.loading = true;
     this.DataCollection = [];
 
     this.DataToSave = this.ExamStudentSubjectResult.filter(f => f.Action);
@@ -1120,6 +1118,9 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       //   this.UpdateOrSave(record, record);
       // }
     })
+    if (this.DataToSave.length == 0) {
+      this.loading = false;
+    }
   }
   onBlur(element, colName) {
     debugger;

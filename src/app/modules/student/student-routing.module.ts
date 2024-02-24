@@ -12,7 +12,7 @@ import { StudentprogressreportComponent } from './studentprogressreport/studentp
 import { AuthGuard } from '../../guards/auth.guard';
 import { HomeComponent } from '../../shared/components/home/home.component';
 import { StudentviewComponent } from './studentview/studentview.component';
-import { AddStudentFeetypeComponent } from './studentfeepayment/addstudentfeetype/addstudentfeetype.component';
+import { AddStudentFeetypeComponent } from './addstudentfeetype/addstudentfeetype.component';
 
 const routes: Routes = [
   {

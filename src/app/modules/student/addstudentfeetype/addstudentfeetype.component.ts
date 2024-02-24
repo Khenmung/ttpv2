@@ -5,11 +5,11 @@ import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
 import { SwUpdate } from "@angular/service-worker";
 import { Observable } from "rxjs";
-import { TokenStorageService } from "../../../../_services/token-storage.service";
-import { ContentService } from "../../../../shared/content.service";
-import { NaomitsuService } from "../../../../shared/databaseService";
-import { globalconstants } from "../../../../shared/globalconstant";
-import { List } from "../../../../shared/interface";
+import { TokenStorageService } from "../../../_services/token-storage.service";
+import { ContentService } from "../../../shared/content.service";
+import { NaomitsuService } from "../../../shared/databaseService";
+import { globalconstants } from "../../../shared/globalconstant";
+import { List } from "../../../shared/interface";
 
 @Component({
   selector: 'app-addstudentfeetype',
@@ -37,6 +37,7 @@ export class AddStudentFeetypeComponent {
   StudentFeeTypeData = {
     StudentFeeTypeId: 0,
     FeeTypeId: 0,
+    StudentClassId:0,
     FromMonth: 0,
     ToMonth: 0,
     Active: 0,
@@ -55,7 +56,7 @@ export class AddStudentFeetypeComponent {
     'Action'
   ];
   Classes: any[] = [];
-  StudentClass: any[] = [];
+  StudentClass: any = [];
   SelectedApplicationId = 0;
   StudentClassId = 0;
   searchForm: UntypedFormGroup;
@@ -115,7 +116,7 @@ export class AddStudentFeetypeComponent {
       FeeTypeId: 0,
       FromMonth: 0,
       ToMonth: 0,
-      StudentClassId: 0,
+      StudentClassId: this.StudentClassId,
       Active: 0,
       IsCurrent: false,
       Action: true
@@ -127,7 +128,7 @@ export class AddStudentFeetypeComponent {
   GetStudentClass() {
     debugger;
     var _students: any = this.tokenStorage.getStudents()!;
-    this.StudentClass = _students.find(a => a.StudentClasses.length > 0 && a.StudentClasses[0].StudentClassId == this.StudentClassId);
+    this.StudentClass = _students.find(a => a.StudentClasses.length > 0 && a.StudentClasses[0].StudentClassId == this.StudentClassId).StudentClasses[0];
   }
   onBlur(element) {
     element.Action = true;
@@ -152,7 +153,7 @@ export class AddStudentFeetypeComponent {
 
     debugger;
     this.loading = true;
-    let checkFilterString = this.FilterOrgSubOrgBatchId + " and FeeTypeId eq '" + row.FeeTypeId +
+    let checkFilterString = this.FilterOrgSubOrgBatchId + " and FeeTypeId eq " + row.FeeTypeId +
       " and StudentClassId eq " + this.StudentClassId;
 
     if (row.StudentFeeTypeId > 0)
@@ -173,6 +174,7 @@ export class AddStudentFeetypeComponent {
 
           this.StudentFeeTypeData.StudentFeeTypeId = row.StudentFeeTypeId;
           this.StudentFeeTypeData.FeeTypeId = row.FeeTypeId;
+          this.StudentFeeTypeData.StudentClassId = row.StudentClassId;
           this.StudentFeeTypeData.FromMonth = row.FromMonth;
           this.StudentFeeTypeData.ToMonth = row.ToMonth;
           this.StudentFeeTypeData.IsCurrent = row.IsCurrent;
@@ -185,6 +187,7 @@ export class AddStudentFeetypeComponent {
             this.StudentFeeTypeData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.StudentFeeTypeData["UpdatedDate"] = new Date();
             delete this.StudentFeeTypeData["UpdatedBy"];
+            console.log("log",this.StudentFeeTypeData)
             this.insert(row);
           }
           else {
@@ -226,9 +229,9 @@ export class AddStudentFeetypeComponent {
       .subscribe(
         (data: any) => {
           row.Action = false;
-          this.StudentClass[0].fromMonth = row.fromMonth;
-          this.StudentClass[0].toMonth = row.toMonth;
-          this.CreateInvoice(this.StudentClass[0]);
+          this.StudentClass.fromMonth = this.StudentFeeTypeData.FromMonth;
+          this.StudentClass.toMonth = this.StudentFeeTypeData.ToMonth;
+          this.CreateInvoice(this.StudentClass);
         },
         err => {
           this.loading = false;
@@ -288,7 +291,7 @@ export class AddStudentFeetypeComponent {
                 if (objsubcat)
                   _subCategory = objsubcat.MasterDataName;
 
-                let _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
+                let _formula = studcls.StudentFeeTypes[0].FeeType.Formula;
 
                 if (_formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
@@ -354,7 +357,7 @@ export class AddStudentFeetypeComponent {
     // }  
     this.loading = true;
     let filterStr = this.FilterOrgSubOrgBatchId;// 'BatchId eq '+ this.SelectedBatchId;
-    filterStr += " and StudentClassId eq" + this.StudentClassId;
+    filterStr += " and StudentClassId eq " + this.StudentClassId;
 
 
     let list: List = new List();
@@ -364,6 +367,7 @@ export class AddStudentFeetypeComponent {
       'StudentClassId',
       'FromMonth',
       'ToMonth',
+      'IsCurrent',
       'Active'
     ];
 

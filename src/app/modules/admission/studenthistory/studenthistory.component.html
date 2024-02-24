@@ -99,6 +99,12 @@
                 {{element.RollNo}}
             </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="FeeType">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Fee Type </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                {{element.FeeType}}
+            </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="Remarks">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Remark </mat-header-cell>
             <mat-cell *matCellDef="let element">

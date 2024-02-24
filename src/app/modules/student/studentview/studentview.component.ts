@@ -251,89 +251,90 @@ export class StudentviewComponent implements OnInit {
     debugger;
     // var filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
 
-     if (this.StudentId > 0 && this.StudentClassId > 0) {
+    if (this.StudentId > 0 && this.StudentClassId > 0) {
 
-    //   let list: List = new List();
-    //   list.fields = [
-    //     "StudentClassId", "ClassId",
-    //     "StudentId", "RollNo", "SectionId", "AdmissionNo",
-    //     "BatchId", "FeeTypeId", "CourseYearId", "SemesterId",
-    //     "AdmissionDate", "Remarks", "Active"];
-    //   list.PageName = "StudentClasses";
-    //   list.filter = [filterOrgIdNBatchId + " and StudentClassId eq " + this.StudentClassId];
+      //   let list: List = new List();
+      //   list.fields = [
+      //     "StudentClassId", "ClassId",
+      //     "StudentId", "RollNo", "SectionId", "AdmissionNo",
+      //     "BatchId", "FeeTypeId", "CourseYearId", "SemesterId",
+      //     "AdmissionDate", "Remarks", "Active"];
+      //   list.PageName = "StudentClasses";
+      //   list.filter = [filterOrgIdNBatchId + " and StudentClassId eq " + this.StudentClassId];
 
-    //   this.dataservice.get(list)
-    //     .subscribe((data: any) => {
-      let stucls:any = this.tokenStorage.getStudents()!;
-      stucls = stucls.filter((s:any)=>s.StudentId == this.StudentId);
+      //   this.dataservice.get(list)
+      //     .subscribe((data: any) => {
+      let stucls: any = this.tokenStorage.getStudents()!;
+      stucls = stucls.filter((s: any) => s.StudentId == this.StudentId);
 
-          if (stucls.length > 0) {
-            var _class = ''
-            var _classObj = this.Classes.filter((f: any) => f.ClassId == stucls[0].StudentClasses[0].ClassId);
-            if (_classObj.length > 0)
-              _class = _classObj[0].ClassName;
-            var _semester = ''
-            var _semesterObj = this.Semesters.filter((f: any) => f.MasterDataId == stucls[0].StudentClasses[0].SemesterId);
-            if (_semesterObj.length > 0)
-              _semester = _semesterObj[0].MasterDataName;
-            // var _courseYear = ''
-            // var _courseYearObj = this.Classes.filter((f:any) => f.MasterDataId == data.value[0].CourseYearId);
-            // if (_courseYearObj.length > 0)
-            //   _courseYear = _courseYearObj[0].MasterDataName;
+      if (stucls.length > 0) {
+        var _class = ''
+        var _classObj = this.Classes.find((f: any) => f.ClassId == stucls[0].StudentClasses[0].ClassId);
+        if (_classObj)
+          _class = _classObj.ClassName;
+        var _semester = ''
+        var _semesterObj = this.Semesters.find((f: any) => f.MasterDataId == stucls[0].StudentClasses[0].SemesterId);
+        if (_semesterObj)
+          _semester = _semesterObj.MasterDataName;
+        // var _courseYear = ''
+        // var _courseYearObj = this.Classes.filter((f:any) => f.MasterDataId == data.value[0].CourseYearId);
+        // if (_courseYearObj.length > 0)
+        //   _courseYear = _courseYearObj[0].MasterDataName;
 
-            var _section = ''
-            var _sectionObj = this.Sections.filter((f: any) => f.MasterDataId == stucls[0].StudentClasses[0].SectionId);
-            if (_sectionObj.length > 0)
-              _section = _sectionObj[0].MasterDataName;
+        var _section = ''
+        var _sectionObj = this.Sections.find((f: any) => f.MasterDataId == stucls[0].StudentClasses[0].SectionId);
+        if (_sectionObj)
+          _section = _sectionObj.MasterDataName;
 
-            var _feeType = ''
-            var _feeTypeObj = this.FeeType.filter((f: any) => f.FeeTypeId == stucls[0].StudentClasses[0].FeeTypeId);
-            if (_feeTypeObj.length > 0)
-              _feeType = _feeTypeObj[0].FeeTypeName;
+        var _feeType = ''
+        if (stucls[0].StudentClasses[0].StudentFeeTypes.length>0) {
+          var _feeTypeObj = this.FeeType.find((f: any) => f.FeeTypeId == stucls[0].StudentClasses[0].StudentFeeTypes[0].FeeTypeId);
+          if (_feeTypeObj)
+            _feeType = _feeTypeObj.FeeTypeName;
+        }
+        var _batch = ''
+        this.Batches = this.tokenStorage.getBatches()!;;
+        var _batchObj = this.Batches.find((f: any) => f.BatchId == stucls[0].StudentClasses[0].BatchId);
+        if (_batchObj)
+          _batch = _batchObj.BatchName;
 
-            var _batch = ''
-            this.Batches = this.tokenStorage.getBatches()!;;
-            var _batchObj = this.Batches.filter((f: any) => f.BatchId == stucls[0].StudentClasses[0].BatchId);
-            if (_batchObj.length > 0)
-              _batch = _batchObj[0].BatchName;
 
-
-            var admissiondate = moment(stucls[0].StudentClasses[0].AdmissionDate).isBefore("1970-01-01")
-            this.StudentClasses = [
-              { Text: 'Admission No.', Value: stucls[0].StudentClasses[0].AdmissionNo },
-              { Text: 'Class', Value: _class },
-              { Text: 'Section', Value: _section },
-              { Text: 'Semester', Value: _semester },
-              // { Text: 'Year', Value: _courseYear },
-              { Text: 'Roll No.', Value: stucls[0].StudentClasses[0].RollNo },
-              { Text: 'Batch', Value: _batch },
-              { Text: 'Fee Type', Value: _feeType },
-              { Text: 'Admission Date', Value: admissiondate ? moment() : moment(stucls[0].StudentClasses[0].AdmissionDate).format('DD/MM/YYYY') },
-              { Text: 'Remarks', Value: stucls[0].StudentClasses[0].Remarks },
-              { Text: 'Active', Value: stucls[0].StudentClasses[0].Active == 1 ? 'Yes' : 'No' }
-            ];
-          }
-          else {
-            //var _year = new Date().getFullYear();
-            this.StudentClasses = [
-              { Text: 'Admission No.', Value: '' },
-              { Text: 'Class', Value: '' },
-              { Text: 'Section', Value: '' },
-              { Text: 'RollNo', Value: '' },
-              { Text: 'Semester', Value: '' },
-              // { Text: 'Year', Value: '' },
-              { Text: 'BatchId', Value: '' },
-              { Text: 'Fee Type', Value: '' },
-              { Text: 'Admission Date', Value: '' },
-              { Text: 'Remarks', Value: '' },
-              { Text: 'Active', Value: '' }
-            ];
-            this.contentservice.openSnackBar("Class yet to be defined for this student", globalconstants.ActionText, globalconstants.RedBackground);
-          }
-          this.datasourceStudentClassInfo = new MatTableDataSource<any>(this.StudentClasses);
-          this.loading = false;
-          this.PageLoading = false;
-        //});
+        var admissiondate = moment(stucls[0].StudentClasses[0].AdmissionDate).isBefore("1970-01-01")
+        this.StudentClasses = [
+          { Text: 'Admission No.', Value: stucls[0].StudentClasses[0].AdmissionNo },
+          { Text: 'Class', Value: _class },
+          { Text: 'Section', Value: _section },
+          { Text: 'Semester', Value: _semester },
+          // { Text: 'Year', Value: _courseYear },
+          { Text: 'Roll No.', Value: stucls[0].StudentClasses[0].RollNo },
+          { Text: 'Batch', Value: _batch },
+          { Text: 'Fee Type', Value: _feeType },
+          { Text: 'Admission Date', Value: admissiondate ? moment() : moment(stucls[0].StudentClasses[0].AdmissionDate).format('DD/MM/YYYY') },
+          { Text: 'Remarks', Value: stucls[0].StudentClasses[0].Remarks },
+          { Text: 'Active', Value: stucls[0].StudentClasses[0].Active == 1 ? 'Yes' : 'No' }
+        ];
+      }
+      else {
+        //var _year = new Date().getFullYear();
+        this.StudentClasses = [
+          { Text: 'Admission No.', Value: '' },
+          { Text: 'Class', Value: '' },
+          { Text: 'Section', Value: '' },
+          { Text: 'RollNo', Value: '' },
+          { Text: 'Semester', Value: '' },
+          // { Text: 'Year', Value: '' },
+          { Text: 'BatchId', Value: '' },
+          { Text: 'Fee Type', Value: '' },
+          { Text: 'Admission Date', Value: '' },
+          { Text: 'Remarks', Value: '' },
+          { Text: 'Active', Value: '' }
+        ];
+        this.contentservice.openSnackBar("Class yet to be defined for this student", globalconstants.ActionText, globalconstants.RedBackground);
+      }
+      this.datasourceStudentClassInfo = new MatTableDataSource<any>(this.StudentClasses);
+      this.loading = false;
+      this.PageLoading = false;
+      //});
     }
     else {
       this.loading = false;
@@ -547,7 +548,7 @@ export class StudentviewComponent implements OnInit {
     this.AttendanceStatus = this.getDropDownData(globalconstants.MasterDefinitions.common.ATTENDANCESTATUS);
     this.AttendancePresentId = this.AttendanceStatus.filter((f: any) => f.MasterDataName.toLowerCase() == 'present')[0].MasterDataId;
     this.AttendanceAbsentId = this.AttendanceStatus.filter((f: any) => f.MasterDataName.toLowerCase() == 'absent')[0].MasterDataId;
-    
+
     if (this.StudentId > 0)
       this.GetStudent();
 
@@ -576,7 +577,7 @@ export class StudentviewComponent implements OnInit {
     this.Edited = true;
   }
   ErrorMessage = '';
-  
+
   adjustDateForTimeOffset(dateToAdjust) {
     //////console.log(dateToAdjust)
     var offsetMs = dateToAdjust.getTimezoneOffset() * 60000;

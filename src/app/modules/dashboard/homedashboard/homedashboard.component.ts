@@ -88,9 +88,9 @@ export class HomeDashboardComponent implements OnInit {
     //localStorage.setItem('loggedTime','10/11/2023');
     let loggedin = +localStorage.getItem('loggedTime')!;
     //var loggedTime = new Date(loggedin);
-    var loggedInDiff = new Date().getDate()-loggedin;
+    var loggedInDiff = new Date().getDate() - loggedin;
     //_today.setHours(0, 0, 0, 0);
-    if (loggedInDiff !==0) {
+    if (loggedInDiff !== 0) {
       this.tokenStorage.signOut();
       this.route.navigate(['/auth/login']);
     }
@@ -574,7 +574,7 @@ export class HomeDashboardComponent implements OnInit {
   }
   generateBatchIds(SelectedbatchId) {
     debugger;
-    this.Batches = this.Batches.sort((a,b)=> new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime());
+    this.Batches = this.Batches.sort((a, b) => new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime());
     var previousBatchIndex = this.Batches.map(d => d.BatchId).indexOf(SelectedbatchId) - 1;
     var _previousBatchId = -1;
     if (previousBatchIndex > -1) {
@@ -863,6 +863,9 @@ export class HomeDashboardComponent implements OnInit {
           _house = '';
           var studcls = __studentClasses.filter((f: any) => f.StudentId == d.StudentId);
           if (studcls.length > 0) {
+            if (studcls[0].StudentFeeTypes && studcls[0].StudentFeeTypes.length > 0)
+              studcls[0].FeeTypeId = studcls[0].StudentFeeTypes[0].FeeTypeId;
+
             _classNameobj = this.Classes.find(c => c.ClassId == studcls[0].ClassId);
             if (_classNameobj)
               _className = _classNameobj.ClassName;
@@ -930,6 +933,7 @@ export class HomeDashboardComponent implements OnInit {
       "StudentClassId,StudentId,HouseId,BatchId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active,Admitted"
     ];
     list.PageName = "StudentClasses";
+    list.lookupFields=["StudentFeeTypes($filter=IsCurrent eq true and Active eq true;$select=StudentFeeTypeId,FeeTypeId)"]
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }
@@ -1046,13 +1050,13 @@ export class HomeDashboardComponent implements OnInit {
       ];
 
       list.PageName = "TeacherSubjects";
-      list.lookupFields=["ClassSubject($select=ClassId,Active)"]
+      list.lookupFields = ["ClassSubject($select=ClassId,Active)"]
       list.filter = [filterStr];
 
       this.dataservice.get(list)
         .subscribe((data: any) => {
           data.value.forEach(d => {
-            if (this.EmployeeClassList.indexOf(d.ClassSubject.ClassId) == -1 && d.ClassSubject.Active==1)
+            if (this.EmployeeClassList.indexOf(d.ClassSubject.ClassId) == -1 && d.ClassSubject.Active == 1)
               this.EmployeeClassList.push(d.ClassSubject.ClassId);
           })
 

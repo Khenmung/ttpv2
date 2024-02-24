@@ -37,7 +37,7 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="outline" style="width: 150px;margin-right: 15px;">
+                <!-- <mat-form-field appearance="outline" style="width: 150px;margin-right: 15px;">
                     <mat-label>Fee Type</mat-label>
                     <mat-select formControlName="searchFeeTypeId">
                         <mat-option [value]="Defaultvalue">select</mat-option>
@@ -45,7 +45,7 @@
                             {{item.FeeTypeName}}
                         </mat-option>
                     </mat-select>
-                </mat-form-field>
+                </mat-form-field> -->
                 <mat-form-field appearance="outline" style="width: 150px;margin-right: 15px;">
                     <mat-label>Remarks</mat-label>
                     <mat-select formControlName="searchRemarkId">
@@ -220,7 +220,7 @@
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="FeeTypeId">
+            <!-- <ng-container matColumnDef="FeeTypeId">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> Fee Type </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <mat-form-field>
@@ -232,7 +232,7 @@
                         </mat-select>
                     </mat-form-field>
                 </mat-cell>
-            </ng-container>
+            </ng-container> -->
             <ng-container matColumnDef="Remark">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> Remark </mat-header-cell>
                 <mat-cell *matCellDef="let element">

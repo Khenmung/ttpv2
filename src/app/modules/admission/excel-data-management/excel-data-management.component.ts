@@ -110,7 +110,7 @@ export class ExcelDataManagementComponent implements OnInit {
         this.SelectedApplicationName = apps[0].appShortName;
       }
       this.contentservice.GetClasses(this.FilterOrgSubOrg).subscribe((data: any) => {
-        if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
+        if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
 
       });
@@ -804,16 +804,19 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.StudentClassId = 0;
 
-      var _FeeTypeId = 0;
-      var _regularFeeTypeIds: any = this.FeeTypes.filter((f: any) => f.FeeTypeName.toLowerCase() == 'regular');
-      if (_regularFeeTypeIds.length > 0)
-        _FeeTypeId = _regularFeeTypeIds[0].FeeTypeId;
 
+      var _FeeTypeId = 0;
       if (element.FeeType) {
-        var _existingFeeTypeObj: any = this.FeeTypes.filter((f: any) => f.FeeTypeName.toLowerCase() == element.FeeType.toLowerCase());
-        if (_existingFeeTypeObj.length > 0) {
-          _FeeTypeId = _existingFeeTypeObj[0].FeeTypeId;
+        var _existingFeeTypeObj: any = this.FeeTypes.find((f: any) => f.FeeTypeName.toLowerCase() == element.FeeType.toLowerCase());
+        if (_existingFeeTypeObj) {
+          _FeeTypeId = _existingFeeTypeObj.FeeTypeId;
         }
+      }
+      else {
+
+        var _regularFeeTypeIds: any = this.FeeTypes.find((f: any) => f.DefaultType);
+        if (_regularFeeTypeIds)
+          _FeeTypeId = _regularFeeTypeIds.FeeTypeId;
       }
 
 
@@ -827,11 +830,11 @@ export class ExcelDataManagementComponent implements OnInit {
             SemesterId: element.SemesterId,
             IsCurrent: true,
             StudentClassId: element.StudentClassId,
-            Admitted:element.Admitted?element.Admitted:false,
+            Admitted: element.Admitted ? element.Admitted : false,
             BatchId: this.SelectedBatchId,
             OrgId: this.loginDetail[0]["orgId"],
             SubOrgId: this.SubOrgId,
-            Active:1
+            Active: 1
           });
         }
         else {
@@ -843,7 +846,7 @@ export class ExcelDataManagementComponent implements OnInit {
             RollNo: element.RollNo ? element.RollNo : '',
             StudentClassId: element.StudentClassId,
             SemesterId: element.SemesterId,
-            Admitted:element.Admitted?element.Admitted:false,
+            Admitted: element.Admitted ? element.Admitted : false,
             IsCurrent: true,
             FeeTypeId: _FeeTypeId,
             BatchId: this.SelectedBatchId,
@@ -1257,22 +1260,25 @@ export class ExcelDataManagementComponent implements OnInit {
       })
       /////////////feetype  
       var _FeeTypeId = 0;
-      var _regularFeeTypeIds: any = this.FeeTypes.filter((f: any) => f.FeeTypeName.toLowerCase() == 'regular');
-      if (_regularFeeTypeIds.length > 0)
-        _FeeTypeId = _regularFeeTypeIds[0].FeeTypeId;
+
 
       if (element.FeeType) {
-        var _existingFeeTypeObj: any = this.FeeTypes.filter((f: any) => f.FeeTypeName.toLowerCase() == element.FeeType.toLowerCase());
-        if (_existingFeeTypeObj.length > 0) {
-          _FeeTypeId = _existingFeeTypeObj[0].FeeTypeId;
+        var _existingFeeTypeObj: any = this.FeeTypes.find((f: any) => f.FeeTypeName.toLowerCase() == element.FeeType.toLowerCase());
+        if (_existingFeeTypeObj) {
+          _FeeTypeId = _existingFeeTypeObj.FeeTypeId;
         }
+      }
+      else {
+        var _regularFeeTypeIds: any = this.FeeTypes.find((f: any) => f.DefaultType);
+        if (_regularFeeTypeIds)
+          _FeeTypeId = _regularFeeTypeIds.FeeTypeId;
       }
       element.FeeTypeId = _FeeTypeId;
       /////end feetype
 
-      let existingstudent: any = this.AllStudents?.filter((s: any) => s.FirstName.toLowerCase() == element.FirstName.toLowerCase()
+      let existingstudent: any = this.AllStudents?.find((s: any) => s.FirstName.toLowerCase() == element.FirstName.toLowerCase()
         && s.FatherName.toLowerCase() == element.FatherName.toLowerCase())
-      if (existingstudent?.length > 0) {
+      if (existingstudent) {
 
         let currentStud = this.CurrentBatchStudentList.filter(f => f.StudentClasses
           && f.StudentClasses.length > 0
@@ -1767,9 +1773,9 @@ export class ExcelDataManagementComponent implements OnInit {
     this.loading = true;
     //var filter = globalconstants.getOrgSubOrgBatchIdFilter(this.token);
     let list: List = new List();
-    list.fields = ["FeeTypeId", "FeeTypeName", "Formula"];
+    list.fields = ["FeeTypeId", "FeeTypeName", "Formula", "DefaultType"];
     list.PageName = "SchoolFeeTypes";
-    list.filter = [ this.FilterOrgSubOrgNBatchId + " and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrgNBatchId + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {

@@ -109,7 +109,7 @@ export class StudentDatadumpComponent implements OnInit {
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.studentSearchForm = this.fb.group({
         searchRemarkId: [0],
-        searchGroupId: [0],
+        searchClassId: [0],
       })
       this.contentservice.GetClassGroups(this.FilterOrgSubOrg)
         .subscribe((data: any) => {
@@ -252,7 +252,7 @@ export class StudentDatadumpComponent implements OnInit {
     this.shareddata.ChangeUploadType(this.UploadTypes);
 
     this.loading = false; this.PageLoading = false;
-    this.getSelectedBatchStudentIDRollNo();
+    //this.getSelectedBatchStudentIDRollNo();
     this.GetStudentClasses();
 
     // });
@@ -378,41 +378,45 @@ export class StudentDatadumpComponent implements OnInit {
     debugger;
     this.loading = true;
     //let checkFilterString = '';//"OrgId eq " + this.LoginUserDetail[0]["orgId"] + ' and Batch eq ' + 
-    var _ClassGroupId = this.studentSearchForm.get("searchGroupId")?.value;
-    var _classes = this.ClassGroupMapping.filter(c => c.ClassGroupId == _ClassGroupId);
+    var _ClassId = this.studentSearchForm.get("searchClassId")?.value;
+    //var _classes = this.ClassGroupMapping.filter(c => c.ClassGroupId == _ClassGroupId);
 
     var _remarkId = this.studentSearchForm.get("searchRemarkId")?.value;
 
-    if (_remarkId == 0 && _ClassGroupId == 0) {
+    if (_remarkId == 0 && _ClassId == 0) {
       this.loading = false; this.PageLoading = false;
       this.contentservice.openSnackBar("Please enter atleast one parameter.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    if (_classes.length > 2) {
-      this.loading = false;
-      this.PageLoading = false;
-      this.contentservice.openSnackBar("Class group should not contains more than 2 classes for this download.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
+    // if (_classes.length > 2) {
+    //   this.loading = false;
+    //   this.PageLoading = false;
+    //   this.contentservice.openSnackBar("Class group should not contains more than 2 classes for this download.", globalconstants.ActionText, globalconstants.RedBackground);
+    //   return;
+    // }
 
     var classfilter = '';
-    if (_classes.length > 0) {
-      _classes.forEach(c => {
-        if (classfilter.length == 0)
-          classfilter += '(ClassId eq ' + c.ClassId
-        else
-          classfilter += ' or ClassId eq ' + c.ClassId
-      })
-    }
+    // if (_classes.length > 0) {
+    //   _classes.forEach(c => {
+    //     if (classfilter.length == 0)
+    //       classfilter += '(ClassId eq ' + c.ClassId
+    //     else
+    //       classfilter += ' or ClassId eq ' + c.ClassId
+    //   })
+    // }
+    if (_ClassId > 0)
+      classfilter = "ClassId eq " + _ClassId;
+
     if (classfilter.length > 0)
-      classfilter = classfilter + ") and BatchId eq " + this.SelectedBatchId
+      classfilter += " and BatchId eq " + this.SelectedBatchId
     else
       classfilter = "BatchId eq " + this.SelectedBatchId;
     classfilter += " and IsCurrent eq true";
     let list: List = new List();
-    list.fields = ["Remarks,StudentClassId,HouseId,BatchId,ClassId,RollNo,FeeTypeId,Remarks,SectionId,SemesterId"];
-    list.lookupFields = ["Student($select=*)"];
     list.PageName = "StudentClasses";
+    list.fields = ["Remarks,StudentClassId,HouseId,BatchId,ClassId,RollNo,FeeTypeId,Remarks,SectionId,SemesterId,Admitted"];
+    list.lookupFields = ["Student($select=*),StudentFeeTypes($filter=IsCurrent eq true and Active eq true;$select=FeeTypeId)"];
+
     list.filter = [this.FilterOrgSubOrg + " and " + classfilter];
     //list.orderBy = "ParentId";
 
@@ -422,17 +426,22 @@ export class StudentDatadumpComponent implements OnInit {
         if (data.value.length > 0) {
           var formattedData: any[] = [];
           //formattedData = [...data.value];
+          debugger;
           data.value.filter(sc => {
             let reason = this.ReasonForLeaving.filter(r => r.MasterDataId == sc.Student.ReasonForLeavingId)
-            //if (sc.StudentClasses.length > 0) {
-            var obj = this.FeeType.filter((f: any) => f.FeeTypeId == sc.FeeTypeId);
-            if (obj.length > 0) {
-              sc.FeeType = obj[0].FeeTypeName
+            if (sc.StudentFeeTypes.length > 0) {
+              var obj = this.FeeType.find((f: any) => f.FeeTypeId == sc.StudentFeeTypes[0].FeeTypeId);
+              if (obj) {
+                sc.FeeType = obj.FeeTypeName
+              }
+              else
+                sc.FeeType = '';
+
+
             }
             else
               sc.FeeType = '';
-
-            delete sc.FeeTypeId;
+            delete sc.StudentFeeTypes;
             delete sc.ReasonForLeavingId;
             sc.Notes = sc.Remarks;
             sc.ReasonForLeaving = reason.length > 0 ? reason[0].MasterDataName : '';
@@ -455,7 +464,7 @@ export class StudentDatadumpComponent implements OnInit {
               element.Remarks = '';
 
             delete element.RemarkId;
-            element.SubOrgId = this.SubOrgId;
+            delete element.SubOrgId //= this.SubOrgId;
 
             if (element.SectionId > 0) {
               let SectionFilter = this.Sections.filter(g => g.MasterDataId == element.SectionId);
@@ -715,9 +724,13 @@ export class StudentDatadumpComponent implements OnInit {
             delete element.BatchId;
             delete element.userId;
             delete element.OrgId;
+            delete element.SubOrgId;
             delete element.Deleted;
+            delete element.FeeTypeId;
             delete element.ReasonForLeavingId;
             delete element.AdmissionStatusId;
+            delete element.Remark2Id;
+            delete element.SemesterId;
 
             ///////////////
 
@@ -741,7 +754,7 @@ export class StudentDatadumpComponent implements OnInit {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
           return;
         }
-        var nottoinclude = ['StudentClasses', 'CreatedBy', 'UpdatedBy']
+        var nottoinclude = ['StudentClasses', 'CreatedBy', 'UpdatedBy', 'StudentFeeTypes']
         Object.keys(this.ELEMENT_DATA[0]).forEach(studproperty => {
           if (!this.displayedColumns.includes(studproperty) && !nottoinclude.includes(studproperty)) {
             this.displayedColumns.push(studproperty);

@@ -625,7 +625,7 @@ export class PromoteclassComponent implements OnInit {
     let filterStr = '';//' OrgId eq ' + this.LoginUserDetail[0]["orgId"];
     this.loading = true;
     var _classId = this.searchForm.get("searchClassId")?.value;
-    var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
+    //var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
 
     //this.HeaderTitle = '';
     var classIdIndex = this.Classes.findIndex(s => s.ClassId == _classId);
@@ -655,8 +655,8 @@ export class PromoteclassComponent implements OnInit {
       filterStr += " and IsCurrent eq true";
     }
 
-    if (_FeeTypeId > 0)
-      filterStr += " and FeeTypeId eq " + _FeeTypeId;
+    // if (_FeeTypeId > 0)
+    //   filterStr += " and FeeTypeId eq " + _FeeTypeId;
 
     let _sectionId = this.searchForm.get("searchSectionId")?.value;
     let _semesterId = this.searchForm.get("searchSemesterId")?.value;
@@ -814,7 +814,7 @@ export class PromoteclassComponent implements OnInit {
             var genderObj = this.Genders.find((f: any) => f.MasterDataId == _previousStudent.GenderId);
             if (genderObj)
               _genderName = genderObj.MasterDataName;
-            var feetypeobj = this.FeeTypes.find(t => t.FeeTypeId == objexam.StudentClass.FeeTypeId);
+            var feetypeobj = this.FeeTypes.find(t => t.FeeTypeId == _defaultTypeId);
 
             var _feetype = ''
             if (feetypeobj)
@@ -1233,7 +1233,7 @@ export class PromoteclassComponent implements OnInit {
     list.fields = ["Division", "StudentClassId", "StudentId"];
     //list.PageName = "StudentClasses";
     list.PageName = "ExamStudentResults";
-    list.lookupFields = ["StudentClass($select=ClassId,FeeTypeId,SectionId,RollNo,Remarks)"];
+    list.lookupFields = ["StudentClass($select=ClassId,SectionId,RollNo,Remarks;$expand=StudentFeeTypes($filter=IsCurrent eq true and Active eq true;$select=FeeTypeId))"];
     list.filter = [filterstr];
     return this.dataservice.get(list)
 

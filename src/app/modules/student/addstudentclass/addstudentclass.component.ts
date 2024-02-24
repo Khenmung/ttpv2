@@ -51,7 +51,7 @@ export class AddstudentclassComponent implements OnInit {
     SectionId: 0,
     RollNo: '',
     BatchId: 0,
-    FeeTypeId: 0,
+    //FeeTypeId: 0,
     SemesterId: 0,
     AdmissionNo: '',
     AdmissionDate: new Date(),
@@ -71,7 +71,7 @@ export class AddstudentclassComponent implements OnInit {
     "RollNo",
     "AdmissionDate",
     "Remarks",
-    "FeeTypeId",
+   // "FeeTypeId",
     "IsCurrent",
     "Admitted",
     "Active",
@@ -243,7 +243,7 @@ export class AddstudentclassComponent implements OnInit {
       ClassId: this.CurrentClassId,
       SectionId: 0,
       RollNo: '',
-      FeeTypeId: 0,
+      //FeeTypeId: 0,
       FeeType: '',
       SemesterId: 0,
       AdmissionNo: '',
@@ -270,7 +270,7 @@ export class AddstudentclassComponent implements OnInit {
       list.fields = [
         "StudentClassId", "ClassId",
         "StudentId", "RollNo", "SectionId", "AdmissionNo", "SemesterId",
-        "BatchId", "FeeTypeId", "IsCurrent", "Admitted",
+        "BatchId", "IsCurrent", "Admitted",
         "AdmissionDate", "Remarks", "Active"];
       list.PageName = "StudentClasses";
       list.filter = [filterWithOrgAndBatchId + " and StudentId eq " + this.StudentId]// + " and IsCurrent eq true"];
@@ -282,9 +282,9 @@ export class AddstudentclassComponent implements OnInit {
               var admissiondate = moment(m.AdmissionDate).isBefore("1970-01-01");
               m.AdmissionDate = !admissiondate ? moment() : data.value[0].AdmissionDate;
 
-              let obj = this.FeeType.filter(f => f.FeeTypeId == m.FeeTypeId);
-              if (obj.length > 0)
-                m.FeeType = obj[0].FeeTypeName;
+              // let obj = this.FeeType.filter(f => f.FeeTypeId == m.FeeTypeId);
+              // if (obj.length > 0)
+              //   m.FeeType = obj[0].FeeTypeName;
               m.Action = false;
               return m;
             });
@@ -336,9 +336,9 @@ export class AddstudentclassComponent implements OnInit {
     // if (this.studentclassForm.get("SectionId")?.value == 0) {
     //   ErrorMessage += "Please select Section.<br>";
     // }
-    if (row.FeeTypeId == 0) {
-      ErrorMessage += "Please select Fee Type.<br>";
-    }
+    // if (row.FeeTypeId == 0) {
+    //   ErrorMessage += "Please select Fee Type.<br>";
+    // }
     if (row.AdmissionDate == 0) {
       ErrorMessage += "Admission date is required.<br>";
     }
@@ -364,7 +364,7 @@ export class AddstudentclassComponent implements OnInit {
             this.studentclassData.RollNo = row.RollNo;
             this.studentclassData.SectionId = row.SectionId;
             this.studentclassData.SemesterId = !row.SemesterId ? 0 : row.SemesterId;
-            this.studentclassData.FeeTypeId = row.FeeTypeId;
+            //this.studentclassData.FeeTypeId = row.FeeTypeId;
             this.studentclassData.AdmissionNo = _admissionNo;// ?_year + ClassStrength : _admissionNo;
             this.studentclassData.Remarks = row.Remarks;
             this.studentclassData.AdmissionDate = row.AdmissionDate;
@@ -418,7 +418,7 @@ export class AddstudentclassComponent implements OnInit {
 
             this.tokenStorage.saveStudents(_Students);
           }
-          this.CreateInvoice(row);
+          //this.CreateInvoice(row);
           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         }, error => {
           this.loading = false;
@@ -430,7 +430,8 @@ export class AddstudentclassComponent implements OnInit {
 
     this.dataservice.postPatch('StudentClasses', this.studentclassData, this.studentclassData.StudentClassId, 'patch')
       .subscribe((data: any) => {
-        this.CreateInvoice(row);
+        //this.CreateInvoice(row);
+        debugger;
         row.AdmissionNo = this.studentclassData.AdmissionNo;
         row.Action = false;
         let _Students: any = this.tokenStorage.getStudents()!;
@@ -446,14 +447,16 @@ export class AddstudentclassComponent implements OnInit {
             studcls.RollNo = this.studentclassData.RollNo;
             studcls.SectionId = this.studentclassData.SectionId;
             studcls.SemesterId = this.studentclassData.SemesterId;
-            studcls.FeeTypeId = this.studentclassData.FeeTypeId;
+            //studcls.FeeTypeId = this.studentclassData.FeeTypeId;
             studcls.Remarks = this.studentclassData.Remarks;
             studcls.AdmissionDate = this.studentclassData.AdmissionDate;
             studcls.IsCurrent = this.studentclassData.IsCurrent;
             _Students[indx].StudentClasses[clsIndx] = studcls;
           }
           this.tokenStorage.saveStudents(_Students);
+          this.loading=false;
         }
+        this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground); 
       }, error => {
         var msg = globalconstants.formatError(error);
         this.contentservice.openSnackBar(msg, globalconstants.ActionText, globalconstants.RedBackground);
@@ -531,7 +534,7 @@ export class AddstudentclassComponent implements OnInit {
                     StudentClassId: studcls.StudentClassId,
                     FeeCategory: _category,
                     FeeSubCategory: _subCategory,
-                    FeeTypeId: studcls.FeeTypeId,
+                    //FeeTypeId: studcls.FeeTypeId,
                     ClassId: studcls.ClassId,
                     SectionId: studcls.SectionId,
                     SemesterId: studcls.SemesterId,
