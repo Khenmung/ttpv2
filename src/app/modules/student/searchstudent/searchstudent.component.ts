@@ -530,7 +530,8 @@ export class searchstudentComponent implements OnInit {
       .subscribe((data: any) => {
         this.FeeType = [...data.value];
         this.shareddata.ChangeFeeType(this.FeeType);
-        this.loading = false; this.PageLoading = false;
+        this.loading = false;
+        this.PageLoading = false;
       })
   }
   GetStudent() {
@@ -699,11 +700,11 @@ export class searchstudentComponent implements OnInit {
 
     //formattedData = formattedData.filter(sc => {
     filteredStudents = filteredStudents.filter(sc => {
-      let reason = this.ReasonForLeaving.filter(r => r.MasterDataId == sc.ReasonForLeavingId)
-      if (sc.StudentClasses != undefined && sc.StudentClasses.length > 0) {
-        var obj = this.FeeType.filter((f: any) => f.FeeTypeId == sc.StudentClasses[0].FeeTypeId);
-        if (obj.length > 0) {
-          sc.FeeType = obj[0].FeeTypeName
+      let reason = this.ReasonForLeaving.find(r => r.MasterDataId == sc.ReasonForLeavingId)
+      if (sc.StudentClasses != undefined && sc.StudentClasses.length > 0 && sc.StudentClasses[0].StudentFeeTypes.length > 0) {
+        let obj = this.FeeType.find((f: any) => f.FeeTypeId == sc.StudentClasses[0].StudentFeeTypes[0].FeeTypeId);
+        if (obj) {
+          sc.FeeType = obj.FeeTypeName
         }
         else
           sc.FeeType = '';
@@ -711,7 +712,7 @@ export class searchstudentComponent implements OnInit {
       else
         sc.FeeType = '';
 
-      sc.ReasonForLeaving = reason.length > 0 ? reason[0].MasterDataName : '';
+      sc.ReasonForLeaving = reason ? reason.MasterDataName : '';
       return sc;
     });
     this.ELEMENT_DATA = [];
@@ -720,31 +721,29 @@ export class searchstudentComponent implements OnInit {
       var _lastname = item.LastName == null ? '' : " " + item.LastName;
       item.Name = item.FirstName + _lastname;
       var _remark = '';
-      var objremark = this.Remarks.filter((f: any) => f.MasterDataId == item.RemarkId);
-      if (objremark.length > 0) {
-        _remark = objremark[0].MasterDataName
+      var objremark = this.Remarks.find((f: any) => f.MasterDataId == item.RemarkId);
+      if (objremark) {
+        _remark = objremark.MasterDataName
         item.Remarks = _remark;
       }
       else
         item.Remarks = '';
       // if (item.StudentClasses.length == 0) 
-      if (item.StudentClasses == undefined) {
+      if (!item.StudentClasses) {
         item.ClassName = '';
       }
       else {
         item.RollNo = item.RollNo;
-        var clsobj = this.Classes.filter(cls => {
-          return cls.ClassId == item.ClassId
-        });
-        if (clsobj.length > 0) {
-          var objsection = this.Sections.filter((s: any) => s.MasterDataId == item.StudentClasses[0].SectionId);
-          if (objsection.length > 0)
-            item.ClassName = clsobj[0].ClassName + "-" + objsection[0].MasterDataName;
+        var clsobj = this.Classes.find(cls => cls.ClassId == item.ClassId);
+        if (clsobj) {
+          var objsection = this.Sections.find((s: any) => s.MasterDataId == item.StudentClasses[0].SectionId);
+          if (objsection)
+            item.ClassName = clsobj.ClassName + "-" + objsection.MasterDataName;
           else
-            item.ClassName = clsobj[0].ClassName;
-          var objsemester = this.Semesters.filter((s: any) => s.MasterDataId == item.StudentClasses[0].SemesterId);
-          if (objsemester.length > 0)
-            item.ClassName = clsobj[0].ClassName + "-" + objsemester[0].MasterDataName;
+            item.ClassName = clsobj.ClassName;
+          var objsemester = this.Semesters.find((s: any) => s.MasterDataId == item.StudentClasses[0].SemesterId);
+          if (objsemester)
+            item.ClassName = clsobj.ClassName + "-" + objsemester.MasterDataName;
         }
         else
           item.ClassName = '';
@@ -762,7 +761,8 @@ export class searchstudentComponent implements OnInit {
     this.dataSource = new MatTableDataSource<IStudent>(this.ELEMENT_DATA);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.loading = false; this.PageLoading = false;
+    this.loading = false; 
+    this.PageLoading = false;
 
     // else {
     //   formattedData = [...filteredStudents];
@@ -879,24 +879,6 @@ export class searchstudentComponent implements OnInit {
       // }
       this.Students = this.AssignNameClassSection(_students);
 
-      //  this.filteredStudents  = this.studentSearchForm.get("searchStudentName")?.valueChanges
-      //     .pipe(
-      //       startWith(''),
-      //       map(value => typeof value === 'string' ? value : value.Name),
-      //       map(Name => Name ? this._filter(Name) : this.Students.slice())
-      //     );
-      // this.filteredFathers = this.studentSearchForm.get("FatherName")?.valueChanges
-      //   .pipe(
-      //     startWith(''),
-      //     map(value => typeof value === 'string' ? value : value.FatherName),
-      //     map(Name => Name ? this._filterF(Name) : this.Students.slice())
-      //   );
-      // this.filteredMothers = this.studentSearchForm.get("MotherName")?.valueChanges
-      //   .pipe(
-      //     startWith(''),
-      //     map(value => typeof value === 'string' ? value : value.MotherName),
-      //     map(Name => Name ? this._filterM(Name) : this.Students.slice())
-      //   );
     }
     //this.token.saveStudents(this.Students);
     this.loading = false;
@@ -905,16 +887,25 @@ export class searchstudentComponent implements OnInit {
   }
   AssignNameClassSection(pStudents) {
     let _students: any = [];
+    var _RollNo = '';
+    var _name = '';
+    var _className = '';
+    var _classId = 0;
+    var _section = '';
+    var _sectionId = 0;
+    var _studentClassId = 0;
+    var _semesterId = 0;
+    var _semester = '';
     pStudents.forEach(student => {
-      var _RollNo = '';
-      var _name = '';
-      var _className = '';
-      var _classId = 0;
-      var _section = '';
-      var _sectionId = 0;
-      var _studentClassId = 0;
-      var _semesterId = 0;
-      var _semester = '';
+      _RollNo = '';
+      _name = '';
+      _className = '';
+      _classId = 0;
+      _section = '';
+      _sectionId = 0;
+      _studentClassId = 0;
+      _semesterId = 0;
+      _semester = '';
       //var studentclassobj = this.StudentClasses.filter((f:any) => f.StudentId == student.StudentId);
       //if (studentclassobj.length > 0) {
       if (student.StudentClasses && student.StudentClasses.length > 0) {
@@ -922,17 +913,17 @@ export class searchstudentComponent implements OnInit {
         // if (student.FirstName && student.FirstName.includes('Bertrand')) {
         //   debugger;
         // }
-        var _classNameobj = this.Classes.filter(c => c.ClassId == student.StudentClasses[0].ClassId);
-        if (_classNameobj.length > 0)
-          _className = _classNameobj[0].ClassName;
+        var _classNameobj = this.Classes.find(c => c.ClassId == student.StudentClasses[0].ClassId);
+        if (_classNameobj)
+          _className = _classNameobj.ClassName;
 
-        var _SectionObj = this.Sections.filter((f: any) => f.MasterDataId == student.StudentClasses[0].SectionId)
-        if (_SectionObj.length > 0)
-          _section = _SectionObj[0].MasterDataName;
+        var _SectionObj = this.Sections.find((f: any) => f.MasterDataId == student.StudentClasses[0].SectionId)
+        if (_SectionObj)
+          _section = _SectionObj.MasterDataName;
 
-        var _SemesterObj = this.Semesters.filter((f: any) => f.MasterDataId == student.StudentClasses[0].SemesterId)
-        if (_SemesterObj.length > 0)
-          _semester = _SemesterObj[0].MasterDataName;
+        var _SemesterObj = this.Semesters.find((f: any) => f.MasterDataId == student.StudentClasses[0].SemesterId)
+        if (_SemesterObj)
+          _semester = _SemesterObj.MasterDataName;
 
         _RollNo = student.StudentClasses[0].RollNo ? student.StudentClasses[0].RollNo : '';
         _classId = student.StudentClasses[0].ClassId;

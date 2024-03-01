@@ -322,22 +322,40 @@ export class FeereceiptComponent implements OnInit {
             var studentfeedetail: any[] = [];
             let _students = this.tokenStorage.getStudents()!;
             var _feeName = '', _remark1 = '', _remark2 = '';
+            let _studentAllFeeTypes: any = [];
+            var _category = '';
+            var _subCategory = '';
+            let _feeObj;
+            var _formula = '';
+            let _feeTypeId = 0;
             data.value.forEach(studcls => {
               _feeName = ''; _remark1 = ''; _remark2 = '';
+              _studentAllFeeTypes = [];
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
               var _className = '';
               var obj = this.Classes.filter(c => c.ClassId == studcls.ClassId);
               if (obj.length > 0)
                 _className = obj[0].ClassName;
-              let _currentStudent: any = _students.filter((s: any) => s.StudentId === studcls.StudentId);
-              if (_currentStudent.length > 0) {
-                _remark1 = _currentStudent[0].Remark1;
-                _remark2 = _currentStudent[0].Remark2;
+              let _currentStudent: any = _students.find((s: any) => s.StudentId === studcls.StudentId);
+              if (_currentStudent) {
+                _remark1 = _currentStudent.Remark1;
+                _remark2 = _currentStudent.Remark2;
               }
+              studcls.StudentFeeTypes.forEach(item => {
+                _studentAllFeeTypes.push(
+                  {
+                    FeeTypeId: item.FeeTypeId,
+                    FeeName: item.FeeType.FeeTypeName,
+                    Formula: item.FeeType.Formula,
+                    FromMonth: item.FromMonth,
+                    ToMonth: item.ToMonth
+                  })
+              })
               objClassFee.forEach(clsfee => {
-                var _category = '';
-                var _subCategory = '';
-
+                _category = '';
+                _subCategory = '';
+                _formula = '';
+                _feeTypeId = 0;
                 var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat.length > 0)
                   _category = objcat[0].MasterDataName;
@@ -346,13 +364,19 @@ export class FeereceiptComponent implements OnInit {
                 if (objsubcat.length > 0)
                   _subCategory = objsubcat[0].MasterDataName;
 
-                var _formula = '';
-                let _feeTypeId = 0;
-                if (studcls.StudentFeeTypes.length > 0) {
-                  _feeTypeId = studcls.StudentFeeTypes[0].FeeTypeId;
-                  _formula = studcls.StudentFeeTypes[0].FeeType.Formula;
+
+                // if (studcls.StudentFeeTypes.length > 0) {
+                //   _feeTypeId = studcls.StudentFeeTypes[0].FeeTypeId;
+                //   _formula = studcls.StudentFeeTypes[0].FeeType.Formula;
+                // }
+                _feeObj = _studentAllFeeTypes.find(ft => clsfee.Month >= ft.FromMonth && clsfee.Month <= ft.ToMonth);
+                if (!_feeObj) {
+                  _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
                 }
-                if (_formula.length > 0) {
+                _formula = _feeObj.Formula;
+                _feeTypeId = _feeObj.FeeTypeId;
+
+                if (_formula && _formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
                     Month: clsfee.Month,
@@ -480,12 +504,6 @@ export class FeereceiptComponent implements OnInit {
               k.PaymentOrder = feeObj[0].PaymentOrder;
               this.StudentFeePaymentList.push(k);
             }
-            // else
-            //   k.FeeName = '';
-
-
-            //k.BaseAmount = k.BaseAmount;
-            //this.StudentFeePaymentList.push(k)
           })
           var paymentobj = this.PaymentTypes.find(p => p.MasterDataId == f.PaymentTypeId);
           if (paymentobj) {

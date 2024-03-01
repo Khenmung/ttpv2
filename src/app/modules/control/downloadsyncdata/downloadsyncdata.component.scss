@@ -1,0 +1,21 @@
+mat-cell,mat-header-cell{
+    border-right: 1px solid lightgray;
+}
+
+button{
+    margin-right:15px;
+}
+
+.mat-column-Formula{
+    flex: 1 0 400px;
+}
+.mat-column-SubjectName{
+    flex: 1 0 120px;
+}
+.mat-column-Active,.mat-column-Action{
+    justify-content: center;
+    flex: 1 0 70px;
+}
+.mat-column-ExamMarkConfigId{
+    flex: 1 0 70px;
+}

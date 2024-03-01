@@ -8,8 +8,6 @@ import { SharedhomepageModule } from '../sharedhomepage.module';
 import { SchoolReportsModule } from '../schoolreports/reports.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxPrintModule } from 'ngx-print';
-//import { GlobaladminInitialModule } from '../globaladmininitial/globaladminInitial.module';
-//import { CustomfeaturerolepermissionComponent } from './customfeaturerolepermission/customfeaturerolepermission.component';
 
 @NgModule({
   declarations: [settingsComponent],

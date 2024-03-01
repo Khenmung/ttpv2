@@ -14,10 +14,10 @@ import { OrganizationComponent } from './organization/organization.component';
 import { SingleorganizationComponent } from './singleorganization/singleorganization.component';
 import { CustomerPlansComponent } from './customerplans/customerplans.component';
 import { CustomfeaturerolepermissionComponent } from './customfeaturerolepermission/customfeaturerolepermission.component';
-import { InvoiceComponent } from './invoice/invoice.component';
 import { ReceiptComponent } from './receipt/receipt.component';
 import { ContactdashboardComponent } from './contact/contactdashboard/contactdashboard.component';
 import { ContactComponent } from './contact/addMessage/contact.component';
+import { DownloadsyncdataComponent } from './downloadsyncdata/downloadsyncdata.component';
 
 const routes: Routes = [
   {
@@ -30,7 +30,7 @@ const routes: Routes = [
       { path: 'messages', component: ContactdashboardComponent },
       { path: 'addmessage', component: ContactComponent },
       { path: 'message/:id', component: ContactComponent },
-      
+
     ]
   }
 ];
@@ -54,8 +54,8 @@ export const settingsComponent = [
   SingleorganizationComponent,
   CustomerPlansComponent,
   CustomfeaturerolepermissionComponent,
-  InvoiceComponent,
   ReceiptComponent,
   ContactdashboardComponent,
-  ContactComponent
+  ContactComponent,
+  DownloadsyncdataComponent
 ]

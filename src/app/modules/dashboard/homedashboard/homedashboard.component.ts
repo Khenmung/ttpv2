@@ -933,7 +933,8 @@ export class HomeDashboardComponent implements OnInit {
       "StudentClassId,StudentId,HouseId,BatchId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active,Admitted"
     ];
     list.PageName = "StudentClasses";
-    list.lookupFields=["StudentFeeTypes($filter=IsCurrent eq true and Active eq true;$select=StudentFeeTypeId,FeeTypeId)"]
+    list.lookupFields=["StudentFeeTypes($filter=Active eq true;$select=StudentFeeTypeId,FeeTypeId)"]
+    
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }

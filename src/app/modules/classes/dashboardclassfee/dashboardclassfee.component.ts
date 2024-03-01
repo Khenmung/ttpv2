@@ -256,6 +256,9 @@ export class DashboardclassfeeComponent implements OnInit {
               let _students: any = this.tokenStorage.getStudents()!;
               var _category = '';
               var _subCategory = '';
+              let _studentAllFeeTypes: any = [];
+              var _formula = '';
+              let _feeTypeId = 0;
               data.value.forEach(studcls => {
                 var _feeName = '';
                 var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
@@ -264,9 +267,24 @@ export class DashboardclassfeeComponent implements OnInit {
                 if (obj.length > 0)
                   _className = obj[0].ClassName;
                 let _currentStudent = _students.find(s => s.StudentId === studcls.StudentId);
+                studcls.StudentFeeTypes.forEach(item => {
+                  _studentAllFeeTypes.push(
+                    {
+                      FeeTypeId: item.FeeTypeId,
+                      FeeName: item.FeeType.FeeTypeName,
+                      Formula: item.FeeType.Formula,
+                      FromMonth: item.FromMonth,
+                      ToMonth: item.ToMonth
+                    })
+                })
+
+                _studentAllFeeTypes = _studentAllFeeTypes.sort((a, b) => b.FromMonth - a.FromMonth);
+
                 objClassFee.forEach(clsfee => {
                   _category = '';
                   _subCategory = '';
+                  _formula = '';
+                  _feeTypeId = 0;
 
                   var objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                   if (objcat)
@@ -276,14 +294,18 @@ export class DashboardclassfeeComponent implements OnInit {
                   if (objsubcat)
                     _subCategory = objsubcat.MasterDataName;
 
-                  var _formula = '';
-                  let _feeTypeId = 0;
                   if (studcls.StudentFeeTypes.length > 0) {
                     _feeTypeId = studcls.StudentFeeTypes[0].FeeTypeId;
                     _formula = studcls.StudentFeeTypes[0].FeeType.Formula;
                   }
+                  let _feeObj = _studentAllFeeTypes.find(ft => clsfee.Month >= ft.FromMonth && clsfee.Month <= ft.ToMonth);
+                  if (!_feeObj) {
+                    _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
+                  }
+                  _formula = _feeObj.Formula;
+                  _feeTypeId = _feeObj.FeeTypeId;
 
-                  if (_formula.length > 0) {
+                  if (_formula && _formula.length > 0) {
                     _feeName = clsfee.FeeDefinition.FeeName;
                     studentfeedetail.push({
                       Month: clsfee.Month,
@@ -425,15 +447,7 @@ export class DashboardclassfeeComponent implements OnInit {
       row.Quantity = 1;
       row.Amount = row.Rate;
     }
-    // if(!row.Month)
-    // {
-    //   row.Action = false;
-    //   this.loading = false; this.PageLoading = false;
-    //   this.contentservice.openSnackBar("Please select Month Year.", globalconstants.ActionText, globalconstants.RedBackground);
-    //   return;
-    // }
-    this.loading = true;
-
+   
     let checkFilterString = this.FilterOrgSubOrgBatchId +
       " and FeeDefinitionId eq " + row.FeeDefinitionId +
       " and ClassId eq " + row.ClassId +
@@ -443,10 +457,19 @@ export class DashboardclassfeeComponent implements OnInit {
 
     if (row.MonthDisplay > 0)
       checkFilterString += " and MonthDisplay eq " + row.MonthDisplay
+    else {
+      this.contentservice.openSnackBar("Please select display.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
 
     if (row.ClassFeeId > 0)
       checkFilterString += " and ClassFeeId ne " + row.ClassFeeId;
+    else {
+      this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
 
+    this.loading = true;
     let list: List = new List();
     list.fields = ["ClassFeeId"];
     list.PageName = "ClassFees";
@@ -490,7 +513,7 @@ export class DashboardclassfeeComponent implements OnInit {
                   ClassId: objDiscount.ClassId,
                   FeeDefinitionId: objDiscount.FeeDefinitionId,
                   LocationId: 0,
-                  PaymentOrder: objDiscount.PaymentOrder,
+                  PaymentOrder: 100,// objDiscount.PaymentOrder,
                   Month: objDiscount.Month,
                   MonthDisplay: objDiscount.MonthDisplay,
                   OrgId: this.LoginUserDetail[0]["orgId"],

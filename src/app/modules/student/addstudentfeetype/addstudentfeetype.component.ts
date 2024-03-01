@@ -37,7 +37,7 @@ export class AddStudentFeetypeComponent {
   StudentFeeTypeData = {
     StudentFeeTypeId: 0,
     FeeTypeId: 0,
-    StudentClassId:0,
+    StudentClassId: 0,
     FromMonth: 0,
     ToMonth: 0,
     Active: 0,
@@ -51,7 +51,7 @@ export class AddStudentFeetypeComponent {
     'FeeTypeId',
     'FromMonth',
     'ToMonth',
-    'IsCurrent',
+    //'IsCurrent',
     'Active',
     'Action'
   ];
@@ -59,6 +59,7 @@ export class AddStudentFeetypeComponent {
   StudentClass: any = [];
   SelectedApplicationId = 0;
   StudentClassId = 0;
+  Students: any = [];
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
     private dataservice: NaomitsuService,
@@ -117,11 +118,11 @@ export class AddStudentFeetypeComponent {
       FromMonth: 0,
       ToMonth: 0,
       StudentClassId: this.StudentClassId,
-      Active: 0,
+      Active: false,
       IsCurrent: false,
       Action: true
     };
-    this.StudentFeeTypeList = [];
+    //this.StudentFeeTypeList = [];
     this.StudentFeeTypeList.push(newdata);
     this.dataSource = new MatTableDataSource<IStudentFeeType>(this.StudentFeeTypeList);
   }
@@ -134,8 +135,12 @@ export class AddStudentFeetypeComponent {
     element.Action = true;
   }
   updateActive(row, value) {
+    debugger;
     row.Action = true;
     row.Active = value.checked;
+  }
+  enableSave(row) {
+    row.Action = true;
   }
   updateIsCurrent(row, value) {
     row.Action = true;
@@ -152,6 +157,27 @@ export class AddStudentFeetypeComponent {
   UpdateOrSave(row) {
 
     debugger;
+    let _defaultFeeType = this.StudentFeeTypeList.find(f => f.FromMonth == 0 && f.ToMonth == 0);
+    if (!_defaultFeeType) {
+      this.contentservice.openSnackBar("Default fee type's month should not be edited.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+
+    let overlapped = false;
+    let _test = this.StudentFeeTypeList.filter(f => f.FromMonth != 0 && f.ToMonth != 0);
+    for (let outer = 0; outer < _test.length; outer++) {
+      let overlap = _test.find((inner, indx) => inner.FromMonth >= _test[outer].FromMonth
+        && inner.FromMonth <= _test[outer].ToMonth && indx != outer)
+      if (overlap) {
+        overlapped = true;
+        break;
+      }
+    }
+    if (overlapped) {
+      this.contentservice.openSnackBar("Months should not be overlapped.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+
     this.loading = true;
     let checkFilterString = this.FilterOrgSubOrgBatchId + " and FeeTypeId eq " + row.FeeTypeId +
       " and StudentClassId eq " + this.StudentClassId;
@@ -187,7 +213,7 @@ export class AddStudentFeetypeComponent {
             this.StudentFeeTypeData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.StudentFeeTypeData["UpdatedDate"] = new Date();
             delete this.StudentFeeTypeData["UpdatedBy"];
-            console.log("log",this.StudentFeeTypeData)
+            console.log("log", this.StudentFeeTypeData)
             this.insert(row);
           }
           else {
@@ -210,10 +236,19 @@ export class AddStudentFeetypeComponent {
     this.dataservice.postPatch(this.StudentFeeTypeListName, this.StudentFeeTypeData, 0, 'post')
       .subscribe(
         (data: any) => {
+          this.StudentClass.fromMonth = this.StudentFeeTypeData.FromMonth;
+          this.StudentClass.toMonth = this.StudentFeeTypeData.ToMonth;
           row.StudentFeeTypeId = data.StudentFeeTypeId;
+          let _students: any = this.tokenStorage.getStudents()!;
+          let indx = _students?.findIndex((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].StudentClassId == this.StudentFeeTypeData.StudentClassId);
+          if (indx > -1)
+            _students[indx].StudentClasses[0].StudentFeeTypes.push(JSON.parse(JSON.stringify(this.StudentFeeTypeData)));
+
+          this.tokenStorage.saveStudents(_students);
           row.Action = false;
           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
           this.GetStudentFeeTypes();
+          this.CreateInvoice(this.StudentClass);
           this.loadingFalse()
 
         },
@@ -231,6 +266,15 @@ export class AddStudentFeetypeComponent {
           row.Action = false;
           this.StudentClass.fromMonth = this.StudentFeeTypeData.FromMonth;
           this.StudentClass.toMonth = this.StudentFeeTypeData.ToMonth;
+          let _students: any = this.tokenStorage.getStudents()!;
+
+          let indx = _students?.findIndex((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].StudentClassId == this.StudentFeeTypeData.StudentClassId);
+          if (indx > -1) {
+            let feetypeIndx = _students[indx].StudentClasses[0].StudentFeeTypes.findIndex(t => t.StudentFeeTypeId == this.StudentFeeTypeData.StudentFeeTypeId);
+            if (feetypeIndx > 0)
+              _students[indx].StudentClasses[0].StudentFeeTypes[feetypeIndx] = JSON.parse(JSON.stringify(this.StudentFeeTypeData));
+          }
+          this.tokenStorage.saveStudents(_students);
           this.CreateInvoice(this.StudentClass);
         },
         err => {
@@ -257,6 +301,14 @@ export class AddStudentFeetypeComponent {
             var studentfeedetail: any[] = [];
             let _Students: any = this.tokenStorage.getStudents()!;
             var _feeName = '', _remark1 = '', _remark2 = '';
+            let _studentAllFeeTypes: any = [];
+            var _category = '';
+            var _subCategory = '';
+            var _className = '';
+            var _semesterName = '';
+            var _sectionName = '';
+            let _formula = '';
+            let objcls, objsemester, objsection, objcat, objsubcat, _feeObj;
             data.value.forEach(studcls => {
               let _currentStudent = _Students.find(s => s.StudentId === studcls.StudentId);
               _feeName = ''; _remark1 = ''; _remark2 = '';
@@ -264,36 +316,54 @@ export class AddStudentFeetypeComponent {
                 _remark1 = _currentStudent.Remark1;
                 _remark2 = _currentStudent.Remark2;
               }
-              objClassFee.forEach(clsfee => {
-                var _category = '';
-                var _subCategory = '';
-                var _className = '';
-                var _semesterName = '';
-                var _sectionName = '';
+              studcls.StudentFeeTypes.forEach(item => {
+                _studentAllFeeTypes.push(
+                  {
+                    FeeTypeId: item.FeeTypeId,
+                    FeeName: item.FeeType.FeeTypeName,
+                    Formula: item.FeeType.Formula,
+                    FromMonth: item.FromMonth,
+                    ToMonth: item.ToMonth
+                  })
+              })
 
-                let objcls = this.Classes.find((f: any) => f.ClassId == studcls.ClassId);
+              _studentAllFeeTypes = _studentAllFeeTypes.sort((a, b) => b.FromMonth - a.FromMonth);
+
+              objClassFee.forEach(clsfee => {
+                _category = '';
+                _subCategory = '';
+                _className = '';
+                _semesterName = '';
+                _sectionName = '';
+
+                objcls = this.Classes.find((f: any) => f.ClassId == studcls.ClassId);
                 if (objcls)
                   _className = objcls.ClassName;
 
-                let objsemester = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
+                objsemester = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
                 if (objsemester)
                   _semesterName = objsemester.MasterDataName;
 
-                let objsection = this.Sections.find((f: any) => f.ClassId == studcls.SectionId);
+                objsection = this.Sections.find((f: any) => f.ClassId == studcls.SectionId);
                 if (objsection)
                   _sectionName = objsection.MasterDataName;
 
-                let objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
                 if (objcat)
                   _category = objcat.MasterDataName;
 
-                let objsubcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                objsubcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
                 if (objsubcat)
                   _subCategory = objsubcat.MasterDataName;
 
-                let _formula = studcls.StudentFeeTypes[0].FeeType.Formula;
+                _feeObj = _studentAllFeeTypes.find(ft => clsfee.Month >= ft.FromMonth && clsfee.Month <= ft.ToMonth);
+                if (!_feeObj) {
+                  _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
+                }
 
-                if (_formula.length > 0) {
+                _formula = _feeObj.Formula;
+
+                if (_formula) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
                     Month: clsfee.Month,
@@ -384,7 +454,7 @@ export class AddStudentFeetypeComponent {
         else {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
         }
-        this.StudentFeeTypeList = this.StudentFeeTypeList.sort((a, b) => b.Active - a.Active);
+        //this.StudentFeeTypeList = this.StudentFeeTypeList.sort((a, b) => b.Active == a.Active);
         this.dataSource = new MatTableDataSource<IStudentFeeType>(this.StudentFeeTypeList);
         this.dataSource.paginator = this.paginator;
         this.loadingFalse();
@@ -434,7 +504,7 @@ export interface IStudentFeeType {
   FromMonth: number;
   ToMonth: number;
   IsCurrent: boolean;
-  Active: number;
+  Active: boolean;
   Action: boolean;
 }
 

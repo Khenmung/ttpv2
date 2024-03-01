@@ -248,57 +248,78 @@ export class SchoolFeeTypesComponent implements OnInit {
 
         var _clsfeeWithDefinitions: any = datacls.value.filter(m => m.FeeDefinition.Active == 1);
 
-        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, 0, 0, 0, this.FeeTypeData.FeeTypeId)
+        this.contentservice.getFeeTypeWithStudentClass(this.FilterOrgSubOrgBatchId, 0, 0, 0, 0, this.FeeTypeData.FeeTypeId)
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
             var _className = '';
             var _semesterName = '';
             var _sectionName = '';
-            data.value.forEach(studcls => {
+            var _category = '';
+            var _subCategory = '';
+            let _studentAllFeeTypes: any = [];
+            var _formula = '';
+            var clsObj, objsemester, objsection, objClassFee;
+            var _feeName = '', _remark1 = '', _remark2 = '';
+            var objcat: any;
+            var objsubcat: any;
+            //let _feeObj;
+            let result = [...data.value];
+            result.forEach(studcls => {
               _className = '';
               _semesterName = '';
               _sectionName = '';
-              var clsObj = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
-              if (clsObj.length > 0)
-                _className = clsObj[0].ClassName;
+              clsObj = this.Classes.find((f: any) => f.ClassId == studcls.StudentClass.ClassId);
+              if (clsObj)
+                _className = clsObj.ClassName;
 
+              objsemester = this.Semesters.find((f: any) => f.MasterDataId == studcls.StudentClass.SemesterId);
+              if (objsemester)
+                _semesterName = objsemester.MasterDataName;
 
-              var objcls = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
-              if (objcls.length > 0)
-                _className = objcls[0].ClassName;
+              objsection = this.Sections.find((f: any) => f.ClassId == studcls.StudentClass.SectionId);
+              if (objsection)
+                _sectionName = objsection.MasterDataName;
 
-              var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
-              if (objsemester.length > 0)
-                _semesterName = objsemester[0].MasterDataName;
-
-              var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
-              if (objsection.length > 0)
-                _sectionName = objsection[0].MasterDataName;
-
-              var _feeName = '', _remark1 = '', _remark2 = '';
-              var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
-              let _currentStudent = this.Students.filter(s => s.StudentId === studcls.StudentId);
-              if (_currentStudent.length > 0) {
-                _remark1 = _currentStudent[0].Remark1;
-                _remark2 = _currentStudent[0].Remark2;
+              _feeName = '', _remark1 = '', _remark2 = '';
+              objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.StudentClass.ClassId);
+              let _currentStudent = this.Students.find(s => s.StudentId === studcls.StudentClass.StudentId);
+              if (_currentStudent) {
+                _remark1 = _currentStudent.Remark1;
+                _remark2 = _currentStudent.Remark2;
               }
-              var _category = '';
-              var _subCategory = '';
+              //studcls.StudentFeeTypes.forEach(item => {
+                // _studentAllFeeTypes.push(
+                //   {
+                //     FeeTypeId: item.FeeTypeId,
+                //     FeeName: item.FeeType.FeeTypeName,
+                //     Formula: item.FeeType.Formula,
+                //     FromMonth: item.FromMonth,
+                //     ToMonth: item.ToMonth
+                //   })
+              //})
+
+              _studentAllFeeTypes = _studentAllFeeTypes.sort((a, b) => b.FromMonth - a.FromMonth);
+
               objClassFee.forEach(clsfee => {
                 _category = '';
                 _subCategory = '';
 
-                var objcat: any[] = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
-                if (objcat.length > 0)
-                  _category = objcat[0].MasterDataName;
+                objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                if (objcat)
+                  _category = objcat.MasterDataName;
 
-                var objsubcat: any[] = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
-                if (objsubcat.length > 0)
-                  _subCategory = objsubcat[0].MasterDataName;
+                objsubcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                if (objsubcat)
+                  _subCategory = objsubcat.MasterDataName;
 
-                var _formula = studcls.StudentFeeTypes[0].FeeType.Formula;// == 1 ? studcls.FeeType.Formula : '';
+                // _feeObj = _studentAllFeeTypes.find(ft => clsfee.Month >= ft.FromMonth && clsfee.Month <= ft.ToMonth);
+                // if (!_feeObj) {
+                //   _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
+                // }
 
-                if (_formula.length > 0) {
+                _formula = studcls.FeeType.Formula;// == 1 ? studcls.FeeType.Formula : '';
+
+                if (_formula && _formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
                     Month: clsfee.Month,
@@ -306,14 +327,14 @@ export class SchoolFeeTypesComponent implements OnInit {
                     Amount: clsfee.Amount,
                     Formula: _formula,
                     FeeName: _feeName,
-                    StudentClassId: studcls.StudentClassId,
+                    StudentClassId: studcls.StudentClass.StudentClassId,
                     FeeCategory: _category,
                     FeeSubCategory: _subCategory,
-                    FeeTypeId: studcls.FeeTypeId,
-                    ClassId: studcls.ClassId,
-                    SemesterId: studcls.SemesterId,
-                    SectionId: studcls.SectionId,
-                    RollNo: studcls.RollNo,
+                    FeeTypeId: studcls.StudentClass.FeeTypeId,
+                    ClassId: studcls.StudentClass.ClassId,
+                    SemesterId: studcls.StudentClass.SemesterId,
+                    SectionId: studcls.StudentClass.SectionId,
+                    RollNo: studcls.StudentClass.RollNo,
                     ClassName: _className,
                     Semester: _semesterName,
                     Section: _sectionName,

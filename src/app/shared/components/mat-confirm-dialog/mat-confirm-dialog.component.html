@@ -1,8 +1,21 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content>
   {{data.message}}
+
+  <!-- <mat-table #table [dataSource]="dataSource" matSort>
+    <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+      <mat-header-cell *matHeaderCellDef>
+        {{disCol}}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        {{element[disCol]}}
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+  </mat-table> -->
 </div>
 <div style="float:right;margin:20px;">
   <input style="margin:0px 10px;" type="button" value="Confirm" [mat-dialog-close]="true">
-  <input type="button" value="Cancel"  [mat-dialog-close]="false">
+  <input type="button" value="Cancel" [mat-dialog-close]="false">
 </div>

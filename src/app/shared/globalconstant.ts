@@ -6,7 +6,7 @@ import moment from "moment";
 
 export class globalconstants {
     //////"https://api.ttpsolutions.in";"https://ettest.ttpsolutions.in"; environment.apiU+++.*-=-0983`9556'nb656RL
-    public static apiUrl: string = "http://localhost:5000"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
+    public static apiUrl: string = "http://localhost:8080"; //"https://api.ttpsolutions.in";//"http://localhost:5000";
     public static fileUrl: string = '';
     public static CompanyParentId = 31850;// 31850-production;// 27762;test site; 
     public static PremiumPlusId = 4;//4;//2 
@@ -134,7 +134,7 @@ export class globalconstants {
                     'ORGANIZATION': 'organization',
                     'MYPLAN': 'my plan',
                     'CUSTOMFEATUREPERMISSION': 'custom feature permission',
-                    'INVOICENRECEIPT': 'invoice n receipt'
+                    'DOWNLOADSYNCDATA': 'Sync Data'
                 },
                 "misc": {
                     "FRONTOFFICE": "front office",

@@ -19,7 +19,8 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
           <mat-form-field appearance="outline">
-            <mat-select [(ngModel)]="element.FeeTypeId" [value]="element.FeeTypeName">
+            <mat-select [(ngModel)]="element.FeeTypeId" [value]="element.FeeTypeName"
+              (selectionChange)="enableSave(element)">
               <mat-option *ngFor="let item of FeeTypeList" [value]="item.FeeTypeId">{{item.FeeTypeName}}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -30,7 +31,8 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
           <mat-form-field appearance="outline">
-            <mat-select [(ngModel)]="element.FromMonth" [value]="element.FromMonth">
+            <mat-select [disabled]="element.StudentFeeTypeId>0 && element.FromMonth==0 && element.ToMonth==0"
+              [(ngModel)]="element.FromMonth" (selectionChange)="enableSave(element)" [value]="element.FromMonth">
               <mat-option [value]="Defaultvalue">select</mat-option>
               <mat-option *ngFor="let item of Months" [value]="item.val">{{item.MonthName}}</mat-option>
             </mat-select>
@@ -42,7 +44,8 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
           <mat-form-field appearance="outline">
-            <mat-select [(ngModel)]="element.ToMonth" [value]="element.ToMonth">
+            <mat-select [disabled]="element.StudentFeeTypeId>0 && element.FromMonth==0 && element.ToMonth==0"
+              [(ngModel)]="element.ToMonth" [value]="element.ToMonth" (selectionChange)="enableSave(element)">
               <mat-option [value]="Defaultvalue">select</mat-option>
               <mat-option *ngFor="let item of Months" [value]="item.val">{{item.MonthName}}</mat-option>
             </mat-select>
@@ -62,8 +65,8 @@
         <mat-header-cell *matHeaderCellDef style="justify-content: center;">Active
         </mat-header-cell>
         <mat-cell *matCellDef="let element" style="justify-content: center;">
-          <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
-            [checked]="element.Active==1?true:false">
+          <mat-checkbox [disabled]="element.FromMonth==0 && element.ToMonth==0" (click)="$event.stopPropagation()"
+            (change)="updateActive(element,$event)" [checked]="element.Active">
           </mat-checkbox>
         </mat-cell>
       </ng-container>
@@ -88,11 +91,5 @@
         class="element-row"></mat-row>
     </mat-table>
     <mat-paginator style="display:flex;justify-content: center;" [pageSizeOptions]="[10,20,50]"></mat-paginator>
-    <div style="width:100%;background-color: lightgray;font-size: medium;padding: 10px;margin:15px 15px 15px 0px">
-      Below variables can be
-      applied within square bracket '[]' in the formula.
-    </div>
-    <div>ClassName, FeeName, FeeCategory, FeeSubCategory, Month*, Amount, Remarks</div>
-    <div>* Month format: Year + month. Eg. 'Month' for the month of Jan 2021 is 202100, for Feb 2021 is 202101 and
-      so on..</div>
+
   </div>

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from '../../shared/components/home/home.component';
-import { CustomerPlansComponent } from '../control/customerplans/customerplans.component';
 import { GlobaladminboardComponent } from './globaladminboard/globaladminboard.component';
 import { MenuConfigComponent } from './menu-config/menu-config.component';
 import { PlansComponent } from './plans/plans.component';

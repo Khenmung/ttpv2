@@ -843,53 +843,70 @@ export class studentprimaryinfoComponent implements OnInit {
             var studentfeedetail: any[] = [];
             let _Students: any = this.tokenStorage.getStudents()!;
             var _feeName = '', _remark1 = '', _remark2 = '';
+            var _category = '';
+            var _subCategory = '';
+            var _className = '';
+            var _semesterName = '';
+            var _sectionName = '';
+            let _studentAllFeeTypes: any = [];
+            let _feeObj;
+            var _formula = '';
+            let _feeTypeId = 0;
             data.value.forEach(studcls => {
               _feeName = ''; _remark1 = ''; _remark2 = '';
-              let _currentStudent = _Students.filter(s => s.StudentId === studcls.StudentId);
-              if (_currentStudent.length > 0) {
-                _remark1 = _currentStudent[0].Remark1;
-                _remark2 = _currentStudent[0].Remark2;
+              let _currentStudent = _Students.find(s => s.StudentId === studcls.StudentId);
+              if (_currentStudent) {
+                _remark1 = _currentStudent.Remark1;
+                _remark2 = _currentStudent.Remark2;
               }
-              var _category = '';
-              var _subCategory = '';
-              var _className = '';
-              var _semesterName = '';
-              var _sectionName = '';
+              _studentAllFeeTypes = [];
+              studcls.StudentFeeTypes.forEach(item => {
+                _studentAllFeeTypes.push(
+                  {
+                    FeeTypeId: item.FeeTypeId,
+                    FeeName: item.FeeType.FeeTypeName,
+                    Formula: item.FeeType.Formula,
+                    FromMonth: item.FromMonth,
+                    ToMonth: item.ToMonth
+                  })
+              })
               objClassFee.forEach(clsfee => {
                 _category = '';
                 _subCategory = '';
                 _className = '';
                 _semesterName = '';
                 _sectionName = '';
+                _formula = '';
+                _feeTypeId = 0;
 
-                var objcls = this.Classes.filter((f: any) => f.ClassId == studcls.ClassId);
-                if (objcls.length > 0)
-                  _className = objcls[0].ClassName;
+                var objcls = this.Classes.find((f: any) => f.ClassId == studcls.ClassId);
+                if (objcls)
+                  _className = objcls.ClassName;
 
-                var objsemester = this.Semesters.filter((f: any) => f.MasterDataId == studcls.SemesterId);
-                if (objsemester.length > 0)
-                  _semesterName = objsemester[0].MasterDataName;
+                var objsemester = this.Semesters.find((f: any) => f.MasterDataId == studcls.SemesterId);
+                if (objsemester)
+                  _semesterName = objsemester.MasterDataName;
 
-                var objsection = this.Sections.filter((f: any) => f.ClassId == studcls.SectionId);
-                if (objsection.length > 0)
-                  _sectionName = objsection[0].MasterDataName;
+                var objsection = this.Sections.find((f: any) => f.ClassId == studcls.SectionId);
+                if (objsection)
+                  _sectionName = objsection.MasterDataName;
 
-                var objcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
-                if (objcat.length > 0)
-                  _category = objcat[0].MasterDataName;
+                var objcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeCategoryId);
+                if (objcat)
+                  _category = objcat.MasterDataName;
 
-                var objsubcat = this.FeeCategories.filter((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
-                if (objsubcat.length > 0)
-                  _subCategory = objsubcat[0].MasterDataName;
+                var objsubcat = this.FeeCategories.find((f: any) => f.MasterDataId == clsfee.FeeDefinition.FeeSubCategoryId);
+                if (objsubcat)
+                  _subCategory = objsubcat.MasterDataName;
 
-                var _formula = '';
-                let _feeTypeId = 0;
-
-                if (studcls.StudentFeeTypes.length > 0) {
-                  _feeTypeId = studcls.StudentFeeTypes[0].FeeTypeId;
-                  _formula = studcls.StudentFeeTypes[0].FeeType.Formula;
+                _feeObj = _studentAllFeeTypes.find(ft => clsfee.Month >= ft.FromMonth && clsfee.Month <= ft.ToMonth);
+                if (!_feeObj) {
+                  _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
                 }
-                if (_formula.length > 0) {
+                _formula = _feeObj.Formula;
+                _feeTypeId = _feeObj.FeeTypeId;
+
+                if (_formula && _formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
                     Month: clsfee.Month,

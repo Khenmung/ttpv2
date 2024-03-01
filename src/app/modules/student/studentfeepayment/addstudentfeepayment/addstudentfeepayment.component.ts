@@ -75,6 +75,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
     StudentClassName: '',
     FeeTypeId: 0,
     FeeType: '',
+    FromMonth: 0,
+    ToMonth: 0,
     Formula: '',
     StudentId: 0,
     ClassId: 0,
@@ -282,9 +284,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
       this.Students = this.tokenStorage.getStudents()!;
       this.CustomerHeading = [];
       if (this.Students.length > 0) {
-        _currentStudent = this.Students.filter((s: any) => s.StudentId == this.studentInfoTodisplay.StudentId)
-        this.CustomerHeading.push({ Text: _currentStudent[0].FirstName, 'Description': '' });
-        this.CustomerHeading.push({ Text: _currentStudent[0].PresentAddress, 'Description': '' });
+        _currentStudent = this.Students.find((s: any) => s.StudentId == this.studentInfoTodisplay.StudentId)
+        this.CustomerHeading.push({ Text: _currentStudent.FirstName, 'Description': '' });
+        this.CustomerHeading.push({ Text: _currentStudent.PresentAddress, 'Description': '' });
       }
       this.studentInfoTodisplay.StudentClassId = this.tokenStorage.getStudentClassId()!;
       this.shareddata.CurrentStudentName.subscribe(fy => (this.StudentName = fy));
@@ -428,6 +430,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     list.filter = [filterstr];
     return this.dataservice.get(list);
   }
+  StudentAllFeeTypes: any = [];
   GetStudentClass() {
     debugger;
     if (!this.studentInfoTodisplay.StudentClassId) {
@@ -435,39 +438,19 @@ export class AddstudentfeepaymentComponent implements OnInit {
       this.nav.navigate(["/edu"]);
     }
     else {
-      this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0,0,0, this.studentInfoTodisplay.StudentClassId, 0)
-      // let filterstr = "StudentClassId eq " + this.studentInfoTodisplay.StudentClassId;
-      // this.loading = true;
-      // let list: List = new List();
-      // list.fields = [
-      //   "StudentClassId",
-      //   "AdmissionNo",
-      //   "SectionId",
-      //   "SemesterId",
-      //   "StudentId",
-      //   "BatchId",
-      //   "ClassId",
-      //   "RollNo",
-      //   //"FeeTypeId"
-      // ];
-      // list.lookupFields = [
-      //   //"Student($select=PID,FirstName,LastName)",
-      //   "FeeType($select=FeeTypeName,Formula)"
-      // ];
-      // list.PageName = "StudentClasses";
-      // list.filter = [filterstr];
+      this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, 0, 0, 0, this.studentInfoTodisplay.StudentClassId, 0)
 
-      // this.dataservice.get(list)
         .subscribe((data: any) => {
           debugger;
           if (data.value.length > 0) {
-            if (data.value[0].StudentFeeTypes.length==0) {
+            if (data.value[0].StudentFeeTypes.length == 0) {
               this.contentservice.openSnackBar("Fee Type not yet defined.", globalconstants.ActionText, globalconstants.RedBackground);
               //this.snackbar.open("Fee type not yet defined.",'Dimiss',{duration:10000});
               this.loading = false;
               this.PageLoading = false;
             }
             else {
+              this.StudentAllFeeTypes = [];
               let _studdetail: any = this.Students.filter((s: any) => s.StudentId == data.value[0].StudentId)
               var _lastname = _studdetail[0].LastName ? " " + _studdetail[0].LastName : "";
               this.studentInfoTodisplay.AdmissionNo = data.value[0].AdmissionNo;
@@ -475,37 +458,57 @@ export class AddstudentfeepaymentComponent implements OnInit {
               this.studentInfoTodisplay.ClassId = data.value[0].ClassId;
               this.studentInfoTodisplay.SectionId = data.value[0].SectionId;
               this.studentInfoTodisplay.SemesterId = data.value[0].SemesterId;
-              this.studentInfoTodisplay.FeeTypeId = data.value[0].StudentFeeTypes[0].FeeTypeId;
-              this.studentInfoTodisplay.FeeType = data.value[0].StudentFeeTypes[0].FeeType.FeeTypeName;
-              this.studentInfoTodisplay.Formula = data.value[0].StudentFeeTypes[0].FeeType.Formula;
+
               this.studentInfoTodisplay.RollNo = data.value[0].RollNo;
               this.studentInfoTodisplay.StudentName = _studdetail[0].FirstName + _lastname;
 
               this.studentInfoTodisplay.Remarks = _studdetail[0].Remarks;
+              data.value[0].StudentFeeTypes.forEach(item => {
+                this.StudentAllFeeTypes.push({
+                  FeeTypeId: item.FeeType.FeeTypeId,
+                  FeeType: item.FeeType.FeeTypeName,
+                  Formula: item.FeeType.Formula,
+                  IsCurrent: item.IsCurrent,
+                  FromMonth: item.FromMonth,
+                  ToMonth: item.ToMonth
+                })
+              })
+              this.StudentAllFeeTypes = this.StudentAllFeeTypes.sort((a, b) => b.FromMonth - a.FromMonth);
+              let objfeetype = this.StudentAllFeeTypes.find(c => c.IsCurrent)
+              if (objfeetype)
+                this.studentInfoTodisplay.StudentFeeType = objfeetype.FeeType;
+              else
+                this.studentInfoTodisplay.StudentFeeType = this.StudentAllFeeTypes[0].FeeType;
+
+
 
               var _sectionName = '';
-              var obj = this.Sections.filter(cls => cls.MasterDataId == data.value[0].SectionId)
-              if (obj.length > 0)
-                _sectionName = obj[0].MasterDataName;
+              var objsection = this.Sections.find(cls => cls.MasterDataId == data.value[0].SectionId)
+              if (objsection)
+                _sectionName = objsection.MasterDataName;
+
               this.studentInfoTodisplay.SectionName = _sectionName;
               var _semesterName = '';
-              var obj = this.Semesters.filter(cls => cls.MasterDataId == data.value[0].SemesterId)
-              if (obj.length > 0)
-                _semesterName = obj[0].MasterDataName;
+              var objsemester = this.Semesters.find(cls => cls.MasterDataId == data.value[0].SemesterId)
+              if (objsemester)
+                _semesterName = objsemester.MasterDataName;
+
               this.studentInfoTodisplay.Semester = _semesterName;
 
-              var clsObj = this.Classes.filter(cls => cls.ClassId == this.studentInfoTodisplay.ClassId)
-              if (clsObj.length > 0)
-                this.studentInfoTodisplay.StudentClassName = clsObj[0].ClassName;
+              var clsObj = this.Classes.find(cls => cls.ClassId == this.studentInfoTodisplay.ClassId)
+              if (clsObj)
+                this.studentInfoTodisplay.StudentClassName = clsObj.ClassName;
 
 
-              var feeObj = this.FeeTypes.filter((f: any) => {
-                return f.FeeTypeId == this.studentInfoTodisplay.FeeTypeId
+              // var feeObj = this.FeeTypes.find((f: any) => {
+              //   return f.FeeTypeId == this.studentInfoTodisplay.FeeTypeId
+              // })
+              // if (feeObj)
+              //   this.studentInfoTodisplay.StudentFeeType = feeObj.FeeTypeName;
+              this.StudentAllFeeTypes.forEach(f => {
+                f.Formula = this.ApplyVariables(f.Formula);
               })
-              if (feeObj.length > 0)
-                this.studentInfoTodisplay.StudentFeeType = feeObj[0].FeeTypeName;
-
-              this.studentInfoTodisplay.Formula = this.ApplyVariables(this.studentInfoTodisplay.Formula);
+              //this.studentInfoTodisplay.Formula = this.ApplyVariables(this.studentInfoTodisplay.Formula);
               this.VariableObjList.push(this.studentInfoTodisplay);
               this.GetStudentFeePayment();
             }
@@ -706,8 +709,8 @@ export class AddstudentfeepaymentComponent implements OnInit {
   }
   ApplyVariables(formula) {
     var filledVar = formula;
-    console.log("formula", formula)
-    console.log("this.VariableObjList", this.VariableObjList);
+    //console.log("formula", formula)
+    //console.log("this.VariableObjList", this.VariableObjList);
     this.VariableObjList.forEach(m => {
       Object.keys(m).forEach(f => {
         if (filledVar.includes(f)) {
@@ -812,6 +815,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
         SelectedMonthFees = SelectedMonthFees.sort((a, b) => b.MonthDisplay - a.MonthDisplay);
         var AmountAfterFormulaApplied = 0;
         //console.log("SelectedMonthFees",SelectedMonthFees);
+
         SelectedMonthFees.forEach((f, indx) => {
 
           this.VariableObjList.push(f);
@@ -819,7 +823,15 @@ export class AddstudentfeepaymentComponent implements OnInit {
           // this.CurrentTotalAmount = withoutTaxOrDiscount.reduce((acc, current) => acc + current.Amount, 0);
           this.CurrentTotalAmount = globalconstants.getCurrentTotalAmount(this.MonthlyDueDetail);
           //var myFormula = this.studentInfoTodisplay.Formula.replaceAll("[CurrentTotalAmount]", this.CurrentTotalAmount + "");
-          var formula = this.ApplyVariables(this.studentInfoTodisplay.Formula);
+          let _feeTypeForthisMonth = this.StudentAllFeeTypes.find(ft => f.Month >= ft.FromMonth && f.Month <= ft.ToMonth);
+          if (!_feeTypeForthisMonth)
+            _feeTypeForthisMonth = this.StudentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
+
+          if (!_feeTypeForthisMonth) {
+            this.contentservice.openSnackBar("Fee type not defined.", globalconstants.ActionText, globalconstants.RedBackground);
+            return;
+          }
+          var formula = this.ApplyVariables(_feeTypeForthisMonth.Formula);
           this.VariableObjList.splice(this.VariableObjList.indexOf(f), 1);
           AmountAfterFormulaApplied = evaluate(formula).toFixed(2);
           if (f.FeeName.includes('%')) {
@@ -827,9 +839,9 @@ export class AddstudentfeepaymentComponent implements OnInit {
           }
           //AmountAfterFormulaApplied = +AmountAfterFormulaApplied.toFixed(2);
           //   f.Amount = AmountAfterFormulaApplied;
-          var alreadyadded = this.MonthlyDueDetail.filter(x => x.FeeName == f.FeeName)
-          if (alreadyadded.length > 0) {
-            alreadyadded[0].Amount += +AmountAfterFormulaApplied
+          var alreadyadded = this.MonthlyDueDetail.find(x => x.FeeName == f.FeeName)
+          if (alreadyadded) {
+            alreadyadded.Amount += +AmountAfterFormulaApplied
           }
           else {
             _newCount += 1;
@@ -904,13 +916,13 @@ export class AddstudentfeepaymentComponent implements OnInit {
     var _rowWithoutDiscount = this.MonthlyDueDetail.filter((f: any) => f.FeeName != 'Discount' && !f.FeeName.includes('%'));
     this.DiscountAmount = _rowWithoutDiscount.reduce((accum, curr) => accum + (curr.BaseAmount - +curr.Amount), 0);
     var _discountAccountId = 0;
-    var _obj = this.GeneralLedgerAccounts.filter((f: any) => f.GeneralLedgerName == this.DiscountText + " Allowed")
-    if (_obj.length > 0)
-      _discountAccountId = _obj[0].GeneralLedgerId;
+    var _obj = this.GeneralLedgerAccounts.find((f: any) => f.GeneralLedgerName == this.DiscountText + " Allowed")
+    if (_obj)
+      _discountAccountId = _obj.GeneralLedgerId;
 
-    var DiscountRow = this.MonthlyDueDetail.filter((f: any) => f.FeeName == this.DiscountText);
+    var DiscountRow = this.MonthlyDueDetail.find((f: any) => f.FeeName == this.DiscountText);
 
-    if (DiscountRow.length == 0 && this.DiscountAmount > 0) {
+    if (!DiscountRow && this.DiscountAmount > 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please define discount in feedefinition.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
@@ -918,11 +930,11 @@ export class AddstudentfeepaymentComponent implements OnInit {
     else {
       if (this.DiscountAmount > 0) {
 
-        DiscountRow[0].BaseAmount = this.DiscountAmount;
-        DiscountRow[0].Debit = true;
-        DiscountRow[0].SlNo = +100;
-        DiscountRow[0].StudentClassId = this.studentInfoTodisplay.StudentClassId;
-        DiscountRow[0].GeneralLedgerAccountId = _discountAccountId;
+        DiscountRow.BaseAmount = this.DiscountAmount;
+        DiscountRow.Debit = true;
+        DiscountRow.SlNo = +100;
+        DiscountRow.StudentClassId = this.studentInfoTodisplay.StudentClassId;
+        DiscountRow.GeneralLedgerAccountId = _discountAccountId;
       }
       else {
         //if discount amount is equal to zero, remove discount row.

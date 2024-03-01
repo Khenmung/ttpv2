@@ -84,7 +84,7 @@ export class PromoteclassComponent implements OnInit {
     RollNo: 0,
     SectionId: 0,
     FeeTypeId: 0,
-    Admitted:false,
+    Admitted: false,
     AdmissionNo: '',
     AdmissionDate: new Date(),
     Remarks: '',
@@ -135,7 +135,7 @@ export class PromoteclassComponent implements OnInit {
         }
       })
     })
-    this.PromotionExamId =+localStorage.getItem("PromotionExamId")!;
+    this.PromotionExamId = +localStorage.getItem("PromotionExamId")!;
     this.searchForm = this.fb.group({
       searchExamId: [0],
       searchPID: [0],
@@ -1026,7 +1026,7 @@ export class PromoteclassComponent implements OnInit {
               this.StudentClassData.SectionId = item.SectionId;
               this.StudentClassData.Remarks = item.Remarks;
               this.StudentClassData.AdmissionNo = item.AdmissionNo ? item.AdmissionNo : '';
-            
+
               this.StudentClassData.Admitted = true;
 
               this.StudentClassData.OrgId = this.LoginUserDetail[0]["orgId"];
@@ -1141,6 +1141,8 @@ export class PromoteclassComponent implements OnInit {
             var _feeName = '', _remark1 = '', _remark2 = '';
             var _category = '';
             var _subCategory = '';
+            let _studentAllFeeTypes: any = [];
+            let _formula = '';
             data.value.forEach(studcls => {
               var objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.ClassId);
               let _currentstudent: any = this.PreviousBatchStudents.find(s => s.StudentId == studcls.StudentId);
@@ -1151,6 +1153,15 @@ export class PromoteclassComponent implements OnInit {
                 _remark1 = _currentstudent.Remark1;
                 _remark2 = _currentstudent.Remark2;
               }
+              _studentAllFeeTypes = [];
+
+              studcls.StudentClasses[0].StudentFeeTypes.forEach(item => {
+                _studentAllFeeTypes.push(
+                  { FeeTypeId: item.FeeTypeId, FeeName: item.FeeType.FeeName, Formula: item.FeeType.Formula })
+              })
+
+              _studentAllFeeTypes = _studentAllFeeTypes.sort((a, b) => b.FromMonth - a.FromMonth);
+
               objClassFee.forEach(clsfee => {
                 _category = '';
                 _subCategory = '';
@@ -1163,9 +1174,13 @@ export class PromoteclassComponent implements OnInit {
                 if (objsubcat)
                   _subCategory = objsubcat.MasterDataName;
 
-                var _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
+                let _feeObj = _studentAllFeeTypes.find(ft => clsfee.Month >= ft.FromMonth && clsfee.Month <= ft.ToMonth);
+                if (!_feeObj) {
+                  _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
+                }
+                _formula = _feeObj.Formula;
 
-                if (_formula.length > 0) {
+                if (_formula && _formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;
                   studentfeedetail.push({
                     Month: clsfee.Month,
@@ -1238,13 +1253,12 @@ export class PromoteclassComponent implements OnInit {
     return this.dataservice.get(list)
 
   }
-  PromotionExamId=0;
-  SelectionChange()
-  {
+  PromotionExamId = 0;
+  SelectionChange() {
     this.PromotionExamId = this.searchForm.get("searchExamId")?.value;
-    localStorage.setItem("PromotionExamId",this.PromotionExamId+"");
+    localStorage.setItem("PromotionExamId", this.PromotionExamId + "");
   }
-  GetFreshData(){
+  GetFreshData() {
     this.tokenStorage.savePreviousBatchStudents([]);
     this.GetStudents();
   }

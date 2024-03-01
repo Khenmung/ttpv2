@@ -11,7 +11,7 @@ import { ContentService } from '../../../shared/content.service';
 import { OrganizationComponent } from '../organization/organization.component';
 import { CustomerPlansComponent } from '../customerplans/customerplans.component';
 import { CustomfeaturerolepermissionComponent } from '../customfeaturerolepermission/customfeaturerolepermission.component';
-import { InvoiceComponent } from '../invoice/invoice.component';
+import { DownloadsyncdataComponent } from '../downloadsyncdata/downloadsyncdata.component';
 
 @Component({
   selector: 'app-signup',
@@ -28,7 +28,7 @@ export class settingboardComponent implements AfterViewInit {
     OrganizationComponent,
     CustomerPlansComponent,
     CustomfeaturerolepermissionComponent,
-    //InvoiceComponent
+    DownloadsyncdataComponent
   ];
 
   tabNames = [
@@ -36,6 +36,7 @@ export class settingboardComponent implements AfterViewInit {
     { "label": "khat peuhpeuh", "faIcon": '' },
     { "label": "khat peuhpeuh", "faIcon": '' },
     { "label": "khat peuhpeuh", "faIcon": '' },
+    { "label": "Khat peuhpeuh", "faIcon": '' },
     { "label": "Khat peuhpeuh", "faIcon": '' },
     { "label": "Khat peuhpeuh", "faIcon": '' },
     { "label": "Khat peuhpeuh", "faIcon": '' },
@@ -56,8 +57,7 @@ export class settingboardComponent implements AfterViewInit {
     private cdr: ChangeDetectorRef,
     private tokenStorage: TokenStorageService,
     private shareddata: SharedataService,
-    private contentservice: ContentService,
-    private componentFactoryResolver: ComponentFactoryResolver) {
+    private contentservice: ContentService) {
   }
 
   public ngAfterViewInit(): void {
@@ -80,7 +80,39 @@ export class settingboardComponent implements AfterViewInit {
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.CONTROL.MASTERS)
     var comindx = this.components.indexOf(AddMasterDataComponent);
     this.GetComponents(perObj, comindx);
-    if (this.AppName.toLowerCase() != 'common') {
+    if (this.AppName.toLowerCase() === 'common') {
+      var comindx = this.components.indexOf(BatchdashboardComponent);
+      this.components.splice(comindx, 1);
+      this.tabNames.splice(comindx, 1);
+      comindx = this.components.indexOf(AppuserdashboardComponent);
+      this.components.splice(comindx, 1);
+      this.tabNames.splice(comindx, 1);
+      comindx = this.components.indexOf(roleuserdashboardComponent);
+      this.components.splice(comindx, 1);
+      this.tabNames.splice(comindx, 1);
+      // comindx = this.components.indexOf(RoleAppPermissiondashboardComponent);
+      // this.components.splice(comindx, 1);
+      // this.tabNames.splice(comindx, 1);
+      comindx = this.components.indexOf(OrganizationComponent);
+      this.components.splice(comindx, 1);
+      this.tabNames.splice(comindx, 1);
+
+      comindx = this.components.indexOf(CustomerPlansComponent);
+      this.components.splice(comindx, 1);
+      this.tabNames.splice(comindx, 1);
+      
+      comindx = this.components.indexOf(CustomfeaturerolepermissionComponent);
+      this.components.splice(comindx, 1);
+      this.tabNames.splice(comindx, 1);
+
+      perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.CONTROL.APPLICATIONFEATUREPERMISSION);
+      var comindx = this.components.indexOf(RoleAppPermissiondashboardComponent);
+      this.GetComponents(perObj, comindx);
+      
+    }
+    else {
+      
+      
       perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.CONTROL.BATCHDASHBOARD)
       var comindx = this.components.indexOf(BatchdashboardComponent);
       this.GetComponents(perObj, comindx);
@@ -109,38 +141,10 @@ export class settingboardComponent implements AfterViewInit {
       var comindx = this.components.indexOf(CustomfeaturerolepermissionComponent);
       this.GetComponents(perObj, comindx);
       
-      // perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.CONTROL.INVOICENRECEIPT);
-      // var comindx = this.components.indexOf(InvoiceComponent);
-      // this.GetComponents(perObj, comindx);
-    }
-    else {
-      var comindx = this.components.indexOf(BatchdashboardComponent);
-      this.components.splice(comindx, 1);
-      this.tabNames.splice(comindx, 1);
-      comindx = this.components.indexOf(AppuserdashboardComponent);
-      this.components.splice(comindx, 1);
-      this.tabNames.splice(comindx, 1);
-      comindx = this.components.indexOf(roleuserdashboardComponent);
-      this.components.splice(comindx, 1);
-      this.tabNames.splice(comindx, 1);
-      // comindx = this.components.indexOf(RoleAppPermissiondashboardComponent);
-      // this.components.splice(comindx, 1);
-      // this.tabNames.splice(comindx, 1);
-      comindx = this.components.indexOf(OrganizationComponent);
-      this.components.splice(comindx, 1);
-      this.tabNames.splice(comindx, 1);
-
-      comindx = this.components.indexOf(CustomerPlansComponent);
-      this.components.splice(comindx, 1);
-      this.tabNames.splice(comindx, 1);
-      
-      comindx = this.components.indexOf(CustomfeaturerolepermissionComponent);
-      this.components.splice(comindx, 1);
-      this.tabNames.splice(comindx, 1);
-
-      perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.CONTROL.APPLICATIONFEATUREPERMISSION);
-      var comindx = this.components.indexOf(RoleAppPermissiondashboardComponent);
+      perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.common.CONTROL.DOWNLOADSYNCDATA);
+      var comindx = this.components.indexOf(DownloadsyncdataComponent);
       this.GetComponents(perObj, comindx);
+     
     }
     this.shareddata.ChangePermissionAtParent(this.Permissions.ParentPermission);
     if (this.Permissions.ParentPermission != 'deny' && this.Permissions.ParentPermission != '') {
