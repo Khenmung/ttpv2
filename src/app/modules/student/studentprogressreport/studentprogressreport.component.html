@@ -33,35 +33,35 @@
                 <div *ngFor="let item of StudentName"
                     style="margin-left: 20px;display: flex;justify-content: center;flex-direction: column;">
                     <div style="display:flex">
-                        <div style="width:300px"><b>Name</b> :</div>
-                        <div>{{item.Name}}</div>
+                        <div style="width:300px"><b>Name</b> </div>
+                        <div>:&nbsp;&nbsp;{{item.Name}}</div>
                     </div>
                     <div style="display:flex">
-                        <div style="width:300px"><b>Class </b>:</div>
-                        <div> {{item.Class}}, <b>Section</b> : {{item.Section}}, <b>Roll No.</b> :
+                        <div style="width:300px"><b>Class </b></div>
+                        <div>:&nbsp;&nbsp; {{item.Class}}, <b>Section</b> : {{item.Section}}, <b>Roll No.</b> :
                             {{item.RollNo}}
                         </div>
                     </div>
                 </div>
                 <div style="margin-left: 20px;">
                     <div style="display:flex;">
-                        <div style="width:300px"><b>Father's/Guardian Name:</b></div>
-                        <div>{{CurrentStudent.FatherName}}</div>
+                        <div style="width:300px"><b>Father's/Guardian Name</b></div>
+                        <div>:&nbsp;&nbsp;{{CurrentStudent.FatherName}}</div>
                     </div>
                     <div style="display:flex;">
-                        <div style="width:300px"><b>Date Of Birth:</b>
+                        <div style="width:300px"><b>Date Of Birth</b>
                         </div>
-                        <div>{{CurrentStudent.DOB|date:'dd/MM/yyyy'}}</div>
+                        <div>:&nbsp;&nbsp;{{CurrentStudent.DOB|date:'dd/MM/yyyy'}}</div>
                     </div>
                     <div style="display:flex;">
-                        <div style="width:300px"><b>House:</b>
+                        <div style="width:300px"><b>House</b>
                         </div>
-                        <div>{{CurrentStudent.House}}</div>
+                        <div>:&nbsp;&nbsp;{{CurrentStudent.House}}</div>
                     </div>
                     <div style="display:flex;">
-                        <div style="width:300px"><b>Address:</b>
+                        <div style="width:300px"><b>Address</b>
                         </div>
-                        <div>{{CurrentStudent.PresentAddress}}</div>
+                        <div>:&nbsp;&nbsp;{{CurrentStudent.PresentAddress}}</div>
                     </div>
                 </div>
                 <div *ngIf="ExamIdToWithHeld.length>0" style="display:flex;flex-direction: column;margin-top: 15px;">

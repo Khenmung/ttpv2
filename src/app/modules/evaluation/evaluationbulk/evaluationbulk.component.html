@@ -180,8 +180,8 @@
                         </div>
                         <div style="display: flex;flex-direction: column;padding: 15px; margin:15px 15px 15px 15px;width: 100%;"
                             *ngIf="element.EType=== StudentProfile && element.ClassEvaluationAnswerOptionParentId==0 && element.QuestionnaireType=='Questionnaire'">
-                            <pre *ngIf="element.History.length>0">
-                                <span [innerHTML]="element.History| encodeHTML">
+                            <pre *ngIf="element.HistoryText.length>0">
+                                <span [innerHTML]="element.HistoryText| encodeHTML">
                                 </span>
                             </pre>
                             <mat-form-field appearance="outline" style="width:100%">

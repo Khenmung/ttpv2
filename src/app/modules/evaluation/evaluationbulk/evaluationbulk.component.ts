@@ -352,18 +352,18 @@ export class EvaluationBulkComponent implements OnInit {
           if (row.EType.toLowerCase() === this.StudentProfile) {
             if (this.EvaluationSubmitted && !this.boolSaveAsDraft) {
               var _borderwidth = "border-width:0px 1px 1px 1px;"
-              if (row.History == "") {
+              if (row.HistoryText == "") {
                 _borderwidth = "border-width:1px 1px 1px 1px;"
               }
 
               _toappend = moment().format('DD/MM/YYYY');
 
-              _history = row.AnswerText.length == 0 ? row.History : row.History + "<div style='border-style:solid; " + _borderwidth + "border-color:lightgray;padding:15px'>" +
+              _history = row.AnswerText.length == 0 ? row.HistoryText : row.HistoryText + "<div style='border-style:solid; " + _borderwidth + "border-color:lightgray;padding:15px'>" +
                 _answerText + "<br>" + _toappend + "</div>"
               _answerText = '';
             }
             else {
-              _history = row.History;
+              _history = row.HistoryText;
               //_answerText = row.AnswerText;
             }
             //_studentClassId = 0;
@@ -385,7 +385,7 @@ export class EvaluationBulkComponent implements OnInit {
               SemesterId: _semesterId,
               ClassEvaluationId: row.ClassEvaluationId,
               AnswerText: _answerText,
-              History: _history,
+              HistoryText: _history,
               EvaluationExamMapId: row.EvaluationExamMapId,
               StudentEvaluationAnswers: row.StudentEvaluationAnswers,
               Active: 1,
@@ -555,7 +555,7 @@ export class EvaluationBulkComponent implements OnInit {
       'ClassEvaluationId',
       'EvaluationExamMapId',
       'AnswerText',
-      'History',
+      'HistoryText',
       'Points',
       'Submitted',
       'Active'
@@ -637,7 +637,7 @@ export class EvaluationBulkComponent implements OnInit {
                 Points: existing[0].Points,
                 EType: row[0].EType,
                 Description: globalconstants.decodeSpecialChars(clseval.Description),
-                History: existing[0].History,
+                HistoryText: existing[0].HistoryText,
                 AnswerText: globalconstants.decodeSpecialChars(existing[0].AnswerText),
                 StudentEvaluationResultId: existing[0].StudentEvaluationResultId,
                 ClassEvaluationId: clseval.ClassEvaluationId,
@@ -662,7 +662,7 @@ export class EvaluationBulkComponent implements OnInit {
                 AnswerOptionsId: 0,
                 Description: globalconstants.decodeSpecialChars(clseval.Description),
                 AnswerText: '',
-                History: '',
+                HistoryText: '',
                 Points: 0,
                 EType: row[0].EType,
                 StudentEvaluationResultId: 0,
@@ -1119,7 +1119,7 @@ export interface IStudentEvaluation {
   StudentEvaluationResultId: number;
   ClassId: number;
   AnswerText: string;
-  History: string;
+  HistoryText: string;
   StudentClassId: number;
   StudentId: number;
   EvaluationMasterId: number;

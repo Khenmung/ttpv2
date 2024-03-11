@@ -475,7 +475,9 @@ export class StudentSubjectMarkCompComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.SubjectTypes = [...data.value];
+        this.loading=false;
       })
+      
   }
   // CopyFromOtherExam() {
   //   ////console.log("here ", this.PreviousBatchId)

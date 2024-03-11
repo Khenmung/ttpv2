@@ -1178,7 +1178,12 @@ export class PromoteclassComponent implements OnInit {
                 if (!_feeObj) {
                   _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
                 }
-                _formula = _feeObj.Formula;
+                if (_feeObj.Discount && _feeObj.Discount > 0)
+                  _formula = _feeObj.Formula + "-" + _feeObj.Discount;
+                else
+                  _formula = _feeObj.Formula
+
+                //_formula = _feeObj.Formula;
 
                 if (_formula && _formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;

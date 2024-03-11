@@ -10,6 +10,8 @@ import { ContentService } from "../../../shared/content.service";
 import { NaomitsuService } from "../../../shared/databaseService";
 import { globalconstants } from "../../../shared/globalconstant";
 import { List } from "../../../shared/interface";
+import { ConfirmDialogComponent } from "../../../shared/components/mat-confirm-dialog/mat-confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: 'app-addstudentfeetype',
@@ -40,6 +42,7 @@ export class AddStudentFeetypeComponent {
     StudentClassId: 0,
     FromMonth: 0,
     ToMonth: 0,
+    Discount: 0,
     Active: 0,
     IsCurrent: false,
     OrgId: 0,
@@ -51,7 +54,7 @@ export class AddStudentFeetypeComponent {
     'FeeTypeId',
     'FromMonth',
     'ToMonth',
-    //'IsCurrent',
+    'Discount',
     'Active',
     'Action'
   ];
@@ -62,6 +65,7 @@ export class AddStudentFeetypeComponent {
   Students: any = [];
   searchForm: UntypedFormGroup;
   constructor(private servicework: SwUpdate,
+    private dialog: MatDialog,
     private dataservice: NaomitsuService,
     private tokenStorage: TokenStorageService,
     private nav: Router,
@@ -117,6 +121,7 @@ export class AddStudentFeetypeComponent {
       FeeTypeId: 0,
       FromMonth: 0,
       ToMonth: 0,
+      Discount: 0,
       StudentClassId: this.StudentClassId,
       Active: false,
       IsCurrent: false,
@@ -177,7 +182,14 @@ export class AddStudentFeetypeComponent {
       this.contentservice.openSnackBar("Months should not be overlapped.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-
+    if (row.Discount > 10000) {
+      this.contentservice.openSnackBar("Discount cannot be greater than 10,000.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
+    if (row.StudentFeeTypeId == 0 && row.FromMonth == 0 && row.ToMonth == 0) {
+      this.contentservice.openSnackBar("Please select From and To months.", globalconstants.ActionText, globalconstants.RedBackground);
+      return;
+    }
     this.loading = true;
     let checkFilterString = this.FilterOrgSubOrgBatchId + " and FeeTypeId eq " + row.FeeTypeId +
       " and StudentClassId eq " + this.StudentClassId;
@@ -203,6 +215,7 @@ export class AddStudentFeetypeComponent {
           this.StudentFeeTypeData.StudentClassId = row.StudentClassId;
           this.StudentFeeTypeData.FromMonth = row.FromMonth;
           this.StudentFeeTypeData.ToMonth = row.ToMonth;
+          this.StudentFeeTypeData.Discount = row.Discount;
           this.StudentFeeTypeData.IsCurrent = row.IsCurrent;
           this.StudentFeeTypeData.Active = row.Active;
           this.StudentFeeTypeData.OrgId = this.LoginUserDetail[0]["orgId"];
@@ -282,6 +295,52 @@ export class AddStudentFeetypeComponent {
           this.contentservice.openSnackBar(globalconstants.formatError(err), globalconstants.ActionText, globalconstants.RedBackground);
         });
   }
+  Delete(row) {
+
+    this.openDialog(row)
+  }
+  openDialog(row) {
+    debugger;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        message: 'Are you sure want to delete?',
+        buttonText: {
+          ok: 'Save',
+          cancel: 'No'
+        }
+      }
+    });
+
+    dialogRef.afterClosed()
+      .subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.UpdateAsDeleted(row);
+        }
+      });
+  }
+
+  UpdateAsDeleted(row) {
+    debugger;
+    let toUpdate = {
+      Active: false,
+      Deleted: true,
+      UpdatedDate: new Date()
+    }
+
+    this.dataservice.postPatch(this.StudentFeeTypeListName, toUpdate, row.StudentFeeTypeId, 'patch')
+      .subscribe(res => {
+        row.Action = false;
+        this.loading = false; this.PageLoading = false;
+        var idx = this.StudentFeeTypeList.findIndex(x => x.StudentFeeTypeId == row.StudentFeeTypeId)
+        this.StudentFeeTypeList.splice(idx, 1);
+        this.dataSource = new MatTableDataSource<any>(this.StudentFeeTypeList);
+        // this.dataSource.filterPredicate = this.createFilter();
+        // this.tokenStorage.saveMasterData(this.StudentFeeTypeList);
+        this.contentservice.openSnackBar(globalconstants.DeletedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
+
+      });
+  }
+
   CreateInvoice(row) {
     debugger;
     this.loading = true;
@@ -323,7 +382,8 @@ export class AddStudentFeetypeComponent {
                     FeeName: item.FeeType.FeeTypeName,
                     Formula: item.FeeType.Formula,
                     FromMonth: item.FromMonth,
-                    ToMonth: item.ToMonth
+                    ToMonth: item.ToMonth,
+                    Discount: item.Discount
                   })
               })
 
@@ -360,8 +420,10 @@ export class AddStudentFeetypeComponent {
                 if (!_feeObj) {
                   _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
                 }
-
-                _formula = _feeObj.Formula;
+                if (_feeObj.Discount > 0)
+                  _formula = _feeObj.Formula + "-" + _feeObj.Discount;
+                else
+                  _formula = _feeObj.Formula
 
                 if (_formula) {
                   _feeName = clsfee.FeeDefinition.FeeName;
@@ -437,6 +499,7 @@ export class AddStudentFeetypeComponent {
       'StudentClassId',
       'FromMonth',
       'ToMonth',
+      'Discount',
       'IsCurrent',
       'Active'
     ];
@@ -503,6 +566,7 @@ export interface IStudentFeeType {
   StudentClassId: number,
   FromMonth: number;
   ToMonth: number;
+  Discount: number;
   IsCurrent: boolean;
   Active: boolean;
   Action: boolean;

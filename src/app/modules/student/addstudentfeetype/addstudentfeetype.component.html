@@ -52,6 +52,17 @@
           </mat-form-field>
         </mat-cell>
       </ng-container>
+      <ng-container matColumnDef="Discount">
+        <mat-header-cell *matHeaderCellDef>Discount
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-form-field appearance="outline">
+            <input matInput type="number" max="10000" (blur)="onBlur(element)" 
+            [(ngModel)]="element.Discount" [value]="element.Discount">
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
       <ng-container matColumnDef="IsCurrent">
         <mat-header-cell *matHeaderCellDef style="justify-content: center;">Current
         </mat-header-cell>
@@ -65,8 +76,8 @@
         <mat-header-cell *matHeaderCellDef style="justify-content: center;">Active
         </mat-header-cell>
         <mat-cell *matCellDef="let element" style="justify-content: center;">
-          <mat-checkbox [disabled]="element.FromMonth==0 && element.ToMonth==0" (click)="$event.stopPropagation()"
-            (change)="updateActive(element,$event)" [checked]="element.Active">
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="updateActive(element,$event)"
+            [checked]="element.Active">
           </mat-checkbox>
         </mat-cell>
       </ng-container>
@@ -77,13 +88,14 @@
           </button>
         </mat-header-cell>
         <mat-cell *matCellDef="let element" style="justify-content: center;">
-          <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save" mat-raised-button
+          <button style="margin-right: 15px;" [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save" mat-raised-button
             color="accent" (click)="UpdateOrSave(element)">
             <mat-icon>save</mat-icon>
-            <mat-icon *ngIf="loading">
-              <mat-spinner diameter="20" color="Blue"></mat-spinner>
-            </mat-icon>
           </button>
+          <!-- <button [disabled]="loading || !element.Action"
+           matTooltip="delete" mat-mini-fab (click)="Delete(element)">
+            <mat-icon>delete</mat-icon>
+          </button> -->
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

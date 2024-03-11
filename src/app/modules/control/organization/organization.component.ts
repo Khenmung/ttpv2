@@ -401,7 +401,7 @@ export class OrganizationComponent implements OnInit {
     this.Action = true;
     //element.Amount = element["AmountPerMonth"] * element.PaidMonths;
   }
-  deActivate(event) {
+  deActivate(row,event) {
     debugger;
     if (event.checked) {
       this.Action = true;

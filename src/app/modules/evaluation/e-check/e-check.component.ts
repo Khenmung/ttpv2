@@ -206,7 +206,7 @@ export class ECheckComponent implements OnInit {
       'EvaluationExamMapId',
       'AnswerText',
       'Points',
-      'History',
+      'HistoryText',
       'Active'
     ];
 
@@ -262,7 +262,7 @@ export class ECheckComponent implements OnInit {
               EvaluationExamMapId: existing[0].EvaluationExamMapId,
               Description: globalconstants.decodeSpecialChars(clseval.Description),
               AnswerText: globalconstants.decodeSpecialChars(existing[0].AnswerText),
-              History: globalconstants.decodeSpecialChars(existing[0].History),
+              HistoryText: globalconstants.decodeSpecialChars(existing[0].HistoryText),
               StudentEvaluationResultId: existing[0].StudentEvaluationResultId,
               ClassEvaluationId: clseval.ClassEvaluationId,
               Active: existing[0].Active,
@@ -285,7 +285,7 @@ export class ECheckComponent implements OnInit {
               AnswerOptionsId: 0,
               Description: globalconstants.decodeSpecialChars(clseval.Description),
               AnswerText: '',
-              History: '',
+              HistoryText: '',
               Points: clseval.Point ? clseval.Point : 0,
               DefinedPoint: clseval.Point,
               StudentEvaluationResultId: 0,

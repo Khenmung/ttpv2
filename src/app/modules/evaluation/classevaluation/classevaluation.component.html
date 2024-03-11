@@ -36,8 +36,7 @@
                         <mat-form-field appearance="outline" style="width:250px;margin-right:15px">
                             <mat-label>Evaluation type</mat-label>
                             <mat-select formControlName="searchEvaluationMasterId" (selectionChange)="ClearData()">
-                                <mat-option *ngFor="let item of EvaluationMasterForClassGroup"
-                                    [value]="item">
+                                <mat-option *ngFor="let item of EvaluationMasterForClassGroup" [value]="item">
                                     {{item.EvaluationName}}
                                 </mat-option>
                             </mat-select>
@@ -116,9 +115,10 @@
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <mat-form-field appearance="outline">
-                                <mat-select [disabled]="element.EType.toLowerCase() == StudentProfile" [(ngModel)]="element.ExamId"
-                                    (selectionChange)="onBlur(element)" [value]="element.ExamId">
-                                    <mat-option [value]="0">--Exam--</mat-option>
+                                <mat-select [disabled]="element.EType.toLowerCase() == StudentProfile"
+                                    [(ngModel)]="element.ExamId" (selectionChange)="onBlur(element)"
+                                    [value]="element.ExamId">
+                                    <mat-option [value]="0">--select--</mat-option>
                                     <mat-option *ngFor="let item of FilteredExam" [value]="item.ExamId">
                                         {{item.ExamName}}</mat-option>
                                 </mat-select>
@@ -170,7 +170,8 @@
 
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element" fxLayoutAlign="space-between center" fxLayout="row">
-                            <button (click)="viewchild(element)" color="accent" mat-mini-fab matTooltip="view answer options">
+                            <button (click)="viewchild(element)" color="accent" mat-mini-fab
+                                matTooltip="view answer options">
                                 <mat-icon>pageview</mat-icon>
                             </button>
                             <button [disabled]="loading || !element.Action || Permission=='read'" matTooltip="save"
@@ -182,7 +183,8 @@
                             </button>
                             <button [disabled]="loading 
                         || !element.Action 
-                        || Permission !='rwd'" matTooltip="delete" color="accent" mat-mini-fab (click)="delete(element)">
+                        || Permission !='rwd'" matTooltip="delete" color="accent" mat-mini-fab
+                                (click)="delete(element)">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </mat-cell>
@@ -207,4 +209,17 @@
         </mat-tab>
 
     </mat-tab-group>
+</div>
+<div style="margin-top:30px;" data-expand="false" #expandWrap>
+    <span *ngIf="expandWrap.dataset.expand == 'false'" (click)="expandWrap.dataset.expand = 'true'">
+        <mat-icon>info</mat-icon>
+        Guides..
+    </span>
+    <span *ngIf="expandWrap.dataset.expand == 'true'" (click)="expandWrap.dataset.expand = 'false'">
+        <ul>
+            <li>
+                Select exam/session only if you want to set the questionaire for a specific exam.
+            </li>
+        </ul>
+    </span>
 </div>

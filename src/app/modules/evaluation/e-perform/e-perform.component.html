@@ -173,7 +173,7 @@
                         <div style="display: flex;flex-direction: column;padding: 15px; margin:15px 15px 15px 15px;width: 100%;"
                             *ngIf="element.EType.toLowerCase() === StudentProfile && element.ClassEvaluationAnswerOptionParentId==0 && element.QuestionnaireType=='Questionnaire'">
                             <pre>
-                        <span [innerHTML]="element.History| encodeHTML">
+                        <span [innerHTML]="element.HistoryText| encodeHTML">
                         </span>
                     </pre>
                             <mat-form-field appearance="outline" style="width:100%">

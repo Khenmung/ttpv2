@@ -281,24 +281,31 @@ export class SchoolFeeTypesComponent implements OnInit {
                 _sectionName = objsection.MasterDataName;
 
               _feeName = '', _remark1 = '', _remark2 = '';
-              objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.StudentClass.ClassId);
+
+              if (studcls.FromMonth > 0 && studcls.ToMonth > 0) {
+                objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.StudentClass.ClassId
+                  && def.Month >= studcls.FromMonth && def.Month <= studcls.ToMonth);
+              }
+              else
+                objClassFee = _clsfeeWithDefinitions.filter(def => def.ClassId == studcls.StudentClass.ClassId)
+
               let _currentStudent = this.Students.find(s => s.StudentId === studcls.StudentClass.StudentId);
               if (_currentStudent) {
                 _remark1 = _currentStudent.Remark1;
                 _remark2 = _currentStudent.Remark2;
               }
               //studcls.StudentFeeTypes.forEach(item => {
-                // _studentAllFeeTypes.push(
-                //   {
-                //     FeeTypeId: item.FeeTypeId,
-                //     FeeName: item.FeeType.FeeTypeName,
-                //     Formula: item.FeeType.Formula,
-                //     FromMonth: item.FromMonth,
-                //     ToMonth: item.ToMonth
-                //   })
+              // _studentAllFeeTypes.push(
+              //   {
+              //     FeeTypeId: item.FeeTypeId,
+              //     FeeName: item.FeeType.FeeTypeName,
+              //     Formula: item.FeeType.Formula,
+              //     FromMonth: item.FromMonth,
+              //     ToMonth: item.ToMonth
+              //   })
               //})
 
-              _studentAllFeeTypes = _studentAllFeeTypes.sort((a, b) => b.FromMonth - a.FromMonth);
+              //_studentAllFeeTypes = _studentAllFeeTypes.sort((a, b) => b.FromMonth - a.FromMonth);
 
               objClassFee.forEach(clsfee => {
                 _category = '';
@@ -312,12 +319,10 @@ export class SchoolFeeTypesComponent implements OnInit {
                 if (objsubcat)
                   _subCategory = objsubcat.MasterDataName;
 
-                // _feeObj = _studentAllFeeTypes.find(ft => clsfee.Month >= ft.FromMonth && clsfee.Month <= ft.ToMonth);
-                // if (!_feeObj) {
-                //   _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
-                // }
-
                 _formula = studcls.FeeType.Formula;// == 1 ? studcls.FeeType.Formula : '';
+
+                if (studcls.Discount && studcls.Discount > 0)
+                  _formula = studcls.FeeType.Formula + "-" + studcls.Discount;
 
                 if (_formula && _formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;

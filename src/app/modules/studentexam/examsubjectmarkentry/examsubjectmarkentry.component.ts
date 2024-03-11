@@ -525,8 +525,8 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           }
         })
         ////console.log("this.StudentSubjects",this.StudentSubjects)
-        this.loading = false;
-        this.PageLoading = false;
+        // this.loading = false;
+        // this.PageLoading = false;
         this.GetSubjectMarkComponents(_classSubjectId);
       }, error => {
         debugger;
@@ -899,7 +899,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
                 _subjectmarkconfig.forEach(sub => {
                   replacedFormula = replacedFormula.replaceAll("[" + sub.ExamName + "]", sub.Marks);
                 })
-
+                console.log("replacedFormula",replacedFormula)
                 var objresult = evaluate(replacedFormula).entries;
                 if (objresult.length > 0)
                   _mark = objresult[0].toFixed(2);

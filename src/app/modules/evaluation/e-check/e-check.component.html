@@ -160,11 +160,11 @@
                                         *ngIf="EvaluationEType !=='student profile' && element.ClassEvaluationAnswerOptionParentId==0
                                 && element.QuestionnaireType=='Questionnaire'">
                                     </span>
-                                    <pre *ngIf="element.History.length>0">
-                            <span [innerHTML]="element.History|encodeHTML"
+                                    <pre *ngIf="element.HistoryText.length>0">
+                            <span [innerHTML]="element.HistoryText|encodeHTML"
                                 class="history"
                                 *ngIf="EvaluationEType ==='student profile' && element.ClassEvaluationAnswerOptionParentId==0 
-                                && element.History.length>0">
+                                && element.HistoryText.length>0">
                             </span>
                             </pre>
                                 </span>

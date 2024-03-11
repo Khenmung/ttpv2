@@ -163,9 +163,10 @@ export class DownloadsyncdataComponent {
   Download() {
     this.DownloadedSyncData = [];
     let dataLength = this.SyncDataList.length;
+    let list: List;
     this.SyncDataList.forEach((item, indx) => {
-      let list: List = new List();
-      list.fields = ["*"];
+      list = new List();
+      list.fields = [item.Text];
       list.PageName = item.TableName;
       list.filter = [this.FilterOrgSubOrg + " and SyncId  eq " + item.SyncId];
       this.dataservice.get(list)
@@ -174,7 +175,7 @@ export class DownloadsyncdataComponent {
           let datastring = '{';
           Object.keys(row).forEach(column => {
             if (isNaN(row[column]))
-              datastring += "'" + column + "': '" + row[column] + "',"
+              datastring += "'" + column + "':'" + row[column] + "',"
             else
               datastring += "'" + column + "':" + row[column] + ','
           })
@@ -190,6 +191,42 @@ export class DownloadsyncdataComponent {
   exportArray() {
     const datatoExport: Partial<any>[] = this.DownloadedSyncData;
     TableUtil.exportArrayToExcel(datatoExport, "datatosync" + moment().format("YYYYMMDD"));
+  }
+  SyncData() {
+    let list: List;
+    let _Id = 0;
+    let countToUpdate = this.DownloadedSyncData.length;
+
+    this.DownloadedSyncData.forEach((toupdate, indx) => {
+      
+      if (toupdate.DataMode == 'update') {
+        list = new List();
+        list.fields = ["BatchId"];
+        list.PageName = toupdate.TableName;
+        list.filter = [this.FilterOrgSubOrg + " and SyncId  eq " + toupdate.SyncId];
+        this.dataservice.get(list)
+          .subscribe((data: any) => {
+            _Id = data.value[0].BatchId;
+            this.dataservice.postPatch(toupdate.TableName, toupdate.data, _Id, 'patch')
+              .subscribe(
+                (data: any) => {
+                  if (countToUpdate == indx) {
+                    this.contentservice.openSnackBar("Data Sync done successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
+                    this.loading = false;
+                  }
+                })
+          })
+      }
+      else if (toupdate.DataMode == 'insert') {
+        this.dataservice.postPatch(toupdate.TableName, toupdate.data, 0, 'post')
+          .subscribe((data: any) => {
+            if (countToUpdate == indx) {
+              this.contentservice.openSnackBar("Data Sync done successfully.", globalconstants.ActionText, globalconstants.BlueBackground);
+              this.loading = false;
+            }
+          })
+      }
+    })
   }
   UpdateOrSave(row) {
 
@@ -249,7 +286,7 @@ export class DownloadsyncdataComponent {
             this.ExamMarkConfigData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.ExamMarkConfigData["UpdatedDate"] = new Date();
             delete this.ExamMarkConfigData["UpdatedBy"];
-            this.insert(row);
+            // this.insert(row);
           }
           else {
             delete this.ExamMarkConfigData["CreatedDate"];
@@ -262,22 +299,22 @@ export class DownloadsyncdataComponent {
       });
   }
 
-  insert(row) {
+  // insert(row) {
 
-    //debugger;
-    this.dataservice.postPatch('ExamMarkConfigs', this.ExamMarkConfigData, 0, 'post')
-      .subscribe(
-        (data: any) => {
-          row.ExamMarkConfigId = data.ExamMarkConfigId;
-          row.Action = false;
-          if (this.rowToUpdate == 0) {
-            this.loading = false;
-            this.PageLoading = false;
-            this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-          }
-          //this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-        });
-  }
+  //   //debugger;
+  //   this.dataservice.postPatch('ExamMarkConfigs', this.ExamMarkConfigData, 0, 'post')
+  //     .subscribe(
+  //       (data: any) => {
+  //         row.ExamMarkConfigId = data.ExamMarkConfigId;
+  //         row.Action = false;
+  //         if (this.rowToUpdate == 0) {
+  //           this.loading = false;
+  //           this.PageLoading = false;
+  //           this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
+  //         }
+  //         //this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
+  //       });
+  // }
   update(row) {
 
     this.dataservice.postPatch('ExamMarkConfigs', this.ExamMarkConfigData, this.ExamMarkConfigData.ExamMarkConfigId, 'patch')

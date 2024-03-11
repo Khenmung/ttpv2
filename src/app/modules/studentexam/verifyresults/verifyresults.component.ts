@@ -823,7 +823,7 @@ export class VerifyResultsComponent implements OnInit {
           SelectHowManyOfElective = HowManyObj[0].SelectHowMany;
 
         let objAllCompulsory = objAllMarking.filter(de => de.SubjectType.toLowerCase() === 'compulsory');
-
+debugger;
         this.TotalMarkingSubjectFullMark = 0;
         //console.log("objAllComp", objAllCompulsory);
         if (objAllCompulsory.length > 0) {
@@ -932,22 +932,15 @@ export class VerifyResultsComponent implements OnInit {
             "FullMark": 0
           }
 
-          var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student)
-          // forEachSubjectOfStud.forEach(t=>{
-          //   if(t.SubjectType.toLowerCase()=='elective')
-          //   {
-          //     t.SubjectType = "zelective";
-          //   }
-          // })
+          //var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student)
+          let forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.StudentClassId == ss.StudentClassId)
+         
           forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.SubjectType.localeCompare(b.SubjectType)); //a.ClassSubjectId - b.ClassSubjectId);// 
           let ElectivePassed = 0;
           forEachSubjectOfStud.forEach((eachsubj, subjIndx) => {
             var markPercent = 0;
             ForNonGrading["Remark"] = eachsubj.Remark;
-            // if (ss.Student == '21-Niangliankim -A') {
-            //   debugger;
-            //   //console.log("eachsubj.Subject", eachsubj.Subject);
-            // }
+         
             var _objSubjectCategory = this.SubjectCategory.find((f: any) => f.MasterDataId === eachsubj.SubjectCategoryId)
             if (_objSubjectCategory)
               _subjectCategoryName = _objSubjectCategory.MasterDataName.toLowerCase();

@@ -862,7 +862,7 @@ export class StudentprogressreportComponent implements OnInit {
       'ClassEvaluationId',
       'EvaluationExamMapId',
       'AnswerText',
-      'History',
+      'HistoryText',
       'Active'
     ];
 

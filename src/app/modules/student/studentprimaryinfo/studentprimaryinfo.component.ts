@@ -867,7 +867,8 @@ export class studentprimaryinfoComponent implements OnInit {
                     FeeName: item.FeeType.FeeTypeName,
                     Formula: item.FeeType.Formula,
                     FromMonth: item.FromMonth,
-                    ToMonth: item.ToMonth
+                    ToMonth: item.ToMonth,
+                    Discount: item.Discount
                   })
               })
               objClassFee.forEach(clsfee => {
@@ -903,7 +904,12 @@ export class studentprimaryinfoComponent implements OnInit {
                 if (!_feeObj) {
                   _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
                 }
-                _formula = _feeObj.Formula;
+                
+                if (_feeObj.Discount > 0)
+                  _formula = _feeObj.Formula + "-" + _feeObj.Discount;
+                else
+                  _formula = _feeObj.Formula;
+
                 _feeTypeId = _feeObj.FeeTypeId;
 
                 if (_formula && _formula.length > 0) {

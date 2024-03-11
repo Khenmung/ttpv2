@@ -21,11 +21,11 @@
 
     </div>
 </form>
-<mat-table #table [dataSource]="dataSource" matSort>
+<mat-table [dataSource]="dataSource" matSort style="overflow: hidden;">
     <ng-container matColumnDef="OrganizationPaymentId">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Payment Id
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Id
         </mat-header-cell>
-        <mat-cell *matCellDef="let element">
+        <mat-cell *matCellDef="let element" style="width:10%">
             {{element.OrganizationPaymentId}}
         </mat-cell>
     </ng-container>
@@ -36,7 +36,7 @@
         </mat-cell>
     </ng-container>
     <ng-container matColumnDef="AmountPerMonth">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> AmountPerMonth </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Amount/Month </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-form-field>
                 <input type="number" matInput [(ngModel)]="element.AmountPerMonth" [value]="element.AmountPerMonth">
@@ -65,7 +65,7 @@
     <ng-container matColumnDef="Amount">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Amount </mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <mat-form-field [style.width.px]="150">
+            <mat-form-field>
                 <input type="number" matInput [(ngModel)]="element.Amount" [value]="element.Amount" max="9999999" />
             </mat-form-field>
         </mat-cell>
@@ -73,7 +73,7 @@
     <ng-container matColumnDef="PaymentMode">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Payment Mode </mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <mat-form-field [style.width.px]="150">
+            <mat-form-field>
                 <mat-select [(ngModel)]="element.PaymentMode" [value]="element.PaymentMode">
                     <mat-option *ngFor="let item of PaymentModes" [value]="item.MasterDataId">{{item.MasterDataName}}</mat-option>
                 </mat-select>

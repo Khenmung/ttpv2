@@ -1218,7 +1218,7 @@ export class PrintprogressreportComponent implements OnInit {
       'ClassEvaluationId',
       'EvaluationExamMapId',
       'AnswerText',
-      'History',
+      'HistoryText',
       'Active'
     ];
 

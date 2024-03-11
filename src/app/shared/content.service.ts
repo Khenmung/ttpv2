@@ -701,7 +701,7 @@ export class ContentService implements OnInit {
       "BatchId",
       "RollNo"];
     list.PageName = "StudentClasses";
-    list.lookupFields = ["StudentFeeTypes($filter=Active eq true" + studentFeeTypeFilter + ";$select=FromMonth,ToMonth,FeeTypeId,IsCurrent,Active;$expand=FeeType($select=FeeTypeName,Formula,Active))"]
+    list.lookupFields = ["StudentFeeTypes($filter=Active eq true" + studentFeeTypeFilter + ";$select=FromMonth,ToMonth,FeeTypeId,IsCurrent,Discount,Active;$expand=FeeType($select=FeeTypeName,Formula,Active))"]
     list.filter = [filterstr];
     return this.dataservice.get(list);
 
@@ -733,7 +733,7 @@ export class ContentService implements OnInit {
       filterstr += " and Month ge " + fromMonth;
 
     let list: List = new List();
-    list.fields = ["FeeTypeId,FromMonth,ToMonth,Active"];
+    list.fields = ["FeeTypeId,FromMonth,ToMonth,Discount,Active"];
     list.PageName = "StudentFeeTypes";
     list.lookupFields = ["StudentClass($select=StudentClassId,StudentId,ClassId,SectionId,SemesterId,BatchId,RollNo),FeeType($select=FeeTypeName,Formula,Active)"]
     list.filter = ["Active eq true" + studentFeeTypeFilter];

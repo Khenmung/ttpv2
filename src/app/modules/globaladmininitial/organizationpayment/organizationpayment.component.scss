@@ -1,19 +1,28 @@
+.mat-column-OrganizationPaymentId {
+    max-width:100px;
+    flex: 1 0 70px;
+}
 
-.mat-column-OrganizationPaymentId
-{
-    flex:1 0 70px;
+.mat-column-PlanName {
+    max-width: 150px;
+    flex: 1 0 120px;
 }
-.mat-column-PlanName,.mat-column-PaymentMode
-{
-    flex: 1 0 150px;
+
+.mat-column-PaymentMode {
+    align-self: stretch;
+    max-width: 180px;
+    flex: 1 0 100px;
 }
+
 .mat-column-PaymentDate,
 .mat-column-AmountPerMonth,
 .mat-column-PaidMonths,
-.mat-column-Amount
-{
-    flex:1 0 100px;
+.mat-column-Amount {
+    max-width: 180px;
+    flex: 1 0 100px !important;
 }
-.mdc-data-table__cell, .mdc-data-table__header-cell{
-    padding:0px 15px 0px 0px;
-  }
+
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+    padding: 0px 15px 0px 0px;
+}

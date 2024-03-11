@@ -114,7 +114,7 @@
     <div style="display: flex;justify-content: center;align-items: baseline; width:100%">
         <span>
             <span>
-                <mat-checkbox (change)="deActivate($event)" formControlName="Active">
+                <mat-checkbox formControlName="Active">
                 </mat-checkbox>&nbsp; Active &nbsp;&nbsp;
             </span>
             <button [disabled]="loading || !Action" matTooltip="save" mat-raised-button color="accent"
