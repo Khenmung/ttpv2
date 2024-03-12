@@ -47,7 +47,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="outline" [style.width.px]="300">
+            <mat-form-field appearance="outline" [style.width.px]="350">
                 <mat-label>Student</mat-label>
                 <input type="text" matInput formControlName="searchStudentName" [matAutocomplete]="auto">
                 <mat-autocomplete (optionSelected)="GetSubjects($event)" #auto="matAutocomplete"
@@ -57,7 +57,8 @@
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
-            <mat-form-field appearance="outline" style="width:250px;margin-right:15px">
+            <br>
+            <mat-form-field appearance="outline" style="width:350px;margin-right:15px">
                 <mat-label>Evaluation type</mat-label>
                 <mat-select formControlName="searchEvaluationMasterId" (selectionChange)="ClearData()">
                     <mat-option [value]="Defaultvalue">select</mat-option>

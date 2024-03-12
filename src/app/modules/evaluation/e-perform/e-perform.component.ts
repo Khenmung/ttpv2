@@ -1173,18 +1173,19 @@ export class EPerformComponent implements OnInit {
       //var studentclassobj = data.value.filter((f: any) => f.StudentId == student.StudentId);
       //if (studentclassobj.length > 0) {
       _studentClassId = student.StudentClasses[0].StudentClassId;
-      var _classNameobj = this.Classes.filter(c => c.ClassId == student.StudentClasses[0].ClassId);
+      var _classNameobj = this.Classes.find(c => c.ClassId == student.StudentClasses[0].ClassId);
       _classId = student.StudentClasses[0].ClassId;
-      if (_classNameobj.length > 0) {
-        _className = _classNameobj[0].ClassName;
-        var _SectionObj = this.Sections.filter((f: any) => f.MasterDataId == student.StudentClasses[0].SectionId)
+      if (_classNameobj) {
+        _className = _classNameobj.ClassName;
+        var _SectionObj = this.Sections.find((f: any) => f.MasterDataId == student.StudentClasses[0].SectionId)
         _RollNo = student.StudentClasses[0].RollNo;
 
-        if (_SectionObj.length > 0)
-          _section = "-" + _SectionObj[0].MasterDataName;
-        var _SemesterObj = this.Semesters.filter((f: any) => f.MasterDataId == student.StudentClasses[0].SemesterId)
-        if (_SemesterObj.length > 0)
-          _semester = "-" + _SemesterObj[0].MasterDataName;
+        if (_SectionObj)
+          _section = "-" + _SectionObj.MasterDataName;
+        var _SemesterObj = this.Semesters.find((f: any) => f.MasterDataId == student.StudentClasses[0].SemesterId)
+        if (_SemesterObj)
+          _semester = "-" + _SemesterObj.MasterDataName;
+        
         var _lastname = student.LastName == null ? '' : " " + student.LastName;
         _name = student.FirstName + _lastname;
         var _fullDescription = _RollNo + "-" + _name + "-" + _className + _section + _semester;

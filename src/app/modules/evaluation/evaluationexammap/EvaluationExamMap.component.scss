@@ -1,15 +1,30 @@
-mat-form-field{
-    margin-right: 15px;
-    width:98%;
+.mat-column-Action,
+.mat-column-Active,
+.mat-column-EvaluationMasterId {
+    flex: 1 0 100px;
 }
-.mat-column-Action,.mat-column-Active,.mat-column-EvaluationMasterId{
-    flex:1 1 100px;
-}
+
 .mat-column-ExamId,
 .mat-column-Evaluation,
-.mat-column-EvaluationName,
 .mat-column-ClassGroupId,
-.mat-column-ClassSubjectId{
-    
-    flex:1 1 150px;
+.mat-column-ClassSubjectId {
+
+    flex: 1 0 150px;
 }
+
+.mat-column-EvaluationName {
+    align-self: stretch;
+    flex: 1 0 350px;
+}
+
+.mat-column-EvaluationExamMapId {
+    max-width: 60px;
+}
+
+.mdc-data-table__cell,
+.mdc-data-table__header-cell {
+    padding: 10px 15px 0px 0px;
+}
+mat-form-field {
+    width: 100%;
+  }

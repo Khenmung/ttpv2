@@ -104,7 +104,8 @@
                                 <div *ngIf="logourl" style="display:flex;justify-content: center;">
                                     <img src="{{logourl}}" width="60px">
                                 </div>
-                                <div style="display:flex;flex-direction: column;justify-content: space-around;margin: 8px;">
+                                <div
+                                    style="display:flex;flex-direction: column;justify-content: space-around;margin: 8px;">
                                     <div style="width:100%;display:flex;justify-content: center;flex-direction: column;"
                                         *ngFor="let item of ReceiptHeading;let i=index">
                                         <span [ngStyle]="item.Description" [innerHTML]="item.MasterDataName"></span>
@@ -202,6 +203,13 @@
                         </div>
                         <div style="display:flex;justify-content: space-evenly;width:100%; padding: 25px;">
                             <div>
+                                <mat-form-field style="width:160px;margin-right: 15px;">
+                                    <mat-label>Date</mat-label>
+                                    <input [(ngModel)]="ReceiptDate" [value]="ReceiptDate" matInput
+                                        [matDatepicker]="forReceiptDate" autocomplete="off">
+                                    <mat-datepicker-toggle matSuffix [for]="forReceiptDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #forReceiptDate></mat-datepicker>
+                                </mat-form-field>
                                 <mat-form-field style="width: 150px;margin-right: 15px;">
                                     <mat-label>Offline receipt no.</mat-label>
                                     <input matInput [maxlength]="20" [(ngModel)]="OffLineReceiptNo"

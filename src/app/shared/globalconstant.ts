@@ -12,14 +12,14 @@ export class globalconstants {
     public static PremiumPlusId = 4;//4;//2 
     public static globalAdminBillingSubOrgId = 30880;//5;//2 
 
-    //public static BloodGroupParentId = 27762; //536870912;
+    //public static BloodGroupParentId = 27762; //536870912;\
     public static RequestLimit = 20971520; //536870912;
     public static CommonPanelID = 329; //536870912;    
     public static RowUploadLimit = 1000; //536870912;
     public static TrialPeriod = 3;
     public static BlueBackground = { duration: 3000, panelClass: ['blue-snackbar'] };
     public static RedBackground = { duration: 10000, panelClass: ['red-snackbar'] };
-    public static GreenBackground = { duration: 10000, panelClass: ['green-snackbar'] }; 
+    public static GreenBackground = { duration: 10000, panelClass: ['green-snackbar'] };
     public static AddedMessage = 'Data saved successfully.';
     public static UpdatedMessage = 'Data updated successfully.';
     public static DeletedMessage = 'Data deleted successfully.';
@@ -35,7 +35,7 @@ export class globalconstants {
     public static CategoryHighSchool = 'high school';
     public static ExamGrading = 'Grading';
     public static ExamMarkingNGrading = 'MarkingNGrading';
-    public static ServeCommand ="node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve"
+    public static ServeCommand = "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve"
     public static BuildCommand_old = "ng build --configuration production --aot=true --build-optimizer=true --output-Hashing=all";
     public static BuildCommand_new = "ng build --configuration production";
     public static AppAndMenuAndFeatures =
@@ -85,7 +85,7 @@ export class globalconstants {
     public static FeaturePermission = {
         'ACTIVATESTUDENT': 'activate student',
         "FeeTypeDD": "fee type dd",
-        'MULTIPLEBATCH':'multiple batch'
+        'MULTIPLEBATCH': 'multiple batch'
     }
     public static Pages =
         {
@@ -121,7 +121,7 @@ export class globalconstants {
                     'CHANGEPASSWORD': 'change password',
                     'LOGIN': 'login',
                     'REGISTER': 'register',
-                
+
 
                 },
                 "CONTROL": {
@@ -172,17 +172,17 @@ export class globalconstants {
                 },
                 "employeeleave": {
                     "MYLEAVE": "my leave",
-                    "LEAVEREQUESTS":"leave request",
-                    "LEAVEPOLICY": "leave policy",                   
-                    "LEAVE":"Leave",
+                    "LEAVEREQUESTS": "leave request",
+                    "LEAVEPOLICY": "leave policy",
+                    "LEAVE": "Leave",
                     "LEAVEBALANCE": "leave balance"
                 },
                 "employeesalary": {
                     "EMPLOYEESALARY": "employee salary",
-                    "EMPCOMPONENT": "salary component",                   
-                    "VARIABLECONFIG":"variable config",
+                    "EMPCOMPONENT": "salary component",
+                    "VARIABLECONFIG": "variable config",
                     "SALARYCOMPONENT": "employee salary component",
-                    "SALARYSLIP":"salary slip"
+                    "SALARYSLIP": "salary slip"
                 },
                 "employeeattendance": {
                     "EMPLOYEEATTENDANCE": "employee attendance",
@@ -410,7 +410,7 @@ export class globalconstants {
                 "EXAMNAME": "exam name",
                 "EXAMSLOTNAME": "exam slot name",
                 "EXAMSTATUS": "exam status",
-                "EVALUATIONSTATUS":"evaluation status",
+                "EVALUATIONSTATUS": "evaluation status",
                 "SUBJECT": "subject",
                 "SUBJECTTYPE": "subject type",
                 "ROLLNOGENERATION": "Roll No Generation",
@@ -433,11 +433,11 @@ export class globalconstants {
                 "COURSEYEAR": "course year",
                 "SEMESTER": "semester",
                 "CLASSCATEGORY": "Class Category",
-                "FILECATEGORY":"File Category",
-                "CLASSSUBJECTREMARK":"Class Subject Remark",
-                "REPORTCARDSIGNATURE":"Report Card Signature",
-                "RESULTCATEGORIES":"Result Category",
-                "CALCULATECATEGORIES":"Calculate Category",
+                "FILECATEGORY": "File Category",
+                "CLASSSUBJECTREMARK": "Class Subject Remark",
+                "REPORTCARDSIGNATURE": "Report Card Signature",
+                "RESULTCATEGORIES": "Result Category",
+                "CALCULATECATEGORIES": "Calculate Category",
             },
             "leave": {
                 "REPORTNAMES": "leave report name",
@@ -470,7 +470,7 @@ export class globalconstants {
                 "EMPLOYEEACTIVITYCATEGORY": "employee activity category",
                 "EMPLOYEEACTIVITY": "activity name",
                 "SALARYSLIPHEADER": "salary slip header",
-                "COMPANYFILECATEGORY":"company file category"
+                "COMPANYFILECATEGORY": "company file category"
             },
             "StudentVariableName": [
                 "Today",
@@ -549,7 +549,7 @@ export class globalconstants {
                 "ACCOUNTTYPE": "account type",
                 "ACCOUNTGROUP": "account group",
                 "ACTIVITYTYPE": "activity type",
-                "ACCOUNTINGMODE":"accounting mode"
+                "ACCOUNTINGMODE": "accounting mode"
             }
         }
 
@@ -575,21 +575,21 @@ export class globalconstants {
    * 3, not an invalid value like 2018-20-81
    * @param date a date string
    */
-  public static isMyDateFormat(date: string): string {
-    if (date.length !== 10) {
-      return 'Invalid input: Please input a string in the form of YYYY-MM-DD';
-    } else {
-      const da = date.split('-');
-      if (da.length !== 3 || da[0].length !== 4 || da[1].length !== 2 || da[2].length !== 2) {
-        return 'Invalid input: Please input a string in the form of YYYY-MM-DD';
-      } else if (moment(date).isValid()) {
-        return 'Invalid date: Please input a date no later than today';
-      } else if (!moment(date).isValid()) {
-        return 'Invalid date: Please input a date with a valid month and date.';
-      }
+    public static isMyDateFormat(date: string): string {
+        if (date.length !== 10) {
+            return 'Invalid input: Please input a string in the form of YYYY-MM-DD';
+        } else {
+            const da = date.split('-');
+            if (da.length !== 3 || da[0].length !== 4 || da[1].length !== 2 || da[2].length !== 2) {
+                return 'Invalid input: Please input a string in the form of YYYY-MM-DD';
+            } else if (moment(date).isValid()) {
+                return 'Invalid date: Please input a date no later than today';
+            } else if (!moment(date).isValid()) {
+                return 'Invalid date: Please input a date with a valid month and date.';
+            }
+        }
+        return 'Unknown error.';
     }
-    return 'Unknown error.';
-  }
     public static getCurrentTotalAmount(AmountDetail) {
         var withoutTaxOrDiscount = AmountDetail.filter(x => !x.FeeName.includes('%') && x.FeeName != 'Discount' && x.FeeCategory != 'Tax')
         var CurrentTotalAmount = withoutTaxOrDiscount.reduce((acc, current) => acc + current.Amount, 0);
@@ -706,11 +706,13 @@ export class globalconstants {
     }
     public static decodeSpecialChars(val) {
         var specialchars = globalconstants.SpecialCharEncodeCharacters()
-        if (val != null && val.length > 0) {
+        if (val) {
             specialchars.forEach(f => {
                 val = val.replaceAll(f.UTF, f.Text);
             });
         }
+        else
+            val = '';
         return val;
     }
     public static SpecialCharEncodeCharacters(): any[] {
@@ -771,14 +773,14 @@ export class globalconstants {
         return result;
     }
     public static getStrictFilteredClassSubjects(pClassSubjects, pClassId, pSectionId, pSemesterId) {
-        let result = pClassSubjects.filter(c => c.ClassId == pClassId 
+        let result = pClassSubjects.filter(c => c.ClassId == pClassId
             && c.SectionId == pSectionId && c.SemesterId == pSemesterId);
         // if (result.length == 0)
         //     result = pClassSubjects.filter(c => c.ClassId == pClassId);
         return result;
     }
     public static getFilteredClassSubjects(pClassSubjects, pClassId, pSectionId, pSemesterId) {
-        let result = pClassSubjects.filter(c => c.ClassId == pClassId 
+        let result = pClassSubjects.filter(c => c.ClassId == pClassId
             && c.SectionId == pSectionId && c.SemesterId == pSemesterId);
         if (result.length == 0)
             result = pClassSubjects.filter(c => c.ClassId == pClassId);
@@ -792,7 +794,7 @@ export class globalconstants {
             'RoleId',
             'PermissionId'
         ];
-        var _UserDetail :any[]= [];
+        var _UserDetail: any[] = [];
         var _RoleFilter = tokenservice.getRoleFilter();
         list.PageName = "ApplicationFeatureRolesPerms";
         list.lookupFields = ["PlanFeature($filter=Active eq 1;$select=PageId;$expand=Page($select=PageTitle,label,link,faIcon,ApplicationId,ParentId))"]
@@ -804,12 +806,12 @@ export class globalconstants {
                 if (data.value.length > 0) {
                     var _applicationName = '';
                     var _appShortName = '';
-                    _UserDetail["applicationRolePermission"]= [];
+                    _UserDetail["applicationRolePermission"] = [];
                     data.value.forEach(item => {
                         _applicationName = '';
                         _appShortName = '';
-                        _applicationName = Applications.filter((f:any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId)[0].Description;
-                        _appShortName = Applications.filter((f:any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId)[0].MasterDataName
+                        _applicationName = Applications.filter((f: any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId)[0].Description;
+                        _appShortName = Applications.filter((f: any) => f.MasterDataId == item.PlanFeature.Page.ApplicationId)[0].MasterDataName
 
                         var _permission = '';
                         if (item.PermissionId != null)

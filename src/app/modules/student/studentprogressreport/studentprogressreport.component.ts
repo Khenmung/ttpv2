@@ -143,10 +143,10 @@ export class StudentprogressreportComponent implements OnInit {
         var _studentId = this.tokenStorage.getStudentId()!;
         var _student = this.tokenStorage.getStudents()!;
         this.CurrentBatchName = this.tokenStorage.getSelectedBatchName()!;
-        this.CurrentStudent = _student.filter((f: any) => f.StudentId == _studentId)[0];
-        var obj = this.Houses.filter(h => h.MasterDataId == this.CurrentStudent.HouseId);
-        if (obj.length > 0)
-          this.CurrentStudent.House = obj[0].MasterDataName;
+        this.CurrentStudent = _student.find((f: any) => f.StudentId == _studentId);
+        var obj = this.Houses.find(h => h.MasterDataId == this.CurrentStudent.HouseId);
+        if (obj)
+          this.CurrentStudent.House = obj.MasterDataName;
 
         studentdetail.forEach(s => {
           this.StudentName.push({ "Name": s.StudentName, "Class": s.ClassName, "Section": s.Section, "RollNo": s.RollNo })
@@ -483,7 +483,7 @@ export class StudentprogressreportComponent implements OnInit {
               try {
                 let objresult = evaluate(_formula);
                 if (objresult)
-                  resultrow[_ExamName] = objresult.toFixed(0);
+                  resultrow[_ExamName] = objresult.toFixed(2).replaceAll(".00","");
               }
               catch
               {
@@ -647,7 +647,7 @@ export class StudentprogressreportComponent implements OnInit {
           this.GradedMarksResults.push(OverAllGradeRow);
 
         }
-        // console.log("this.ExamStudentResults", this.ExamStudentResults)
+         console.log("this.ExamStudentResults", this.ExamStudentResults)
         // console.log("this.DisplayColumns", this.DisplayColumns)
         this.loading = false;
         this.PageLoading = false;

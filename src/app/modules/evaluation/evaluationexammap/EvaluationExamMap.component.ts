@@ -24,6 +24,7 @@ export class EvaluationExamMapComponent implements OnInit {
   @Output() NotifyParent: EventEmitter<number> = new EventEmitter();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  Defaultvalue=0;
   EvaluationEType: any = null;
   EvaluationMasterId = 0;
   LoginUserDetail: any[] = [];
@@ -180,14 +181,11 @@ export class EvaluationExamMapComponent implements OnInit {
   //   this.EvaluationExamMapId = row.EvaluationExamMapId;
   // }
   AddNew() {
-    var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value
     var newItem = {
       EvaluationExamMapId: 0,
-      //ClassGroupId: 0,
-      //ClassSubjectId: 0,
       ExamId: 0,
-      EvaluationMasterId: _EvaluationMasterId,
-      EvaluationName: this.EvaluationMasters.find((f: any) => f.EvaluationMasterId == _EvaluationMasterId).EvaluationName,
+      EvaluationMasterId: 0,
+      EvaluationName: '',
       Active: false,
       Deleted: "false",
       Action: false
@@ -203,12 +201,11 @@ export class EvaluationExamMapComponent implements OnInit {
   }
   UpdateOrSave(row) {
     debugger;
-    var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
+    //var _EvaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
 
     this.loading = true;
-    let checkFilterString = this.FilterOrgSubOrg + " and Active eq true";
-    //if (!this.EvaluationEType) {
-
+    let checkFilterString = this.FilterOrgSubOrg ;
+    
     if (row.ExamId > 0)
       checkFilterString += " and ExamId eq " + row.ExamId;
     else if (row.Active == 1) {
@@ -219,7 +216,7 @@ export class EvaluationExamMapComponent implements OnInit {
     //}
 
     //if (_EvaluationMasterId > 0)
-    checkFilterString += " and EvaluationMasterId eq " + row.EvaluationMasterId;
+    checkFilterString += " and EvaluationMasterId eq " + row.EvaluationMasterId + " and Active eq true";
     // else {
     //   this.loading = false; this.PageLoading = false;
     //   this.contentservice.openSnackBar("Please select evaluation.", globalconstants.ActionText, globalconstants.RedBackground);
@@ -459,6 +456,7 @@ export class EvaluationExamMapComponent implements OnInit {
         item.Action = false;
         return item;
       })
+      this.EvaluationExamMapList = this.EvaluationExamMapList.sort((a:any,b:any)=>b.Active -a.Active);
       this.dataSource = new MatTableDataSource<IEvaluationExamMap>(this.EvaluationExamMapList);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
@@ -576,6 +574,7 @@ export interface IEvaluationExamMap {
   ExamId: number;
   //ClassGroupId: number;
   //ClassSubjectId: number;
+  EvaluationName:string;
   EvaluationMasterId: number;
   Active: boolean;
   Deleted: string;

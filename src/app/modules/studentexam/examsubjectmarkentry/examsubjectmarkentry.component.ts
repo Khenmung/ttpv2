@@ -73,6 +73,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
     Active: 0
   };
   displayedColumns = [
+    'RollNo',
     'StudentClassSubject',
   ];
   searchForm: UntypedFormGroup;
@@ -934,7 +935,8 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
         })
         this.ExamStudentSubjectResult = this.ExamStudentSubjectResult.sort((a, b) => a.RollNo - b.RollNo);
-        ////console.log("this.ExamStudentSubjectResult", this.ExamStudentSubjectResult)
+        //console.log("this.ExamStudentSubjectResult", this.ExamStudentSubjectResult)
+        //console.log("this.displayedColumns",this.displayedColumns);
         if (this.displayedColumns.indexOf("Action") == -1)
           this.displayedColumns.push("Action");
         this.dataSource = new MatTableDataSource<IExamStudentSubjectResult>(this.ExamStudentSubjectResult);

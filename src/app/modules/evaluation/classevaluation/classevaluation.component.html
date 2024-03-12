@@ -33,7 +33,7 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <mat-form-field appearance="outline" style="width:250px;margin-right:15px">
+                        <mat-form-field appearance="outline" style="width:350px;margin-right:15px">
                             <mat-label>Evaluation type</mat-label>
                             <mat-select formControlName="searchEvaluationMasterId" (selectionChange)="ClearData()">
                                 <mat-option *ngFor="let item of EvaluationMasterForClassGroup" [value]="item">
@@ -111,7 +111,7 @@
                         </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="ExamId">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header>Exam/Session
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Only For Specific Exam/Session
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
                             <mat-form-field appearance="outline">

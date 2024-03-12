@@ -51,6 +51,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   FeeCategories: any[] = [];
   Remarks: any = [];
   OffLineReceiptNo = '';
+  ReceiptDate:Date=new Date();
   CashAmount = 0;
   PaymentTypeId = 0;
   TuitionFeeLedgerId = 0;
@@ -1056,6 +1057,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
     this.StudentReceiptData.SectionId = this.studentInfoTodisplay.SectionId;
     this.StudentReceiptData.SemesterId = this.studentInfoTodisplay.SemesterId;
     this.StudentReceiptData.AdjustedAccountId = _adjustedAccountId;
+    this.StudentReceiptData.ReceiptDate = this.ReceiptDate;
 
     this.StudentReceiptData.Balance = this.Balance;
     this.StudentReceiptData.Active = 1;
