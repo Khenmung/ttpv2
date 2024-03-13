@@ -898,7 +898,7 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.UpdatedDate = new Date();
 
-      var _MadatoryField = ''
+      //var _MadatoryField = ''
       var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f: any) => f.Active == 1);
 
       _MandatoryColumns.forEach((b: any) => {
@@ -963,97 +963,94 @@ export class ExcelDataManagementComponent implements OnInit {
       else
         element.SemesterId = 0;
 
-      // if (element.FeeType) {
-      //   let FeeTypeFilter: any = this.FeeTypes.filter((g: any) => g.FeeTypeName.toUpperCase() == element.FeeType.trim().toUpperCase());
-      //   if (FeeTypeFilter.length == 0)
-      //     this.ErrorMessage += "Invalid Fee Type at row " + slno + ":" + element.FeeType + "<br>";
-      //   else {
-      //     element.FeeTypeId = FeeTypeFilter[0].FeeTypeId;
-      //   }
-      // }
-      // else
-      //   element.FeeTypeId = 0;
+      if (element.FeeType) {
+        let FeeTypeFilter: any = this.FeeTypes.find((g: any) => g.FeeTypeName.toUpperCase() == element.FeeType.trim().toUpperCase());
+        if (!FeeTypeFilter)
+          this.ErrorMessage += "Invalid Fee Type at row " + slno + ":" + element.FeeType + "<br>";
+        else {
+          element.FeeTypeId = FeeTypeFilter.FeeTypeId;
+        }
+      }
+      else
+        element.FeeTypeId = 0;
 
       if (element.Category) {
-        let Categoryfilter: any = this.Category.filter((g: any) => g.MasterDataName.toLowerCase() == element.Category.toLowerCase());
-        if (Categoryfilter.length == 0)
+        let Categoryfilter: any = this.Category.find((g: any) => g.MasterDataName.toLowerCase() == element.Category.toLowerCase());
+        if (!Categoryfilter)
           this.ErrorMessage += "Invalid Category at row " + slno + ":" + element.Category + "<br>";
         else
-          element.CategoryId = Categoryfilter[0].MasterDataId;
+          element.CategoryId = Categoryfilter.MasterDataId;
       }
       else
         element.CategoryId = 0;
 
       if (element.Religion) {
-        let ReligionFilter: any = this.Religion.filter((g: any) => g.MasterDataName.toLowerCase() == element.Religion.toLowerCase());
-        if (ReligionFilter.length == 0)
+        let ReligionFilter: any = this.Religion.find((g: any) => g.MasterDataName.toLowerCase() == element.Religion.toLowerCase());
+        if (!ReligionFilter)
           this.ErrorMessage += "Invalid Religion at row " + slno + ":" + element.Religion + "<br>";
         else
-          element.ReligionId = ReligionFilter[0].MasterDataId;
+          element.ReligionId = ReligionFilter.MasterDataId;
       }
       else
         element.ReligionId = 0;
 
       if (element.AdmissionStatus) {
-        let AdmissionStatusFilter: any = this.AdmissionStatuses.filter((g: any) => g.MasterDataName.toLowerCase() == element.AdmissionStatus.toLowerCase());
-        if (AdmissionStatusFilter.length == 0)
+        let AdmissionStatusFilter: any = this.AdmissionStatuses.find((g: any) => g.MasterDataName.toLowerCase() == element.AdmissionStatus.toLowerCase());
+        if (!AdmissionStatusFilter)
           this.ErrorMessage += "Invalid admission status at row " + slno + ":" + element.AdmissionStatus + "<br>";
         else
-          element.AdmissionStatusId = AdmissionStatusFilter[0].MasterDataId;
+          element.AdmissionStatusId = AdmissionStatusFilter.MasterDataId;
       }
       else
         element.AdmissionStatusId = 0;
 
       if (element.PrimaryContactFatherOrMother) {
-        let PrimaryContactFatherOrMotherFilter: any = this.PrimaryContact.filter((g: any) => g.MasterDataName.toLowerCase() == element.PrimaryContactFatherOrMother.toLowerCase());
-        if (PrimaryContactFatherOrMotherFilter.length == 0)
+        let PrimaryContactFatherOrMotherFilter: any = this.PrimaryContact.find((g: any) => g.MasterDataName.toLowerCase() == element.PrimaryContactFatherOrMother.toLowerCase());
+        if (!PrimaryContactFatherOrMotherFilter)
           this.ErrorMessage += "Invalid PrimaryContactFatherOrMother at row " + slno + ":" + element.PrimaryContactFatherOrMother + "<br>";
         else
-          element.PrimaryContactFatherOrMother = PrimaryContactFatherOrMotherFilter[0].MasterDataId;
+          element.PrimaryContactFatherOrMother = PrimaryContactFatherOrMotherFilter.MasterDataId;
       }
       else
         element.PrimaryContactFatherOrMother = 0;
 
       if (element.ClassAdmissionSought) {
-        let ClassAdmissionSoughtFilter = this.Classes.filter((g: any) => g.ClassName.toLowerCase() == element.ClassAdmissionSought.toLowerCase());
-        if (ClassAdmissionSoughtFilter.length == 0)
+        let ClassAdmissionSoughtFilter = this.Classes.find((g: any) => g.ClassName.toLowerCase() == element.ClassAdmissionSought.toLowerCase());
+        if (!ClassAdmissionSoughtFilter)
           this.ErrorMessage += "Invalid ClassAdmissionSought at row " + slno + ":" + element.ClassAdmissionSought + "<br>";
         else
-          element.ClassAdmissionSought = ClassAdmissionSoughtFilter[0].ClassId;
+          element.ClassAdmissionSought = ClassAdmissionSoughtFilter.ClassId;
       }
       else
         element.ClassAdmissionSought = 0;
 
 
       if (element.Club) {
-        let ClubObj: any = this.Clubs.filter((g: any) => g.MasterDataName.toLowerCase() == element.Club.toLowerCase());
-        if (ClubObj.length == 0)
+        let ClubObj: any = this.Clubs.find((g: any) => g.MasterDataName.toLowerCase() == element.Club.toLowerCase());
+        if (!ClubObj)
           this.ErrorMessage += "Invalid Club at row " + slno + ":" + element.Club + "<br>";
         else
-          element.ClubId = ClubObj[0].MasterDataId;
+          element.ClubId = ClubObj.MasterDataId;
       }
       else
         element.ClubId = 0;
 
       if (element.House) {
-        let houseObj: any = this.Houses.filter((g: any) => g.MasterDataName.toLowerCase() == element.House.toLowerCase());
-        if (houseObj.length == 0)
+        let houseObj: any = this.Houses.find((g: any) => g.MasterDataName.toLowerCase() == element.House.toLowerCase());
+        if (!houseObj)
           this.ErrorMessage += "Invalid house at row " + slno + ":" + element.House + "<br>";
         else
-          element.HouseId = houseObj[0].MasterDataId;
+          element.HouseId = houseObj.MasterDataId;
       }
       else
         element.HouseId = 0;
 
       if (element.Remarks) {
-        let remarkObj: any = this.Remarks.filter((g: any) => g.MasterDataName.toLowerCase() == element.Remarks.toLowerCase());
-        if (remarkObj.length == 0)
+        let remarkObj: any = this.Remarks.find((g: any) => g.MasterDataName.toLowerCase() == element.Remarks.toLowerCase());
+        if (!remarkObj)
           this.ErrorMessage += "Invalid remark at row " + slno + ":" + element.Remarks + "<br>";
         else {
-
-          element.RemarkId = remarkObj[0].MasterDataId;
-
-
+          element.RemarkId = remarkObj.MasterDataId;
         }
       }
       else {
@@ -1061,36 +1058,36 @@ export class ExcelDataManagementComponent implements OnInit {
       }
       if (element.Remark2) {
 
-        let remark2Obj: any = this.Remark2.filter((g: any) => g.MasterDataName.toLowerCase() == element.Remark2.toLowerCase());
+        let remark2Obj: any = this.Remark2.find((g: any) => g.MasterDataName.toLowerCase() == element.Remark2.toLowerCase());
 
-        if (remark2Obj.length == 0)
+        if (!remark2Obj)
           this.ErrorMessage += "Invalid remark2 at row " + slno + ":" + element.Remark2 + "<br>";
         else
-          element.Remark2Id = remark2Obj[0].MasterDataId;
+          element.Remark2Id = remark2Obj.MasterDataId;
 
       }
       else
         element.Remark2Id = 0;
       if (element.PermanentAddressCountry) {
-        let CountryObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressCountry.toLowerCase());
-        if (CountryObj.length == 0)
+        let CountryObj = this.AllMasterData.find((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressCountry.toLowerCase());
+        if (!CountryObj)
           this.ErrorMessage += "Invalid country at row " + slno + ":" + element.PermanentAddressCountry + "<br>";
         else {
-          element.PermanentAddressCountryId = CountryObj[0].MasterDataId;
+          element.PermanentAddressCountryId = CountryObj.MasterDataId;
           if (element.PermanentAddressState) {
-            let stateObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressState.toLowerCase()
+            let stateObj = this.AllMasterData.find((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressState.toLowerCase()
               && g.ParentId == element.PermanentAddressCountryId);
-            if (stateObj.length == 0)
+            if (!stateObj)
               this.ErrorMessage += "Invalid state at row " + slno + ":" + element.PermanentAddressState + "<br>";
             else {
-              element.PermanentAddressStateId = stateObj[0].MasterDataId;
+              element.PermanentAddressStateId = stateObj.MasterDataId;
               if (element.PermanentAddressCity) {
-                let CityObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressCity.toLowerCase()
+                let CityObj = this.AllMasterData.find((g: any) => g.MasterDataName.toLowerCase() == element.PermanentAddressCity.toLowerCase()
                   && g.ParentId == element.PermanentAddressStateId);
-                if (CityObj.length == 0)
+                if (!CityObj)
                   this.ErrorMessage += "Invalid city at row " + slno + ":" + element.PermanentAddressCity + "<br>";
                 else
-                  element.PermanentAddressCityId = CityObj[0].MasterDataId;
+                  element.PermanentAddressCityId = CityObj.MasterDataId;
               }
               else
                 element.PermanentAddressCityId = 0;
@@ -1109,25 +1106,25 @@ export class ExcelDataManagementComponent implements OnInit {
 
       }
       if (element.PresentAddressCountry) {
-        let CountryObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PresentAddressCountry.toLowerCase());
-        if (CountryObj.length == 0)
+        let CountryObj = this.AllMasterData.find((g: any) => g.MasterDataName.toLowerCase() == element.PresentAddressCountry.toLowerCase());
+        if (!CountryObj)
           this.ErrorMessage += "Invalid country at row " + slno + ":" + element.PresentAddressCountry + "<br>";
         else {
-          element.PresentAddressCountryId = CountryObj[0].MasterDataId;
+          element.PresentAddressCountryId = CountryObj.MasterDataId;
           if (element.PresentAddressState) {
-            let stateObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PresentAddressState.toLowerCase()
+            let stateObj = this.AllMasterData.find((g: any) => g.MasterDataName.toLowerCase() == element.PresentAddressState.toLowerCase()
               && g.ParentId == element.PresentAddressCountryId);
-            if (stateObj.length == 0)
+            if (!stateObj)
               this.ErrorMessage += "Invalid state at row " + slno + ":" + element.PresentAddressState + "<br>";
             else {
-              element.PresentAddressStateId = stateObj[0].MasterDataId;
+              element.PresentAddressStateId = stateObj.MasterDataId;
               if (element.PresentAddressCity) {
-                let CityObj = this.AllMasterData.filter((g: any) => g.MasterDataName.toLowerCase() == element.PresentAddressCity.toLowerCase()
+                let CityObj = this.AllMasterData.find((g: any) => g.MasterDataName.toLowerCase() == element.PresentAddressCity.toLowerCase()
                   && g.ParentId == element.PresentAddressStateId);
-                if (CityObj.length == 0)
+                if (!CityObj)
                   this.ErrorMessage += "Invalid city at row " + slno + ":" + element.PresentAddressCity + "<br>";
                 else
-                  element.PresentAddressCityId = CityObj[0].MasterDataId;
+                  element.PresentAddressCityId = CityObj.MasterDataId;
               }
               else
                 element.PresentAddressCityId = 0;
@@ -1631,7 +1628,7 @@ export class ExcelDataManagementComponent implements OnInit {
   }
   saveStudentClass() {
     debugger;
-    console.log('student class to save', this.studentData[0])
+    //console.log('student class to save', this.studentData[0])
     this.dataservice.postPatch('StudentClasses', this.studentData[0], 0, 'post')
       .subscribe((result: any) => {
         ////console.log('inserted');

@@ -314,7 +314,8 @@ export class VerifyResultsComponent implements OnInit {
   GetClassSubject() {
     this.Loading(true);
     //let filterStr = 'Active eq 1 and OrgId eq ' + this.LoginUserDetail[0]["orgId"]
-    let filterStr = this.FilterOrgSubOrgBatchId + " and Active eq 1";
+    var subjectOptionTypeId = this.SubjectTypes.find(c => c.SubjectTypeName.toLowerCase() == 'optional').SubjectTypeId;
+    let filterStr = this.FilterOrgSubOrgBatchId + " and SubjectTypeId ne " + subjectOptionTypeId + " and Active eq 1";
     let list: List = new List();
     list.fields = [
       "ClassSubjectId",
@@ -336,34 +337,34 @@ export class VerifyResultsComponent implements OnInit {
         //debugger;
         this.ClassSubjects = data.value.map(cs => {
           var _class = '';
-          var objclass = this.Classes.filter(c => c.ClassId == cs.ClassId)
-          if (objclass.length > 0)
-            _class = objclass[0].ClassName;
+          var objclass = this.Classes.find(c => c.ClassId == cs.ClassId)
+          if (objclass)
+            _class = objclass.ClassName;
 
           var _subject = ''
-          var objsubject = this.Subjects.filter(c => c.MasterDataId == cs.SubjectId)
-          if (objsubject.length > 0)
-            _subject = objsubject[0].MasterDataName;
+          var objsubject = this.Subjects.find(c => c.MasterDataId == cs.SubjectId)
+          if (objsubject)
+            _subject = objsubject.MasterDataName;
           var _remark = ''
           if (cs.RemarkId) {
-            var objRemark = this.ClassSubjectRemarks.filter(c => c.MasterDataId == cs.RemarkId)
-            if (objRemark.length > 0)
-              _remark = objRemark[0].MasterDataName;
+            var objRemark = this.ClassSubjectRemarks.find(c => c.MasterDataId == cs.RemarkId)
+            if (objRemark)
+              _remark = objRemark.MasterDataName;
           }
           var _section = ''
-          var objsection = this.Sections.filter(c => c.MasterDataId == cs.SectionId)
-          if (objsection.length > 0)
-            _section = objsection[0].MasterDataName;
+          var objsection = this.Sections.find(c => c.MasterDataId == cs.SectionId)
+          if (objsection)
+            _section = objsection.MasterDataName;
           var _semester = ''
-          var objsemester = this.Semesters.filter(c => c.MasterDataId == cs.SemesterId)
-          if (objsemester.length > 0)
-            _semester = objsemester[0].MasterDataName;
+          var objsemester = this.Semesters.find(c => c.MasterDataId == cs.SemesterId)
+          if (objsemester)
+            _semester = objsemester.MasterDataName;
 
           var _subjectType = '', _selectHowMany = 0;
-          var objsubjectType = this.SubjectTypes.filter(c => c.SubjectTypeId == cs.SubjectTypeId)
-          if (objsubjectType.length > 0) {
-            _subjectType = objsubjectType[0].SubjectTypeName;
-            _selectHowMany = objsubjectType[0].SelectHowMany;
+          var objsubjectType = this.SubjectTypes.find(c => c.SubjectTypeId == cs.SubjectTypeId)
+          if (objsubjectType) {
+            _subjectType = objsubjectType.SubjectTypeName;
+            _selectHowMany = objsubjectType.SelectHowMany;
           }
 
           return {
@@ -823,7 +824,7 @@ export class VerifyResultsComponent implements OnInit {
           SelectHowManyOfElective = HowManyObj[0].SelectHowMany;
 
         let objAllCompulsory = objAllMarking.filter(de => de.SubjectType.toLowerCase() === 'compulsory');
-debugger;
+        debugger;
         this.TotalMarkingSubjectFullMark = 0;
         //console.log("objAllComp", objAllCompulsory);
         if (objAllCompulsory.length > 0) {
@@ -907,9 +908,12 @@ debugger;
         ////////  
 
         //for each student
+        let _totalPercent = 0;
         filteredIndividualStud.forEach(ss => {
-          let _totalPercent = 0
-
+          _totalPercent = 0
+          if (ss.RollNo == 49) {
+            debugger;
+          }
           //intial columns
           ForGrading = {
             "StudentClassId": ss.StudentClassId,
@@ -934,13 +938,14 @@ debugger;
 
           //var forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.Student == ss.Student)
           let forEachSubjectOfStud = this.StudentSubjects.filter((s: any) => s.StudentClassId == ss.StudentClassId)
-         
+
           forEachSubjectOfStud = forEachSubjectOfStud.sort((a, b) => a.SubjectType.localeCompare(b.SubjectType)); //a.ClassSubjectId - b.ClassSubjectId);// 
           let ElectivePassed = 0;
+          var markPercent = 0;
           forEachSubjectOfStud.forEach((eachsubj, subjIndx) => {
-            var markPercent = 0;
+            markPercent = 0;
             ForNonGrading["Remark"] = eachsubj.Remark;
-         
+
             var _objSubjectCategory = this.SubjectCategory.find((f: any) => f.MasterDataId === eachsubj.SubjectCategoryId)
             if (_objSubjectCategory)
               _subjectCategoryName = _objSubjectCategory.MasterDataName.toLowerCase();
@@ -960,7 +965,8 @@ debugger;
               //   debugger;
               // }
               let failedInComponent = false;
-
+              if (markObtained.length == 0)
+                failedInComponent = true;
               ///////////////deciding pass or failed.
               var subjectEachComponentPassmarkGreaterthanZero = _ClsSectionSemSubjectsMarkCompntDefn.filter(comp => comp.PassMark > 0
                 && comp.ClassSubjectId == eachsubj.ClassSubjectId)
@@ -1093,7 +1099,9 @@ debugger;
                   //sumOfAllFullMark += totalFullMarkOfAllComp;
                   if (!failedInComponent)//if passed in all components;
                   {
-                    if (markObtained[0].Marks < _subjectPassMarkFullMarkFromDefn[0].OverallPassMark) {//failed
+                    if (markObtained[0].Marks == 0)
+                      _statusFail = true;
+                    else if (markObtained[0].Marks < _subjectPassMarkFullMarkFromDefn[0].OverallPassMark) {//failed
                       _statusFail = true;
                     }
                     else {//passed
@@ -1151,6 +1159,13 @@ debugger;
                 }
               }
               else {
+                // if (eachsubj.SubjectType.toLowerCase() === 'elective')
+                //         ElectivePassed += 1;
+                //if (ss.RollNo == "49")
+                //  ForNonGrading["FailCount"] += 1;
+                //console.log("eachsubj.SubjectType.toLowerCase()", eachsubj.SubjectType.toLowerCase());
+                if (eachsubj.SubjectType.toLowerCase() === 'compulsory' && _subjectCategoryName=='marking')
+                  ForNonGrading["FailCount"] += 1;
                 ExamResultSubjectMarkData.Active = 1;
                 ExamResultSubjectMarkData.BatchId = this.SelectedBatchId;
                 ExamResultSubjectMarkData.ExamId = pExamId;
@@ -1195,6 +1210,8 @@ debugger;
             ForNonGrading["Total Marks"] = ForNonGrading["Total Marks"].toFixed(2);
             this.ExamStudentSubjectResult.push(ForNonGrading);
             this.ExamStudentSubjectGrading.push(ForGrading);
+            if (ss.RollNo == "49")
+              console.log("this.ExamStudentSubjectResult.push(ForNonGrading);", ForNonGrading)
           }
         })//for each student;
 
@@ -1620,25 +1637,25 @@ debugger;
         this.ClassSubjectComponents = [];
 
         data.value.forEach(e => {
-          var obj = this.ClassSubjects.filter((s: any) => s.ClassSubjectId == e.ClassSubjectId);
-          if (obj.length > 0) {
-            e.ClassId = obj[0].ClassId;
-            e.SectionId = obj[0].SectionId;
-            e.SemesterId = obj[0].SemesterId;
-            e.SubjectTypeId = obj[0].SubjectTypeId;
-            e.SubjectName = obj[0].SubjectName;
-            var selectHowManyObj = this.SubjectTypes.filter((f: any) => f.SubjectTypeId == obj[0].SubjectTypeId)
+          let obj = this.ClassSubjects.find((s: any) => s.ClassSubjectId == e.ClassSubjectId);
+          if (obj) {
+            e.ClassId = obj.ClassId;
+            e.SectionId = obj.SectionId;
+            e.SemesterId = obj.SemesterId;
+            e.SubjectTypeId = obj.SubjectTypeId;
+            e.SubjectName = obj.SubjectName;
+            var selectHowManyObj = this.SubjectTypes.find((f: any) => f.SubjectTypeId == obj.SubjectTypeId)
             var selectHowMany = 0, _subjectType = '';
-            if (selectHowManyObj.length > 0) {
-              selectHowMany = selectHowManyObj[0].SelectHowMany;
-              _subjectType = selectHowManyObj[0].SubjectTypeName;
+            if (selectHowManyObj) {
+              selectHowMany = selectHowManyObj.SelectHowMany;
+              _subjectType = selectHowManyObj.SubjectTypeName;
             }
 
-            e.SubjectComponentName = this.MarkComponents.filter(c => c.MasterDataId == e.SubjectComponentId)[0].MasterDataName;
+            e.SubjectComponentName = this.MarkComponents.find(c => c.MasterDataId == e.SubjectComponentId).MasterDataName;
             e.SelectHowMany = selectHowMany;
             e.SubjectType = _subjectType;
-            e.SubjectCategoryId = obj[0].SubjectCategoryId;
-            e.SubjectCategory = this.SubjectCategory.filter(c => c.MasterDataId == obj[0].SubjectCategoryId)[0].MasterDataName;
+            e.SubjectCategoryId = obj.SubjectCategoryId;
+            e.SubjectCategory = this.SubjectCategory.find(c => c.MasterDataId == obj.SubjectCategoryId).MasterDataName;
             this.ClassSubjectComponents.push(e);
           }
         })

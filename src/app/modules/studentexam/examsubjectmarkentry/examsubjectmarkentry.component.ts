@@ -558,8 +558,8 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
   GetClassSubject() {
 
-    //let filterStr = '(' + this.FilterOrgSubOrg +") and Active eq 1";
-    let filterStr = this.FilterOrgSubOrgBatchId + " and Active eq 1";
+    var subjectOptionalTypeId = this.SubjectTypes.find(c => c.SubjectTypeName.toLowerCase() == 'optional').SubjectTypeId;
+    let filterStr = this.FilterOrgSubOrgBatchId + " and SubjectTypeId ne " + subjectOptionalTypeId + " and Active eq 1";
     let list: List = new List();
     list.fields = [
       "ClassSubjectId",
@@ -900,7 +900,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
                 _subjectmarkconfig.forEach(sub => {
                   replacedFormula = replacedFormula.replaceAll("[" + sub.ExamName + "]", sub.Marks);
                 })
-                console.log("replacedFormula",replacedFormula)
+                console.log("replacedFormula", replacedFormula)
                 var objresult = evaluate(replacedFormula).entries;
                 if (objresult.length > 0)
                   _mark = objresult[0].toFixed(2);
@@ -1190,7 +1190,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
         }
       });
       this.Classes = this.Classes.sort((a, b) => a.Sequence - b.Sequence);
-      this.GetClassSubject();
+      this.GetSubjectTypes();
     });
     //if role is teacher, only their respective class and subject will be allowed.
     if (this.LoginUserDetail[0]['RoleUsers'][0].role == 'Teacher') {
@@ -1199,6 +1199,23 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
 
     this.GetExams();
 
+  }
+  GetSubjectTypes() {
+    var orgIdSearchstr = this.FilterOrgSubOrg + " and Active eq 1";
+    this.loading=true;
+    let list: List = new List();
+
+    list.fields = ["SubjectTypeId", "SubjectTypeName", "SelectHowMany"];
+    list.PageName = "SubjectTypes";
+    list.filter = [orgIdSearchstr];
+    //list.orderBy = "ParentId";
+    this.dataservice.get(list)
+      .subscribe((data: any) => {
+        //debugger;
+        this.SubjectTypes = [...data.value];
+        this.GetClassSubject();
+
+      })
   }
   GetAllowedSubjects() {
     let list: List = new List();

@@ -1033,6 +1033,7 @@ export class EPerformComponent implements OnInit {
         if (this.RelevantEvaluationListForSelectedStudent.length == 0) {
           this.contentservice.openSnackBar("No pending exam found for this student.", globalconstants.ActionText, globalconstants.RedBackground);
         }
+        console.log("this.RelevantEvaluationListForSelectedStudent",this.RelevantEvaluationListForSelectedStudent);
         this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.RelevantEvaluationListForSelectedStudent);
         this.StudentEvaluationList = [];
         this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);

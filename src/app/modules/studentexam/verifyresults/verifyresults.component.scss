@@ -30,7 +30,7 @@ mat-cell{
 }
 .mat-column-Student{
     justify-content: flex-start;
-    flex:0 0 180px;
+    flex:1 0 180px;
     
 }
 .mat-column-RollNo{
@@ -38,9 +38,8 @@ mat-cell{
     flex:0 0 60px;
     
 }
-.mat-column-*{
-    //justify-content: flex-start;
-    flex:0 0 100px;
+mat-cell,mat-header-cell{
+    min-width: 50px;
     
 }
 mat-header-cell.gray, mat-cell.gray {
