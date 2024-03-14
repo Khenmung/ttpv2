@@ -375,20 +375,20 @@ export class HomeDashboardComponent implements OnInit {
           this.allMasterData = [...data.value];
           this.Roles = this.getDropDownData(globalconstants.MasterDefinitions.common.ROLE);
 
-          let _obj = this.Roles.filter(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
-          if (_obj.length > 0 && _obj[0].Description)
-            this.RedirectionText = _obj[0].Description;
+          let _obj = this.Roles.find(r => r.MasterDataId == this.LoginUserDetail[0]["RoleUsers"][0].roleId);
+          if (_obj && _obj.Description)
+            this.RedirectionText = _obj.Description;
 
           this.SubOrganization = this.getDropDownData(globalconstants.MasterDefinitions.common.COMPANY)
           this.SubOrganization.forEach(s => {
-            var ex = this.CustomerPlansList.filter(c => c.SubOrgId == s.MasterDataId);
-            if (ex.length > 0)
-              s.CustomerPlanId = ex[0].CustomerPlanId;
+            var ex = this.CustomerPlansList.find(c => c.SubOrgId == s.MasterDataId);
+            if (ex)
+              s.CustomerPlanId = ex.CustomerPlanId;
             else
               s.CustomerPlanId = 0;
           })
-          var _orgSubOrg = this.SubOrganization.filter((f: any) => f.MasterDataId == this.SubOrgId);
-          this.searchForm.patchValue({ "searchSubOrgId": _orgSubOrg[0] });
+          var _orgSubOrg = this.SubOrganization.find((f: any) => f.MasterDataId == this.SubOrgId);
+          this.searchForm.patchValue({ "searchSubOrgId": _orgSubOrg });
           this.LoadingFalse();
         });
     }
@@ -451,7 +451,7 @@ export class HomeDashboardComponent implements OnInit {
 
       //this line is added because when batch is not defined for new user, selected batch name is null.
       if (this.Batches.length > 0) {
-        var _batchName = this.Batches.filter((f: any) => f.BatchId == this.SelectedBatchId)[0].BatchName;
+        var _batchName = this.Batches.find((f: any) => f.BatchId == this.SelectedBatchId).BatchName;
         this.tokenStorage.saveSelectedBatchName(_batchName)
       }
       else
@@ -550,16 +550,16 @@ export class HomeDashboardComponent implements OnInit {
   }
   SaveBatchIds(selectedBatchId) {
     debugger;
-    var _SelectedBatch = this.Batches.filter(b => b.BatchId == selectedBatchId);
+    var _SelectedBatch = this.Batches.find(b => b.BatchId == selectedBatchId);
     var SelectedBatchName = ''
-    if (_SelectedBatch.length > 0) {
-      SelectedBatchName = _SelectedBatch[0].BatchName;
+    if (_SelectedBatch) {
+      SelectedBatchName = _SelectedBatch.BatchName;
     }
 
-    if (_SelectedBatch.length > 0) {
+    if (_SelectedBatch) {
       //this.shareddata.ChangeSelectedBatchStartEnd({ 'StartDate': _SelectedBatch[0].StartDate, 'EndDate': _SelectedBatch[0].EndDate });
       this.tokenStorage.saveSelectedBatchStartEnd(
-        { 'StartDate': _SelectedBatch[0].StartDate, 'EndDate': _SelectedBatch[0].EndDate });
+        { 'StartDate': _SelectedBatch.StartDate, 'EndDate': _SelectedBatch.EndDate });
     }
     //this is for disabling all save button if old batch is selected. 
     if (selectedBatchId >= this.CurrentBatchId)
@@ -700,9 +700,8 @@ export class HomeDashboardComponent implements OnInit {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }
     this.filterOrgSubOrgBatchId += this.GetEmployeeClassIds();
-
     list.PageName = "StudentClasses";
-    list.lookupFields = ["Student($select=PID," +
+    list.lookupFields = ["StudentFeeTypes($filter=Active eq true;$select=StudentFeeTypeId,FeeTypeId),Student($select=PID," +
       "StudentId," +
       "FirstName," +
       "LastName," +
@@ -758,66 +757,90 @@ export class HomeDashboardComponent implements OnInit {
       .subscribe((data: any) => {
         let result = data.value.filter(s => s.Student.Deleted == false);
         this.Students = [];
-        result.forEach(d => {
-          var studcls = '{';
-          Object.keys(d).forEach(c => {
-            studcls += '"' + c + '":"' + d[c] + '",';
-          });
-          studcls = studcls.substring(0, studcls.length - 1) + "}";
-          d["StudentClasses"] = [];
-          d["StudentClasses"].push(JSON.parse(studcls));
+        var _classNameobj;
+        var _className = '';
+        var _studentClassId = 0;
+        var _remark1 = '';
+        var _remark2 = '';
+        var _Section = '';
+        var _semester = '';
+        var _lastname = '';
+        var _name = '';
+        let newStudents:any=[];
+        for (let i = 0; i < result.length; i++) {
 
-          Object.keys(d.Student).forEach(s => {
-            d[s] = d.Student[s];
-          })
-          delete d.Student;
+          // result.forEach(d => {
+          // var studcls = '{';
+          // Object.keys(d).forEach(c => {
+          //   studcls += '"' + c + '":"' + d[c] + '",';
+          // });
+          // studcls = studcls.substring(0, studcls.length - 1) + "}";
+          
 
-          var _classNameobj: any[] = [];
-          var _className = '';
-          var _studentClassId = 0;
+          let stud = JSON.parse(JSON.stringify(result[i].Student));
+          newStudents.push(stud);
+
+          let feetypes = JSON.parse(JSON.stringify(result[i].StudentFeeTypes));
+          
+          delete result[i].Student;
+          delete result[i].StudentFeeTypes;
+
+          let cls =  JSON.parse(JSON.stringify(result[i]));
+          newStudents[i].StudentClasses =[];
+          newStudents[i].StudentClasses.push(cls);
+          newStudents[i].StudentClasses[0].StudentFeeTypes =feetypes;        
+          
+          // Object.keys(stud).forEach(s => {
+          //   result[i][s] = stud[s];
+          // })
+
+          _classNameobj;
+          _className = '';
+          _studentClassId = 0;
           //if (d.StudentClasses.length > 0) {
-          _classNameobj = this.Classes.filter(c => c.ClassId == d.StudentClasses[0].ClassId);
-          if (_classNameobj.length > 0)
-            _className = _classNameobj[0].ClassName;
+          _classNameobj = this.Classes.find(c => c.ClassId == newStudents[i].StudentClasses[0].ClassId);
+          if (_classNameobj)
+            _className = _classNameobj.ClassName;
 
-          var _remark1 = '';
-          var _remark2 = '';
-          if (d.RemarkId) {
-            var _remarkObj = this.Remark1.filter((f: any) => f.MasterDataId == d.RemarkId);
-            if (_remarkObj.length > 0)
-              _remark1 = _remarkObj[0].MasterDataName;
+          _remark1 = '';
+          _remark2 = '';
+          if (newStudents[i].RemarkId) {
+            var _remarkObj = this.Remark1.find((f: any) => f.MasterDataId == newStudents[i].RemarkId);
+            if (_remarkObj)
+              _remark1 = _remarkObj.MasterDataName;
           }
-          if (d.Remark2Id) {
-            var _remark2Obj = this.Remark2.filter((f: any) => f.MasterDataId == d.Remark2Id);
-            if (_remark2Obj.length > 0)
-              _remark2 = _remark2Obj[0].MasterDataName;
+          if (newStudents[i].Remark2Id) {
+            var _remark2Obj = this.Remark2.find((f: any) => f.MasterDataId == newStudents[i].Remark2Id);
+            if (_remark2Obj)
+              _remark2 = _remark2Obj.MasterDataName;
           }
-          var _Section = '';
-          var _sectionobj = this.Sections.filter((f: any) => f.MasterDataId == d.StudentClasses[0].SectionId);
-          if (_sectionobj.length > 0)
-            _Section = _sectionobj[0].MasterDataName;
-          var _semester = '';
-          var _semesterobj = this.Semesters.filter((f: any) => f.MasterDataId == d.StudentClasses[0].SemesterId);
-          if (_semesterobj.length > 0)
-            _semester = _semesterobj[0].MasterDataName;
+          _Section = '';
+          var _sectionobj = this.Sections.find((f: any) => f.MasterDataId == newStudents[i].StudentClasses[0].SectionId);
+          if (_sectionobj)
+            _Section = _sectionobj.MasterDataName;
+          _semester = '';
+          var _semesterobj = this.Semesters.find((f: any) => f.MasterDataId == newStudents[i].StudentClasses[0].SemesterId);
+          if (_semesterobj)
+            _semester = _semesterobj.MasterDataName;
 
           //var _RollNo = d.StudentClasses[0].RollNo;
-          _studentClassId = d.StudentClasses[0].StudentClassId;
+          _studentClassId = newStudents[i].StudentClasses[0].StudentClassId;
           //}
-          var _lastname = d.LastName == null ? '' : " " + d.LastName;
+          _lastname = newStudents[i].LastName == null ? '' : " " + newStudents[i].LastName;
 
-          var _name = d.FirstName + _lastname;
+          _name = newStudents[i].FirstName + _lastname;
           //var _fullDescription = _name + "-" + _className + "-" + _Section + "-" + _RollNo;
 
-          d.RollNo = d.StudentClasses[0].RollNo;
-          d.Name = _name;
-          d.ClassName = _className;
-          d.Section = _Section;
-          d.Semester = _semester;
-          d.Remark1 = _remark1;
-          d.Remark2 = _remark2;
-          this.Students.push(d);
-        });
+          newStudents[i].RollNo = newStudents[i].StudentClasses[0].RollNo;
+          newStudents[i].Name = _name;
+          newStudents[i].ClassName = _className;
+          newStudents[i].Section = _Section;
+          newStudents[i].Semester = _semester;
+          newStudents[i].Remark1 = _remark1;
+          newStudents[i].Remark2 = _remark2;
+          this.Students.push(newStudents[i]);
+          // });
+        }
         this.tokenStorage.saveStudents(this.Students);
         ////console.log("previous students", this.Students);
         this.LoadingFalse();
@@ -933,8 +956,8 @@ export class HomeDashboardComponent implements OnInit {
       "StudentClassId,StudentId,HouseId,BatchId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active,Admitted"
     ];
     list.PageName = "StudentClasses";
-    list.lookupFields=["StudentFeeTypes($filter=Active eq true;$select=StudentFeeTypeId,FeeTypeId)"]
-    
+    list.lookupFields = ["StudentFeeTypes($filter=Active eq true;$select=StudentFeeTypeId,FeeTypeId)"]
+
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }

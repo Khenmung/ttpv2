@@ -383,10 +383,10 @@ export class StudentprogressreportComponent implements OnInit {
       "Sequence",
       "Active"
     ];
-
+    let resultSummaryId = this.ResultSummaryCategory.find(f => f.MasterDataName.toLowerCase() == "result summary").MasterDataId;
+    orgIdSearchstr += " and CalculateCategoryId eq " + resultSummaryId;
     list.PageName = "ExamnCalculates";
     list.filter = [orgIdSearchstr];
-    this.ExamNCalculateList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
@@ -403,6 +403,7 @@ export class StudentprogressreportComponent implements OnInit {
           }
         });
         this.ExamNCalculateList = this.ExamNCalculateList.sort((a, b) => a.Sequence - b.Sequence);
+        //console.log("ExamNCalculateList", this.ExamNCalculateList);
         this.GetExams();
       })
   }
@@ -436,31 +437,32 @@ export class StudentprogressreportComponent implements OnInit {
     this.dataservice.get(list)
       .subscribe((data: any) => {
         this.ExamStudentResults = [];
-        const _resultSummary = this.ExamNCalculateList.filter(ataglance => ataglance.CalculateCategoryName.toLowerCase() === "result summary");
-        _resultSummary.forEach(item => {
+        //const _resultSummary = this.ExamNCalculateList.filter(ataglance => ataglance.CalculateCategoryName.toLowerCase() === "result summary");
+
+        this.ExamNCalculateList.forEach(item => {
           let row = this.ExamStudentResults.find(x => x.FirstCol === item.PropertyName);
           if (!row)
             this.ExamStudentResults.push(
               { "ExamId": item.ExamId, "FirstCol": item.PropertyName })
         })
-
         this.ReportCardSignatures.forEach(item => {
           this.ReportSignatureList.push({ 'FirstCol': item.MasterDataName })
         })
-        let result: any = [];
+        let resultForEachExam: any = [];
         data.value.forEach(item => {
           let _exam = this.Exams.find(e => e.ExamId == item.ExamId);
           if (_exam) {
             item.Sequence = _exam.Sequence;
-            result.push(item);
+            resultForEachExam.push(item);
           }
         });
-        result = result.sort((a, b) => a.Sequence - b.Sequence);
-
+        resultForEachExam = resultForEachExam.sort((a, b) => a.Sequence - b.Sequence);
         //////////////
         let _ValueForFormula: any = [];
         var _ExamName = '';
-        result.forEach(eachexam => {
+        let _examNCalculateForSpecificExam: any = [];
+        resultForEachExam.forEach(eachexam => {
+          _examNCalculateForSpecificExam = [];
           _ValueForFormula = [];
           _ExamName = '';
           var obj = this.Exams.find(exam => exam.ExamId == eachexam.ExamId);
@@ -472,9 +474,8 @@ export class StudentprogressreportComponent implements OnInit {
             Object.keys(eachexam).forEach(col => {
               _ValueForFormula.push({ "Text": "[" + col + "]", "Val": eachexam[col] });
             })
-
-            //Object.keys(eachexam).forEach(col => {
-            _resultSummary.forEach(summary => {
+            _examNCalculateForSpecificExam = this.ExamNCalculateList.filter(e => e.ExamId == eachexam.ExamId)
+            _examNCalculateForSpecificExam.forEach(summary => {
               let resultrow = this.ExamStudentResults.find((f: any) => f.FirstCol === summary.PropertyName)
               let _formula = summary.Formula;
               _ValueForFormula.forEach(f => {
@@ -483,7 +484,7 @@ export class StudentprogressreportComponent implements OnInit {
               try {
                 let objresult = evaluate(_formula);
                 if (objresult)
-                  resultrow[_ExamName] = objresult.toFixed(2).replaceAll(".00","");
+                  resultrow[_ExamName] = objresult.toFixed(2).replaceAll(".00", "");
               }
               catch
               {
@@ -491,12 +492,10 @@ export class StudentprogressreportComponent implements OnInit {
               }
 
             });
-
             this.ReportSignatureList.forEach(item => {
               if (this.SignatureColumns.indexOf(_ExamName) == -1)
                 this.SignatureColumns.push(_ExamName);
               item[_ExamName] = ''
-
             })
           }
         })
@@ -647,7 +646,7 @@ export class StudentprogressreportComponent implements OnInit {
           this.GradedMarksResults.push(OverAllGradeRow);
 
         }
-         console.log("this.ExamStudentResults", this.ExamStudentResults)
+        console.log("this.ExamStudentResults", this.ExamStudentResults)
         // console.log("this.DisplayColumns", this.DisplayColumns)
         this.loading = false;
         this.PageLoading = false;
@@ -897,7 +896,7 @@ export class StudentprogressreportComponent implements OnInit {
             var _classEvaluationExamMap = this.ClassEvaluations.filter((f: any) => f.EvaluationMasterId == evalExam.EvaluationMasterId);
             //&& f.ExamId == null || f.ExamId == 0 || f.ExamId == evalExam.ExamId);
             //&& f.ExamId == evalExam.ExamId);
-            let existing:any = {};
+            let existing: any = {};
             _classEvaluationExamMap.forEach(clseval => {
               existing = this.Result.find((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId
                 && f.EvaluationExamMapId == evalExam.EvaluationExamMapId);

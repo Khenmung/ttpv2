@@ -88,27 +88,9 @@ export class AddstudentclassComponent implements OnInit {
     private shareddata: SharedataService) { }
 
   ngOnInit(): void {
-    // this.servicework.activateUpdate().then(() => {
-    //   this.servicework.checkForUpdate().then((value) => {
-    //     if (value) {
-    //       location.reload();
-    //     }
-    //   })
-    // })
+    
     this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
-    //var today = new Date();
-    // this.studentclassForm = this.fb.group({
-    //   AdmissionNo: [''],
-    //   StudentName: [{ value: this.StudentName, disabled: true }],
-    //   ClassId: [0, [Validators.required]],
-    //   SemesterId: [0],
-    //   SectionId: [0],
-    //   RollNo: [''],
-    //   FeeTypeId: [0],
-    //   Remarks: [''],
-    //   AdmissionDate: [today],
-    //   Active: [1],
-    // });
+    
     this.PageLoad();
   }
   PageLoad() {
@@ -131,11 +113,9 @@ export class AddstudentclassComponent implements OnInit {
           this.FeeTypePermission = feetypePer[0].permission;
         }
 
-
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-
 
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
 
@@ -279,21 +259,15 @@ export class AddstudentclassComponent implements OnInit {
         .subscribe((data: any) => {
           if (data.value.length > 0) {
             var studentcls = data.value.map(m => {
-              var admissiondate = moment(m.AdmissionDate).isBefore("1970-01-01");
-              m.AdmissionDate = !admissiondate ? moment() : data.value[0].AdmissionDate;
-
-              // let obj = this.FeeType.filter(f => f.FeeTypeId == m.FeeTypeId);
-              // if (obj.length > 0)
-              //   m.FeeType = obj[0].FeeTypeName;
               m.Action = false;
               return m;
             });
             studentcls = studentcls.sort((a, b) => b.StudentClassId - a.StudentClassId);
             if (studentcls[0].ClassId > 0) {
               this.CurrentClassId = studentcls[0].ClassId;
-              let obj = this.Classes.filter((f: any) => f.ClassId == studentcls[0].ClassId);
-              if (obj.length > 0)
-                this.SelectedClassCategory = obj[0].Category.toLowerCase();
+              let obj = this.Classes.find((f: any) => f.ClassId == studentcls[0].ClassId);
+              if (obj)
+                this.SelectedClassCategory = obj.Category.toLowerCase();
             }
             this.dataSource = new MatTableDataSource<any>(studentcls);
           }

@@ -773,7 +773,7 @@ export class VerifyResultsComponent implements OnInit {
     ];
     this.GradingDisplayedColumns = [
       'RollNo',
-      'Student'
+      'Student1'
     ];
     this.dataservice.get(list)
       .subscribe((examComponentResult: any) => {
@@ -917,7 +917,7 @@ export class VerifyResultsComponent implements OnInit {
           //intial columns
           ForGrading = {
             "StudentClassId": ss.StudentClassId,
-            "Student": ss.Student,
+            "Student1": ss.Student,
             "RollNo": ss.RollNo,
             "Grade": 0
           }

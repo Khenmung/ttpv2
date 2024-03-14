@@ -256,7 +256,6 @@ export class SchoolFeeTypesComponent implements OnInit {
             var _sectionName = '';
             var _category = '';
             var _subCategory = '';
-            let _studentAllFeeTypes: any = [];
             var _formula = '';
             var clsObj, objsemester, objsection, objClassFee;
             var _feeName = '', _remark1 = '', _remark2 = '';
