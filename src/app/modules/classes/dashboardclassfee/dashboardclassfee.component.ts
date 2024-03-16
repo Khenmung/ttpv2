@@ -470,10 +470,7 @@ export class DashboardclassfeeComponent implements OnInit {
 
     if (row.ClassFeeId > 0)
       checkFilterString += " and ClassFeeId ne " + row.ClassFeeId;
-    else {
-      this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
+    
 
     this.loading = true;
     let list: List = new List();

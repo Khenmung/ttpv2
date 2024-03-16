@@ -96,13 +96,14 @@ export class AddStudentFeetypeComponent {
       }
       else {
         debugger;
+        this.StudentClassId = this.tokenStorage.getStudentClassId()!;
         this.Months = this.contentservice.GetSessionFormattedMonths();
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        this.StudentClassId = this.tokenStorage.getStudentClassId()!;
+        
         this.contentservice.GetClasses(this.FilterOrgSubOrg)
           .subscribe((data: any) => {
             if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];

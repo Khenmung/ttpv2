@@ -1,5 +1,5 @@
 <div style="padding:25px 15px 10px 15px;">
-    <div><strong>Promote Student</strong></div>
+    <div><strong>Student Admission</strong></div>
 </div>
 <mat-spinner *ngIf="PageLoading || loading" diameter="25"
     style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
@@ -74,7 +74,7 @@
         </mat-cell>
     </ng-container>
     <ng-container matColumnDef="ClassId">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Class </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Previous Class </mat-header-cell>
         <mat-cell *matCellDef="let element">
             <mat-select [disabled]="true" (selectionChange)="onBlur(element)" [value]="element.ClassId"
                 [(ngModel)]="element.ClassId">
@@ -202,7 +202,7 @@
             || !element.Action 
             || Permission=='read'
             || element.Active==1
-            || element.StudentClassId>0" matTooltip="promote" mat-mini-fab color="accent" (click)="SaveRow(element)">
+            || element.StudentClassId>0" matTooltip="admit" mat-mini-fab color="accent" (click)="SaveRow(element)">
                 <mat-icon>plus_one</mat-icon>
                 <mat-icon *ngIf="loading">
                     <mat-spinner diameter="20" color="Blue"></mat-spinner>

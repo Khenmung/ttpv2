@@ -186,7 +186,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
       this.StandardFilterWithPreviousBatchId = globalconstants.getOrgSubOrgFilterWithPreviousBatchId(this.tokenStorage);
 
-      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.SUBJECT.CLASSSTUDENT);
+      var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.AssignClass);
       if (perObj.length > 0)
         this.Permission = perObj[0].permission;
 

@@ -166,6 +166,7 @@ export class UserReportConfigColumnsComponent implements OnInit {
     })
   }
   SaveAll() {
+    debugger;
     var edited = this.ReportConfigItemList.filter((f:any) => f.Action || f.ReportConfigItemId == 0);
     this.ToUpateCount = edited.length;
     edited.forEach(f => {

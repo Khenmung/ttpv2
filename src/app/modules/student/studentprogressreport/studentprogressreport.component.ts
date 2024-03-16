@@ -594,9 +594,14 @@ export class StudentprogressreportComponent implements OnInit {
                 if (this.NonGradedDisplayColumns.indexOf(examName) == -1)
                   this.NonGradedDisplayColumns.push(examName);
 
+                if (eachexam["Grade"] == 'Fail')
+                  eachexam["Marks"] = "(" + eachexam["Marks"] + ")"
+
                 currentSubjectrow = this.NonGradedMarkResults.filter((f: any) => f.Subject.toLowerCase() == eachexam["Subject"].toLowerCase());
-                if (currentSubjectrow.length == 0)
+
+                if (currentSubjectrow.length == 0) {
                   this.NonGradedMarkResults.push({ "Subject": eachexam["Subject"], [examName]: eachexam["Marks"] });
+                }
                 else
                   currentSubjectrow[0][examName] = eachexam["Marks"]
               }
@@ -646,7 +651,7 @@ export class StudentprogressreportComponent implements OnInit {
           this.GradedMarksResults.push(OverAllGradeRow);
 
         }
-        console.log("this.ExamStudentResults", this.ExamStudentResults)
+        //console.log("this.ExamStudentResults", this.ExamStudentResults)
         // console.log("this.DisplayColumns", this.DisplayColumns)
         this.loading = false;
         this.PageLoading = false;

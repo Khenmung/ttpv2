@@ -68,7 +68,7 @@ export class AdmissionboardComponent implements AfterViewInit {
     var comindx = this.components.indexOf(AssignStudentclassdashboardComponent);
     this.GetComponents(perObj, comindx)    
     
-    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.PROMOTESTUDENT)
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.STUDENTADMISSION)
     comindx = this.components.indexOf(PromoteclassComponent);
     this.GetComponents(perObj, comindx)
     

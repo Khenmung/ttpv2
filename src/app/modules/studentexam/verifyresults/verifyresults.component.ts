@@ -465,7 +465,7 @@ export class VerifyResultsComponent implements OnInit {
 
     this.VerifiedResult.ExamStudentResult = [];
     var _examId = this.searchForm.get("searchExamId")?.value;
-    console.log("_examId", _examId);
+    //console.log("_examId", _examId);
     var _TotalDays = 0;
     this.StudentAttendanceList.forEach(f => {
       f.AttendanceDate = moment(f.AttendanceDate).format('YYYY-MM-DD');
@@ -537,7 +537,7 @@ export class VerifyResultsComponent implements OnInit {
         "PassCount": d["PassCount"]
       });
     })
-    console.log("verifiedresult", this.VerifiedResult)
+    //console.log("verifiedresult", this.VerifiedResult)
     this.dataservice.postPatch('ExamStudentResults', this.VerifiedResult, 0, 'post')
       .subscribe(
         (data: any) => {
@@ -1076,7 +1076,7 @@ export class VerifyResultsComponent implements OnInit {
                 ExamResultSubjectMarkData.SectionId = pSectionId;
                 ExamResultSubjectMarkData.SemesterId = pSemesterId;
                 ExamResultSubjectMarkData.StudentClassSubjectId = eachsubj.StudentClassSubjectId;
-                ExamResultSubjectMarkData.Grade = '';
+                ExamResultSubjectMarkData.Grade = 'Pass';
 
                 if (_subjectCategoryName == 'grading') {
 
@@ -1125,6 +1125,7 @@ export class VerifyResultsComponent implements OnInit {
                     ForNonGrading["FullMark"] = this.TotalMarkingSubjectFullMark;
 
                   if (failedInComponent || _statusFail) {
+                    ExamResultSubjectMarkData.Grade = 'Fail';
                     ForNonGrading["FailCount"] += 1;
                   }
                   else
@@ -1164,8 +1165,13 @@ export class VerifyResultsComponent implements OnInit {
                 //if (ss.RollNo == "49")
                 //  ForNonGrading["FailCount"] += 1;
                 //console.log("eachsubj.SubjectType.toLowerCase()", eachsubj.SubjectType.toLowerCase());
-                if (eachsubj.SubjectType.toLowerCase() === 'compulsory' && _subjectCategoryName=='marking')
+                if (eachsubj.SubjectType.toLowerCase() === 'compulsory' && _subjectCategoryName == 'marking') {
                   ForNonGrading["FailCount"] += 1;
+                  ExamResultSubjectMarkData.Grade = 'Fail';
+                }
+                else
+                  ExamResultSubjectMarkData.Grade = '';
+
                 ExamResultSubjectMarkData.Active = 1;
                 ExamResultSubjectMarkData.BatchId = this.SelectedBatchId;
                 ExamResultSubjectMarkData.ExamId = pExamId;
@@ -1179,7 +1185,7 @@ export class VerifyResultsComponent implements OnInit {
                 ExamResultSubjectMarkData.SectionId = pSectionId;
                 ExamResultSubjectMarkData.SemesterId = pSemesterId;
                 ExamResultSubjectMarkData.StudentClassSubjectId = eachsubj.StudentClassSubjectId;
-                ExamResultSubjectMarkData.Grade = '';
+                //ExamResultSubjectMarkData.Grade = '';
                 ForNonGrading[eachsubj.Subject] = '';
                 ForNonGrading["Total Marks"] = ForNonGrading["Total Marks"] ? ForNonGrading["Total Marks"] : 0;
                 ForNonGrading["Total Percent"] = ForNonGrading["Total Percent"] ? ForNonGrading["Total Percent"] : 0;
@@ -1210,8 +1216,8 @@ export class VerifyResultsComponent implements OnInit {
             ForNonGrading["Total Marks"] = ForNonGrading["Total Marks"].toFixed(2);
             this.ExamStudentSubjectResult.push(ForNonGrading);
             this.ExamStudentSubjectGrading.push(ForGrading);
-            if (ss.RollNo == "49")
-              console.log("this.ExamStudentSubjectResult.push(ForNonGrading);", ForNonGrading)
+            // if (ss.RollNo == "49")
+            //   console.log("this.ExamStudentSubjectResult.push(ForNonGrading);", ForNonGrading)
           }
         })//for each student;
 

@@ -604,10 +604,7 @@ export class studentprimaryinfoComponent implements OnInit {
     var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f: any) => f.Active == 1);
     this.ErrorMessage = '';
     _MandatoryColumns.forEach(b => {
-      if (this.studentForm.get(b.ReportName)?.value == undefined
-        || this.studentForm.get(b.ReportName)?.value == null
-        || this.studentForm.get(b.ReportName)?.value.length == 0
-        || this.studentForm.get(b.ReportName)?.value == 0) {
+      if (!this.studentForm.get(b.ReportName)?.value) {
         this.ErrorMessage += b.ReportName + " is required.\n";
       }
     })
@@ -742,6 +739,7 @@ export class studentprimaryinfoComponent implements OnInit {
               SectionId: result.SectionId,
               SemesterId: result.SemesterId,
               FeeTypeId: result.FeeTypeId,
+              StudentFeeTypes:[{"StudentFeeTypeId":result.StudentFeeTypeId,"FeeTypeId":result.FeeTypeId,"FromMonth":0,"ToMonth":0,"Discount":0,"IsCurrent":true}],
               RollNo: result.RollNo,
               Active: result.Active,
               BatchId: result.BatchId,

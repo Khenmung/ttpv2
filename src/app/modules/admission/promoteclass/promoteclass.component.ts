@@ -92,16 +92,12 @@ export class PromoteclassComponent implements OnInit {
   };
   displayedColumns = [
     'StudentName',
-    'GenderName',
-    'Remark',
-    //'SectionId',
-    //'RollNo',
-    'FeeTypeId',
     'ClassId',
+    'ExamStatus',
     'AdmitTo',
     'SemesterId',
     'SectionId',
-    'ExamStatus',
+    'FeeTypeId',
     'Remarks',
     'Active',
     'Action'
@@ -203,7 +199,7 @@ export class PromoteclassComponent implements OnInit {
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
         this.StandardFilterWithPreviousBatchId = globalconstants.getOrgSubOrgFilterWithPreviousBatchId(this.tokenStorage);
 
-        var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.SUBJECT.CLASSSTUDENT);
+        var perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.STUDENTADMISSION);
         if (perObj.length > 0)
           this.Permission = perObj[0].permission;
 
@@ -227,13 +223,9 @@ export class PromoteclassComponent implements OnInit {
         //this.shareddata.CurrentBatch.subscribe(b => this.Batches = b);
         this.Batches = this.tokenStorage.getBatches()!;
 
-        if (this.Classes.length == 0 || this.FeeTypes.length == 0 || this.Sections.length == 0) {
-          this.GetMasterData();
-          this.GetFeeTypes();
-        }
-        else {
-          this.loading = false; this.PageLoading = false;
-        }
+        this.GetMasterData();
+        this.GetFeeTypes();
+        this.loading = false; this.PageLoading = false;
         this.GetStudents();
       }
     }
@@ -561,20 +553,18 @@ export class PromoteclassComponent implements OnInit {
   ClassCategoryName = '';
   SetCategory(event) {
     this.ClassCategoryName = '';
-    var obj = this.Classes.filter((f: any) => f.ClassId == event.option.value.StudentClasses[0].ClassId);
-    if (obj.length > 0) {
-      this.ClassCategoryName = obj[0].Category;
+    var obj = this.Classes.find((f: any) => f.ClassId == event.option.value.ClassId);
+    if (obj) {
+      this.ClassCategoryName = obj.Category;
     }
     if (this.ClassCategoryName == 'high school') {
       this.displayedColumns = [
         'StudentName',
-        'GenderName',
-        'Remark',
-        'SectionId',
-        'FeeTypeId',
         'ClassId',
         'ExamStatus',
         'AdmitTo',
+        'SectionId',
+        'FeeTypeId',
         'Remarks',
         'Active',
         'Action'
@@ -583,14 +573,11 @@ export class PromoteclassComponent implements OnInit {
     else if (this.ClassCategoryName == 'college') {
       this.displayedColumns = [
         'StudentName',
-        'GenderName',
-        'Remark',
-        'SectionId',
-        'FeeTypeId',
         'ClassId',
-        'SemesterId',
         'ExamStatus',
         'AdmitTo',
+        'SemesterId',
+        'FeeTypeId',
         'Remarks',
         'Active',
         'Action'
@@ -713,13 +700,11 @@ export class PromoteclassComponent implements OnInit {
     if (this.SelectedClassCategory == globalconstants.CategoryCollege)
       this.displayedColumns = [
         'StudentName',
-        'GenderName',
-        'Remark',
-        'FeeTypeId',
         'ClassId',
+        'ExamStatus',
         'AdmitTo',
         'SemesterId',
-        'ExamStatus',
+        'FeeTypeId',
         'Remarks',
         'Active',
         'Action'
@@ -727,13 +712,11 @@ export class PromoteclassComponent implements OnInit {
     else
       this.displayedColumns = [
         'StudentName',
-        'GenderName',
-        'Remark',
-        'FeeTypeId',
         'ClassId',
+        'ExamStatus',
         'AdmitTo',
         'SectionId',
-        'ExamStatus',
+        'FeeTypeId',
         'Remarks',
         'Active',
         'Action'
@@ -906,10 +889,10 @@ export class PromoteclassComponent implements OnInit {
 
   }
   generateDetail(element) {
-
+debugger;
 
     let studentclass: any = this.PreviousBatchStudents.find(sid => sid.Student.StudentId == element.StudentId);
-    let StudentName = studentclass.Student.Name + ', ' + studentclass.Student.FatherName + ', ' + studentclass.Student.MotherName + ', ';
+    let StudentName = studentclass.Student.PID + "-" + studentclass.Student.FirstName + ', ' + studentclass.Student.FatherName + ', ' + studentclass.Student.MotherName + ', ';
     if (studentclass) {
       var _clsName = '';
       var objcls = this.Classes.find((f: any) => f.ClassId == element.AdmitTo);
@@ -1155,7 +1138,7 @@ export class PromoteclassComponent implements OnInit {
               }
               _studentAllFeeTypes = [];
 
-              studcls.StudentClasses[0].StudentFeeTypes.forEach(item => {
+              studcls.StudentFeeTypes.forEach(item => {
                 _studentAllFeeTypes.push(
                   { FeeTypeId: item.FeeTypeId, FeeName: item.FeeType.FeeName, Formula: item.FeeType.Formula })
               })
@@ -1282,7 +1265,7 @@ export class PromoteclassComponent implements OnInit {
         "ClassAdmissionSought,LastSchoolPercentage,TransferFromSchool,TransferFromSchoolBoard,ClubId,HouseId,RemarkId,Remark2Id," +
         "AdmissionStatusId,AdmissionDate,Notes,EmailAddress,Active,ReasonForLeavingId,IdentificationMark,BoardRegistrationNo"
       list.PageName = "StudentClasses";
-      list.lookupFields = ["Student($select=" + studentfield + ")"]
+      list.lookupFields = ["Student($select=" + studentfield + "),StudentFeeTypes($select=FromMonth,ToMonth,FeeTypeId,IsCurrent,Discount,Active;$expand=FeeType($select=FeeTypeName,Formula,Active))"]
       list.filter = [this.StandardFilterWithPreviousBatchId + ' and Active eq 1'];
 
       this.dataservice.get(list)

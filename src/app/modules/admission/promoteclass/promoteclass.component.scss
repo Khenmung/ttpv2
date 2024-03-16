@@ -17,13 +17,14 @@ mat-cell,mat-header-cell{
 }
 .mat-column-Active{
     justify-content: center;
-    flex:1 1 100px;
+    flex:1 0 80px;
 }
 .mat-column-GenderName
 {
     justify-content: center;
-    flex:1 1 80px;
+    flex:1 0 80px;
 }
+.mat-column-ExamStatus,
 .mat-column-SemesterId,
 .mat-column-SectionId,
 .mat-column-CourseYearId,
@@ -33,7 +34,7 @@ mat-cell,mat-header-cell{
     flex:1 0 100px;
 }
 
-.mat-column-AdmitTo,.mat-column-ExamStatus,.mat-column-Action, 
+.mat-column-AdmitTo,.mat-column-Action, 
 .mat-column-StudentName,.mat-column-FeeTypeId,.mat-column-Remarks{
     flex:1 0 150px;
 }

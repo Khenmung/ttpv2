@@ -13,7 +13,7 @@
     </mat-card-subtitle>
     <mat-card-content>
         <mat-spinner *ngIf="PageLoading" diameter="25"
-            style="position:relative;margin-bottom:15px;margin-left: 50%;"></mat-spinner>
+            style="position:relative;margin:15px;margin-left: 50%;"></mat-spinner>
         <div id="printSection">
             <div
                 style="margin-right:0px;margin-left:0px;width: 100%;box-sizing: border-box;padding: 15px; border: 1px solid lightgray; display: flex; justify-content: center;flex-direction: column;">
@@ -79,7 +79,12 @@
                                     *ngIf="disCol!='Subject'">{{disCol}}</span>
                             </mat-header-cell>
                             <mat-cell *matCellDef="let element">
-                                {{element[disCol]}}
+                                <span style="align-self: stretch;color:red"
+                                    *ngIf="disCol!=='Subject' && (element[disCol]+'').includes('(')">{{element[disCol]}}</span>
+                                <span style="align-self: stretch;"
+                                    *ngIf="disCol!=='Subject' && !(element[disCol]+'').includes('(')">{{element[disCol]}}</span>
+                                <span style="align-self: stretch;"
+                                    *ngIf="disCol==='Subject'">{{element[disCol]}}</span>
                             </mat-cell>
                         </ng-container>
                         <mat-header-row *matHeaderRowDef="NonGradedDisplayColumns" class="element-row"></mat-header-row>
