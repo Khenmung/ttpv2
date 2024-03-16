@@ -604,10 +604,7 @@ export class studentprimaryinfoComponent implements OnInit {
     var _MandatoryColumns = this.ColumnsOfSelectedReports.filter((f: any) => f.Active == 1);
     this.ErrorMessage = '';
     _MandatoryColumns.forEach(b => {
-      if (this.studentForm.get(b.ReportName)?.value == undefined
-        || this.studentForm.get(b.ReportName)?.value == null
-        || this.studentForm.get(b.ReportName)?.value.length == 0
-        || this.studentForm.get(b.ReportName)?.value == 0) {
+      if (!this.studentForm.get(b.ReportName)?.value) {
         this.ErrorMessage += b.ReportName + " is required.\n";
       }
     })

@@ -92,13 +92,14 @@ export class AddStudentFeetypeComponent {
       }
       else {
         debugger;
+        this.StudentClassId = this.tokenStorage.getStudentClassId()!;
         this.Months = this.contentservice.GetSessionFormattedMonths();
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
         this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.FilterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
-        this.StudentClassId = this.tokenStorage.getStudentClassId()!;
+        
         this.contentservice.GetClasses(this.FilterOrgSubOrg)
           .subscribe((data: any) => {
             if (data.value) this.Classes = [...data.value]; else this.Classes = [...data];
@@ -129,7 +130,8 @@ export class AddStudentFeetypeComponent {
   GetStudentClass() {
     debugger;
     var _students: any = this.tokenStorage.getStudents()!;
-    this.StudentClass = _students.find(a => a.StudentClasses.length > 0 && a.StudentClasses[0].StudentClassId == this.StudentClassId).StudentClasses[0];
+    let studcls = _students.find(a => a.StudentClasses.length > 0 && a.StudentClasses[0].StudentClassId == this.StudentClassId)
+    this.StudentClass = studcls.StudentClasses[0];
   }
   onBlur(element) {
     element.Action = true;
