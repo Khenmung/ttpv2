@@ -71,7 +71,7 @@
                     <mat-icon>download</mat-icon>
                 </button>
             </form>
-            <div id="printSection">
+            <div id="printSection" style="border: 1px solid lightgray;">
                 <div style="display:flex;flex-direction: column; justify-content:center">
                     <div style="display:flex;justify-content: center;">
                         <div style="margin-right: 15px;" *ngIf="logourl.length>0" [innerHTML]="logourl"></div>
@@ -81,12 +81,12 @@
                             </div>
                         </div>
                     </div>
-                    <div style="display:flex;font-weight:700;margin: 15px;width: 80%;justify-content: space-between;">
+                    <div style="display:flex;font-weight:700;margin: 15px;width: 90%;align-self: center; border-bottom: 1px solid lightgray; justify-content: space-between;">
                         <div>{{ClassName}}</div>
                         <div>{{ExamName}}</div>
                     </div>
                     <div *ngFor="let data of DisplayCategories;let indx=index">
-                        <div style="margin-top:15px;font-weight: bold;">{{ResultCategories[indx].MasterDataName}}</div>
+                        <div style="margin-top:15px;margin-left: 45px; font-weight: bold;">{{ResultCategories[indx].MasterDataName}}</div>
                         <mat-table #table [dataSource]="GetDataSource(DisplayCategories[indx],indx)" matSort>
 
                             <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index"
