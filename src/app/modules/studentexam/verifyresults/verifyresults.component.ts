@@ -1076,7 +1076,7 @@ export class VerifyResultsComponent implements OnInit {
                 ExamResultSubjectMarkData.SectionId = pSectionId;
                 ExamResultSubjectMarkData.SemesterId = pSemesterId;
                 ExamResultSubjectMarkData.StudentClassSubjectId = eachsubj.StudentClassSubjectId;
-                ExamResultSubjectMarkData.Grade = 'Pass';
+                ExamResultSubjectMarkData.Grade = '';
 
                 if (_subjectCategoryName == 'grading') {
 
@@ -1128,8 +1128,11 @@ export class VerifyResultsComponent implements OnInit {
                     ExamResultSubjectMarkData.Grade = 'Fail';
                     ForNonGrading["FailCount"] += 1;
                   }
-                  else
+                  else {
+                    ExamResultSubjectMarkData.Grade = 'Pass';
                     ForNonGrading["PassCount"] += 1;
+                  }
+
                   // if (eachsubj.Subject == 'Geography') {
                   //   debugger;
                   // }
@@ -1160,11 +1163,6 @@ export class VerifyResultsComponent implements OnInit {
                 }
               }
               else {
-                // if (eachsubj.SubjectType.toLowerCase() === 'elective')
-                //         ElectivePassed += 1;
-                //if (ss.RollNo == "49")
-                //  ForNonGrading["FailCount"] += 1;
-                //console.log("eachsubj.SubjectType.toLowerCase()", eachsubj.SubjectType.toLowerCase());
                 if (eachsubj.SubjectType.toLowerCase() === 'compulsory' && _subjectCategoryName == 'marking') {
                   ForNonGrading["FailCount"] += 1;
                   ExamResultSubjectMarkData.Grade = 'Fail';
@@ -1354,23 +1352,12 @@ export class VerifyResultsComponent implements OnInit {
         this.dataSource.sort = this.sort.toArray()[0];
 
 
-        // this.dataSource.paginator = this.nonGradingPaginator;//.toArray()[0];
-        // this.dataSource.sort = this.nonGradingSort;
-        //this.dataSource.sort = this.sort.toArray()[0];
-        ////console.log("this.ExamStudentSubjectResult",this.ExamStudentSubjectResult);
-        ////console.log("columns",this.displayedColumns);
-
         this.GradingDataSource = new MatTableDataSource<any[]>(this.ExamStudentSubjectGrading);
         this.GradingDataSource.paginator = this.paginator.toArray()[1];
         this.GradingDataSource.sort = this.sort.toArray()[1];
-        //this.GradingDataSource.paginator = this.paginator.toArray()[1];
-        //this.GradingDataSource.sort = this.sort.toArray()[1];
 
         this.Loading(false);
         this.PageLoading = false;
-        ////console.log("ClickedVerified",this.ClickedVerified)
-        ////console.log("SectionSelected",this.SectionSelected)
-        ////console.log("this.ExamReleased",this.ExamReleased)
       })
     //})
   }

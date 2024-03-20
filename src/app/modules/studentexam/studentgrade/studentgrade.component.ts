@@ -10,6 +10,8 @@ import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
+import * as _ from 'lodash';
+
 @Component({
   selector: 'app-studentgrade',
   templateUrl: './studentgrade.component.html',
@@ -472,9 +474,10 @@ export class StudentgradeComponent implements OnInit {
               d.ClassGroupId =_ClassGroupId;
               return d;
             });
-          this.StudentGradeList = this.StudentGradeList.sort((a, b) => a.Sequence - b.Sequence);
+          this.StudentGradeList = _.sortBy(this.StudentGradeList, ['Active', 'Sequence']);
+          this.StudentGradeList = _.orderBy(this.StudentGradeList, 'Active', 'desc');
         }
-
+       
         if (this.StudentGradeList.length == 0) {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         }

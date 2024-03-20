@@ -838,10 +838,10 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     //var _FeeTypeId = this.searchForm.get("searchFeeTypeId")?.value;
     var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     let _sectionId = this.searchForm.get("searchSectionId")?.value;
-    if (_classId && !_semesterId && !_sectionId) {
+    if (!_classId) {
       this.loading = false;
       this.PageLoading = false;
-      this.contentservice.openSnackBar("Please select semester or section.", globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     let students: any = [];
@@ -851,14 +851,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         && s.StudentClasses[0].SectionId == _sectionId)
         //&& s.StudentClasses[0].FeeTypeId == _FeeTypeId)
     }
-    // else if (!_classId && _FeeTypeId) {
-    //   students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].FeeTypeId == _FeeTypeId)
-    // }
-    // else if (_classId && !_FeeTypeId) {
-    //   students = this.AllStudents.filter((s: any) => s.StudentClasses.length > 0 && s.StudentClasses[0].ClassId == _classId
-    //     && s.StudentClasses[0].SemesterId == _semesterId
-    //     && s.StudentClasses[0].SectionId == _sectionId)
-    // }
+   
     return students;
   }
   PreviousClassId = 0;
@@ -922,7 +915,6 @@ export class AssignStudentclassdashboardComponent implements OnInit {
         'AdmissionNo',
         'AdmissionDate',
         'StudentId',
-        //'FeeTypeId',
         'ClassId',
         'SemesterId',
         'RollNo',

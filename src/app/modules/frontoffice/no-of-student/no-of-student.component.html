@@ -48,9 +48,15 @@
     </mat-table>
 </div>
 <mat-paginator style="display: flex;justify-content: center;" [pageSizeOptions]="[5,10,25,50,100]"></mat-paginator>
-<div style="display:flex;justify-content: center;width:100%;margin-top: 15px;">
+<div style="display:flex;flex-direction: row; justify-content: center;width:100%;margin-top:15px">
     <button [disabled]="loading || StudentCount.length==0" matTooltip="print" printSectionId="printSection"
-        [useExistingCss]="true" color="accent" ngxPrint mat-raised-button>
+        style="margin:0px 15px 0px 0px;" [useExistingCss]="true" color="accent" ngxPrint mat-raised-button>
         <mat-icon>print</mat-icon>
+    </button>
+    <button [disabled]="loading || StudentCount.length==0" (click)="exportArray()" matTooltip="download in excel" mat-raised-button color="accent">
+        <mat-icon>download</mat-icon>
+        <mat-icon *ngIf="loading">
+            <mat-spinner diameter="25"></mat-spinner>
+        </mat-icon>
     </button>
 </div>

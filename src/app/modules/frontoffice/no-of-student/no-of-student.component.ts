@@ -15,6 +15,7 @@ import { List } from '../../../shared/interface';
 import { SharedataService } from '../../../shared/sharedata.service';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 import { SwUpdate } from '@angular/service-worker';
+import { TableUtil } from '../../../shared/TableUtil';
 @Component({
   selector: 'app-no-of-student',
   templateUrl: './no-of-student.component.html',
@@ -417,7 +418,13 @@ export class NoOfStudentComponent implements OnInit {
     });
   }
 
-
+  exportArray() {
+    if (this.StudentCount.length > 0) {
+      this.StudentCount = this.StudentCount.map(({ClassId,Sequence,SectionSequence,Gender,...item})=>item);
+      const datatoExport: Partial<any>[] = this.StudentCount;
+      TableUtil.exportArrayToExcel(datatoExport, "NoOfStudents");
+    }
+  }
   isNumeric(str: number) {
     if (typeof str != "string") return false // we only process strings!  
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...

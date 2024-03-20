@@ -28,7 +28,7 @@ export class PromoteclassComponent implements OnInit {
   @ViewChild("table") mattable;
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
   RowsToUpdate = -1;
-  //RowsT = 0;
+  Defaultvalue = 0;
   RollNoGenerationSortBy = '';
   SearchSectionId = 0;
   Permission = '';
@@ -64,6 +64,7 @@ export class PromoteclassComponent implements OnInit {
   PreviousBatchId = 0;
   NextBatchId = 0;
   Batches: any[] = [];
+  EmployeeClassList:any=[];
   filteredStudents: Observable<IStudent[]>;
   StudentClassList: IStudentClass[] = [];
   dataSource: MatTableDataSource<IStudentClass>;
@@ -188,7 +189,7 @@ export class PromoteclassComponent implements OnInit {
         //var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
 
         this.Batches = this.tokenStorage.getBatches()!;
-
+        this.EmployeeClassList = this.tokenStorage.getEmployeeClasses();
         //this.shareddata.CurrentBatchId.subscribe(c => this.CurrentBatchId = c);
         this.CurrentBatchStudents = this.tokenStorage.getStudents()!;
         this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
@@ -738,113 +739,118 @@ export class PromoteclassComponent implements OnInit {
     var _StudentId = this.searchForm.get("searchStudentName")?.value.StudentId;
     var _PId = this.searchForm.get("searchPID")?.value;
     var _examId = this.searchForm.get("searchExamId")?.value;
-    if (_StudentId == undefined && _PId == 0) {
+    if (!_StudentId && _PId == 0) {
       this.loading = false;
       this.contentservice.openSnackBar("Please select student.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    if (_examId == 0) {
-      this.loading = false;
-      this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
+
     if (_PId > 0) {
       let studId = this.PreviousBatchStudents.find((s: any) => s["PID"] == _PId)
       if (studId)
         _StudentId = studId.StudentId;
     }
     this.loading = true;
-    this.GetExamResult(this.PreviousBatchId, _StudentId)
-      .subscribe((examresult: any) => {
+    if (_examId == 0) {
+      // this.loading = false;
+      // this.contentservice.openSnackBar("Please select exam.", globalconstants.ActionText, globalconstants.RedBackground);
+      // return;
+      this.Display([], _StudentId);
+    }
+    else {
+      this.GetExamResult(this.PreviousBatchId, _StudentId)
+        .subscribe((examresult: any) => {
+          this.Display(examresult.value, _StudentId);
+        })
+    }
+  }
+  Display(examresult, pStudentId) {
+    this.StudentClassList = [];
+    var _defaultTypeId = 0;
+    var defaultFeeTypeObj = this.FeeTypes.find((f: any) => f.DefaultType == 1);
+    if (defaultFeeTypeObj)
+      _defaultTypeId = defaultFeeTypeObj.FeeTypeId;
+    var _previousStudent: any = this.PreviousBatchStudents.find(studnt => studnt.StudentId == pStudentId)
+    var alreadyPromoted = this.CurrentBatchStudents.find(studnt => studnt.StudentId == pStudentId)
 
-        this.StudentClassList = [];
-        var _defaultTypeId = 0;
-        var defaultFeeTypeObj = this.FeeTypes.find((f: any) => f.DefaultType == 1);
-        if (defaultFeeTypeObj)
-          _defaultTypeId = defaultFeeTypeObj.FeeTypeId;
-        var _previousStudent: any = this.PreviousBatchStudents.find(studnt => studnt.StudentId == _StudentId)
-        var alreadyPromoted = this.CurrentBatchStudents.find(studnt => studnt.StudentId == _StudentId)
+    if (_previousStudent) {
+      var _examStatus = '';
+      var objexam = examresult.find(ex => ex.StudentId == _previousStudent.StudentId)
+      if (objexam)
+        _examStatus = objexam.Division;
+      var currentClassIndex = this.Classes.findIndex(i => i.ClassId == _previousStudent.StudentClasses[0].ClassId);
+      var _admitToClassId = 0, _admitToNextClassId = 0;
+      if (_examStatus.toLowerCase().includes("fail") || _examStatus == '') {
+        _admitToClassId = this.Classes[currentClassIndex].ClassId;
+        _admitToNextClassId = this.Classes[currentClassIndex + 1].ClassId;
+        this.AdmitToClasses = this.Classes.filter(c => c.ClassId == _admitToClassId || c.ClassId == _admitToNextClassId);
+      }
+      else {
+        _admitToClassId = this.Classes[currentClassIndex + 1].ClassId;
+        this.AdmitToClasses = this.Classes.filter(c => c.ClassId == _admitToClassId);
+      }
 
+      let _studentClassId = 0;
+      let _admissionDate = new Date();
+      let _admissionStatus = 0;
 
-        //this.Students.forEach((s:any) => {
-        if (_previousStudent) {
-          var _examStatus = '';
-          var objexam = examresult.value.find(ex => ex.StudentId == _previousStudent.StudentId)
-          if (objexam) {
-            _examStatus = objexam.Division;
-            var currentClassIndex = this.Classes.findIndex(i => i.ClassId == objexam.StudentClass.ClassId);
-            var _admitToClassId = 0;
-            if (_examStatus.toLowerCase().includes("fail")) {
-              _admitToClassId = this.Classes[currentClassIndex].ClassId;
-              this.AdmitToClasses = this.Classes.filter(c => c.ClassId == _admitToClassId);
-            }
-            else {
-              _admitToClassId = this.Classes[currentClassIndex + 1].ClassId;
-              this.AdmitToClasses = this.Classes.filter(c => c.ClassId == _admitToClassId);
-            }
+      if (alreadyPromoted &&
+        alreadyPromoted.StudentClasses && alreadyPromoted.StudentClasses.length > 0) {
+        //_admissionDate = objexam[0].StudentClass.AdmissionDate;
+        _studentClassId = alreadyPromoted.StudentClasses[0].StudentClassId;
+        _admissionStatus = 1;
+      }
+      var _genderName = '';
+      var genderObj = this.Genders.find((f: any) => f.MasterDataId == _previousStudent.GenderId);
+      if (genderObj)
+        _genderName = genderObj.MasterDataName;
+      var feetypeobj = this.FeeTypes.find(t => t.FeeTypeId == _defaultTypeId);
 
-            let _studentClassId = 0;
-            let _admissionDate = new Date();
-            let _admissionStatus = 0;
+      var _feetype = ''
+      if (feetypeobj)
+        _feetype = feetypeobj.FeeTypeName;
+      //var _lastname = _Student[0].Student.LastName == null ? '' : " " + _Student[0].Student.LastName;
+      this.StudentClassList.push({
+        PID: _previousStudent.PID,
+        StudentClassId: _studentClassId,
+        AdmissionDate: _admissionDate,
+        ClassId: _previousStudent.StudentClasses[0].ClassId,
+        AdmitTo: _admitToClassId,
+        StudentId: _previousStudent.StudentId,
+        StudentName: _previousStudent.Name,
+        ClassName: this.Classes.find(c => c.ClassId == _previousStudent.StudentClasses[0].ClassId).ClassName,
+        FeeTypeId: _defaultTypeId,
+        FeeType: _feetype,
+        RollNo: _previousStudent.StudentClasses[0].RollNo,
+        SectionId: _previousStudent.StudentClasses[0].SectionId,
+        SemesterId: _previousStudent.StudentClasses[0].SemesterId,
+        Section: _previousStudent.StudentClasses[0].SectionId > 0 ? this.Sections.find(sc => sc.MasterDataId == _previousStudent.StudentClasses[0].SectionId).MasterDataName : '',
+        Active: _admissionStatus,
+        Promote: 0,
+        Remarks: '',
+        GenderName: _genderName,
+        ExamStatus: _examStatus,
+        Action: false
+      });
 
-            if (alreadyPromoted &&
-              alreadyPromoted.StudentClasses && alreadyPromoted.StudentClasses.length > 0) {
-              //_admissionDate = objexam[0].StudentClass.AdmissionDate;
-              _studentClassId = alreadyPromoted.StudentClasses[0].StudentClassId;
-              _admissionStatus = 1;
-            }
-            var _genderName = '';
-            var genderObj = this.Genders.find((f: any) => f.MasterDataId == _previousStudent.GenderId);
-            if (genderObj)
-              _genderName = genderObj.MasterDataName;
-            var feetypeobj = this.FeeTypes.find(t => t.FeeTypeId == _defaultTypeId);
-
-            var _feetype = ''
-            if (feetypeobj)
-              _feetype = feetypeobj.FeeTypeName;
-            //var _lastname = _Student[0].Student.LastName == null ? '' : " " + _Student[0].Student.LastName;
-            this.StudentClassList.push({
-              PID: _previousStudent.PID,
-              StudentClassId: _studentClassId,
-              AdmissionDate: _admissionDate,
-              ClassId: objexam.StudentClass.ClassId,
-              AdmitTo: _admitToClassId,
-              StudentId: _previousStudent.StudentId,
-              StudentName: _previousStudent.Name,
-              ClassName: this.Classes.find(c => c.ClassId == objexam.StudentClass.ClassId).ClassName,
-              FeeTypeId: _defaultTypeId,
-              FeeType: _feetype,
-              RollNo: objexam.StudentClass.RollNo,
-              SectionId: objexam.StudentClass.SectionId,
-              SemesterId: objexam.StudentClass.SemesterId,
-              Section: objexam.StudentClass.SectionId > 0 ? this.Sections.find(sc => sc.MasterDataId == objexam.StudentClass.SectionId).MasterDataName : '',
-              Active: _admissionStatus,
-              Promote: 0,
-              Remarks: '',
-              GenderName: _genderName,
-              ExamStatus: _examStatus,
-              Action: false
-            });
-          }
-          else {
-            this.loading = false;
-            this.contentservice.openSnackBar("No exam result found for this student!", globalconstants.ActionText, globalconstants.RedBackground);
-          }
-        }
-        else if (this.StudentClassList.length == 0) {
-          this.HeaderTitle = '';
-          this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
-        }
-        if (this.StudentClassList[0])
-          this.AdmitToChange(this.StudentClassList[0]);
-        //console.log("classid",this.StudentClassList)
-        this.dataSource = new MatTableDataSource<IStudentClass>(this.StudentClassList.sort((a, b) => +a.RollNo - +b.RollNo));
-        //this.dataSource.sort = this.sort;
-        //this.dataSource.paginator = this.paginator;
-        //this.dataSource.filterPredicate = this.createFilter();
-        this.loading = false;
-        this.PageLoading = false;
-      })
+      // else {
+      //   this.loading = false;
+      //   this.contentservice.openSnackBar("No exam result found for this student!", globalconstants.ActionText, globalconstants.RedBackground);
+      // }
+    }
+    else if (this.StudentClassList.length == 0) {
+      this.HeaderTitle = '';
+      this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
+    }
+    if (this.StudentClassList[0])
+      this.AdmitToChange(this.StudentClassList[0]);
+    //console.log("classid",this.StudentClassList)
+    this.dataSource = new MatTableDataSource<IStudentClass>(this.StudentClassList.sort((a, b) => +a.RollNo - +b.RollNo));
+    //this.dataSource.sort = this.sort;
+    //this.dataSource.paginator = this.paginator;
+    //this.dataSource.filterPredicate = this.createFilter();
+    this.loading = false;
+    this.PageLoading = false;
     //})
   }
   clear() {
@@ -889,7 +895,7 @@ export class PromoteclassComponent implements OnInit {
 
   }
   generateDetail(element) {
-debugger;
+    debugger;
 
     let studentclass: any = this.PreviousBatchStudents.find(sid => sid.Student.StudentId == element.StudentId);
     let StudentName = studentclass.Student.PID + "-" + studentclass.Student.FirstName + ', ' + studentclass.Student.FatherName + ', ' + studentclass.Student.MotherName + ', ';
@@ -1062,7 +1068,8 @@ debugger;
             SemesterId: this.StudentClassData.SemesterId,
             Remarks: this.StudentClassData.Remarks,
             AdmissionNo: data.AdmissionNo,
-            AdmissionDate: data.AdmissionDate
+            AdmissionDate: data.AdmissionDate,
+            StudentFeeTypes:[...NewStudentFromPrevious.StudentClasses[0].StudentFeeTypes]
           }];
           NewStudentFromPrevious.StudentClasses = [...cls];
           row.Action = false;
@@ -1254,53 +1261,125 @@ debugger;
     this.PreviousBatchStudents = this.tokenStorage.getPreviousBatchStudents()!;
     if (this.PreviousBatchStudents.length == 0) {
       this.loading = true;
+      this.StandardFilterWithPreviousBatchId += this.GetEmployeeClassIds();
+      this.StandardFilterWithPreviousBatchId += " and IsCurrent eq true";
+
       let list: List = new List();
       list.fields = [
-        "ClassId,StudentClassId,SectionId,SemesterId,FeeTypeId,StudentId"
+        "ClassId,StudentClassId,SectionId,SemesterId,FeeTypeId,StudentId,RollNo"
       ];
       let studentfield = "PID,StudentId,FirstName,LastName,FatherName,FatherOccupation,MotherName,Height,Weight," +
         "MotherOccupation,GenderId,PermanentAddress,PresentAddress,DOB,BloodgroupId,CategoryId,AccountHolderName," +
         "BankAccountNo,IFSCCode,MICRNo,AdhaarNo,Photo,ReligionId,PersonalNo,WhatsAppNumber,FatherContactNo,MotherContactNo," +
         "PrimaryContactFatherOrMother,NameOfContactPerson,RelationWithContactPerson,ContactPersonContactNo,AlternateContact," +
         "ClassAdmissionSought,LastSchoolPercentage,TransferFromSchool,TransferFromSchoolBoard,ClubId,HouseId,RemarkId,Remark2Id," +
-        "AdmissionStatusId,AdmissionDate,Notes,EmailAddress,Active,ReasonForLeavingId,IdentificationMark,BoardRegistrationNo"
+        "AdmissionStatusId,AdmissionDate,Notes,EmailAddress,Active,ReasonForLeavingId,IdentificationMark,BoardRegistrationNo,Deleted"
       list.PageName = "StudentClasses";
-      list.lookupFields = ["Student($select=" + studentfield + "),StudentFeeTypes($select=FromMonth,ToMonth,FeeTypeId,IsCurrent,Discount,Active;$expand=FeeType($select=FeeTypeName,Formula,Active))"]
+      list.lookupFields = ["Student($select=" + studentfield + "),StudentFeeTypes($select=FromMonth,ToMonth,FeeTypeId,IsCurrent,Discount,Active)"]
       list.filter = [this.StandardFilterWithPreviousBatchId + ' and Active eq 1'];
 
       this.dataservice.get(list)
         .subscribe((data: any) => {
-          //debugger;
-          //  ////console.log('data.value', data.value);
-          let _students: any = [...data.value]; //this.tokenStorage.getStudents()!;
-          let _sectionName = '', _className = '';
+          let result = data.value.filter(s => s.Student.Deleted == false);
           this.PreviousBatchStudents = [];
-          _students.forEach(student => {
-
-            _sectionName = '', _className = '';
-            let _lastname = !student.Student.LastName ? '' : " " + student.Student.LastName;
-
-            //if (student.StudentClasses) {
-            if (student.SectionId)
-              _sectionName = this.Sections.find(c => c.MasterDataId == student.SectionId).MasterDataName;
-            if (student.ClassId)
-              _className = this.Classes.find(c => c.ClassId == student.ClassId).ClassName;
-            student.Name = student.Student.PID + '-' + student.Student.FirstName + _lastname + " " + _className + " " + _sectionName;
-            this.PreviousBatchStudents.push(student);
+          var _classNameobj;
+          var _className = '';
+          var _studentClassId = 0;
+          var _remark1 = '';
+          var _remark2 = '';
+          var _Section = '';
+          var _semester = '';
+          var _lastname = '';
+          var _name = '';
+          let newStudents:any=[];
+          for (let i = 0; i < result.length; i++) {
+  
+            let stud = JSON.parse(JSON.stringify(result[i].Student));
+            newStudents.push(stud);
+  
+            let feetypes = JSON.parse(JSON.stringify(result[i].StudentFeeTypes));
+            
+            delete result[i].Student;
+            delete result[i].StudentFeeTypes;
+  
+            let cls =  JSON.parse(JSON.stringify(result[i]));
+            newStudents[i].StudentClasses =[];
+            newStudents[i].StudentClasses.push(cls);
+            newStudents[i].StudentClasses[0].StudentFeeTypes =feetypes;        
+            
+            _classNameobj;
+            _className = '';
+            _studentClassId = 0;
+            //if (d.StudentClasses.length > 0) {
+            _classNameobj = this.Classes.find(c => c.ClassId == newStudents[i].StudentClasses[0].ClassId);
+            if (_classNameobj)
+              _className = _classNameobj.ClassName;
+  
+            _remark1 = '';
+            _remark2 = '';
+            if (newStudents[i].RemarkId) {
+              var _remarkObj = this.Remark1.find((f: any) => f.MasterDataId == newStudents[i].RemarkId);
+              if (_remarkObj)
+                _remark1 = _remarkObj.MasterDataName;
+            }
+            if (newStudents[i].Remark2Id) {
+              var _remark2Obj = this.Remark2.find((f: any) => f.MasterDataId == newStudents[i].Remark2Id);
+              if (_remark2Obj)
+                _remark2 = _remark2Obj.MasterDataName;
+            }
+            _Section = '';
+            var _sectionobj = this.Sections.find((f: any) => f.MasterDataId == newStudents[i].StudentClasses[0].SectionId);
+            if (_sectionobj)
+              _Section = _sectionobj.MasterDataName;
+            _semester = '';
+            var _semesterobj = this.Semesters.find((f: any) => f.MasterDataId == newStudents[i].StudentClasses[0].SemesterId);
+            if (_semesterobj)
+              _semester = _semesterobj.MasterDataName;
+  
+            //var _RollNo = d.StudentClasses[0].RollNo;
+            _studentClassId = newStudents[i].StudentClasses[0].StudentClassId;
             //}
-          })
+            _lastname = newStudents[i].LastName == null ? '' : " " + newStudents[i].LastName;
+  
+            _name = newStudents[i].PID +"-"+ newStudents[i].FirstName + _lastname + "-" + _className + "-" + _Section + "-" + newStudents[i].StudentClasses[0].RollNo;
+            //var _fullDescription = _name + "-" + _className + "-" + _Section + "-" + _RollNo;
+  
+            newStudents[i].RollNo = newStudents[i].StudentClasses[0].RollNo;
+            newStudents[i].Name = _name;
+            newStudents[i].ClassName = _className;
+            newStudents[i].Section = _Section;
+            newStudents[i].Semester = _semester;
+            newStudents[i].Remark1 = _remark1;
+            newStudents[i].Remark2 = _remark2;
+            newStudents[i].StudentClassId = _studentClassId;
+            this.PreviousBatchStudents.push(newStudents[i]);
+            // });
+          }
           this.loading = false;
           this.PageLoading = false;
           this.tokenStorage.savePreviousBatchStudents(this.PreviousBatchStudents);
         })
     }
   }
+  GetEmployeeClassIds() {
+    let filter = '';
+    this.EmployeeClassList.forEach(item => {
+      if (filter.length == 0)
+        filter = " and (ClassId eq " + item;
+      else
+        filter += " or ClassId eq " + item;
+    })
+    if (filter.length > 0)
+      filter += ")"
+    return filter;
+  }
+  Remark1:any=[];
+  Remark2:any=[];
+
   GetMasterData() {
     this.allMasterData = this.tokenStorage.getMasterData()!;
-    // this.contentservice.GetCommonMasterData(this.LoginUserDetail[0]["orgId"], this.SelectedApplicationId)
-    //   .subscribe((data: any) => {
-    //     debugger;
-    //     this.allMasterData = [...data.value];
+    this.Remark1 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK1);
+    this.Remark2 = this.getDropDownData(globalconstants.MasterDefinitions.school.STUDENTREMARK2);
     this.RollNoGeneration = this.getDropDownData(globalconstants.MasterDefinitions.school.ROLLNOGENERATION);
     this.Genders = this.getDropDownData(globalconstants.MasterDefinitions.school.SCHOOLGENDER);
     this.Sections = this.getDropDownData(globalconstants.MasterDefinitions.school.SECTION);

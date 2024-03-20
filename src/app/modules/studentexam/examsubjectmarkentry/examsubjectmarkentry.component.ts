@@ -717,7 +717,6 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
           this.GetOneExamResult([]);
       }
       else
-      // this.GetOneExamResult([]);
       {
         this.ExamMarkFormula = '';
         this.ExamMarkFormula = _examMarkFormulaObj[0].Formula;
@@ -730,22 +729,6 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       this.GetMultiExamsStudentSubjectResults(this.ExamMarkFormula);
     }
 
-    // if (_examMarkFormulaObj.length == 0) {
-    //   _examMarkFormulaObj = this.ExamMarkConfigs.filter(e => e.ExamId == _examId
-    //     && e.ClassId == _classId && e.Formula.length > 0);
-    //   if (_examMarkFormulaObj.length == 0) {
-    //     _examMarkFormulaObj = this.ExamMarkConfigs.filter(e => e.ExamId == _examId && e.Formula.length > 0);
-    //     if (_examMarkFormulaObj.length == 0) {
-    //       this.GetOneExamResult([]);
-    //     }
-    //     else 
-    //       this.GetmultiExamsResult(_examMarkFormulaObj[0].Formula);
-    //   }
-    //   else
-    //     this.GetmultiExamsResult(_examMarkFormulaObj[0].Formula);
-    // }
-    // else
-    //   this.GetmultiExamsResult(_examMarkFormulaObj[0].Formula);
   }
   exportArray() {
 
@@ -833,7 +816,10 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
             StudentClassSubject: ss.StudentClassSubject,
             StudentClassSubjectId: ss.StudentClassSubjectId
           }
-
+          if(ss.RollNo=="30")
+          {
+            debugger;
+          }
           ss.Components.forEach(component => {
             let existing = result.filter(db => db.StudentClassSubjectId == ss.StudentClassSubjectId
               && db.ClassSubjectMarkComponentId == component.ClassSubjectMarkComponentId);
@@ -996,6 +982,7 @@ export class ExamSubjectMarkEntryComponent implements OnInit {
       "SubjectId"
     ];
     list.PageName = 'StudentClassSubjects'
+    //verified table
     list.lookupFields = ["ExamResultSubjectMarks($filter=" + filterstr + ";$select=ExamId,StudentClassId,StudentClassSubjectId,Marks)"];
     list.filter = [this.FilterOrgSubOrgBatchId + mainfilter];
     this.dataservice.get(list)

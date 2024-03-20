@@ -142,7 +142,7 @@ export class ECheckComponent implements OnInit {
         this.FilterOrgSubOrgBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
         this.GetMasterData();
         this.GetEvaluationNames();
-       
+
         this.GetEvaluationOption();
         // if (this.Classes.length == 0) {
         //   var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
@@ -225,7 +225,7 @@ export class ECheckComponent implements OnInit {
         _classEvaluations.forEach(clseval => {
           var existing = this.Result.filter((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId);
           if (existing.length > 0) {
-
+            existing[0].HistoryText = existing[0].HistoryText ? existing[0].HistoryText : '';
             clseval.ClassEvaluationOptions.forEach(cls => {
               var selectedorNot = existing[0].StudentEvaluationAnswers
                 .filter(stud => stud.ClassEvaluationAnswerOptionsId == cls.ClassEvaluationAnswerOptionsId)
@@ -312,6 +312,7 @@ export class ECheckComponent implements OnInit {
         else
           this.StudentEvaluationList = this.StudentEvaluationList.sort((a, b) => a.DisplayOrder - b.DisplayOrder)
         this.MarkObtain = this.GetMarkObtain();
+        console.log("this.StudentEvaluationList", this.StudentEvaluationList);
         row.EvaluationStarted = true;
         this.dataSource = new MatTableDataSource<IStudentEvaluation>(this.StudentEvaluationList);
         this.dataSource.paginator = this.paginator;

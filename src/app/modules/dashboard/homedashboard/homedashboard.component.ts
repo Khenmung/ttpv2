@@ -838,6 +838,7 @@ export class HomeDashboardComponent implements OnInit {
           newStudents[i].Semester = _semester;
           newStudents[i].Remark1 = _remark1;
           newStudents[i].Remark2 = _remark2;
+          newStudents[i].StudentClassId = _studentClassId;
           this.Students.push(newStudents[i]);
           // });
         }

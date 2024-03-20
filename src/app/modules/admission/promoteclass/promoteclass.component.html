@@ -26,6 +26,7 @@
             <mat-form-field appearance="outline" style="width:250px;margin-right: 15px;">
                 <mat-label>Status from exam</mat-label>
                 <mat-select formControlName="searchExamId" (selectionChange)="SelectionChange()">
+                    <mat-option [value]="Defaultvalue">select</mat-option>
                     <mat-option *ngFor="let item of Exams" [value]="item.ExamId">
                         {{item.ExamName}}
                     </mat-option>
@@ -107,18 +108,6 @@
             </mat-form-field>
         </mat-cell>
     </ng-container>
-    <!-- <ng-container matColumnDef="CourseYearId">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Course Year </mat-header-cell>
-        <mat-cell *matCellDef="let element">
-            <mat-form-field>
-                <mat-select (selectionChange)="onBlur(element)" [value]="element.CourseYearId" [(ngModel)]="element.CourseYearId">
-                    <mat-option *ngFor="let item of CourseYears" [value]="item.MasterDataId">{{item.ClassName}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </mat-cell>
-    </ng-container> -->
-
     <ng-container matColumnDef="RollNo">
         <mat-header-cell *matHeaderCellDef mat-sort-header>RollNo
         </mat-header-cell>
@@ -189,13 +178,6 @@
     </ng-container>
     <ng-container matColumnDef="Action">
         <mat-header-cell *matHeaderCellDef>
-            <!-- <button [disabled]="loading || StudentClassList.length==0 || Permission=='read'" matTooltip="save all"
-                mat-mini-fab (click)="SaveAll()">
-                <mat-icon>all_out</mat-icon>
-                <mat-icon *ngIf="loading">
-                    <mat-spinner diameter="20" color="Blue"></mat-spinner>
-                </mat-icon>
-            </button> -->
         </mat-header-cell>
         <mat-cell *matCellDef="let element" style="display: flex;justify-content: center;">
             <button style="margin-right:15px" [disabled]="loading 

@@ -72,7 +72,7 @@
                 </div>
                 <div style="margin-top:15px;">
                     <mat-table #table [dataSource]="NonGradedSubjectsDataSource" matSort
-                        *ngIf="NonGradedDisplayColumns.length>1">
+                        *ngIf="NonGradedDisplayColumns.length>1" style="border-top: 1px solid lightgray;border-left: 1px solid lightgray;">
                         <ng-container *ngFor="let disCol of NonGradedDisplayColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
                             <mat-header-cell *matHeaderCellDef mat-sort-header><span
@@ -93,7 +93,7 @@
                 </div>
                 <mat-divider style="border-top-color: grey;"></mat-divider>
                 <div style="margin-bottom:15px">
-                    <mat-table [dataSource]="dataSourceResult" matSort>
+                    <mat-table [dataSource]="dataSourceResult" matSort style="border-bottom: 1px solid lightgray; border-top: 1px solid lightgray;border-left: 1px solid lightgray;">
                         <ng-container *ngFor="let disCol of DisplayColumns;" matColumnDef="{{disCol}}">
                             <mat-header-cell *matHeaderCellDef mat-sort-header><span
                                     *ngIf="disCol!='FirstCol'">{{disCol}}</span>
@@ -110,7 +110,7 @@
                 </div>
                 <div style="margin-top:15px;" *ngIf="GradedDisplayColumns.length>1">
                     <div style="margin-left:20px;font-weight:bold">Graded Subjects</div>
-                    <mat-table #table [dataSource]="GradedSubjectsDataSource" matSort>
+                    <mat-table #table [dataSource]="GradedSubjectsDataSource" matSort style="border-top: 1px solid lightgray;border-left: 1px solid lightgray;">
                         <ng-container *ngFor="let disCol of GradedDisplayColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
                             <mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -128,8 +128,8 @@
                 </div>
                 <mat-divider style="border-top-color: grey;"></mat-divider>
 
-                <div style="margin-top:15px;margin-bottom:15px;">
-                    <mat-table #table [dataSource]="dataSourceEvaluation" matSort
+                <div style="margin-top:30px;margin-bottom:15px;">
+                    <mat-table #table [dataSource]="dataSourceEvaluation" matSort style="border-left: 1px solid lightgray;border-bottom: 1px solid lightgray;border-top: 1px solid lightgray;"
                         *ngIf="EvaluationDisplayedColumns.length>1">
                         <ng-container *ngFor="let disCol of EvaluationDisplayedColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
@@ -174,7 +174,8 @@
                     </mat-table>
                 </div>
                 <div style="margin-top:15px;margin-bottom:0px">
-                    <mat-table #table [dataSource]="dataSourceSignature" matSort *ngIf="SignatureColumns.length>1">
+                    <mat-table #table [dataSource]="dataSourceSignature" matSort *ngIf="SignatureColumns.length>1"
+                        style="border-top: 1px solid lightgray;border-left: 1px solid lightgray;border-bottom: 1px solid lightgray;">
                         <ng-container *ngFor="let disCol of SignatureColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
                             <mat-header-cell *matHeaderCellDef mat-sort-header style="display:none"><span
