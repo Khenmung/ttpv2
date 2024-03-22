@@ -513,6 +513,7 @@ export class EPerformComponent implements OnInit {
         i--;
       }
     }
+   // console.log("his.RelevantEvaluationListForSelectedStudent",this.RelevantEvaluationListForSelectedStudent);
     this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.RelevantEvaluationListForSelectedStudent);
 
     let list: List = new List();
@@ -932,9 +933,9 @@ export class EPerformComponent implements OnInit {
     this.loading = true;
     var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
     var _examId = this.searchForm.get("searchExamId")?.value;
-    var _classId = this.searchForm.get("searchClassId")?.value;
-    var _sectionId = this.searchForm.get("searchSectionId")?.value;
-    var _semesterId = this.searchForm.get("searchSemesterId")?.value;
+    //var _classId = this.searchForm.get("searchClassId")?.value;
+    //var _sectionId = this.searchForm.get("searchSectionId")?.value;
+    //var _semesterId = this.searchForm.get("searchSemesterId")?.value;
     var studentobj = this.searchForm.get("searchStudentName")?.value;
     if (!studentobj.ClassId) {
       this.loading = false;
@@ -1009,20 +1010,6 @@ export class EPerformComponent implements OnInit {
               this.RelevantEvaluationListForSelectedStudent.push(m);
               m.Submitted = false;
             }
-
-
-
-
-            // var existing = this.StudentSubmittedEvaluations.filter((f: any) => f.EvaluationExamMapId == m.EvaluationExamMapId)
-            // if (existing.length > 0 || m.EType) {
-            //     //m.EvaluationResultMarkId = existing[0].EvaluationResultMarkId
-            //     this.RelevantEvaluationListForSelectedStudent.push(m);
-            // }
-            // else {
-            //   m.EvaluationResultMarkId = 0;
-            //   this.RelevantEvaluationListForSelectedStudent.push(m);
-            // }
-
           });
         }
         else {
@@ -1033,7 +1020,7 @@ export class EPerformComponent implements OnInit {
         if (this.RelevantEvaluationListForSelectedStudent.length == 0) {
           this.contentservice.openSnackBar("No pending exam found for this student.", globalconstants.ActionText, globalconstants.RedBackground);
         }
-        console.log("this.RelevantEvaluationListForSelectedStudent",this.RelevantEvaluationListForSelectedStudent);
+       // console.log("this.RelevantEvaluationListForSelectedStudent",this.RelevantEvaluationListForSelectedStudent);
         this.AssessmentTypeDatasource = new MatTableDataSource<any>(this.RelevantEvaluationListForSelectedStudent);
         this.StudentEvaluationList = [];
         this.dataSource = new MatTableDataSource<any>(this.StudentEvaluationList);

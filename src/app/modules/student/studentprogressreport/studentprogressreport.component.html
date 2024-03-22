@@ -91,9 +91,10 @@
                         <mat-row *matRowDef="let row; columns: NonGradedDisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
-                <mat-divider style="border-top-color: grey;"></mat-divider>
+                <mat-divider *ngIf="NonGradedDisplayColumns.length>1" style="border-top-color: grey;"></mat-divider>
                 <div style="margin-bottom:15px">
-                    <mat-table [dataSource]="dataSourceResult" matSort style="border-bottom: 1px solid lightgray; border-top: 1px solid lightgray;border-left: 1px solid lightgray;">
+                    <mat-table [dataSource]="dataSourceResult" *ngIf="NonGradedDisplayColumns.length>1"
+                         matSort style="border-bottom: 1px solid lightgray; border-top: 1px solid lightgray;border-left: 1px solid lightgray;">
                         <ng-container *ngFor="let disCol of DisplayColumns;" matColumnDef="{{disCol}}">
                             <mat-header-cell *matHeaderCellDef mat-sort-header><span
                                     *ngIf="disCol!='FirstCol'">{{disCol}}</span>

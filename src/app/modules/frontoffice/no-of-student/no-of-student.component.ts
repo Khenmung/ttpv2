@@ -397,7 +397,7 @@ export class NoOfStudentComponent implements OnInit {
       this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
     }
     ////console.log("BoyGirlTotal", this.BoyGirlTotal);
-    this.StudentCount = pivottedClass.sort((a, b) => +a.Sequence - +b.Sequence);
+    this.StudentCount = pivottedClass.sort((a, b) => a.Sequence - b.Sequence);
     this.dataSource = new MatTableDataSource<IStudentClass>(this.StudentCount);
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;

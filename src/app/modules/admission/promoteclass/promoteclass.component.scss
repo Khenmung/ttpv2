@@ -11,7 +11,7 @@ mat-cell,mat-header-cell{
     flex:1 1 100px;
 }
 
-.mat-column-RollNo,
+
 .mat-column-SectionId{
     flex:1 0 60px;
 }
@@ -24,6 +24,7 @@ mat-cell,mat-header-cell{
     justify-content: center;
     flex:1 0 80px;
 }
+.mat-column-RollNo,
 .mat-column-ExamStatus,
 .mat-column-SemesterId,
 .mat-column-SectionId,

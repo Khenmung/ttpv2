@@ -58,6 +58,20 @@
                             {{element.ClassEvaluationId}}
                         </mat-cell>
                     </ng-container>
+                    <ng-container matColumnDef="EvaluationMasterId">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Evaluation
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <mat-form-field appearance="outline">
+                                <mat-select [(ngModel)]="element.EvaluationMasterId"
+                                    [value]="element.EvaluationMasterId">
+                                    <mat-option *ngFor="let item of EvaluationMasterForClassGroup" [value]="item.EvaluationMasterId">
+                                        {{item.EvaluationName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </mat-cell>
+                    </ng-container>
                     <ng-container matColumnDef="Description">
                         <mat-header-cell *matHeaderCellDef mat-sort-header>Questionnaire
                         </mat-header-cell>

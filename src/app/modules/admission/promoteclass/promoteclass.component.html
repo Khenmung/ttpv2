@@ -109,10 +109,10 @@
         </mat-cell>
     </ng-container>
     <ng-container matColumnDef="RollNo">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>RollNo
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Roll No
         </mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <mat-form-field>
+            <mat-form-field appearance="outline">
                 <input matInput (blur)="onBlur(element)" [value]="element.RollNo" [(ngModel)]="element.RollNo"
                     autocomplete="Off" [maxlength]="10">
             </mat-form-field>

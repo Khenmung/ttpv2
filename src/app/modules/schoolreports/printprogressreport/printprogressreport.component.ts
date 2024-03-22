@@ -494,25 +494,7 @@ export class PrintprogressreportComponent implements OnInit {
         let eachStudent = alasql("select distinct StudentClassId from ?", [data.value]);
         //console.log("uniqueExamNames", uniqueExamNames)
         const _resultSummaryText = this.ExamNCalculateList.filter(ataglance => ataglance.CalculateCategoryName.toLowerCase() === "result summary");
-        // _resultSummaryText.forEach(item => {
-        //   let row = this.ExamStudentResults.find(x => x.FirstCol === item.PropertyName);
-        //   if (!row) {
-        //     this.ExamStudentResults.push({"StudentClassId":0,"ExamId": item.ExamId, "FirstCol": item.PropertyName });
-        //     uniqueExamNames.forEach(exam => {
-        //       if (exam.ExamName)
-        //         this.ExamStudentResults[this.ExamStudentResults.length - 1][exam.ExamName] = '1';
-        //     })
-        //   }
-        //   else {
-        //     uniqueExamNames.forEach(exam => {
-        //       row[exam.ExamName] = '1';
-        //     })
-        //   }
-        // })
-        //console.log("this.ExamStudentResults1", this.ExamStudentResults);
-        // this.ReportCardSignatures.forEach(item => {
-        //   this.ReportSignatureList.push({ 'FirstCol': item.MasterDataName })
-        // })
+     
         eachStudent.forEach(s => {
           _resultSummaryText.forEach(item => {
             let row = this.ExamStudentResults.find(x => x.StudentClassId == s.StudentClassId
@@ -582,50 +564,7 @@ export class PrintprogressreportComponent implements OnInit {
           }
 
         })
-        // console.log("this.ExamStudentResults", this.ExamStudentResults)
-        // this.ExamStudentResults.push(
-        //   { "FirstCol": "Grand Total" },
-        //   { "FirstCol": "Percentage (%)" },
-        //   { "FirstCol": "Division" },
-        //   { "FirstCol": "Rank" },
-        //   { "FirstCol": "Attendance" },
-        //   { "FirstCol": "Class Strength" });
-        // var ToInclude = [
-        //   { "ColumnName": "TotalMarks", "Display": "Grand Total" },
-        //   { "ColumnName": "MarkPercent", "Display": "Percentage (%)" },
-        //   { "ColumnName": "Division", "Display": "Division" },
-        //   { "ColumnName": "Rank", "Display": "Rank" },
-        //   { "ColumnName": "Attendance", "Display": "Attendance" },
-        //   { "ColumnName": "ClassStrength", "Display": "Class Strength" }
-        // ]
-        // this.ReportCardSignatures.forEach(item => {
-        //   this.ReportSignatureList.push({ 'FirstCol': item.MasterDataName })
-        // })
-        // data.value.forEach(eachexam => {
-        //   var _ExamName = '';
-        //   var obj = this.Exams.find(exam => exam.ExamId == eachexam.ExamId);
-        //   if (obj) {
-        //     _ExamName = obj.ExamName;
-        //     eachexam.ExamName = _ExamName;
-        //     if (this.DisplayColumns.indexOf(_ExamName) == -1)
-        //       this.DisplayColumns.push(_ExamName);
-        //     Object.keys(eachexam).forEach(col => {
-        //       var objcolumn = ToInclude.filter(include => include.ColumnName == col);
-        //       if (objcolumn.length > 0) {
-        //         var resultrow = this.ExamStudentResults.filter((f: any) => f.FirstCol == objcolumn[0].Display)
-        //         resultrow[0][_ExamName] = eachexam[objcolumn[0].ColumnName]
-        //       }
-        //     })
-        //     this.ReportSignatureList.forEach(item => {
-        //       if (this.SignatureColumns.indexOf(_ExamName) == -1)
-        //         this.SignatureColumns.push(_ExamName);
-        //       item[_ExamName] = ''
-
-        //     })
-        //   }
-        // })
-        //this.loading = false;
-        //this.PageLoading = false;
+       
         this.GetClassEvaluations();
 
       });

@@ -1014,16 +1014,7 @@ export class studentprimaryinfoComponent implements OnInit {
     list.PageName = "StorageFnPs"
     return this.dataservice.get(list);
   }
-  GetStudentClass() {
-    this.loading = true;
-    let list: List = new List();
-    list.fields = ["ClassId,RollNo,SectionId,StudentClassId,StudentId,SemesterId"];
-    list.filter = ["StudentId eq " + this.StudentId + " and IsCurrent eq true and BatchId eq " + this.SelectedBatchId];
-    list.PageName = "StudentClasses";
-    return this.dataservice.get(list);
-
-    //list.lookupFields = ["StudentClasses($filter=BatchId eq " + this.SelectedBatchId + ";$select=ClassId,RollNo,SectionId,StudentClassId,StudentId),StorageFnPs($select=FileId,FileName;$filter=StudentId eq " + this.StudentId + ")"]
-  }
+  
   GetStudent() {
 
     //debugger;

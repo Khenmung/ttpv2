@@ -344,20 +344,20 @@ export class StudentDatadumpComponent implements OnInit {
       TableUtil.exportArrayToExcel(datatoExport, "StudentInfoDump");
     }
   }
-  getSelectedBatchStudentIDRollNo() {
-    let list: List = new List();
-    list.fields = ["StudentId", "RollNo", "SectionId", "StudentClassId", "ClassId", "SemesterId"];
-    list.PageName = "StudentClasses";
-    list.filter = [this.FilterOrgSubOrgNBatchId + " and IsCurrent eq true"];
+  // getSelectedBatchStudentIDRollNo() {
+  //   let list: List = new List();
+  //   list.fields = ["StudentId", "RollNo", "SectionId", "StudentClassId", "ClassId", "SemesterId"];
+  //   list.PageName = "StudentClasses";
+  //   list.filter = [this.FilterOrgSubOrgNBatchId + " and IsCurrent eq true"];
 
-    this.dataservice.get(list)
-      .subscribe((data: any) => {
-        if (data.value.length > 0) {
-          this.SelectedBatchStudentIDRollNo = [...data.value];
+  //   this.dataservice.get(list)
+  //     .subscribe((data: any) => {
+  //       if (data.value.length > 0) {
+  //         this.SelectedBatchStudentIDRollNo = [...data.value];
 
-        }
-      })
-  }
+  //       }
+  //     })
+  // }
   GetFeeTypes() {
     debugger;
     this.loading = true;

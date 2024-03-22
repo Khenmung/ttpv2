@@ -74,6 +74,7 @@ export class ClassEvaluationComponent implements OnInit {
   displayedColumns = [
     'ClassEvaluationId',
     'Description',
+    'EvaluationMasterId',
     'QuestionnaireTypeId',
     'DisplayOrder',
     'ClassEvaluationAnswerOptionParentId',
@@ -330,12 +331,6 @@ export class ClassEvaluationComponent implements OnInit {
       return;
     }
 
-    // if (this.contentservice.checkSpecialChar(row.Description)) {
-    //   this.loading = false; this.PageLoading=false;
-    //   this.contentservice.openSnackBar("Special characters not allowed in questionnaire!", globalconstants.ActionText, globalconstants.RedBackground);
-    //   return;
-    // }
-
     let checkFilterString = "Description eq '" + globalconstants.encodeSpecialChars(row.Description) + "'";
     if (row.QuestionnaireTypeId > 0)
       checkFilterString += " and QuestionnaireTypeId eq " + row.QuestionnaireTypeId
@@ -345,26 +340,6 @@ export class ClassEvaluationComponent implements OnInit {
       return;
     }
 
-    // checkFilterString += " and EvaluationMasterId eq " + row.EvaluationMasterId
-
-    // if (row.ClassEvaluationId > 0)
-    //   checkFilterString += " and ClassEvaluationId ne " + row.ClassEvaluationId;
-    // checkFilterString += " and " + this.StandardFilter;
-    // let list: List = new List();
-    // list.fields = ["ClassEvaluationId"];
-    // list.PageName = "ClassEvaluations";
-    // list.filter = [checkFilterString];
-
-    // this.dataservice.get(list)
-    //   .subscribe((data: any) => {
-    //     //debugger;
-    //     if (data.value.length > 0) {
-    //       this.loading = false; this.PageLoading = false;
-    //       this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
-    //       //this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
-    //     }
-    //     else {
-    //this.shareddata.CurrentSelectedBatchId.subscribe(c => this.SelectedBatchId = c);
     this.SelectedBatchId = +this.tokenStorage.getSelectedBatchId()!;
     this.SubOrgId = +this.tokenStorage.getSubOrgId()!;
     this.ClassEvaluationForUpdate = [];;
@@ -489,9 +464,9 @@ export class ClassEvaluationComponent implements OnInit {
         if (data.value.length > 0) {
           data.value.forEach(item => {
             var _EType = '';
-            var obj = this.EvaluationNames.filter((f: any) => f.EvaluationMasterId == item.EvaluationMasterId);
-            if (obj.length > 0) {
-              _EType = obj[0].EType;
+            var obj = this.EvaluationNames.find((f: any) => f.EvaluationMasterId == item.EvaluationMasterId);
+            if (obj) {
+              _EType = obj.EType;
               item.Action = false;
               item.Description = globalconstants.decodeSpecialChars(item.Description);
               item.EType = _EType;
@@ -503,7 +478,7 @@ export class ClassEvaluationComponent implements OnInit {
         else {
           this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         }
-
+        console.log("this.ClassEvaluationList",this.ClassEvaluationList)
         this.ClassEvaluationList = this.ClassEvaluationList.sort((a, b) => a.DisplayOrder - b.DisplayOrder);
         this.dataSource = new MatTableDataSource<IClassEvaluation>(this.ClassEvaluationList);
         this.dataSource.paginator = this.paginator;

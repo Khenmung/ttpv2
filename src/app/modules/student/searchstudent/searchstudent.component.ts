@@ -615,8 +615,6 @@ export class searchstudentComponent implements OnInit {
         if (_sectionId > 0)
           classfilter += ' and SectionId eq ' + _sectionId;
 
-        classfilter += ' and IsCurrent eq true';
-
         if (_remarkId > 0) {
           var obj: any[] = [];
           this.Groups.forEach(f => {

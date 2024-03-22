@@ -189,7 +189,7 @@ export class ECheckComponent implements OnInit {
     this.ApplyVariables(row);
 
     let filterStr = this.FilterOrgSubOrg;// 'OrgId eq ' + this.LoginUserDetail[0]["orgId"];
-    if (this.EvaluationEType)
+    if (this.EvaluationEType.toLowerCase() =='student profile')
       filterStr += ' and StudentId eq ' + row.StudentId
     else {
       filterStr += ' and StudentClassId eq ' + row.StudentClassId
@@ -223,7 +223,12 @@ export class ECheckComponent implements OnInit {
         ////console.log("_classEvaluations", _classEvaluations);
         var item;
         _classEvaluations.forEach(clseval => {
-          var existing = this.Result.filter((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId);
+          if(clseval.ClassEvaluationId ==742)
+          {
+            debugger;
+          }
+          var existing = this.Result.filter((f: any) => f.ClassEvaluationId == clseval.ClassEvaluationId); 
+          //&& f.EvaluationExamMapId == row.EvaluationExamMapId);
           if (existing.length > 0) {
             existing[0].HistoryText = existing[0].HistoryText ? existing[0].HistoryText : '';
             clseval.ClassEvaluationOptions.forEach(cls => {
@@ -765,11 +770,11 @@ export class ECheckComponent implements OnInit {
   GetEType() {
     debugger;
     var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
-    let ObjEvaluationMaster: any = [];
+    let ObjEvaluationMaster;
     if (_evaluationMasterId > 0)
-      ObjEvaluationMaster = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId);
-    if (ObjEvaluationMaster[0].ETypeId)
-      this.EvaluationEType = this.ETypes.filter(e => e.MasterDataId == ObjEvaluationMaster[0].ETypeId)[0].MasterDataName;
+      ObjEvaluationMaster = this.EvaluationMaster.find((f: any) => f.EvaluationMasterId == _evaluationMasterId);
+    if (ObjEvaluationMaster.ETypeId)
+      this.EvaluationEType = this.ETypes.find(e => e.MasterDataId == ObjEvaluationMaster.ETypeId).MasterDataName;
     else
       this.EvaluationEType = '';
     //var _classgroupObj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId)
@@ -778,20 +783,12 @@ export class ECheckComponent implements OnInit {
     this.FilteredExams = this.Exams.filter(e => {
       return _evaluationexammapforselectedEvaluation.filter(ee => ee.ExamId == e.ExamId).length > 0
     })
-    if (ObjEvaluationMaster.length > 0) {
-      _classGroupId = ObjEvaluationMaster[0].ClassGroupId;
+    if (ObjEvaluationMaster) {
+      _classGroupId = ObjEvaluationMaster.ClassGroupId;
       this.FilteredClasses = this.ClassGroupMappings.filter(g => g.ClassGroupId == _classGroupId)
     }
   }
-  // SelectClass() {
-  //   var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
-  //   var _classgroupObj = this.EvaluationMaster.filter((f:any) => f.EvaluationMasterId == _evaluationMasterId)
-  //   var _classGroupId = 0;
-  //   if (_classgroupObj.length > 0) {
-  //     _classGroupId = _classgroupObj[0].ClassGroupId;
-  //     this.FilteredClasses = this.ClassGroupMappings.filter(g => g.ClassGroupId == _classGroupId)
-  //   }
-  // }
+  
   GetEvaluationMapping(pClassId, pSectionId, pSemesterId, pEvaluationExamMapId, pEvaluationMasterId, pExamId) {
     debugger;
 
@@ -981,7 +978,7 @@ export class ECheckComponent implements OnInit {
     //   .subscribe((data: any) => {
     //     this.StudentClasses = [...data.value];
     this.GetStudents(_searchClassId, _searchSectionId, _searchSemesterId);
-    if (this.EvaluationEType === 'student profile')
+    if (this.EvaluationEType.toLowerCase() === 'student profile')
       this.ForETypeEvaluation(_searchClassId, _searchSectionId, _searchSemesterId, _evaluationMasterId, _examId);
     else
       this.GetEvaluationMapping(_searchClassId, _searchSectionId, _searchSemesterId, _evaluationdetail[0].EvaluationExamMapId, _evaluationMasterId, _examId);

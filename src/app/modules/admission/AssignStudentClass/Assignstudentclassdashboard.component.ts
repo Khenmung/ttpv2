@@ -337,159 +337,159 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     }
   }
   StudentClassForDownload: any[] = [];
-  GenerateRollNo() {
+  // GenerateRollNo() {
 
-    let filterStr = this.FilterOrgSubOrgBatchId //+") and SubOrgId eq " + this.SubOrgId;
-    var _gendersort = this.searchForm.get("searchGenderAscDesc")?.value;
-    var _namesort = this.searchForm.get("searchNameAscDesc")?.value;
-    if (_gendersort == 0) {
-      this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar("Please select gender sort.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
-    if (_namesort == 0) {
-      this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar("Please select name sort.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
-    this.loading = true;
-    var _classId = this.searchForm.get("searchClassId")?.value;
-    if (_classId > 0)
-      filterStr += " and ClassId eq " + _classId;
-    else {
-      this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
-    let _sectionId = this.searchForm.get("searchSectionId")?.value;
-    let _semesterId = this.searchForm.get("searchSemesterId")?.value;
-    if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
-    if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
+  //   let filterStr = this.FilterOrgSubOrgBatchId //+") and SubOrgId eq " + this.SubOrgId;
+  //   var _gendersort = this.searchForm.get("searchGenderAscDesc")?.value;
+  //   var _namesort = this.searchForm.get("searchNameAscDesc")?.value;
+  //   if (_gendersort == 0) {
+  //     this.loading = false; this.PageLoading = false;
+  //     this.contentservice.openSnackBar("Please select gender sort.", globalconstants.ActionText, globalconstants.RedBackground);
+  //     return;
+  //   }
+  //   if (_namesort == 0) {
+  //     this.loading = false; this.PageLoading = false;
+  //     this.contentservice.openSnackBar("Please select name sort.", globalconstants.ActionText, globalconstants.RedBackground);
+  //     return;
+  //   }
+  //   this.loading = true;
+  //   var _classId = this.searchForm.get("searchClassId")?.value;
+  //   if (_classId > 0)
+  //     filterStr += " and ClassId eq " + _classId;
+  //   else {
+  //     this.loading = false; this.PageLoading = false;
+  //     this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
+  //     return;
+  //   }
+  //   let _sectionId = this.searchForm.get("searchSectionId")?.value;
+  //   let _semesterId = this.searchForm.get("searchSemesterId")?.value;
+  //   if (_sectionId) filterStr += " and SectionId eq " + _sectionId;
+  //   if (_semesterId) filterStr += " and SemesterId eq " + _semesterId;
 
-    filterStr += " and IsCurrent eq true";
-    // else {
-    //   this.loading = false; this.PageLoading=false;
-    //   this.contentservice.openSnackBar("Please select section.", globalconstants.ActionText,globalconstants.RedBackground);
-    //   return;
-    // }
-    //filterStr += ' and BatchId eq ' + this.SelectedBatchId;
+  //   filterStr += " and IsCurrent eq true";
+  //   // else {
+  //   //   this.loading = false; this.PageLoading=false;
+  //   //   this.contentservice.openSnackBar("Please select section.", globalconstants.ActionText,globalconstants.RedBackground);
+  //   //   return;
+  //   // }
+  //   //filterStr += ' and BatchId eq ' + this.SelectedBatchId;
 
-    if (filterStr.length == 0) {
-      this.loading = false; this.PageLoading = false;
-      this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText, globalconstants.RedBackground);
-      return;
-    }
-    let studentFields = "FirstName,LastName,FatherName,MotherName,FatherOccupation,MotherOccupation,PresentAddress," +
-      "PermanentAddress,GenderId,DOB,Bloodgroup,Category,BankAccountNo,IFSCCode,MICRNo,AadharNo,Photo,Religion," +
-      "PersonalNo,WhatsAppNumber,FatherContactNo,MotherContactNo,PrimaryContactFatherOrMother," +
-      "NameOfContactPerson,RelationWithContactPerson,ContactPersonContactNo,AlternateContact,EmailAddress," +
-      "LastSchoolPercentage,ClassAdmissionSought,TransferFromSchool,TransferFromSchoolBoard"
+  //   if (filterStr.length == 0) {
+  //     this.loading = false; this.PageLoading = false;
+  //     this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText, globalconstants.RedBackground);
+  //     return;
+  //   }
+  //   let studentFields = "FirstName,LastName,FatherName,MotherName,FatherOccupation,MotherOccupation,PresentAddress," +
+  //     "PermanentAddress,GenderId,DOB,Bloodgroup,Category,BankAccountNo,IFSCCode,MICRNo,AadharNo,Photo,Religion," +
+  //     "PersonalNo,WhatsAppNumber,FatherContactNo,MotherContactNo,PrimaryContactFatherOrMother," +
+  //     "NameOfContactPerson,RelationWithContactPerson,ContactPersonContactNo,AlternateContact,EmailAddress," +
+  //     "LastSchoolPercentage,ClassAdmissionSought,TransferFromSchool,TransferFromSchoolBoard"
 
-    let list: List = new List();
-    list.fields = [
-      'StudentClassId',
-      'StudentId',
-      'AdmissionNo',
-      //'FeeTypeId',
-      'ClassId',
-      'SemesterId',
-      'RollNo',
-      'SectionId',
-      'Remarks',
-      'Active'
-    ];
+  //   let list: List = new List();
+  //   list.fields = [
+  //     'StudentClassId',
+  //     'StudentId',
+  //     'AdmissionNo',
+  //     //'FeeTypeId',
+  //     'ClassId',
+  //     'SemesterId',
+  //     'RollNo',
+  //     'SectionId',
+  //     'Remarks',
+  //     'Active'
+  //   ];
 
-    list.PageName = "StudentClasses";
-    list.lookupFields = ["Student($select=" + studentFields + ")"];
-    list.filter = [filterStr];
-    this.StudentClassList = [];
-    this.dataservice.get(list)
-      .subscribe((StudentClassesdb: any) => {
-        var result;
-        result = [...StudentClassesdb.value];
-        var StudentClassRollNoGenList: any[] = [];
-        result.forEach(stud => {
-          // var feetype = this.FeeTypes.filter(t => t.FeeTypeId == stud.FeeTypeId);
-          // var _feetype = ''
-          // if (feetype.length > 0)
-          //   _feetype = feetype[0].FeeTypeName;
+  //   list.PageName = "StudentClasses";
+  //   list.lookupFields = ["Student($select=" + studentFields + ")"];
+  //   list.filter = [filterStr];
+  //   this.StudentClassList = [];
+  //   this.dataservice.get(list)
+  //     .subscribe((StudentClassesdb: any) => {
+  //       var result;
+  //       result = [...StudentClassesdb.value];
+  //       var StudentClassRollNoGenList: any[] = [];
+  //       result.forEach(stud => {
+  //         // var feetype = this.FeeTypes.filter(t => t.FeeTypeId == stud.FeeTypeId);
+  //         // var _feetype = ''
+  //         // if (feetype.length > 0)
+  //         //   _feetype = feetype[0].FeeTypeName;
 
 
-          StudentClassRollNoGenList.push({
-            StudentClassId: stud.StudentClassId,
-            //AdmissionNo:stud.AdmissionNo,
-            ClassId: stud.ClassId,
-            StudentId: stud.StudentId,
-            StudentName: stud.Student.FirstName + " " + stud.Student.LastName,
-            ClassName: this.Classes.filter(c => c.ClassId == stud.ClassId)[0].ClassName,
-            //FeeTypeId: stud.FeeTypeId,
-            //FeeType: _feetype,
-            SectionId: stud.SectionId,
-            Section: stud.SectionId > 0 ? this.Sections.filter(sc => sc.MasterDataId == stud.SectionId)[0].MasterDataName : '',
-            RollNo: stud.RollNo,
-            Active: stud.Active,
-            FirstName: stud.Student.FirstName,
-            LastName: stud.Student.LastName,
-            FatherName: stud.Student.FatherName,
-            MotherName: stud.Student.MotherName,
-            FatherOccupation: stud.Student.FatherOccupation,
-            MotherOccupation: stud.Student.MotherOccupation,
-            PresentAddress: stud.Student.PresentAddress,
-            PermanentAddress: stud.Student.PermanentAddress,
-            Gender: stud.Student.GenderId,
-            DOB: new Date(stud.Student.DOB),//this.formatdate.transform(stud.Student.DOB,'dd/MM/yyyy'),
-            Bloodgroup: stud.Student.Bloodgroup,
-            Category: stud.Student.Category,
-            BankAccountNo: stud.Student.BankAccountNo,
-            IFSCCode: stud.Student.IFSCCode,
-            MICRNo: stud.Student.MICRNo,
-            AadharNo: stud.Student.AadharNo,
-            Photo: stud.Student.Photo,
-            Religion: stud.Student.Religion,
-            PersonalNo: stud.Student.PersonalNo,
-            WhatsAppNumber: stud.Student.WhatsAppNumber,
-            FatherContactNo: stud.Student.FatherContactNo,
-            MotherContactNo: stud.Student.MotherContactNo,
-            PrimaryContactFatherOrMother: stud.Student.PrimaryContactFatherOrMother,
-            NameOfContactPerson: stud.Student.NameOfContactPerson,
-            RelationWithContactPerson: stud.Student.RelationWithContactPerson,
-            ContactPersonContactNo: stud.Student.ContactPersonContactNo,
-            AlternateContact: stud.Student.AlternateContact,
-            EmailAddress: stud.Student.EmailAddress,
-            LastSchoolPercentage: stud.Student.LastSchoolPercentage,
-            ClassAdmissionSought: stud.Student.ClassAdmissionSought,
-            TransferFromSchool: stud.Student.TransferFromSchool,
-            TransferFromSchoolBoard: stud.Student.TransferFromSchoolBoard,
-            Promote: 0,
-            Action: true
-          });
+  //         StudentClassRollNoGenList.push({
+  //           StudentClassId: stud.StudentClassId,
+  //           //AdmissionNo:stud.AdmissionNo,
+  //           ClassId: stud.ClassId,
+  //           StudentId: stud.StudentId,
+  //           StudentName: stud.Student.FirstName + " " + stud.Student.LastName,
+  //           ClassName: this.Classes.filter(c => c.ClassId == stud.ClassId)[0].ClassName,
+  //           //FeeTypeId: stud.FeeTypeId,
+  //           //FeeType: _feetype,
+  //           SectionId: stud.SectionId,
+  //           Section: stud.SectionId > 0 ? this.Sections.filter(sc => sc.MasterDataId == stud.SectionId)[0].MasterDataName : '',
+  //           RollNo: stud.RollNo,
+  //           Active: stud.Active,
+  //           FirstName: stud.Student.FirstName,
+  //           LastName: stud.Student.LastName,
+  //           FatherName: stud.Student.FatherName,
+  //           MotherName: stud.Student.MotherName,
+  //           FatherOccupation: stud.Student.FatherOccupation,
+  //           MotherOccupation: stud.Student.MotherOccupation,
+  //           PresentAddress: stud.Student.PresentAddress,
+  //           PermanentAddress: stud.Student.PermanentAddress,
+  //           Gender: stud.Student.GenderId,
+  //           DOB: new Date(stud.Student.DOB),//this.formatdate.transform(stud.Student.DOB,'dd/MM/yyyy'),
+  //           Bloodgroup: stud.Student.Bloodgroup,
+  //           Category: stud.Student.Category,
+  //           BankAccountNo: stud.Student.BankAccountNo,
+  //           IFSCCode: stud.Student.IFSCCode,
+  //           MICRNo: stud.Student.MICRNo,
+  //           AadharNo: stud.Student.AadharNo,
+  //           Photo: stud.Student.Photo,
+  //           Religion: stud.Student.Religion,
+  //           PersonalNo: stud.Student.PersonalNo,
+  //           WhatsAppNumber: stud.Student.WhatsAppNumber,
+  //           FatherContactNo: stud.Student.FatherContactNo,
+  //           MotherContactNo: stud.Student.MotherContactNo,
+  //           PrimaryContactFatherOrMother: stud.Student.PrimaryContactFatherOrMother,
+  //           NameOfContactPerson: stud.Student.NameOfContactPerson,
+  //           RelationWithContactPerson: stud.Student.RelationWithContactPerson,
+  //           ContactPersonContactNo: stud.Student.ContactPersonContactNo,
+  //           AlternateContact: stud.Student.AlternateContact,
+  //           EmailAddress: stud.Student.EmailAddress,
+  //           LastSchoolPercentage: stud.Student.LastSchoolPercentage,
+  //           ClassAdmissionSought: stud.Student.ClassAdmissionSought,
+  //           TransferFromSchool: stud.Student.TransferFromSchool,
+  //           TransferFromSchoolBoard: stud.Student.TransferFromSchoolBoard,
+  //           Promote: 0,
+  //           Action: true
+  //         });
 
-        })
-        //var orderbyArr = this.RollNoGenerationSortBy.split(',');
-        if (StudentClassRollNoGenList.length == 0)
-          this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
-        else {
+  //       })
+  //       //var orderbyArr = this.RollNoGenerationSortBy.split(',');
+  //       if (StudentClassRollNoGenList.length == 0)
+  //         this.contentservice.openSnackBar("No record found!", globalconstants.ActionText, globalconstants.RedBackground);
+  //       else {
 
-          this.RollNoGenerationSortBy = 'Gender ' + _gendersort + ',StudentName ' + _namesort;
-          var orderbystatement = "select StudentClassId,StudentId,StudentName,ClassId,SectionId,RollNo,Gender,Promote,Active,[Action] from ? order by " +
-            this.RollNoGenerationSortBy;
-          this.StudentClassForDownload = alasql("select StudentClassId,StudentId,StudentName,ClassId,SectionId,RollNo,Gender,FatherName,MotherName from ?", [StudentClassRollNoGenList])
+  //         this.RollNoGenerationSortBy = 'Gender ' + _gendersort + ',StudentName ' + _namesort;
+  //         var orderbystatement = "select StudentClassId,StudentId,StudentName,ClassId,SectionId,RollNo,Gender,Promote,Active,[Action] from ? order by " +
+  //           this.RollNoGenerationSortBy;
+  //         this.StudentClassForDownload = alasql("select StudentClassId,StudentId,StudentName,ClassId,SectionId,RollNo,Gender,FatherName,MotherName from ?", [StudentClassRollNoGenList])
 
-          this.StudentClassList = alasql(orderbystatement, [StudentClassRollNoGenList]);
-          this.StudentClassList.forEach((student, index) => {
-            student.RollNo = (index + 1) + "";
-          });
+  //         this.StudentClassList = alasql(orderbystatement, [StudentClassRollNoGenList]);
+  //         this.StudentClassList.forEach((student, index) => {
+  //           student.RollNo = (index + 1) + "";
+  //         });
 
-          this.contentservice.openSnackBar("New Roll Nos. has been generated. Please confirm and save it all.", globalconstants.ActionText, globalconstants.RedBackground);
+  //         this.contentservice.openSnackBar("New Roll Nos. has been generated. Please confirm and save it all.", globalconstants.ActionText, globalconstants.RedBackground);
 
-          this.dataSource = new MatTableDataSource<IStudentClass>(this.StudentClassList);
-          this.dataSource.sort = this.sort;
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.filterPredicate = this.createFilter();
-          this.loading = false; this.PageLoading = false;
-        }
-      })
-  }
+  //         this.dataSource = new MatTableDataSource<IStudentClass>(this.StudentClassList);
+  //         this.dataSource.sort = this.sort;
+  //         this.dataSource.paginator = this.paginator;
+  //         this.dataSource.filterPredicate = this.createFilter();
+  //         this.loading = false; this.PageLoading = false;
+  //       }
+  //     })
+  // }
   sortMultiple(a, b) {
 
   }

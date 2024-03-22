@@ -140,12 +140,11 @@ export class EMarkComponent implements OnInit {
         this.Permission = perObj[0].permission;
       }
       if (this.Permission != 'deny') {
-        if(this.Permission =='read')
-        {
+        if (this.Permission == 'read') {
           this.displayedColumns = [
             'FullName',
             'TotalMark',
-            'Rank'           
+            'Rank'
           ];
         }
         this.SelectedApplicationId = +this.tokenStorage.getSelectedAPPId()!;
@@ -161,7 +160,7 @@ export class EMarkComponent implements OnInit {
         //     if(data.value) this.Classes = [...data.value]; else this.Classes = [...data];
         //   });
         // }
-        
+
         //this.Students = this.tokenStorage.getStudents()!;
         //this.GetStudentClasses();
 
@@ -516,7 +515,7 @@ export class EMarkComponent implements OnInit {
       });
 
   }
-  SelectedEvaluation:any=[];
+  SelectedEvaluation: any = [];
   BindSectionSemester() {
     debugger;
     let _classId = this.searchForm.get("searchClassId")?.value;
@@ -526,8 +525,8 @@ export class EMarkComponent implements OnInit {
     }
     this.searchForm.patchValue({ "searchSectionId": 0, "searchSemesterId": 0 });
     this.ClearData();
-    let _allClassGroupsOfSelectedClass =this.ClassGroupMappings.filter(c=>c.ClassId == _classId);
-    this.SelectedEvaluation = this.EvaluationMaster.filter(e=>_allClassGroupsOfSelectedClass.findIndex(a=>a.ClassGroupId == e.ClassGroupId)>-1);
+    let _allClassGroupsOfSelectedClass = this.ClassGroupMappings.filter(c => c.ClassId == _classId);
+    this.SelectedEvaluation = this.EvaluationMaster.filter(e => _allClassGroupsOfSelectedClass.findIndex(a => a.ClassGroupId == e.ClassGroupId) > -1);
   }
   ClearData() {
     this.EvaluatedStudent = [];
@@ -538,19 +537,21 @@ export class EMarkComponent implements OnInit {
   GetEType() {
     debugger;
     var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
-    if (_evaluationMasterId > 0)
-      this.EvaluationEType = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId)[0].ETypeId;
-    var _classgroupObj = this.EvaluationMaster.filter((f: any) => f.EvaluationMasterId == _evaluationMasterId)
-    var _classGroupId = 0;
-    var _evaluationexammapforselectedEvaluation = this.EvaluationExamMap.filter(ee => ee.EvaluationMasterId == _evaluationMasterId);
-    this.FilteredExams = this.Exams.filter(e => {
-      return _evaluationexammapforselectedEvaluation.filter(ee => ee.ExamId == e.ExamId).length > 0
-    })
-    if (_classgroupObj.length > 0) {
-      _classGroupId = _classgroupObj[0].ClassGroupId;
-      this.FilteredClasses = this.ClassGroupMappings.filter(g => g.ClassGroupId == _classGroupId)
-    }
+    if (_evaluationMasterId > 0) {
 
+      let objEvaluationmaster = this.EvaluationMaster.find((f: any) => f.EvaluationMasterId == _evaluationMasterId);
+      this.EvaluationEType = objEvaluationmaster.ETypeId
+
+      //var _classGroupId = 0;
+      var _evaluationexammapforselectedEvaluation = this.EvaluationExamMap.filter(ee => ee.EvaluationMasterId == _evaluationMasterId);
+      this.FilteredExams = this.Exams.filter(e => {
+        return _evaluationexammapforselectedEvaluation.filter(ee => ee.ExamId == e.ExamId).length > 0
+      })
+      if (objEvaluationmaster) {
+        //_classGroupId = objEvaluationmaster.ClassGroupId;
+        this.FilteredClasses = this.ClassGroupMappings.filter(g => g.ClassGroupId == objEvaluationmaster.ClassGroupId)
+      }
+    }
   }
   // SelectClass() {
   //   var _evaluationMasterId = this.searchForm.get("searchEvaluationMasterId")?.value;
@@ -737,7 +738,7 @@ export class EMarkComponent implements OnInit {
     filterOrgIdNBatchId += " and ClassId eq " + _searchClassId;
     filterOrgIdNBatchId += " and SemesterId eq " + _searchSemesterId;
     filterOrgIdNBatchId += " and SectionId eq " + _searchSectionId;
-    filterOrgIdNBatchId += " and IsCurrent eq true";
+    //filterOrgIdNBatchId += " and IsCurrent eq true";
 
     let list: List = new List();
     list.fields = ["StudentClassId,StudentId,ClassId,RollNo,SectionId,SemesterId"];
@@ -754,7 +755,7 @@ export class EMarkComponent implements OnInit {
   }
   GetStudents() {
     this.loading = true;
-    var _filter = ''
+    //var _filter = ''
     // let list: List = new List();
     // list.fields = [
     //   'StudentId',

@@ -863,7 +863,7 @@ export class HomeDashboardComponent implements OnInit {
     return this.contentservice.GetDropDownDataFromDB(pParentId, filterOrg, pAppId)
   }
   GetStudentAndClassesWithForkJoin(appShortName) {
-    var sources = [this.GetStudents(), this.GetStudentClasses()];
+    var sources = [this.GetStudents(), this.GetBatchAndCurrentSameStudentClasses()];
     forkJoin(sources)
       .subscribe((data: any) => {
         var _students = data[0].value;
@@ -951,7 +951,7 @@ export class HomeDashboardComponent implements OnInit {
         }
       })
   }
-  GetStudentClasses() {
+  GetBatchAndCurrentSameStudentClasses() {
     let list: List = new List();
     list.fields = [
       "StudentClassId,StudentId,HouseId,BatchId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active,Admitted"

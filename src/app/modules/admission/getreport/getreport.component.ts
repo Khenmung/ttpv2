@@ -815,7 +815,7 @@ export class GetreportComponent implements OnInit {
       "StudentClassId,StudentId,ClassId,RollNo,SectionId,SemesterId"
     ];
     list.PageName = "StudentClasses";
-    list.filter = [this.FilterOrgSubOrgBatchId + " and IsCurrent eq true"];
+    list.filter = [this.FilterOrgSubOrgBatchId];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
