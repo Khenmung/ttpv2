@@ -409,7 +409,8 @@ debugger;
     ];
     list.PageName = "StudentClasses";
     list.lookupFields = ["Student($select=FirstName,LastName)"];
-    list.filter = ["IsCurrent eq true and Active eq 1 and Batch eq " + this.SelectedBatchId];
+    //list.filter = ["IsCurrent eq true and Active eq 1 and Batch eq " + this.SelectedBatchId];
+    list.filter = ["Active eq 1 and Batch eq " + this.SelectedBatchId];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         let paid;

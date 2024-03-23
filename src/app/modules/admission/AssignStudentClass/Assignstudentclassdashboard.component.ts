@@ -1032,7 +1032,7 @@ export class AssignStudentclassdashboardComponent implements OnInit {
     else {
       this.loading = false;
       this.PageLoading = false;
-      this.contentservice.openSnackBar("Please student found.", globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar(globalconstants.NoRecordFoundMessage, globalconstants.ActionText, globalconstants.RedBackground);
     }
   }
   clear() {

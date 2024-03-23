@@ -7,7 +7,7 @@ import { ContentService } from '../../../shared/content.service';
 import { NaomitsuService } from '../../../shared/databaseService';
 import { globalconstants } from '../../../shared/globalconstant';
 import { List } from '../../../shared/interface';
-import {SwUpdate} from '@angular/service-worker';
+import { SwUpdate } from '@angular/service-worker';
 import { TokenStorageService } from '../../../_services/token-storage.service';
 
 @Component({
@@ -15,30 +15,31 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
   templateUrl: './batchdashboard.component.html',
   styleUrls: ['./batchdashboard.component.scss']
 })
-export class BatchdashboardComponent implements OnInit { PageLoading=true;
+export class BatchdashboardComponent implements OnInit {
+  PageLoading = true;
 
   @ViewChild("table") mattable;
   //@ViewChild(ClasssubjectComponent) classSubjectAdd: ClasssubjectComponent;
-  LoginUserDetail:any[]= [];
+  LoginUserDetail: any[] = [];
   exceptionColumns: boolean;
   CurrentRow: any = {};
   Permission = '';
   //StandardFilter = '';
   loading = false;
-  SelectedBatchId = 0;SubOrgId = 0;
-  FilterOrgSubOrg='';
-  FilterOrgSubOrgBatchId='';
+  SelectedBatchId = 0; SubOrgId = 0;
+  FilterOrgSubOrg = '';
+  FilterOrgSubOrgBatchId = '';
 
-  Batches :any[]= [];
-  BatchList: IBatches[]= [];
+  Batches: any[] = [];
+  BatchList: IBatches[] = [];
   dataSource: MatTableDataSource<IBatches>;
-  allMasterData :any[]= [];
+  allMasterData: any[] = [];
   BatchData = {
     BatchId: 0,
     BatchName: '',
     StartDate: Date,
     EndDate: Date,
-    CurrentBatch:0,
+    CurrentBatch: 0,
     OrgId: 0,
     //SubOrgId: 0,
     Active: 1
@@ -57,7 +58,7 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
     private fb: UntypedFormBuilder,
     private dataservice: NaomitsuService,
     private tokenStorage: TokenStorageService,
-    
+
     private nav: Router,
     private contentservice: ContentService,
   ) { }
@@ -95,11 +96,12 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
   onBlur(row) {
     row.Action = true;
   }
+  DisableCurrentBatchChk = false;
   GetBatches() {
     let filterStr = "OrgId eq " + this.LoginUserDetail[0]["orgId"];
 
     if (filterStr.length == 0) {
-      this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText,globalconstants.RedBackground);
+      this.contentservice.openSnackBar("Please enter search criteria.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
 
@@ -116,13 +118,21 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
 
     list.PageName = "Batches";
     list.filter = [filterStr];
-    this.BatchList= [];
+    this.BatchList = [];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         //debugger;
         this.BatchList = [...data.value.sort((a, b) => new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime())];
+
+        let obj = this.BatchList.find(f => f.CurrentBatch == 1);
+        if (obj) {
+          this.DisableCurrentBatchChk = true;
+        }
+        else
+          this.DisableCurrentBatchChk = false;
+        
         this.dataSource = new MatTableDataSource<IBatches>(this.BatchList);
-        this.loading = false; this.PageLoading=false;
+        this.loading = false; this.PageLoading = false;
       });
   }
   updateCurrentBatch(row, value) {
@@ -135,9 +145,9 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
       BatchName: 'new batch name',
       StartDate: new Date(),
       EndDate: new Date(),
-      CurrentBatch:0,
+      CurrentBatch: 0,
       OrgId: +this.LoginUserDetail[0]["orgId"],
-      SubOrgId:this.SubOrgId,
+      SubOrgId: this.SubOrgId,
       Active: 1
     }
     this.BatchList.push(newdata);
@@ -157,7 +167,7 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
       .subscribe(
         (data: any) => {
 
-          this.contentservice.openSnackBar(globalconstants.DeletedMessage,globalconstants.ActionText,globalconstants.BlueBackground);
+          this.contentservice.openSnackBar(globalconstants.DeletedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
 
         });
   }
@@ -191,7 +201,7 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
         if (data.value.length > 0) {
           this.contentservice.openSnackBar(globalconstants.RecordAlreadyExistMessage, globalconstants.ActionText, globalconstants.RedBackground);
           row.Ative = 0;
-          this.loading = false; this.PageLoading=false;
+          this.loading = false; this.PageLoading = false;
           return;
         }
         else {
@@ -228,7 +238,7 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
     this.dataservice.postPatch('Batches', this.BatchData, 0, 'post')
       .subscribe(
         (data: any) => {
-          this.loading = false; this.PageLoading=false;
+          this.loading = false; this.PageLoading = false;
           row.BatchId = data.BatchId;
           this.GetBatches();
           row.Action = false;
@@ -240,10 +250,10 @@ export class BatchdashboardComponent implements OnInit { PageLoading=true;
     this.dataservice.postPatch('Batches', this.BatchData, this.BatchData.BatchId, 'patch')
       .subscribe(
         (data: any) => {
-          this.loading = false; this.PageLoading=false;
+          this.loading = false; this.PageLoading = false;
           row.Action = false;
           this.GetBatches();
-          this.contentservice.openSnackBar(globalconstants.UpdatedMessage,globalconstants.ActionText,globalconstants.BlueBackground);
+          this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
         });
   }
   isNumeric(str: number) {
@@ -258,7 +268,7 @@ export interface IBatches {
   BatchName: string;
   StartDate: Date;
   EndDate: Date;
-  CurrentBatch:number;
+  CurrentBatch: number;
   OrgId: number;
   SubOrgId: number;
   Active;

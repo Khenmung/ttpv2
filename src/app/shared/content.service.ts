@@ -113,7 +113,8 @@ export class ContentService implements OnInit {
     _classfilter += " and SemesterId eq " + pSemesterId;
     _classfilter += " and SectionId eq " + pSectionId;
     if (pBatchId > 0)
-      _classfilter += " and BatchId eq " + pBatchId + " and IsCurrent eq true and Active eq 1";
+      _classfilter += " and BatchId eq " + pBatchId + " and Active eq 1";
+     // _classfilter += " and BatchId eq " + pBatchId + " and IsCurrent eq true and Active eq 1";
 
     let list: List = new List();
     list.fields = ["StudentClassId"];

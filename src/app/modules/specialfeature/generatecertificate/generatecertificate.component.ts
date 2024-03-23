@@ -883,7 +883,7 @@ export class GenerateCertificateComponent implements OnInit {
       this.contentservice.openSnackBar("Please select class.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
-    filterOrgIdNBatchId += " and IsCurrent eq true";
+    //filterOrgIdNBatchId += " and IsCurrent eq true";
     this.loading = true;
     this.Students = [];
     let list: List = new List();

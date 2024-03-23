@@ -36,7 +36,7 @@
                 <mat-icon>search</mat-icon>
             </button>
             <!-- <div style="display:flex;justify-content:center;width:100%;margin:5px"> -->
-            <button *ngIf="NonGradedMarkResults.length>0 || GradedMarksResults.length>0" [disabled]="loading"
+            <button *ngIf="NonGradedMarkResults.length>0 || GradedMarksResults.length>0 || EvaluationDisplayedColumns.length>1" [disabled]="loading"
                 matTooltip="print" printSectionId="printSection" [useExistingCss]="true" ngxPrint mat-raised-button
                 color="accent">
                 <mat-icon>print</mat-icon>
@@ -117,7 +117,7 @@
                     <mat-table style="page-break-inside: avoid;border-top:1px solid lightgray;border-left:1px solid lightgray;border-bottom:1px solid lightgray" [dataSource]="getDataSource(data)" matSort *ngIf="NonGradedDisplayColumns.length>1">
                         <ng-container *ngFor="let disCol of NonGradedDisplayColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header><span
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #FAFAFA;"><span
                                     *ngIf="disCol!='Subject'">{{disCol}}</span>
                             </mat-header-cell>
                             <mat-cell *matCellDef="let element">
@@ -128,7 +128,7 @@
                         <mat-row *matRowDef="let row; columns: NonGradedDisplayColumns;" class="element-row"></mat-row>
                     </mat-table>
                 </div>
-                <div style="margin-top:15px;margin-bottom:0px" *ngIf="GradedDisplayColumns.length>1">
+                <div style="margin-top:15px;margin-bottom:0px" [hidden]="GradedDisplayColumns.length<1">
                     <div style="margin-left:20px;font-weight:bold">Graded Subjects</div>
                     <mat-table #table style="page-break-inside: avoid;border-top:1px solid lightgray;border-left:1px solid lightgray;border-bottom:1px solid lightgray" [dataSource]="getDataSource(GradedDataSourceArray[indx])" matSort>
                         <ng-container *ngFor="let disCol of GradedDisplayColumns; let colIndex = index"
@@ -148,7 +148,8 @@
                 </div>
                 <mat-divider style="border-top-color: grey;"></mat-divider>
                 <div style="margin-top:15px;margin-bottom:0px">
-                    <mat-table style="page-break-inside: avoid;border-top:1px solid lightgray;border-left:1px solid lightgray;border-bottom:1px solid lightgray" #table [dataSource]="getDataSource(ExamResultArray[indx])" matSort
+                    <mat-table style="page-break-inside: avoid;border-top:1px solid lightgray;border-left:1px solid lightgray;border-bottom:1px solid lightgray" #table 
+                    [dataSource]="getDataSource(ExamResultArray[indx])" matSort
                         *ngIf="DisplayColumns.length>1">
                         <ng-container *ngFor="let disCol of DisplayColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
@@ -186,7 +187,7 @@
                         *ngIf="EvaluationDisplayedColumns.length>1">
                         <ng-container *ngFor="let disCol of EvaluationDisplayedColumns; let colIndex = index"
                             matColumnDef="{{disCol}}">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <mat-header-cell *matHeaderCellDef mat-sort-header style="background-color: #FAFAFA;">
                                 <span style="padding-left: 15px;"
                                     *ngIf="disCol!='FirstCol' && disCol!='Description'">{{disCol}}</span>
                             </mat-header-cell>

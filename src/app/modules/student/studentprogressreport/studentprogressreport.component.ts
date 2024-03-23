@@ -140,13 +140,14 @@ export class StudentprogressreportComponent implements OnInit {
       if (this.Permission != 'deny') {
         ////console.log("localStorage.getItem(StudentDetail)",localStorage.getItem("StudentDetail"))
         var studentdetail = [JSON.parse("{" + localStorage.getItem("StudentDetail") + "}")];
-        var _studentId = this.tokenStorage.getStudentId()!;
-        var _student = this.tokenStorage.getStudents()!;
         this.CurrentBatchName = this.tokenStorage.getSelectedBatchName()!;
-        this.CurrentStudent = _student.find((f: any) => f.StudentId == _studentId);
-        var obj = this.Houses.find(h => h.MasterDataId == this.CurrentStudent.HouseId);
-        if (obj)
-          this.CurrentStudent.House = obj.MasterDataName;
+
+        // var _studentId = this.tokenStorage.getStudentId()!;
+        // var _student = this.tokenStorage.getStudents()!;      
+        // this.CurrentStudent = _student.find((f: any) => f.StudentId == _studentId);
+        // var obj = this.Houses.find(h => h.MasterDataId == this.CurrentStudent.HouseId);
+        // if (obj)
+        //   this.CurrentStudent.House = obj.MasterDataName;
 
         studentdetail.forEach(s => {
           this.StudentName.push({ "Name": s.StudentName, "Class": s.ClassName, "Section": s.Section, "RollNo": s.RollNo })
@@ -698,6 +699,14 @@ export class StudentprogressreportComponent implements OnInit {
     this.Batches = this.tokenStorage.getBatches()!;
     this.CommonHeader = this.getDropDownData(globalconstants.MasterDefinitions.common.COMMONPRINTHEADING);
     var filterOrgSubOrg = globalconstants.getOrgSubOrgFilter(this.tokenStorage);
+    
+    var _studentId = this.tokenStorage.getStudentId()!;
+    var _student = this.tokenStorage.getStudents()!;
+    this.CurrentStudent = _student.find((f: any) => f.StudentId == _studentId);
+    var obj = this.Houses.find(h => h.MasterDataId == this.CurrentStudent.HouseId);
+    if (obj)
+      this.CurrentStudent.House = obj.MasterDataName;
+
     this.contentservice.GetClassGroupMapping(filterOrgSubOrg, 1)
       .subscribe((data: any) => {
         this.ClassGroupMappings = [...data.value];

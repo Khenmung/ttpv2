@@ -566,7 +566,7 @@ export class StudentActivityComponent implements OnInit {
   GetStudentClasses() {
     //debugger;
     var filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-    filterOrgIdNBatchId += " and IsCurrent eq true";
+    //filterOrgIdNBatchId += " and IsCurrent eq true";
     let list: List = new List();
     list.fields = ["StudentClassId,StudentId,ClassId,RollNo,SectionId,SemesterId"];
     list.PageName = "StudentClasses";

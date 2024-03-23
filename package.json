@@ -48,6 +48,7 @@
     "jss": "^10.10.0",
     "jss-preset-default": "^10.10.0",
     "lodash": "^4.17.21",
+    "material-icons": "^1.13.12",
     "mathjs": "^11.8.2",
     "moment": "^2.29.4",
     "ng-connection-service": "^9.0.3",

@@ -437,6 +437,12 @@ export class PrintprogressreportComponent implements OnInit {
     forkJoin(sources)
       .subscribe((data: any) => {
         //debugger;
+        this.SignatureColumns = ["FirstCol"];
+        this.DisplayColumns = ["FirstCol"];
+        this.GradedDisplayColumns = ["Subject"];
+        this.NonGradedDisplayColumns = ["Subject"];
+        this.EvaluationDisplayedColumns = ['Description'];
+
         let classSubject = [...data[1].value];// globalconstants.getFilteredClassSubjects(data[1].value,_classId,_sectionId,_semesterId);
         this.StudentSubjects = [];
         data[0].value.forEach(ss => {
@@ -807,6 +813,7 @@ export class PrintprogressreportComponent implements OnInit {
 
 
       })
+      console.log("this.GradedMarksResults",this.GradedMarksResults);
   }
   processEvaluationResult(data) {
     debugger;

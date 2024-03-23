@@ -20,7 +20,7 @@
     <ng-container matColumnDef="CurrentBatch">
         <mat-header-cell *matHeaderCellDef> Current Batch </mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="updateCurrentBatch(element,$event)"
+            <mat-checkbox [disabled]="DisableCurrentBatchChk && element.CurrentBatch==0" (click)="$event.stopPropagation()" (change)="updateCurrentBatch(element,$event)"
                 [checked]="element.CurrentBatch==1?true:false">
             </mat-checkbox>
         </mat-cell>
@@ -84,6 +84,10 @@
             <li>
                 <div>Every time "current" column is ticked or unticked, the "Iscurrent" column of the corresponding 
                     student class will be ticked or unticked accordingly.
+                </div>
+            </li>
+            <li>
+                <div>Unticking "Current Batch" should be done before setting another batch as current batch.
                 </div>
             </li>
         </ul>

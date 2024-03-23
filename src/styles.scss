@@ -8,6 +8,7 @@
 /* Importing Bootstrap SCSS file. */
 @import '../node_modules/bootstrap/scss/bootstrap';
 //@import '~quill/dist/quill.snow.css';
+@import '../node_modules/material-icons/iconfont/material-icons.scss';
 
 @include mat-core();
 $bv-brand: (
@@ -324,48 +325,3 @@ body {
     border-bottom: 1px solid lightgray;
 }
 
-// .mdc-data-table__cell,
-// .mdc-data-table__header-cell {
-//     padding: 0px 15px 0px 0px;
-// }
-
-// .mat-mdc-table mat-header-row.mat-mdc-header-row, .mat-mdc-table mat-row.mat-mdc-row, .mat-mdc-table mat-footer-row.mat-mdc-footer-cell{
-//     height: 90px;
-//   }
-// @font-face {
-//     font-family: 'Material Icons';
-//     font-style: normal;
-//     font-weight: 400;
-//     src: url(iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
-//     src: local('Material Icons'),
-//          local('MaterialIcons-Regular'),
-//          url(iconfont/MaterialIcons-Regular.woff2) format('woff2'),
-//          url(iconfont/MaterialIcons-Regular.woff) format('woff'),
-//          url(iconfont/MaterialIcons-Regular.ttf) format('truetype');
-//  }
-// @import '~material-design-icons/iconfont/material-icons.css'
-// .material-icons {
-//     font-family: 'Material Icons';
-//     font-weight: normal;
-//     font-style: normal;
-//     font-size: 24px;
-//     /* Preferred icon size */
-//     display: inline-block;
-//     line-height: 1;
-//     text-transform: none;
-//     letter-spacing: normal;
-//     word-wrap: normal;
-//     white-space: nowrap;
-//     direction: ltr;
-
-//     /* Support for all WebKit browsers. */
-//     -webkit-font-smoothing: antialiased;
-//     /* Support for Safari and Chrome. */
-//     text-rendering: optimizeLegibility;
-
-//     /* Support for Firefox. */
-//     -moz-osx-font-smoothing: grayscale;
-
-//     /* Support for IE. */
-//     font-feature-settings: 'liga';
-// }

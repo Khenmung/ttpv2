@@ -1038,7 +1038,7 @@ export class EvaluationBulkComponent implements OnInit {
     _filter = ' and ClassId eq ' + _classId;
     _filter += ' and SemesterId eq ' + _semesterId;
     _filter += ' and SectionId eq ' + _sectionId;
-    _filter += " and IsCurrent eq true";
+    //_filter += " and IsCurrent eq true";
     _filter += ' and Active eq 1';
 
     this.ClearData();

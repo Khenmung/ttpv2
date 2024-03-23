@@ -413,7 +413,7 @@ export class AddstudentclassComponent implements OnInit {
         if (indx > -1) {
           let clsIndx = _Students[indx].StudentClasses.findIndex(c => c.StudentClassId == this.studentclassData.StudentClassId)
           let studcls = _Students[indx].StudentClasses[clsIndx];//.find(c => c.StudentClassId == this.studentclassData.StudentClassId)
-          if (this.studentclassData.Active == 0 && studcls.IsCurrent) {
+          if (this.studentclassData.Active == 0) {
             _Students.splice(indx, 1);
           }
           else {
@@ -421,9 +421,10 @@ export class AddstudentclassComponent implements OnInit {
             studcls.RollNo = this.studentclassData.RollNo;
             studcls.SectionId = this.studentclassData.SectionId;
             studcls.SemesterId = this.studentclassData.SemesterId;
-            //studcls.FeeTypeId = this.studentclassData.FeeTypeId;
+            studcls.ClassId = this.studentclassData.ClassId;
             studcls.Remarks = this.studentclassData.Remarks;
             studcls.AdmissionDate = this.studentclassData.AdmissionDate;
+            studcls.Admitted = this.studentclassData.Admitted;
             studcls.IsCurrent = this.studentclassData.IsCurrent;
             _Students[indx].StudentClasses[clsIndx] = studcls;
           }

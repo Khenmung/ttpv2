@@ -125,7 +125,8 @@ export class ChartReportComponent {
       "FeeType($select=Formula,FeeTypeName;$filter=Active eq 1)",
 
     ];
-    list.filter = [this.FilterOrgSubOrgBatchId + " and IsCurrent eq true and Active eq 1"];
+    //list.filter = [this.FilterOrgSubOrgBatchId + " and IsCurrent eq true and Active eq 1"];
+    list.filter = [this.FilterOrgSubOrgBatchId + " and Active eq 1"];
     this.dataservice.get(list)
       .subscribe((data: any) => {
         ////console.log('data gg', data.value)
