@@ -738,7 +738,7 @@ export class EMarkComponent implements OnInit {
     filterOrgIdNBatchId += " and ClassId eq " + _searchClassId;
     filterOrgIdNBatchId += " and SemesterId eq " + _searchSemesterId;
     filterOrgIdNBatchId += " and SectionId eq " + _searchSectionId;
-    //filterOrgIdNBatchId += " and IsCurrent eq true";
+    filterOrgIdNBatchId += " and Active eq 1";
 
     let list: List = new List();
     list.fields = ["StudentClassId,StudentId,ClassId,RollNo,SectionId,SemesterId"];

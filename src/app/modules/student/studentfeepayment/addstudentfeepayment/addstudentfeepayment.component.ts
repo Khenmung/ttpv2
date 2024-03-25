@@ -51,7 +51,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
   FeeCategories: any[] = [];
   Remarks: any = [];
   OffLineReceiptNo = '';
-  ReceiptDate:Date=new Date();
+  ReceiptDate: Date = new Date();
   CashAmount = 0;
   PaymentTypeId = 0;
   TuitionFeeLedgerId = 0;
@@ -982,9 +982,11 @@ export class AddstudentfeepaymentComponent implements OnInit {
     //ends checking within selected items
 
     //checking between months
-    var _currentPaymentOrder = Math.max.apply(Math, this.MonthlyDueDetail.map(function (o) { return o.PaymentOrder; }));
+    var _currentPaymentOrder = Math.max.apply(Math, this.MonthlyDueDetail.map(function (o) { return o.PaymentOrder >= 100 ? 0 : o.PaymentOrder }));
     var previousBalanceMonthObj: any[] = [];
-    previousBalanceMonthObj = this.StudentLedgerList.filter((f: any) => f.PaymentOrder > 0 && f.PaymentOrder < _currentPaymentOrder && +f.Balance1 > 0);
+    previousBalanceMonthObj = this.StudentLedgerList.filter((f: any) => f.PaymentOrder > 0
+      && f.PaymentOrder < _currentPaymentOrder
+      && +f.Balance1 > 0);
     var MonthSelected: any[] = [];
     if (previousBalanceMonthObj.length > 0) {
       previousBalanceMonthObj.forEach(p => {
@@ -1000,7 +1002,7 @@ export class AddstudentfeepaymentComponent implements OnInit {
       return;
     }
     if (error.length > 0) {
-      this.contentservice.openSnackBar("Previous " + error[0].FeeName + " must be cleared first before paying " + error[0].Next + ".", globalconstants.ActionText, globalconstants.RedBackground);
+      this.contentservice.openSnackBar("Previous " + error[0].FeeName + " must be cleared first before paying this.", globalconstants.ActionText, globalconstants.RedBackground);
       return;
     }
     else {

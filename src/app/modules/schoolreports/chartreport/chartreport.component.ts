@@ -122,7 +122,7 @@ export class ChartReportComponent {
     ];
     list.lookupFields = [
       "Student($select=FirstName,LastName)",
-      "FeeType($select=Formula,FeeTypeName;$filter=Active eq 1)",
+      "StudentFeeTypes($select=Formula,FeeTypeName;$filter=Active eq 1)",
 
     ];
     //list.filter = [this.FilterOrgSubOrgBatchId + " and IsCurrent eq true and Active eq 1"];

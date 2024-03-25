@@ -683,7 +683,7 @@ export class PromoteclassComponent implements OnInit {
         'Remarks',
         'Active'
       ];
-
+      filterStr +=" and Active eq 1";
       list.PageName = "StudentClasses";
       list.lookupFields = ["Student($select=PID,FirstName,LastName,GenderId,RemarkId)"];
       list.filter = [filterStr];
@@ -1079,7 +1079,7 @@ export class PromoteclassComponent implements OnInit {
             Remarks: this.StudentClassData.Remarks,
             AdmissionNo: data.AdmissionNo,
             AdmissionDate: data.AdmissionDate,
-            StudentFeeTypes: [...NewStudentFromPrevious.StudentClasses[0].StudentFeeTypes]
+            StudentFeeTypes:data.StudentFeeTypes
           }];
           NewStudentFromPrevious.StudentClasses = [...cls];
           row.Action = false;
@@ -1093,7 +1093,6 @@ export class PromoteclassComponent implements OnInit {
             this.CurrentBatchStudents.push(NewStudentFromPrevious);
           }
           this.tokenStorage.saveStudents(this.CurrentBatchStudents);
-          this.CurrentBatchStudents = this.tokenStorage.getStudents()!;
 
           //this.RowsToUpdate--;
           if (this.RowsToUpdate == 0) {

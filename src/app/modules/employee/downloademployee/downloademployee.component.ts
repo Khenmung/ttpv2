@@ -348,7 +348,7 @@ export class DownloademployeeComponent {
     let list: List = new List();
     list.fields = ["StudentId", "RollNo", "SectionId", "StudentClassId", "ClassId", "SemesterId"];
     list.PageName = "StudentClasses";
-    list.filter = [this.FilterOrgSubOrgNBatchId + " and IsCurrent eq true"];
+    list.filter = [this.FilterOrgSubOrgNBatchId + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {
@@ -411,7 +411,7 @@ export class DownloademployeeComponent {
       classfilter = classfilter + ") and BatchId eq " + this.SelectedBatchId
     else
       classfilter = "BatchId eq " + this.SelectedBatchId;
-    classfilter += " and IsCurrent eq true";
+    classfilter += " and Active eq 1";
     let list: List = new List();
     list.fields = ["Remarks,StudentClassId,HouseId,BatchId,ClassId,RollNo,FeeTypeId,Remarks,SectionId,SemesterId"];
     list.lookupFields = ["Student($select=*)"];
@@ -761,7 +761,7 @@ export class DownloademployeeComponent {
   GetStudentClasses() {
     //debugger;
     var filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-    filterOrgIdNBatchId += " and IsCurrent eq true";
+    filterOrgIdNBatchId += " and Active eq 1";
     let list: List = new List();
     list.fields = ["StudentClassId,StudentId,ClassId,RollNo,SectionId,SemesterId"];
     list.PageName = "StudentClasses";

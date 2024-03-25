@@ -269,7 +269,7 @@ export class StudentprofilereportComponent implements OnInit {
     list.PageName = "StudentClasses";
     list.lookupFields = ["Student($select=FirstName,LastName)"]
     //list.filter = [this.FilterOrgSubOrg + " and IsCurrent eq true"];
-    list.filter = [this.FilterOrgSubOrg];
+    list.filter = [this.FilterOrgSubOrgBatchId + " and Active eq 1"];
 
     this.dataservice.get(list)
       .subscribe((data: any) => {

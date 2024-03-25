@@ -411,11 +411,13 @@ export class StudentDatadumpComponent implements OnInit {
       classfilter += " and BatchId eq " + this.SelectedBatchId
     else
       classfilter = "BatchId eq " + this.SelectedBatchId;
-    classfilter += " and IsCurrent eq true";
+
+    classfilter += " and Active eq 1";
+
     let list: List = new List();
     list.PageName = "StudentClasses";
     list.fields = ["Remarks,StudentClassId,HouseId,BatchId,ClassId,RollNo,FeeTypeId,Remarks,SectionId,SemesterId,Admitted"];
-    list.lookupFields = ["Student($select=*),StudentFeeTypes($filter=IsCurrent eq true and Active eq true;$select=FeeTypeId)"];
+    list.lookupFields = ["Student($select=*),StudentFeeTypes($filter=Active eq true;$select=FeeTypeId)"];
 
     list.filter = [this.FilterOrgSubOrg + " and " + classfilter];
     //list.orderBy = "ParentId";
@@ -771,7 +773,8 @@ export class StudentDatadumpComponent implements OnInit {
   GetStudentClasses() {
     //debugger;
     var filterOrgIdNBatchId = globalconstants.getOrgSubOrgBatchIdFilter(this.tokenStorage);
-    filterOrgIdNBatchId += " and IsCurrent eq true";
+    filterOrgIdNBatchId += " and Active eq 1";
+    //filterOrgIdNBatchId += " and IsCurrent eq true";
     let list: List = new List();
     list.fields = ["StudentClassId,StudentId,ClassId,RollNo,SectionId,SemesterId"];
     list.PageName = "StudentClasses";

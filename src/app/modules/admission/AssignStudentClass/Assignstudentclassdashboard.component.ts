@@ -908,7 +908,8 @@ export class AssignStudentclassdashboardComponent implements OnInit {
       return EMPTY;
     }
     else {
-      filterStr += " and IsCurrent eq true";
+      filterStr += " and Active eq 1";
+      //filterStr += " and IsCurrent eq true";
       let list: List = new List();
       list.fields = [
         'StudentClassId',

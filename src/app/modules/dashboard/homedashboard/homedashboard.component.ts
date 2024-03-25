@@ -700,8 +700,9 @@ export class HomeDashboardComponent implements OnInit {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");
     }
     this.filterOrgSubOrgBatchId += this.GetEmployeeClassIds();
+    this.filterOrgSubOrgBatchId +=" and Active eq 1";
     list.PageName = "StudentClasses";
-    list.lookupFields = ["StudentFeeTypes($filter=Active eq true;$select=StudentFeeTypeId,FeeTypeId),Student($select=PID," +
+    list.lookupFields = ["StudentFeeTypes($select=StudentFeeTypeId,FeeTypeId),Student($select=PID," +
       "StudentId," +
       "FirstName," +
       "LastName," +
@@ -964,7 +965,7 @@ export class HomeDashboardComponent implements OnInit {
     }
 
     this.filterOrgSubOrgBatchId += this.GetEmployeeClassIds();
-    this.filterOrgSubOrgBatchId += " and IsCurrent eq true";
+    this.filterOrgSubOrgBatchId += " and IsCurrent eq true and Active eq 1";
 
     list.filter = [this.filterOrgSubOrgBatchId];
     this.Loading();

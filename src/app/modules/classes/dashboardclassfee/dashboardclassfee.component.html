@@ -145,6 +145,7 @@
                 <mat-form-field appearance="outline">
                     <input [disabled]="element.FeeName=='Discount'" matInput type="number"
                         (blur)='updateAmount(element,$event)' [(ngModel)]="element.PaymentOrder"
+                        max="100"
                         [value]="element.PaymentOrder" autocomplete="Off">
                 </mat-form-field>
             </mat-cell>

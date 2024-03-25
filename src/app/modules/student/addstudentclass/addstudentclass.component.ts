@@ -253,7 +253,7 @@ export class AddstudentclassComponent implements OnInit {
         "BatchId", "IsCurrent", "Admitted",
         "AdmissionDate", "Remarks", "Active"];
       list.PageName = "StudentClasses";
-      list.filter = [filterWithOrgAndBatchId + " and StudentId eq " + this.StudentId]// + " and IsCurrent eq true"];
+      list.filter = [filterWithOrgAndBatchId + " and StudentId eq " + this.StudentId + " and Active eq 1"]// + " and IsCurrent eq true"];
 
       this.dataservice.get(list)
         .subscribe((data: any) => {
