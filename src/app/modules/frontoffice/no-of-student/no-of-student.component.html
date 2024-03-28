@@ -26,7 +26,7 @@
 </div>
 <div id="printSection">
     <div style="font-size: medium;">{{ HeaderTitle }}</div>
-    <mat-table #table style="overflow: auto;" [dataSource]="dataSource" matSort>
+    <mat-table #table [dataSource]="dataSource" matSort>
         <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
             <mat-header-cell *matHeaderCellDef mat-sort-header="">{{disCol!='Action'?disCol:''}}
             </mat-header-cell>

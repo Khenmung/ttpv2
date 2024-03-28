@@ -1,8 +1,10 @@
 :host{
     width:100%;
-
 }
 mat-card{
     width:100%;
     border-top-left-radius: 10px;
+}
+.mat-mdc-tab-body-content{
+    overflow: hidden !important;
 }

@@ -227,7 +227,7 @@ export class PromoteclassComponent implements OnInit {
 
         this.GetMasterData();
         this.GetFeeTypes();
-        this.loading = false; this.PageLoading = false;
+
         this.GetStudents();
       }
     }
@@ -644,7 +644,7 @@ export class PromoteclassComponent implements OnInit {
       filterStr = this.FilterOrgSubOrgBatchId;
       if (_classId > 0)
         filterStr += " and ClassId eq " + _classId;
-    //  filterStr += " and IsCurrent eq true";
+      //  filterStr += " and IsCurrent eq true";
     }
 
     // if (_FeeTypeId > 0)
@@ -683,7 +683,7 @@ export class PromoteclassComponent implements OnInit {
         'Remarks',
         'Active'
       ];
-      filterStr +=" and Active eq 1";
+      filterStr += " and Active eq 1";
       list.PageName = "StudentClasses";
       list.lookupFields = ["Student($select=PID,FirstName,LastName,GenderId,RemarkId)"];
       list.filter = [filterStr];
@@ -979,7 +979,7 @@ export class PromoteclassComponent implements OnInit {
     this.loading = true;
     let checkFilterString = "StudentId eq " + row.StudentId + ' and BatchId eq ' + this.SelectedBatchId +
       " and SemesterId eq " + row.SemesterId
-      " and SectionId eq " + row.SemesterId;
+    " and SectionId eq " + row.SemesterId;
 
     if (row.StudentClassId > 0)
       checkFilterString += " and StudentClassId ne " + row.StudentClassId;
@@ -1063,44 +1063,48 @@ export class PromoteclassComponent implements OnInit {
     this.dataservice.postPatch('StudentClasses', this.StudentClassData, 0, 'post')
       .subscribe(
         (data: any) => {
-          this.loading = false; this.PageLoading = false;
-          this.RowsToUpdate -= 1;
-          let iteminserted: any = this.StudentClassList.find(s => s.StudentId == row.StudentId && s["BatchId"] == row.BatchId)
-          iteminserted.ClassName = this.Classes.find(c => c.ClassId == data.ClassId).ClassName;
-          iteminserted.StudentClassId = data.StudentClassId;
-          let NewStudentFromPrevious: any = this.PreviousBatchStudents.find(st => st.StudentId == this.StudentClassData.StudentId);
-          var cls = [{
-            StudentClassId: data.StudentClassId,
-            ClassId: this.StudentClassData.ClassId,
-            FeeTypeId: this.StudentClassData.FeeTypeId,
-            RollNo: this.StudentClassData.RollNo,
-            SectionId: this.StudentClassData.SectionId,
-            SemesterId: this.StudentClassData.SemesterId,
-            Remarks: this.StudentClassData.Remarks,
-            AdmissionNo: data.AdmissionNo,
-            AdmissionDate: data.AdmissionDate,
-            StudentFeeTypes:data.StudentFeeTypes
-          }];
-          NewStudentFromPrevious.StudentClasses = [...cls];
-          row.Action = false;
+          this.GetStudentFeeTypes(data.StudentClassId)
+            .subscribe((feetype:any) => {
 
-          var stud = this.CurrentBatchStudents.find((f: any) => f.StudentId == this.StudentClassData.StudentId
-            && f.BatchId == this.StudentClassData.BatchId);
-          if (stud) {
-            stud["StudentClasses"] = [...cls];
-          }
-          else {
-            this.CurrentBatchStudents.push(NewStudentFromPrevious);
-          }
-          this.tokenStorage.saveStudents(this.CurrentBatchStudents);
 
-          //this.RowsToUpdate--;
-          if (this.RowsToUpdate == 0) {
-            this.CreateInvoice(row);
-            this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
-            this.RowsToUpdate = -1;
-          }
+              this.loading = false; this.PageLoading = false;
+              this.RowsToUpdate -= 1;
+              let iteminserted: any = this.StudentClassList.find(s => s.StudentId == row.StudentId && s["BatchId"] == row.BatchId)
+              iteminserted.ClassName = this.Classes.find(c => c.ClassId == data.ClassId).ClassName;
+              iteminserted.StudentClassId = data.StudentClassId;
+              let NewStudentFromPrevious: any = this.PreviousBatchStudents.find(st => st.StudentId == this.StudentClassData.StudentId);
+              var cls = [{
+                StudentClassId: data.StudentClassId,
+                ClassId: this.StudentClassData.ClassId,
+                FeeTypeId: this.StudentClassData.FeeTypeId,
+                RollNo: this.StudentClassData.RollNo,
+                SectionId: this.StudentClassData.SectionId,
+                SemesterId: this.StudentClassData.SemesterId,
+                Remarks: this.StudentClassData.Remarks,
+                AdmissionNo: data.AdmissionNo,
+                AdmissionDate: data.AdmissionDate,
+                StudentFeeTypes: feetype.value
+              }];
+              NewStudentFromPrevious.StudentClasses = [...cls];
+              row.Action = false;
 
+              var stud = this.CurrentBatchStudents.find((f: any) => f.StudentId == this.StudentClassData.StudentId
+                && f.BatchId == this.StudentClassData.BatchId);
+              if (stud) {
+                stud["StudentClasses"] = [...cls];
+              }
+              else {
+                this.CurrentBatchStudents.push(NewStudentFromPrevious);
+              }
+              this.tokenStorage.saveStudents(this.CurrentBatchStudents);
+
+              //this.RowsToUpdate--;
+              if (this.RowsToUpdate == 0) {
+                this.CreateInvoice(row);
+                this.contentservice.openSnackBar(globalconstants.AddedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
+                this.RowsToUpdate = -1;
+              }
+            })
         }, error => {
           this.loading = false;
           this.PageLoading = false;
@@ -1126,6 +1130,34 @@ export class PromoteclassComponent implements OnInit {
           this.PageLoading = false;
           this.contentservice.openSnackBar(globalconstants.formatError(error), globalconstants.ActionText, globalconstants.RedBackground);
         });
+  }
+  //StudentFeeTypeList :any = [];
+  GetStudentFeeTypes(pStudentClassId) {
+    //debugger;
+    let filterStr = this.FilterOrgSubOrgBatchId;// 'BatchId eq '+ this.SelectedBatchId;
+
+    filterStr += " and StudentClassId eq " + pStudentClassId;
+
+
+    this.loading = true;
+    let list: List = new List();
+    list.fields = [
+      'StudentFeeTypeId',
+      'FeeTypeId',
+      'StudentClassId',
+      'FromMonth',
+      'ToMonth',
+      'Discount',
+      'Active'
+    ];
+
+    list.PageName = "StudentFeeTypes";
+    list.filter = [filterStr];
+    //this.StudentFeeTypeList = [];
+    return this.dataservice.get(list);
+    // .subscribe((data: any) => {
+    //   this.StudentFeeTypeList =[...data.value];
+    // })
   }
   CreateInvoice(row) {
     debugger;
@@ -1299,6 +1331,7 @@ export class PromoteclassComponent implements OnInit {
 
       this.dataservice.get(list)
         .subscribe((data: any) => {
+          debugger;
           let result = data.value.filter(s => s.Student.Deleted == false);
           this.PreviousBatchStudents = [];
           var _classNameobj;
@@ -1311,6 +1344,8 @@ export class PromoteclassComponent implements OnInit {
           var _lastname = '';
           var _name = '';
           let newStudents: any = [];
+          let tempCurrentStudentIds = this.CurrentBatchStudents.map(m => m.StudentId);
+          result = result.filter(r => !tempCurrentStudentIds.find(c => c == r.StudentId));
           for (let i = 0; i < result.length; i++) {
 
             let stud = JSON.parse(JSON.stringify(result[i].Student));

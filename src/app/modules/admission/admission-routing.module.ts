@@ -9,6 +9,7 @@ import { StudentDatadumpComponent } from './studentdatadump/studentdatadump.comp
 import { ExcelDataManagementComponent } from './excel-data-management/excel-data-management.component';
 import { AdmissionWithdrawnComponent } from './admissionwithdrawn/admissionwithdrawn.component';
 import { StudentstatusComponent } from './studentstatus/studentstatus.component';
+import { SearchstudentfeetypeComponent } from './searchstudentfeetype/searchstudentfeetype.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,7 @@ export class AdmissionRoutingModule { }
 export const AdmissionComponents = [
   PromoteclassComponent,
   AdmissionboardComponent,
+  SearchstudentfeetypeComponent,
   AssignStudentclassdashboardComponent,
   AdmissionWithdrawnComponent,
   StudenthistoryComponent,

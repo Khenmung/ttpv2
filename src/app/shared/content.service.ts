@@ -114,7 +114,7 @@ export class ContentService implements OnInit {
     _classfilter += " and SectionId eq " + pSectionId;
     if (pBatchId > 0)
       _classfilter += " and BatchId eq " + pBatchId + " and Active eq 1";
-     // _classfilter += " and BatchId eq " + pBatchId + " and IsCurrent eq true and Active eq 1";
+    // _classfilter += " and BatchId eq " + pBatchId + " and IsCurrent eq true and Active eq 1";
 
     let list: List = new List();
     list.fields = ["StudentClassId"];
@@ -758,6 +758,7 @@ export class ContentService implements OnInit {
         //after applying, remove again since it is for each student
         _VariableObjList.splice(_VariableObjList.indexOf(inv), 1);
         AmountAfterFormulaApplied = evaluate(formula);
+        AmountAfterFormulaApplied = AmountAfterFormulaApplied < 0 ? 0 : AmountAfterFormulaApplied;
       }
       _LedgerData.push({
         LedgerId: 0,

@@ -71,7 +71,7 @@ export class AddstudentclassComponent implements OnInit {
     "RollNo",
     "AdmissionDate",
     "Remarks",
-   // "FeeTypeId",
+    // "FeeTypeId",
     "IsCurrent",
     "Admitted",
     "Active",
@@ -88,9 +88,9 @@ export class AddstudentclassComponent implements OnInit {
     private shareddata: SharedataService) { }
 
   ngOnInit(): void {
-    
+
     this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
-    
+
     this.PageLoad();
   }
   PageLoad() {
@@ -404,7 +404,7 @@ export class AddstudentclassComponent implements OnInit {
 
     this.dataservice.postPatch('StudentClasses', this.studentclassData, this.studentclassData.StudentClassId, 'patch')
       .subscribe((data: any) => {
-        //this.CreateInvoice(row);
+        this.CreateInvoice(row);
         debugger;
         row.AdmissionNo = this.studentclassData.AdmissionNo;
         row.Action = false;
@@ -429,9 +429,9 @@ export class AddstudentclassComponent implements OnInit {
             _Students[indx].StudentClasses[clsIndx] = studcls;
           }
           this.tokenStorage.saveStudents(_Students);
-          this.loading=false;
+          this.loading = false;
         }
-        this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground); 
+        this.contentservice.openSnackBar(globalconstants.UpdatedMessage, globalconstants.ActionText, globalconstants.BlueBackground);
       }, error => {
         var msg = globalconstants.formatError(error);
         this.contentservice.openSnackBar(msg, globalconstants.ActionText, globalconstants.RedBackground);
@@ -452,7 +452,7 @@ export class AddstudentclassComponent implements OnInit {
         if (objClassFee.length == 0) {
           objClassFee = datacls.value.filter(def => def.FeeDefinition.Active == 1 && def.ClassId == row.ClassId);
         }
-        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, row.ClassId, row.SemesterId, row.SectionId, this.StudentClassId, 0)
+        this.contentservice.getStudentClassWithFeeType(this.FilterOrgSubOrgBatchId, row.ClassId, row.SemesterId, row.SectionId, this.StudentClassId, 0, 0, 0)
           .subscribe((data: any) => {
             var studentfeedetail: any[] = [];
             let _Students: any = this.tokenStorage.getStudents()!;
@@ -462,13 +462,30 @@ export class AddstudentclassComponent implements OnInit {
             var _className = '';
             var _semesterName = '';
             var _sectionName = '';
+            let _studentAllFeeTypes: any = [];
+            let _feeObj;
+            let _formula = '';
             data.value.forEach(studcls => {
               let _currentStudent = _Students.find(s => s.StudentId === studcls.StudentId);
-              _feeName = ''; _remark1 = ''; _remark2 = '';
+              _feeName = ''; _remark1 = ''; _remark2 = '', _formula = '';
               if (_currentStudent) {
                 _remark1 = _currentStudent.Remark1;
                 _remark2 = _currentStudent.Remark2;
               }
+              studcls.StudentFeeTypes.forEach(item => {
+                _studentAllFeeTypes.push(
+                  {
+                    FeeTypeId: item.FeeTypeId,
+                    FeeName: item.FeeType.FeeTypeName,
+                    Formula: item.FeeType.Formula,
+                    FromMonth: item.FromMonth,
+                    ToMonth: item.ToMonth,
+                    Discount: item.Discount
+                  })
+              })
+
+              _studentAllFeeTypes = _studentAllFeeTypes.sort((a, b) => b.FromMonth - a.FromMonth);
+
               objClassFee.forEach(clsfee => {
                 _category = '';
                 _subCategory = '';
@@ -496,7 +513,16 @@ export class AddstudentclassComponent implements OnInit {
                 if (objsubcat)
                   _subCategory = objsubcat.MasterDataName;
 
-                let _formula = studcls.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
+                _feeObj = _studentAllFeeTypes.find(ft => clsfee.Month >= ft.FromMonth && clsfee.Month <= ft.ToMonth);
+                if (!_feeObj) {
+                  _feeObj = _studentAllFeeTypes.find(ft => ft.FromMonth == 0 && ft.ToMonth == 0);
+                }
+                if (_feeObj.Discount > 0)
+                  _formula = _feeObj.Formula + "-" + _feeObj.Discount;
+                else
+                  _formula = _feeObj.Formula;
+                
+                //let _formula = studcls.StudentFeeTypes.FeeType.Active == 1 ? studcls.FeeType.Formula : '';
 
                 if (_formula.length > 0) {
                   _feeName = clsfee.FeeDefinition.FeeName;

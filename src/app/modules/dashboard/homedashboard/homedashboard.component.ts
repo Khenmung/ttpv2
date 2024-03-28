@@ -702,7 +702,7 @@ export class HomeDashboardComponent implements OnInit {
     this.filterOrgSubOrgBatchId += this.GetEmployeeClassIds();
     this.filterOrgSubOrgBatchId +=" and Active eq 1";
     list.PageName = "StudentClasses";
-    list.lookupFields = ["StudentFeeTypes($select=StudentFeeTypeId,FeeTypeId),Student($select=PID," +
+    list.lookupFields = ["StudentFeeTypes($select=StudentFeeTypeId,FeeTypeId,FromMonth,ToMonth,Discount,Active),Student($select=PID," +
       "StudentId," +
       "FirstName," +
       "LastName," +
@@ -958,7 +958,7 @@ export class HomeDashboardComponent implements OnInit {
       "StudentClassId,StudentId,HouseId,BatchId,ClassId,SectionId,SemesterId,RollNo,FeeTypeId,Remarks,Active,Admitted"
     ];
     list.PageName = "StudentClasses";
-    list.lookupFields = ["StudentFeeTypes($filter=Active eq true;$select=StudentFeeTypeId,FeeTypeId)"]
+    list.lookupFields = ["StudentFeeTypes($filter=Active eq true;$select=StudentFeeTypeId,FeeTypeId,FromMonth,ToMonth,Discount,Active)"]
 
     if (this.LoginUserDetail[0]['RoleUsers'][0].role.toLowerCase() == 'student') {
       this.filterOrgSubOrgBatchId += " and StudentId eq " + localStorage.getItem("studentId");

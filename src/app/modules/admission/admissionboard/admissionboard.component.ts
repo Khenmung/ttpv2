@@ -10,6 +10,7 @@ import { StudentDatadumpComponent } from '../studentdatadump/studentdatadump.com
 import {ExcelDataManagementComponent} from '../excel-data-management/excel-data-management.component';
 import { AdmissionWithdrawnComponent } from '../admissionwithdrawn/admissionwithdrawn.component';
 import { StudentstatusComponent } from '../studentstatus/studentstatus.component';
+import { SearchstudentfeetypeComponent } from '../searchstudentfeetype/searchstudentfeetype.component';
 @Component({
   selector: 'app-admissionboard',
   templateUrl: './admissionboard.component.html',
@@ -20,6 +21,7 @@ export class AdmissionboardComponent implements AfterViewInit {
   components:any = [   
     PromoteclassComponent,
     AssignStudentclassdashboardComponent,
+    SearchstudentfeetypeComponent,
     AdmissionWithdrawnComponent,
     StudenthistoryComponent,
     StudentstatusComponent,
@@ -33,6 +35,7 @@ export class AdmissionboardComponent implements AfterViewInit {
     { "label": "Subject Detail", "faIcon": '' },   
     { "label": "Subject Detail", "faIcon": '' },   
     { "label": "Subject Detail", "faIcon": '' },  
+    { "label": "Subject Detail", "faIcon": '' },   
     { "label": "Subject Detail", "faIcon": '' },   
     { "label": "Subject Detail", "faIcon": '' }   
   ];
@@ -66,6 +69,10 @@ export class AdmissionboardComponent implements AfterViewInit {
 
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.AssignClass)
     var comindx = this.components.indexOf(AssignStudentclassdashboardComponent);
+    this.GetComponents(perObj, comindx)    
+   
+    perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.SEARCHSTUDENTFEETYPE)
+    var comindx = this.components.indexOf(SearchstudentfeetypeComponent);
     this.GetComponents(perObj, comindx)    
     
     perObj = globalconstants.getPermission(this.tokenStorage, globalconstants.Pages.edu.Admission.STUDENTADMISSION)

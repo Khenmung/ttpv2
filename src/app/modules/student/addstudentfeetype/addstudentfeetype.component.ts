@@ -227,7 +227,7 @@ export class AddStudentFeetypeComponent {
             this.StudentFeeTypeData["CreatedBy"] = this.LoginUserDetail[0]["userId"];
             this.StudentFeeTypeData["UpdatedDate"] = new Date();
             delete this.StudentFeeTypeData["UpdatedBy"];
-            console.log("log", this.StudentFeeTypeData)
+            //console.log("log", this.StudentFeeTypeData)
             this.insert(row);
           }
           else {
